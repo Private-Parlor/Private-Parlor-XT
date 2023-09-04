@@ -14,4 +14,13 @@ describe PrivateParlorXT do
 
     contains_mock.should(eq(true))
   end
+
+  it "generates update handlers" do
+    client = PrivateParlorXT::MockClient.new
+    PrivateParlorXT.generate_update_handlers(client)
+
+    registered_actions = client.dispatcher.event_handlers.keys
+
+    registered_actions.should(contain(Tourmaline::UpdateAction::NewChatMembers))
+  end
 end

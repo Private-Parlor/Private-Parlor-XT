@@ -4,7 +4,7 @@ require "tourmaline"
 module PrivateParlorXT
   VERSION = "0.1.0"
 
-  unless ENV["TEST"].downcase == "true"
+  unless (var = ENV["TEST"]?) && var.downcase == "true"
     client = Tourmaline::Client.new(bot_token: ENV["BOT_TOKEN"])
 
     initialize_handlers(client)
@@ -16,13 +16,17 @@ module PrivateParlorXT
 
 
   def self.initialize_handlers(client : Tourmaline::Client) : Nil
-    arr = [] of Tourmaline::EventHandler
+    events = [] of Tourmaline::EventHandler
 
-    arr = arr.concat(generate_command_handlers)
+    events = events.concat(generate_command_handlers)
+    #TODO: Add Inline Queries
+    #TODO: Add Hears Handlers
 
-    arr.each do |handler|
+    events.each do |handler|
       client.register(handler)
     end
+
+    generate_update_handlers(client)
   end
 
   # Intialize all command handlers that inherit from `CommandHandler`
@@ -46,5 +50,20 @@ module PrivateParlorXT
   {% end %}
 
     arr
+  end
+
+  def self.generate_update_handlers(client : Tourmaline::Client) : Nil
+    {% for update in UpdateHandler.all_subclasses.select { |sub_class| 
+      (on = sub_class.annotation(On))}%}
+
+    {{update_on = update.annotation(On)[:update]}}
+
+    handler = {{update}}.new
+
+    client.on({{update_on}}) do |ctx|
+      handler.do(ctx)
+    end
+
+    {% end %}
   end
 end
