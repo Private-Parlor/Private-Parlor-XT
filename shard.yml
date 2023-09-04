@@ -19,6 +19,10 @@ development_dependencies:
     github: crystal-ameba/ameba
     version: ~> 1.5.0
 
+targets:
+  private-parlor-xt:
+    main: src/private-parlor-xt.cr
+
 crystal: 1.9.2
 
 license: LGPL-3.0-or-later
