@@ -1,3 +1,6 @@
 require "spec"
+require "tourmaline"
 require "../src/private-parlor-xt"
 require "../src/private-parlor-xt/*"
+require "./database/*"
+require "./mocks/*"
