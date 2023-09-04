@@ -1,0 +1,46 @@
+version: 2.0
+shards:
+  ameba:
+    git: https://github.com/crystal-ameba/ameba.git
+    version: 1.5.0
+
+  cron_parser:
+    git: https://github.com/kostya/cron_parser.git
+    version: 0.4.0
+
+  db:
+    git: https://github.com/crystal-lang/crystal-db.git
+    version: 0.11.0
+
+  fnv:
+    git: https://github.com/naqvis/crystal-fnv.git
+    version: 0.1.3
+
+  future:
+    git: https://github.com/crystal-community/future.cr.git
+    version: 1.0.0
+
+  html5:
+    git: https://github.com/naqvis/crystal-html5.git
+    version: 0.4.0
+
+  http_proxy:
+    git: https://github.com/mamantoha/http_proxy.git
+    version: 0.10.1+git.commit.98ed90f82c02f2870e326b63974cb582f99ceddd
+
+  sqlite3:
+    git: https://github.com/crystal-lang/crystal-sqlite3.git
+    version: 0.19.0
+
+  tasker:
+    git: https://github.com/spider-gazelle/tasker.git
+    version: 2.1.4+git.commit.d64995112631c391f7924ab87e144210f5c565bf
+
+  tourmaline:
+    git: https://github.com/charibdys/tourmaline.git
+    version: 0.27.0+git.commit.608c66859bafe0cefe3215a884486d6271dac352
+
+  xpath2:
+    git: https://github.com/naqvis/crystal-xpath2.git
+    version: 0.1.3
+

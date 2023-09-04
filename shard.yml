@@ -1,0 +1,24 @@
+name: private-parlor-xt
+version: 0.1.0
+
+authors:
+  - Charybdis
+
+dependencies:
+  tourmaline:
+    github: Charibdys/tourmaline
+    branch: master
+  tasker:
+    github: spider-gazelle/tasker
+    branch: master
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
+
+development_dependencies:
+  ameba:
+    github: crystal-ameba/ameba
+    version: ~> 1.5.0
+
+crystal: 1.9.2
+
+license: LGPL-3.0-or-later
