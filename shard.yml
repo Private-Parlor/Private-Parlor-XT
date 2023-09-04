@@ -6,7 +6,7 @@ authors:
 
 dependencies:
   tourmaline:
-    github: Charibdys/tourmaline
+    github: protoncr/tourmaline
     branch: master
   tasker:
     github: spider-gazelle/tasker

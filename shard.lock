@@ -12,17 +12,9 @@ shards:
     git: https://github.com/crystal-lang/crystal-db.git
     version: 0.11.0
 
-  fnv:
-    git: https://github.com/naqvis/crystal-fnv.git
-    version: 0.1.3
-
   future:
     git: https://github.com/crystal-community/future.cr.git
     version: 1.0.0
-
-  html5:
-    git: https://github.com/naqvis/crystal-html5.git
-    version: 0.4.0
 
   http_proxy:
     git: https://github.com/mamantoha/http_proxy.git
@@ -37,10 +29,6 @@ shards:
     version: 2.1.4+git.commit.d64995112631c391f7924ab87e144210f5c565bf
 
   tourmaline:
-    git: https://github.com/charibdys/tourmaline.git
-    version: 0.27.0+git.commit.608c66859bafe0cefe3215a884486d6271dac352
-
-  xpath2:
-    git: https://github.com/naqvis/crystal-xpath2.git
-    version: 0.1.3
+    git: https://github.com/protoncr/tourmaline.git
+    version: 0.29.0+git.commit.81940948612f5cec50cf89d95bb760dc1bee3ae6
 
