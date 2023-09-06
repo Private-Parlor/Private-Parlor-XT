@@ -87,31 +87,5 @@ module PrivateParlorXT
 
       super
     end
-
-
-    
-    # getter id : Int64
-
-    # getter username : String?
-    # getter realname : String
-    # getter rank : Int32
-    # getter joined : Time
-    # getter left : Time?
-    # @[DB::Field(key: "lastActive")]
-    # getter last_active : Time
-    # @[DB::Field(key: "cooldownUntil")]
-    # getter cooldown_until : Time?
-    # @[DB::Field(key: "blacklistReason")]
-    # getter blacklist_reason : String?
-    # getter warnings : Int32
-    # @[DB::Field(key: "warnExpiry")]
-    # getter warn_expiry : Time?
-    # getter karma : Int32
-    # @[DB::Field(key: "hideKarma")]
-    # getter hide_karma : Bool?
-    # @[DB::Field(key: "debugEnabled")]
-    # getter debug_enabled : Bool?
-    # getter tripcode : String?
-
   end
 end
