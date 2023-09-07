@@ -6,7 +6,11 @@ module PrivateParlorXT
   class AuthorizedRanks
     getter ranks : Hash(Int32, Rank)
   
-    def initialize(@ranks : Hash(Int32, Rank))
+    private def initialize(@ranks : Hash(Int32, Rank))
+    end
+
+    def self.instance(ranks : Hash(Int32, Rank))
+      @@instance ||= new(ranks)
     end
   
     # Returns `true` if user rank has the given command permission; user is authorized.
@@ -88,7 +92,7 @@ module PrivateParlorXT
     end
   
     # Returns `true` if the user can sign a message with the given rank.
-    def can_ranksay?(rank : Int32, invoker : Int32, invoker_permission : CommandPermissions, rank_permission : CommandPermissions?) : Bool
+    def can_ranksay?(rank : Int32, invoker : Int32, invoker_permission : CommandPermissions, rank_permission : CommandPermissions? = nil) : Bool
       return false if rank == -10 || rank_permission.nil?
   
       (rank < invoker && invoker_permission == CommandPermissions::RanksayLower) || rank == invoker
@@ -104,7 +108,7 @@ module PrivateParlorXT
     # Returns an array of all the rank names in the ranks hash, up to a rank value limit.
     def rank_names(limit : Int32) : Array(String)
       @ranks.compact_map do |k, v|
-        v.name if k < limit
+        v.name if k <= limit
       end
     end
   end

@@ -12,12 +12,6 @@ module PrivateParlorXT
     Poll
     Forward
     Sticker
-    Dice
-    Dart
-    Basketball
-    Soccerball
-    SlotMachine
-    Bowling
     Venue
     Location
     Contact
