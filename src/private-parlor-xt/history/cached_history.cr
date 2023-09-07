@@ -24,8 +24,9 @@ module PrivateParlorXT
 
     getter message_map : Hash(MessageID, MessageGroup) = {} of MessageID => MessageGroup
 
-    # :inherit:
-    def initialize(@lifespan : Time::Span)
+    def close
+      message_map.clear
+      Log.debug { "Explicitly cleared contents of message_map hash" }
     end
 
     # :inherit:
@@ -96,7 +97,7 @@ module PrivateParlorXT
 
     # Returns true if the given message group is older than `lifespan`
     # Returns false otherwise
-    def expired?(message : MessageGroup) : Bool
+    private def expired?(message : MessageGroup) : Bool
       message.sent <= Time.utc - @lifespan
     end
 

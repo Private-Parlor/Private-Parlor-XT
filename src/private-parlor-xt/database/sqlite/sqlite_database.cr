@@ -7,6 +7,7 @@ module PrivateParlorXT
 
     # :inherit:
     private def initialize(@connection : DB::Database)
+      ensure_schema()
     end
 
     # :inherit:
@@ -168,6 +169,34 @@ module PrivateParlorXT
     # :inherit:
     def get_motd : String?
       @connection.query_one?("SELECT value FROM system_config WHERE name = 'motd'", as: String)
+    end
+
+    def ensure_schema : Nil
+      write do
+        @connection.exec("CREATE TABLE IF NOT EXISTS system_config (
+          name TEXT NOT NULL,
+          value TEXT NOT NULL,
+          PRIMARY KEY (name)
+        )")
+        @connection.exec("CREATE TABLE IF NOT EXISTS users (
+          id BIGINT NOT NULL,
+          username TEXT,
+          realname TEXT NOT NULL,
+          rank INTEGER NOT NULL,
+          joined TIMESTAMP NOT NULL,
+          left TIMESTAMP,
+          lastActive TIMESTAMP NOT NULL,
+          cooldownUntil TIMESTAMP,
+          blacklistReason TEXT,
+          warnings INTEGER NOT NULL,
+          warnExpiry TIMESTAMP,
+          karma INTEGER NOT NULL,
+          hideKarma TINYINT NOT NULL,
+          debugEnabled TINYINT NOT NULL,
+          tripcode TEXT,
+          PRIMARY KEY(id)
+        )")
+      end
     end
   end
 end

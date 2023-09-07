@@ -2,23 +2,27 @@ require "../spec_helper.cr"
 
 module PrivateParlorXT
   describe CachedHistory do
+    after_each do
+      CachedHistory.instance(HISTORY_LIFESPAN).close
+    end
+
     describe "#initialize" do
       it "initializes empty message map" do
-        history = CachedHistory.new(48.hours)
+        history = CachedHistory.instance(HISTORY_LIFESPAN)
 
-        history.message_map.should(eq({} of MessageID => CachedHistory::MessageGroup))
+        history.as(CachedHistory).message_map.should(eq({} of MessageID => CachedHistory::MessageGroup))
       end
     end
 
     describe "#new_message" do
       it "adds new message to message map" do
-        history = CachedHistory.new(48.hours)
+        history = CachedHistory.instance(HISTORY_LIFESPAN)
         sender = 100
         origin = 1
 
         history.new_message(sender, origin)
 
-        cached_message = history.message_map[1]
+        cached_message = history.as(CachedHistory).message_map[1]
 
         cached_message.sender.should(eq(100))
         cached_message.origin.should(eq(1))
@@ -28,26 +32,8 @@ module PrivateParlorXT
       end
     end
 
-    describe "#expired?" do
-      it "returns true if message is too old" do
-        history = CachedHistory.new(Time::Span.zero)
-
-        message = CachedHistory::MessageGroup.new(100, 1)
-
-        history.expired?(message).should(be_true)
-      end
-
-      it "returns false if message is new" do
-        history = CachedHistory.new(48.hours)
-
-        message = CachedHistory::MessageGroup.new(100, 1)
-
-        history.expired?(message).should(be_false)
-      end
-    end
-
     it "adds receiver message to original message" do
-      history = CachedHistory.new(48.hours)
+      history = CachedHistory.instance(HISTORY_LIFESPAN)
       sender = 100
       origin = 1
 
@@ -59,13 +45,13 @@ module PrivateParlorXT
       history.add_to_history(origin, receiver_msid, receiver_id)
 
       begin
-        cached_message = history.message_map[1]
+        cached_message = history.as(CachedHistory).message_map[1]
       rescue KeyError
         fail("A message with the ID of \'1\' should be in the message map keys")
       end
 
       begin
-        cached_message_reference = history.message_map[2]
+        cached_message_reference = history.as(CachedHistory).message_map[2]
       rescue KeyError
         fail("A message with the ID of \'2\' should be in the message map keys")
       end
@@ -80,7 +66,7 @@ module PrivateParlorXT
 
     describe "#get_origin_message" do
       it "gets original message ID from receiver message ID" do
-        history = CachedHistory.new(48.hours)
+        history = CachedHistory.instance(HISTORY_LIFESPAN)
         sender = 100
         origin = 1
 
@@ -95,7 +81,7 @@ module PrivateParlorXT
       end
 
       it "returns nil if receiver message ID has no original message" do
-        history = CachedHistory.new(48.hours)
+        history = CachedHistory.instance(HISTORY_LIFESPAN)
 
         receiver_msid = 2
 
@@ -106,7 +92,7 @@ module PrivateParlorXT
 
     describe "#get_all_receivers" do
       it "gets all receiver messages IDs from a message group" do
-        history = CachedHistory.new(48.hours)
+        history = CachedHistory.instance(HISTORY_LIFESPAN)
         sender = 100
         origin = 1
 
@@ -130,7 +116,7 @@ module PrivateParlorXT
       end
 
       it "returns an empty hash if original message does not exist" do
-        history = CachedHistory.new(48.hours)
+        history = CachedHistory.instance(HISTORY_LIFESPAN)
         
         history.get_all_receivers(1).should(eq({} of Int64 => Int64))
       end
@@ -138,7 +124,7 @@ module PrivateParlorXT
 
     describe "#get_receiver_message" do
       it "gets receiver message ID for a given user" do
-        history = CachedHistory.new(48.hours)
+        history = CachedHistory.instance(HISTORY_LIFESPAN)
         sender = 100
         origin = 1
 
@@ -154,7 +140,7 @@ module PrivateParlorXT
       end
 
       it "returns nil if original message does not exist" do
-        history = CachedHistory.new(48.hours)
+        history = CachedHistory.instance(HISTORY_LIFESPAN)
 
         history.get_receiver_message(4, 101).should(be_nil)
       end
@@ -162,7 +148,7 @@ module PrivateParlorXT
 
     describe "#get_sender" do
       it "gets the sender ID of a message group from a receiver message ID" do
-        history = CachedHistory.new(48.hours)
+        history = CachedHistory.instance(HISTORY_LIFESPAN)
         sender = 100
         origin = 1
 
@@ -174,14 +160,14 @@ module PrivateParlorXT
       end
 
       it "returns nil if original message does not exist" do
-        history = CachedHistory.new(48.hours)
+        history = CachedHistory.instance(HISTORY_LIFESPAN)
 
         history.get_sender(2).should(be_nil)
       end
     end
 
     it "gets all message IDs sent by a given user" do 
-      history = CachedHistory.new(48.hours)
+      history = CachedHistory.instance(HISTORY_LIFESPAN)
 
       history.new_message(100, 1)
       history.new_message(100, 2)
@@ -194,7 +180,7 @@ module PrivateParlorXT
     end
 
     it "deletes old messages" do
-      history = CachedHistory.new(Time::Span.zero)
+      history = CachedHistory.instance(Time::Span.zero)
 
       # Add some messages with receivers that reference them
       history.new_message(100, 1)
@@ -209,11 +195,11 @@ module PrivateParlorXT
       history.add_to_history(7, 8, 101)
       history.add_to_history(7, 9, 100)
       
-      history.message_map.size.should(eq(9))
+      history.as(CachedHistory).message_map.size.should(eq(9))
 
       history.expire
 
-      history.message_map.size.should(eq(0))
+      history.as(CachedHistory).message_map.size.should(eq(0))
     end
   end
 end

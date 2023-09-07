@@ -38,7 +38,7 @@ module PrivateParlorXT
     )
     end
 
-    # Returns an array with all the values in `User`. Used for Database query arguments.
+    # Returns an array with all the values in `User`. Intended for database query arguments.
     def to_array
       {% begin %}
         [
