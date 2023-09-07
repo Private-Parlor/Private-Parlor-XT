@@ -1,4 +1,4 @@
-require "../../database.cr"
+require "../database.cr"
 require "sqlite3"
 
 module PrivateParlorXT

@@ -35,9 +35,7 @@ module PrivateParlorXT
     arr = [] of Tourmaline::CommandHandler
 
     {% for command in CommandHandler.all_subclasses.select { |sub_class| 
-      (responds_to = sub_class.annotation(RespondsTo)) &&
-      responds_to[:command].is_a?(ArrayLiteral) &&
-      responds_to[:command].all? { |type| type.is_a?(StringLiteral)}} %}
+      (responds_to = sub_class.annotation(RespondsTo))} %}
 
     {{command_responds_to = command.annotation(RespondsTo)[:command]}}
 

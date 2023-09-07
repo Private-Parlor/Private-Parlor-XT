@@ -101,5 +101,5 @@ def instantiate_sqlite_database : PrivateParlorXT::Database
 end
 
 def instantiate_sqlite_history : PrivateParlorXT::History
-  PrivateParlorXT::SQLiteDatabaseHistory.instance(HISTORY_LIFESPAN, DB.open("sqlite3://#{__DIR__}/#{DB_NAME}"))
+  PrivateParlorXT::SQLiteHistory.instance(HISTORY_LIFESPAN, DB.open("sqlite3://#{__DIR__}/#{DB_NAME}"))
 end

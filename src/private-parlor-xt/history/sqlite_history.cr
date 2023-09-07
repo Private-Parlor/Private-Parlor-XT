@@ -1,10 +1,10 @@
-require "../../../constants.cr"
-require "../../../history.cr"
+require "../constants.cr"
+require "../history.cr"
+require "db"
 
 module PrivateParlorXT
-  class SQLiteDatabaseHistory < History
+  class SQLiteHistory < History
     @connection : DB::Database
-
 
     # :inherit:
     #

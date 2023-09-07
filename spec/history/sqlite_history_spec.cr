@@ -1,7 +1,7 @@
 require "../spec_helper.cr"
 
 module PrivateParlorXT
-  describe SQLiteDatabaseHistory, tags: "database" do
+  describe SQLiteHistory, tags: "database" do
 
     # TODO: Ideally these tests would do something smarter than re-creating 
     # the same database over and over
