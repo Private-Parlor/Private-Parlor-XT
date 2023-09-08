@@ -62,9 +62,19 @@ module PrivateParlorXT
       Random.new(@id + Time.utc.at_beginning_of_day.to_unix).base64(3)
     end
 
+    # Set *left* to nil, meaning that the User has joined the chat.
+    def rejoin : Nil
+      @left = nil
+    end
+
     def update_names(username : String | Nil, fullname : String) : Nil
       @username = username
       @realname = fullname
+    end
+
+    # Set *last_active* to the current time
+    def set_active : Nil
+      @last_active = Time.utc
     end
 
     def set_left : Nil
@@ -79,6 +89,20 @@ module PrivateParlorXT
       else
         @warn_expiry = nil
       end
+    end
+
+    # Returns `true` if *rank* is -10; user is blacklisted.
+    #
+    # Returns `false` otherwise.
+    def blacklisted? : Bool
+      @rank == -10
+    end
+
+    # Returns `true` if *left* is not nil; user has left the chat.
+    #
+    # Returns `false` otherwise.
+    def left? : Bool
+      @left != nil
     end
     
   end

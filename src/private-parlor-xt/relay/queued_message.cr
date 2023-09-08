@@ -1,6 +1,7 @@
+require "tourmaline"
+
 module PrivateParlorXT
-  # TODO: Update this alias
-  alias MessageProc = Nil
+  alias MessageProc = Proc(Int64, Int64 | Nil, Tourmaline::Message) | Proc(Int64, Int64 | Nil, Array(Tourmaline::Message))
 
   class QueuedMessage
     getter origin_msid : Int64 | Array(Int64) | Nil
