@@ -2,8 +2,7 @@ require "../spec_helper.cr"
 
 module PrivateParlorXT
   describe SQLiteHistory, tags: "database" do
-
-    # TODO: Ideally these tests would do something smarter than re-creating 
+    # TODO: Ideally these tests would do something smarter than re-creating
     # the same database over and over
     around_each do |example|
       create_sqlite_database
@@ -43,7 +42,7 @@ module PrivateParlorXT
       begin
         receivers[101].should(eq(51))
       rescue KeyError
-        fail("A message with the ID of \'51\' should be in the receivers table")
+        fail("A message with the ID of '51' should be in the receivers table")
       end
 
       db.close
@@ -58,10 +57,10 @@ module PrivateParlorXT
         unless msid
           fail("Origin message ID should not be nil")
         end
-        
+
         msid.should(eq(8))
 
-        db.close  
+        db.close
       end
 
       it "gets original message ID from debug receiver message ID" do
@@ -151,7 +150,7 @@ module PrivateParlorXT
       end
     end
 
-    it "gets all message IDs sent by a given user" do 
+    it "gets all message IDs sent by a given user" do
       db = instantiate_sqlite_history
 
       db.new_message(80300, 11)

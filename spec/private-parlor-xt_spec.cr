@@ -1,9 +1,8 @@
 require "./spec_helper"
 
 describe PrivateParlorXT do
-
   it "generates command handlers" do
-    arr = PrivateParlorXT.generate_command_handlers()
+    arr = PrivateParlorXT.generate_command_handlers
 
     contains_mock = false
     arr.each do |command|

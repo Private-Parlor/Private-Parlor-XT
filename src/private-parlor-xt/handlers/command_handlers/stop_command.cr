@@ -2,10 +2,8 @@ require "../../handlers.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-
   @[RespondsTo(command: "stop", config: "enable_stop")]
   class StopCommand < CommandHandler
-
     def initialize(config : Config)
     end
 

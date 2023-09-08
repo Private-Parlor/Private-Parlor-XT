@@ -7,63 +7,63 @@ module PrivateParlorXT
     DB.mapping({
       id: {
         type: UserID,
-        key: "id",
+        key:  "id",
       },
       username: {
         type: String?,
-        key: "username",
+        key:  "username",
       },
       realname: {
         type: String,
-        key: "realname",
+        key:  "realname",
       },
       rank: {
         type: Int32,
-        key: "rank",
+        key:  "rank",
       },
       joined: {
         type: Time,
-        key: "joined",
+        key:  "joined",
       },
       left: {
         type: Time?,
-        key: "left",
+        key:  "left",
       },
       last_active: {
         type: Time,
-        key: "lastActive",
+        key:  "lastActive",
       },
       cooldown_until: {
         type: Time?,
-        key: "cooldownUntil",
+        key:  "cooldownUntil",
       },
       blacklist_reason: {
         type: String?,
-        key: "blacklistReason",
+        key:  "blacklistReason",
       },
       warnings: {
         type: Int32,
-        key: "warnings",
+        key:  "warnings",
       },
       warn_expiry: {
         type: Time?,
-        key: "warnExpiry",
+        key:  "warnExpiry",
       },
       karma: {
         type: Int32,
-        key: "karma",
+        key:  "karma",
       },
       hide_karma: {
         type: Bool?,
-        key: "hideKarma",
+        key:  "hideKarma",
       },
       debug_enabled: {
         type: Bool?,
-        key: "debugEnabled",
+        key:  "debugEnabled",
       },
       tripcode: {
         type: String?,
-        key: "tripcode",
+        key:  "tripcode",
       },
     })
 
@@ -84,7 +84,6 @@ module PrivateParlorXT
       @debug_enabled : Bool? = false,
       @tripcode : String? = nil
     )
-
       super
     end
   end

@@ -29,7 +29,7 @@ module PrivateParlorXT
         write(&block)
       end
     end
- 
+
     # :inherit:
     def get_user(id : UserID) : User?
       @connection.query_one?("SELECT * FROM users WHERE id = ?", id, as: SQLiteUser)
@@ -88,7 +88,7 @@ module PrivateParlorXT
         end
       end
     end
-    
+
     # :inherit:
     def get_active_users : Array(UserID)
       @connection.query_all("SELECT id FROM users WHERE left IS NULL ORDER BY rank DESC, lastActive DESC", &.read(Int64))

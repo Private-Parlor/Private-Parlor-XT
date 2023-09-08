@@ -97,7 +97,7 @@ module PrivateParlorXT
         "SELECT DISTINCT senderID
         FROM message_groups
         WHERE messageGroupID IN (
-          SELECT messageGroupID 
+          SELECT messageGroupID
           FROM receivers
           WHERE receiverMSID = ?
         )

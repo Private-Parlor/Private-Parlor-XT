@@ -4,81 +4,81 @@ require "yaml"
 module PrivateParlorXT
   class SpamHandler
     include YAML::Serializable
-  
+
     getter scores : Hash(UserID, Int32) = {} of UserID => Int32
     getter sign_last_used : Hash(UserID, Time) = {} of UserID => Time
     getter upvote_last_used : Hash(UserID, Time) = {} of UserID => Time
     getter downvote_last_used : Hash(UserID, Time) = {} of UserID => Time
-  
+
     @[YAML::Field(key: "spam_limit")]
     getter spam_limit : Int32 = 10000
-  
+
     @[YAML::Field(key: "decay_amount")]
     getter decay_amount : Int32 = 1000
 
     @[YAML::Field(key: "score_character")]
     getter score_character : Int32 = 3
-  
+
     @[YAML::Field(key: "score_line")]
     getter score_line : Int32 = 100
-  
+
     @[YAML::Field(key: "score_animation")]
     getter score_animation : Int32 = 3000
-  
+
     @[YAML::Field(key: "score_audio")]
     getter score_audio : Int32 = 3000
-  
+
     @[YAML::Field(key: "score_document")]
     getter score_document : Int32 = 3000
-  
+
     @[YAML::Field(key: "score_video")]
     getter score_video : Int32 = 3000
-  
+
     @[YAML::Field(key: "score_video_note")]
     getter score_video_note : Int32 = 5000
-  
+
     @[YAML::Field(key: "score_voice")]
     getter score_voice : Int32 = 5000
-  
+
     @[YAML::Field(key: "score_photo")]
     getter score_photo : Int32 = 3000
-  
+
     @[YAML::Field(key: "score_media_group")]
     getter score_media_group : Int32 = 6000
-  
+
     @[YAML::Field(key: "score_poll")]
     getter score_poll : Int32 = 6000
-  
+
     @[YAML::Field(key: "score_forwarded_message")]
     getter score_forwarded_message : Int32 = 3000
-  
+
     @[YAML::Field(key: "score_sticker")]
     getter score_sticker : Int32 = 3000
-  
+
     @[YAML::Field(key: "score_venue")]
     getter score_venue : Int32 = 5000
-  
+
     @[YAML::Field(key: "score_location")]
     getter score_location : Int32 = 5000
-  
+
     @[YAML::Field(key: "score_contact")]
     getter score_contact : Int32 = 5000
-  
-    # Check if user's spam score will exceed the limit 
+
+    # Check if user's spam score will exceed the limit
     #
     # Returns true if score is greater than spam limit, false otherwise.
     def spammy?(user : UserID, increment : Int32) : Bool
       score = 0 unless score = @scores[user]?
-  
+
       if score > spam_limit || score + increment > spam_limit
         return true
       end
-  
+
       @scores[user] = score + increment
-  
+
       false
     end
-  
+
     # Check if user has signed within an interval of time
     #
     # Returns true if so (user is sign spamming), false otherwise.
@@ -94,10 +94,10 @@ module PrivateParlorXT
           @sign_last_used[user] = Time.utc
         end
       end
-  
+
       false
     end
-  
+
     # Check if user has upvoted within an interval of time
     #
     # Returns true if so (user is upvoting too often), false otherwise.
@@ -113,10 +113,10 @@ module PrivateParlorXT
           @upvote_last_used[user] = Time.utc
         end
       end
-  
+
       false
     end
-  
+
     # Check if user has downvoted within an interval of time
     #
     # Returns true if so (user is downvoting too often), false otherwise.
@@ -132,14 +132,14 @@ module PrivateParlorXT
           @downvote_last_used[user] = Time.utc
         end
       end
-  
+
       false
     end
-  
+
     def spammy_text?(user : UserID, text : String) : Bool
       spammy?(user, (text.size * score_text_character) + (text.lines.size * score_text_linebreak))
     end
-  
+
     def expire
       @scores.each do |user, score|
         if (score - @decay_amount) <= 0

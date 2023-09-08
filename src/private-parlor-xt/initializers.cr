@@ -2,15 +2,14 @@ require "./handlers.cr"
 
 module PrivateParlorXT
   def self.initialize_handlers(
-      client : Tourmaline::Client, 
-      config : Config,
-      relay : Relay, 
-      access : AuthorizedRanks, 
-      database : Database, 
-      history : History, 
-      locale : Locale,
-    ) : Nil
-
+    client : Tourmaline::Client,
+    config : Config,
+    relay : Relay,
+    access : AuthorizedRanks,
+    database : Database,
+    history : History,
+    locale : Locale
+  ) : Nil
     events = [] of Tourmaline::EventHandler
 
     events = events.concat(generate_command_handlers(
@@ -21,8 +20,8 @@ module PrivateParlorXT
       history,
       locale,
     ))
-    #TODO: Add Inline Queries
-    #TODO: Add Hears Handlers
+    # TODO: Add Inline Queries
+    # TODO: Add Hears Handlers
 
     events.each do |handler|
       client.register(handler)
@@ -43,17 +42,17 @@ module PrivateParlorXT
   # and are annotated with `RespondsTo`
   def self.generate_command_handlers(
     config : Config,
-    relay : Relay, 
-    access : AuthorizedRanks, 
-    database : Database, 
-    history : History, 
-    locale : Locale,
+    relay : Relay,
+    access : AuthorizedRanks,
+    database : Database,
+    history : History,
+    locale : Locale
   ) : Array(Tourmaline::CommandHandler)
-
     arr = [] of Tourmaline::CommandHandler
 
-    {% for command in CommandHandler.all_subclasses.select { |sub_class| 
-      (responds_to = sub_class.annotation(RespondsTo))} %}
+    {% for command in CommandHandler.all_subclasses.select { |sub_class|
+                        (responds_to = sub_class.annotation(RespondsTo))
+                      } %}
 
     {{command_responds_to = command.annotation(RespondsTo)}}
 
@@ -75,15 +74,15 @@ module PrivateParlorXT
   def self.generate_update_handlers(
     client : Tourmaline::Client,
     config : Config,
-    relay : Relay, 
-    access : AuthorizedRanks, 
-    database : Database, 
-    history : History, 
-    locale : Locale,
-    ) : Nil
-
-    {% for update in UpdateHandler.all_subclasses.select { |sub_class| 
-      (on = sub_class.annotation(On))}%}
+    relay : Relay,
+    access : AuthorizedRanks,
+    database : Database,
+    history : History,
+    locale : Locale
+  ) : Nil
+    {% for update in UpdateHandler.all_subclasses.select { |sub_class|
+                       (on = sub_class.annotation(On))
+                     } %}
 
     {{update_on = update.annotation(On)}}
 

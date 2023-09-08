@@ -23,6 +23,5 @@ module PrivateParlorXT
         locale.replies.blacklist_contact.gsub("{contact}", "#{escape_html(contact)}")
       end
     end
-
   end
 end

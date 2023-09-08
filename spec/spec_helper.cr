@@ -4,7 +4,7 @@ require "../src/private-parlor-xt/**"
 require "./database/*"
 require "./mocks/*"
 
-DB_NAME = "sqlite_spec.db"
+DB_NAME          = "sqlite_spec.db"
 HISTORY_LIFESPAN = Time::Span.zero
 
 def create_sqlite_database

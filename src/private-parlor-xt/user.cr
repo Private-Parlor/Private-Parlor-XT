@@ -2,7 +2,6 @@ require "./constants.cr"
 
 module PrivateParlorXT
   abstract class User
-    
     @id : UserID
     @username : String? = nil
     @realname : String = ""
@@ -104,6 +103,5 @@ module PrivateParlorXT
     def left? : Bool
       @left != nil
     end
-    
   end
 end

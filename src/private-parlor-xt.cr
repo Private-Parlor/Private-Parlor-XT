@@ -5,10 +5,10 @@ require "tasker"
 module PrivateParlorXT
   VERSION = "0.1.0"
 
-  config = Config.parse_config()
+  config = Config.parse_config
   locale = Locale.parse_locale(config.locale)
   database = SQLiteDatabase.instance(DB.open("sqlite3://#{config.database}"))
-  
+
   if config.database_history
     history = SQLiteHistory.instance(config.message_lifespan.hours, DB.open("sqlite3://#{config.database}"))
   else
@@ -18,7 +18,7 @@ module PrivateParlorXT
   access = AuthorizedRanks.instance(config.ranks)
 
   client = Client.new(config.token)
-  client.default_parse_mode=Tourmaline::ParseMode::HTML # TODO: Change to MarkdownV2
+  client.default_parse_mode = Tourmaline::ParseMode::HTML # TODO: Change to MarkdownV2
 
   relay = Relay.instance(config.log_channel, client)
 
@@ -55,14 +55,14 @@ module PrivateParlorXT
 
   def self.terminate_program(client : Client, routine : Tasker::Task, relay : Relay, database : Database, locale : Locale, history : History)
     client.stop
-  
+
     routine.cancel
-  
+
     # Send last messages in queue
     loop do
       break if relay.send_messages(database, locale, history) == true
     end
-  
+
     # Bot stopped polling from SIGINT/SIGTERM, shut down
     # Rescue if database unique constraint was encountered during runtime
     begin

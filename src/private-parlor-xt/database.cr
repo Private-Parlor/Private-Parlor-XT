@@ -3,7 +3,6 @@ require "./user.cr"
 
 module PrivateParlorXT
   abstract class Database
-
     # Creates a new database
     private def initialize
     end
@@ -11,7 +10,7 @@ module PrivateParlorXT
     # Return the current instance of Database
     #
     # There should only be one instance throughout the lifetime of the process
-    def self.instance()
+    def self.instance
       @@instance ||= new()
     end
 
@@ -22,7 +21,7 @@ module PrivateParlorXT
     # Get user by `UserID`
     abstract def get_user(id : UserID) : User?
 
-    # Get the total count of users, users that have stopped the bot, and 
+    # Get the total count of users, users that have stopped the bot, and
     # users that are blacklisted
     abstract def get_user_counts : NamedTuple(total: Int32, left: Int32, blacklisted: Int32)
 
@@ -57,7 +56,7 @@ module PrivateParlorXT
         get_user_by_name(arg)
       end
     end
-    
+
     # Queries the database for the most active users, ordered by highest ranking
     # users first, then most active users.
     abstract def get_active_users : Array(UserID)

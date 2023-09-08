@@ -2,10 +2,8 @@ require "../../handlers.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-
   @[RespondsTo(command: "start", config: "enable_start")]
   class StartCommand < CommandHandler
-
     @blacklist_contact : String?
     @registration_open : Bool?
     @pseudonymous : Bool?
@@ -36,9 +34,9 @@ module PrivateParlorXT
           database.update_user(user)
 
           relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.rejoined)
-          
+
           log = Format.substitute_message(locale.logs.rejoined, locale, {"id" => user.id.to_s, "name" => user.get_formatted_name})
-          
+
           relay.log_output(log)
         else
           user.update_names(info.username, info.full_name)
@@ -52,9 +50,9 @@ module PrivateParlorXT
         end
 
         if database.no_users?
-          user = database.add_user(info.id.to_i64, info.username, info.full_name, access.max_rank)
+          database.add_user(info.id.to_i64, info.username, info.full_name, access.max_rank)
         else
-          user = database.add_user(info.id.to_i64, info.username, info.full_name, @default_rank)
+          database.add_user(info.id.to_i64, info.username, info.full_name, @default_rank)
         end
 
         if motd = database.get_motd
@@ -68,8 +66,8 @@ module PrivateParlorXT
         end
 
         log = Format.substitute_message(locale.logs.joined, locale, {
-          "id" => info.id.to_s,
-          "name" => info.username || info.full_name
+          "id"   => info.id.to_s,
+          "name" => info.username || info.full_name,
         })
 
         relay.log_output(log)

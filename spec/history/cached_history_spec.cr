@@ -47,19 +47,19 @@ module PrivateParlorXT
       begin
         cached_message = history.as(CachedHistory).message_map[1]
       rescue KeyError
-        fail("A message with the ID of \'1\' should be in the message map keys")
+        fail("A message with the ID of '1' should be in the message map keys")
       end
 
       begin
         cached_message_reference = history.as(CachedHistory).message_map[2]
       rescue KeyError
-        fail("A message with the ID of \'2\' should be in the message map keys")
+        fail("A message with the ID of '2' should be in the message map keys")
       end
-      
+
       cached_message.should(eq(cached_message_reference))
 
       receivers = cached_message_reference.receivers
-      
+
       receivers.keys.should(contain(receiver_id))
       receivers.values.should(contain(receiver_msid))
     end
@@ -89,7 +89,6 @@ module PrivateParlorXT
       end
     end
 
-
     describe "#get_all_receivers" do
       it "gets all receiver messages IDs from a message group" do
         history = CachedHistory.instance(HISTORY_LIFESPAN)
@@ -117,7 +116,7 @@ module PrivateParlorXT
 
       it "returns an empty hash if original message does not exist" do
         history = CachedHistory.instance(HISTORY_LIFESPAN)
-        
+
         history.get_all_receivers(1).should(eq({} of Int64 => Int64))
       end
     end
@@ -166,7 +165,7 @@ module PrivateParlorXT
       end
     end
 
-    it "gets all message IDs sent by a given user" do 
+    it "gets all message IDs sent by a given user" do
       history = CachedHistory.instance(HISTORY_LIFESPAN)
 
       history.new_message(100, 1)
@@ -194,7 +193,7 @@ module PrivateParlorXT
       history.new_message(102, 7)
       history.add_to_history(7, 8, 101)
       history.add_to_history(7, 9, 100)
-      
+
       history.as(CachedHistory).message_map.size.should(eq(9))
 
       history.expire

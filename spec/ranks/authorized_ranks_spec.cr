@@ -21,7 +21,7 @@ module PrivateParlorXT
         Set{
           CommandPermissions::PromoteLower,
           CommandPermissions::Demote,
-          CommandPermissions::RanksayLower
+          CommandPermissions::RanksayLower,
         },
         Set{
           MessagePermissions::Text,
@@ -54,7 +54,6 @@ module PrivateParlorXT
         Set(MessagePermissions).new,
       ),
     }
-
 
     authorized_ranks = AuthorizedRanks.instance(ranks)
 
@@ -99,7 +98,7 @@ module PrivateParlorXT
         name = authorized_ranks.rank_name(1000)
 
         unless name
-          fail("There should be a \'Host\' rank")
+          fail("There should be a 'Host' rank")
         end
 
         name.should(eq("Host"))
@@ -117,7 +116,7 @@ module PrivateParlorXT
         tuple = authorized_ranks.find_rank("admin")
 
         unless tuple
-          fail("There should be an \'Admin\' rank")
+          fail("There should be an 'Admin' rank")
         end
 
         tuple[0].should(eq(100))
@@ -128,7 +127,7 @@ module PrivateParlorXT
         tuple = authorized_ranks.find_rank("administrator", 100)
 
         unless tuple
-          fail("There should be an \'Admin\' rank")
+          fail("There should be an 'Admin' rank")
         end
 
         tuple[0].should(eq(100))
@@ -173,7 +172,7 @@ module PrivateParlorXT
         authorized_ranks.can_promote?(10, 100, 0, CommandPermissions::PromoteSame).should(be_false)
       end
     end
-    
+
     describe "#can_demote?" do
       it "returns true if user can be demoted to the given rank" do
         authorized_ranks.can_demote?(0, 100, 10).should(be_true)
@@ -186,7 +185,7 @@ module PrivateParlorXT
       it "can't demote users with the same rank" do
         authorized_ranks.can_demote?(0, 10, 10).should(be_false)
       end
-      
+
       it "can't demote user to blacklisted rank" do
         authorized_ranks.can_demote?(-10, 100, 10).should(be_false)
       end

@@ -4,7 +4,6 @@ require "tourmaline"
 
 module PrivateParlorXT
   class Relay
-
     @queue : MessageQueue = MessageQueue.new
     @client : Tourmaline::Client
     @log_channel : String
@@ -83,6 +82,5 @@ module PrivateParlorXT
         end
       end
     end
-
   end
 end

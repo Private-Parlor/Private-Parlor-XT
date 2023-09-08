@@ -1,9 +1,8 @@
 require "../spec_helper.cr"
 
 module PrivateParlorXT
-
   describe SQLiteDatabase, tags: "database" do
-    # TODO: Ideally these tests would do something smarter than re-creating 
+    # TODO: Ideally these tests would do something smarter than re-creating
     # the same database over and over
     around_each do |example|
       create_sqlite_database
@@ -20,7 +19,7 @@ module PrivateParlorXT
         unless user
           fail("User ID 80300 should exist in the database")
         end
-      
+
         user.id.should(eq(80300))
 
         db.close
@@ -28,7 +27,7 @@ module PrivateParlorXT
 
       it "returns nil if the user does not exist" do
         db = instantiate_sqlite_database
-        
+
         db.get_user(12345).should(be_nil)
 
         db.close
@@ -53,14 +52,14 @@ module PrivateParlorXT
       it "returns all blacklisted users" do
         db = instantiate_sqlite_database
 
-        users = db.get_blacklisted_users()
+        users = db.get_blacklisted_users
 
         users[0].id.should(eq(70000))
 
         db.close
       end
 
-      it "returns users blacklisted recently", do
+      it "returns users blacklisted recently" do
         db = instantiate_sqlite_database
 
         new_user = db.add_user(12345, nil, "BLACKLISTED", -10)
@@ -78,8 +77,8 @@ module PrivateParlorXT
     describe "#get_warned_users" do
       it "returns all warned users" do
         db = instantiate_sqlite_database
-        
-        users = db.get_warned_users()
+
+        users = db.get_warned_users
 
         if users.size > 2
           fail("There should have been only 2 users with warnings")
@@ -100,7 +99,7 @@ module PrivateParlorXT
     describe "#get_invalid_rank_users" do
       it "returns all users with invalid ranks" do
         db = instantiate_sqlite_database
-        
+
         users = db.get_invalid_rank_users([1000, 0, -10])
 
         users[0].rank.should(eq(10))
@@ -243,7 +242,7 @@ module PrivateParlorXT
         db = instantiate_sqlite_database
 
         arr = db.get_active_users(exclude: 80300)
-        
+
         arr[0].should(eq(20000))
         arr[1].should(eq(60200))
 
@@ -319,7 +318,7 @@ module PrivateParlorXT
           fail("User ID 60200 and user ID 80300 should exist in the database")
         end
 
-        unless user_beisp.warn_expiry 
+        unless user_beisp.warn_expiry
           fail("User ID 80300 should still have a warn expiration date")
         end
 

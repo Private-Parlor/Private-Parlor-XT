@@ -104,7 +104,7 @@ module PrivateParlorXT
     # :inherit:
     def expire : Nil
       msids = Set(MessageID).new
-      
+
       @message_map.each_value do |message_group|
         if !expired?(message_group)
           next

@@ -2,7 +2,6 @@ require "./constants.cr"
 
 module PrivateParlorXT
   abstract class History
-
     @lifespan : Time::Span = 24.hours
 
     # Initialize a message history where messages older than `lifespan` are considered expired
@@ -43,7 +42,7 @@ module PrivateParlorXT
     # Get all message IDs sent by a given user
     abstract def get_messages_from_user(user : UserID) : Set(MessageID)
 
-    # Deletes old messages from the history 
+    # Deletes old messages from the history
     #
     # This should be invoked as a recurring task
     abstract def expire : Nil

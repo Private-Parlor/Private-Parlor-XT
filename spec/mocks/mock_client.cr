@@ -1,23 +1,20 @@
 require "../spec_helper.cr"
 
 module PrivateParlorXT
-
   # A subtype of `Tourmaline::Client` without using Telegram API on init
   class MockClient < Tourmaline::Client
-
-    def initialize(@bot_token : String = "", 
-                    @endpoint = DEFAULT_API_URL,
-                    @default_parse_mode : Tourmaline::ParseMode = :markdown,
-                    pool_capacity = 200,
-                    initial_pool_size = 20,
-                    pool_timeout = 0.1,
-                    proxy = nil,
-                    proxy_uri = nil,
-                    proxy_host = nil,
-                    proxy_port = nil,
-                    proxy_user = nil,
-                    proxy_pass = nil)
-
+    def initialize(@bot_token : String = "",
+                   @endpoint = DEFAULT_API_URL,
+                   @default_parse_mode : Tourmaline::ParseMode = :markdown,
+                   pool_capacity = 200,
+                   initial_pool_size = 20,
+                   pool_timeout = 0.1,
+                   proxy = nil,
+                   proxy_uri = nil,
+                   proxy_host = nil,
+                   proxy_port = nil,
+                   proxy_user = nil,
+                   proxy_pass = nil)
       if !proxy
         if proxy_uri
           proxy_uri = proxy_uri.is_a?(URI) ? proxy_uri : URI.parse(proxy_uri.starts_with?("http") ? proxy_uri : "http://#{proxy_uri}")
