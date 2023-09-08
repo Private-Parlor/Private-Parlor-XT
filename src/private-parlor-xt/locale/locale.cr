@@ -28,8 +28,8 @@ module PrivateParlorXT
     @[YAML::Field(key: "command_descriptions")]
     getter command_descriptions : CommandDescriptions
 
-    def self.parse_locale(language_code : String) : Locale
-      Locale.from_yaml(File.open("./locales/#{language_code}.yaml"))
+    def self.parse_locale(path : Path, language_code : String) : Locale
+      Locale.from_yaml(File.open(path.join("#{language_code}.yaml")))
     rescue ex : YAML::ParseException
       Log.error(exception: ex) { "Could not parse the given value at row #{ex.line_number}. This could be because a required value was not set or the wrong type was given." }
       exit

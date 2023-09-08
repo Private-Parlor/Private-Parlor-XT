@@ -6,7 +6,7 @@ module PrivateParlorXT
   VERSION = "0.1.0"
 
   config = Config.parse_config
-  locale = Locale.parse_locale(config.locale)
+  locale = Locale.parse_locale(Path["./locales"], config.locale)
   database = SQLiteDatabase.instance(DB.open("sqlite3://#{config.database}"))
 
   if config.database_history
