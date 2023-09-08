@@ -62,7 +62,7 @@ module PrivateParlorXT
     getter score_location : Int32 = 5000
   
     @[YAML::Field(key: "score_contact")]
-    getter score_contact : Int32 = 500
+    getter score_contact : Int32 = 5000
   
     # Check if user's spam score will exceed the limit 
     #

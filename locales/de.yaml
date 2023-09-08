@@ -1,0 +1,337 @@
+# Short specifiers for units of time
+# 5 elements from largest unit to smallest: weeks, days, hours, mintues, seconds
+time_units: ['w', 'd', 'h', 'm', 's']
+
+# Format for timestamps
+# Currently in the form "YY-MM-DD" with 24 hour time and showing timzeone/offset name
+time_format: "%y-%m-%d %T %Z"
+
+# Term for off and on, respectively
+toggle: ["deaktiviert", "aktiviert"]
+
+# Values for the loading bar, from empty, to partially full, to full
+loading_bar: ["○", "◐", "●"]
+
+# Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
+# Placeholders should not be escaped
+# Special characters in HTML must be escaped
+
+replies:
+   joined: "<i>Willkommen in diesem Chat!</i>"
+
+   joined_pseudonym: |-
+      <i>Willkommen in diesem Chat!
+
+      Ein Tripcode ist erforderlich, bevor du ein Nachricht schicken kannst.
+      Benutzt den /tripcode Befehl zu ein Tripcode machen</i>
+
+   rejoined: "<i>Du bist in diesem Chat wieder eingetreten!</i>"
+    
+   left: "<i>Du hast diesen Chat verlassen.</i>"
+
+   already_in_chat: "<i>Du bist schon hier.</i>"
+
+   registration_closed: "<i>Registrierung ist geschlossen. Du kannst später wieder checken.</i>"
+
+   added_to_chat: "<i>Du wurdest zu diesem Chat eingeladen!</i>"
+
+   already_whitelisted: "<i>Dieser Nutzer ist schon hier.</i>"
+
+   not_in_chat: "<i>Du bist in diesem Chat nicht. Benutzt den /start Befehl zu eingetreten.</i>"
+
+   not_in_cooldown: "<i>Den Nutzer wurde gefunden, aber er war in Cooldown nicht!</i>"
+
+   rejected_message: "<i>Deine Nachricht ist nicht geschickt worden, weil es ungültige Schriftzeichen haben.</i>"
+
+   deanon_poll: "<i>Deine Umfrage ist nicht geschickt worden, weil es erlaubt Anonyme Stimmabgabe nicht.</i>"
+
+   missing_args: "<i>Dieser Befehl verlangt Input.</i>"
+
+   command_disabled: "<i>Dieser Befehl ist behindert.</i>"
+
+   # Available placeholders: type
+   media_disabled: "<i>Nachrichten dieser Art sind behindert: <code>{type}</code></i>"
+
+   no_reply: "<i>Zu diesem Befehl benutzen, du musst eine Nachricht beantworten</i>"
+
+   not_in_cache: "<i>Die Nachricht kann im Zwischenspeicher nicht gefunden</i>"
+   
+   no_tripcode_set: |-
+      <i>Du hast keinen Tripcode gemacht haben.
+      Benutzt den /tripcode Befehl zu ein Tripcode machen.</i>
+
+   no_user_found: "<i>Es gibt keinen Nutzer mit diesem Name.</i>"
+
+   no_user_oid_found: "<i>Es gibt keinen Nutzer mit diesem OID.</i>"
+
+   # Available placeholders: ranks
+   no_rank_found: "<i>Es gibt keine	Ränge mit diesem Name. Die Ränge sind: {ranks}</i>"
+
+   # Available placeholders: rank
+   promoted: "<i>Du bist zum {rank} befördert worden! Benutzt den /help Befehl, um deine Befehle zu sehen.</i>"
+
+   help_header: "<u><b>Allgemeine Befehle</b></u>"
+
+   # Available placeholders: rank
+   help_rank_commands: "<u><b>Befehle erhältlich zum {rank}</b></u>"
+
+   help_reply_commands: "<u><b>Befehle, die eine Antwort brauchen</b></u>"
+
+   # Available placeholders: toggle
+   toggle_karma: "<b>Benachrichtigungen für Karma</b>: {toggle}"
+
+   # Available placeholders: toggle
+   toggle_debug: "<b>Modus für debuggen</b>: {toggle}"
+
+   gave_upvote: "<i>Du hast Karma zu dieser Nachricht gegeben!</i>"
+
+   got_upvote: "<i>Du hast Karma bekommen! (Benutzt den /info Befehl zu dein Karma checken, oder /togglekarma diesen Benachrichtigungen abzuschalten)</i>"
+
+   upvoted_own_message: "<i>Du kannst deine Nachricht Karma nicht geben!</i>"
+
+   already_voted: "<i>Du hast schon dieser Nachricht Karma gegeben oder entfernt</i>"
+
+   gave_downvote: "<i>Du hast Karma von dieser Nachricht entfernt!</i>"
+
+   got_downvote: "<i>Du hast Karma verlieren! (Benutzt den /info Befehl zu dein Karma checken, oder /togglekarma diesen Benachrichtigungen abzuschalten)</i>"
+
+   downvoted_own_message: "<i>Du kannst deiner Nachricht Karma nicht entfernen!</i>"
+
+   # Available placeholders: current_level, next_level, karma, limit, loading_bar, percentage
+   karma_info: |-
+      <b>Dein Niveau</b>: <i>{current_level}</i>
+      <b>Nächstes Niveau</b>: <i>{next_level}</i>
+
+      <b>Karma</b>: {karma}/{limit}
+      {loading_bar} ({percentage}%)
+
+   already_warned: "<i>Diese Nachricht war schon gewarnt</i>"
+
+   private_sign: "<i>Die Weiterleitungen Einstellung deines Kontos muss zu \"Jeder\" gesetzt werden, bevor du eine Nachricht mit deinem Namen unterschreiben kannst.</i>"
+
+   # Available placeholders: username
+   username_reveal: "<i>Der Nutzer namens Joel um du zu kontaktieren gebeten als Antwort auf dieser Nachricht.</i>"
+
+   spamming: "<i>Deine Nachricht war nicht schicken, unterlass du Nachrichten zu schnell schicken.</i>"
+
+   sign_spam: "<i>Deine Nachricht war nicht schicken, unterlass du deine Nachrichten zu oft unterschreiben.</i>"
+
+   upvote_spam: "<i>Du kannst jetzt Karma nicht geben, unterlass du Karma zu oft geben.</i>"
+
+   downvote_spam: "<i>Du kannst jetzt Karma nicht entfernen, unterlass du Karma zu oft entfernen.</i>"
+
+   invalid_tripcode_format: |-
+      <i>Ungültige Format des Tripcode. Das Format ist:</i>
+      <code>Name#Passwort</code>
+
+   # Available placeholders: name, tripcode
+   
+   tripcode_set: |- 
+      <i>Tripcode gesetzt. Es wird erscheint als::</i>
+      <b>{name}</b> <code>{tripcode}</code>:
+
+   # Available placeholders: tripcode
+   tripcode_info: "<b>Tripcode</b>: <code>{tripcode}</code>"
+
+   tripcode_unset: "nicht gesetzt"
+
+   # Available placeholders: oid, username, rank, rank_val, karma, karma_level warnings, smiley, warn_expiry, cooldown_until
+   user_info: |-
+      <b>ID</b>: {oid}, <b>Nutzername</b>: {username}, <b>Rang</b>: {rank_val} ({rank})
+      <b>Karma</b>: {karma} {karma_level}
+      <b>Warnungen</b>: {warnings} {smiley} {warn_expiry}
+      <b>Cooldown</b>: {cooldown_until}
+
+   # Available placeholders: warn_expiry
+   info_warning: "(Eine Warnung wird {warn_expiry} ablaufen)"
+
+   # Available placeholders: oid, karma, cooldown_until
+   ranked_info: |-
+      <b>ID</b>: {oid}, <b>Nutzername</b>: anonymous, <b>Rang</b>: n/a
+      <b>Karma</b>: {karma}
+      <b>Cooldown</b>: {cooldown_until}
+
+   cooldown_true: "ja, bis"
+
+   cooldown_false: "nein"
+
+   # Available placeholders: total
+   user_count: "<b>{total}</b> <i>Nutzer</i>"
+
+   # Available placeholders: joined, left, blacklisted, total
+   user_count_full: "<b>{joined}</b> <i>sind hier,</i> <b>{left}</b> <i>hier hinterlassen haben,</i> <b>{blacklisted}</b> <i>hier Lokalverbot/i> (<b>{total}</b> <i>insgesamt</i>)"
+
+   # Available placeholders: reason, duration
+   message_deleted: "<i>Diese Nachricht war gelöscht{reason}. Du wurdest bis {duration} einen Cooldown gegeben.</i>"
+
+   # Available placeholders: reason
+   message_removed: "<i>Diese Nachricht war entfernen{reason}. Du wurdest keinen Cooldown gegeben, aber bitte unterlass du die gleiche Nachricht wieder schicken.</i>"
+
+   reason_prefix: " für: " 
+
+   # Available placeholders: duration, reason
+   cooldown_given: "<i>Du wurdest bis {duration}{reason} einen Cooldown gegeben</i>"
+
+   # Available placeholders: time
+   on_cooldown: "<i>Du hast immer noch ein Cooldown bis {time}</i>"
+
+   unoriginal_message: "<i>Diese Nachricht war nicht schicken, weil es nicht original ist.</i>"
+
+   # Available placeholders: duration,
+   r9k_cooldown: |-
+      <i>Diese Nachricht war nicht schicken, weil es nicht original ist.
+      Du wurdest bis {duration} einen Cooldown gegeben.</i>
+
+   # Available placeholders: total
+   media_limit: "<i>Du kannst jetzt keine Medien oder weitergeleitete Nachrichten schicken. Du kannst in {total} Stunden wieder versuchen.</i>"
+
+   # Available placeholders: reason
+   blacklisted: |-
+      <i>Du wurdest gesperrt{reason}
+      {contact}</i>
+
+   # Available placeholders: contact
+   blacklist_contact: "Kontakt: {contact}"
+
+   # Available placeholders: msgs_deleted
+   purge_complete: "<i>{msgs_deleted} Nachrichten war gefunden und gelöscht.</i>"
+
+   # Available placeholders: time
+   inactive: |- 
+      <i>Weil du untätig warst, du wurdest von hier entfernt (AFK für {time} Tage).
+      Benutzt den /start Befehl zu Nachrichten wieder bekommen anfangen!</i>"
+
+   success: "✅" 
+
+   fail: "❌"
+
+# Special characters in HTML must be escaped
+command_descriptions:
+   start: In den Chat eintretenn (anzufangen Nachrichten bekommen)
+
+   stop: Den Chat verlassen (anzuhalten Nachrichten bekommen)
+
+   info: Informationen über dein Konto bekommen
+
+   users: Sehen dich die Nummer der Nutzer hier
+
+   version: Version und Link zu Quellcode bekommen
+
+   upvote: Zur eine Nachricht Karma geben
+
+   downvote: Von einer Nachricht Karma entfernen
+
+   toggle_karma: Benachrichtigungen für Karma einschalten
+
+   toggle_debug: Modus für debuggen einschalten (Nachrichten zurück zu dir schicken)
+
+   reveal: Deinen Nutzernamen zu einem Nutzer privat zeigen
+
+   tripcode: Setzen oder sehen dein Tripcode
+
+   promote: Befördern ein Nutzer zu einem bestimmten Rang.
+
+   demote: Degradieren ein Nutzer zu einem bestimmten Rang.
+
+   sign: Mit deinen Nutzernamen einer Nachricht unterschreiben
+
+   tsign: Mit deines Tripcode einer Nachricht unterschreiben
+
+   ksign: Mit deines Niveaus des Karma einer Nachricht unterschreiben
+
+   ranksay: Mit deinen augenblicklichen Rang einer Nachricht unterschreiben
+
+   warn: Eine Nachricht warnen ohne löschen
+
+   delete: Eine Nachricht löschen und dem Nutzer einen Cooldown geben
+
+   uncooldown: Aus einem Nutzer Cooldown entfernen
+
+   remove: Eine Nachricht löschen ohne einen Cooldown geben
+
+   purge: Alle Nachrichten aus alle gesperrter Nutzer löschen
+
+   spoiler: Mit einer Spoiler einer Nachricht der Medien verstecken
+
+   karma_info: Dein augenblickliches Karma und dein Niveau sehen
+
+   pin: Eine Nachricht im Chat anheften
+
+   unpin: Die neueste Nachricht loslösen
+
+   blacklist: Ein Nutzer aus dem Chat sperren
+
+   whitelist: Ein Nutzer hier eintreten zu erlauben
+
+   motd: Die Regeln diesem Chat sehen
+
+   help: Eine Hilfenachricht für deinen Rang sehen
+
+   motd_set: Die Regeln setzen (Wenn ein Nutzer in der Chat tritt, werde es gesehen)
+
+   ranked_info: Aus dieser Nachricht die Informationen des Nutzers bekommen
+
+# Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
+logs:
+   # Available placeholders: version
+   start: Private Parlor v{version} fängt an...
+
+   # Available placeholders: id, name
+   joined: "Nutzer {id}, alias {name}, hat in den Chat eingetreten."
+
+   # Available placeholders: id, name
+   rejoined: "Nutzer {id}, alias {name}, hat in den Chat wieder eingetreten."
+
+   # Available placeholders: id, name
+   left: "Nutzer {id}, alias {name}, hat den Chat verlassen."
+
+   # Available placeholders: id, name, rank, invoker
+   promoted: "Nutzer {id}, alias {name}, hat zu {rank} durch {invoker} befördert."
+
+   # Available placeholders: id, name, rank, invoker
+   demoted: "Nutzer {id}, alias {name}, hat zu {rank} durch {invoker} degradiert."
+
+   # Available placeholders: id, name, oid, duration, reason
+   warned: "Nutzer {id}, alias {name}, hat Nutzer [{oid}] mit {duration} Cooldown gewarnt {reason}"
+
+   # Available placeholders: id, name, msid, oid, duration, reason
+   message_deleted: "Nutzer {id}, alias {name}, hat eine Nachricht [{msid}] von Nutzer [{oid}] mit {duration} Cooldown gelöscht {reason}"
+
+   # Available placeholders: id, name, msid, oid, reason
+   message_removed:  "Nutzer {id}, alias {name}, hat eine Nachricht [{msid}] von Nutzer [{oid}] entfernt {reason}"
+
+   # Available placeholders: id, name, oid, cooldown_until
+   removed_cooldown: "Nutzer {id}, alias {name}, hat das Cooldown von dem Nutzer [{oid}] entfernt (es war bis{cooldown_until})"
+
+   # Available placeholders: id, name, invoker, reason
+   blacklisted: "Nutzer {id}, alias {name}, hat durch {invoker} gesperrt {reason}"
+
+   # Available placeholders: id, invoker
+   whitelisted: "{invoker} hat Nutzer {id} eingeladen"
+
+   reason_prefix: "für: " 
+
+   # Available placeholders: id, name, msid
+   spoiled: "Nutzer {id}, alias {name}, hat an die Nachricht [{msid}] ein Spoiler heftet"
+
+   # Available placeholders: id, name, msid
+   unspoiled: "Nutzer {id}, alias {name}, hat ein Spoiler aus der Nachricht [{msid}] entfernt"
+
+   # Available placeholders: sender_id, sender, receiver_id, receiver, msid
+   revealed: "Nutzer {id}, alias {name}, hat sein Nutzername an {receiver_id}, alias {receiver}, privat gezeigt, via die Nachricht [{msid}]"
+
+   # Available placeholders: id, name, msid
+   pinned: "Nutzer {id}, alias {name}, hat die Nachricht [{msid}] angeheftet"
+
+   # Available placeholders: id, name
+   unpinned: "Nutzer {id}, alias {name}, hat die neueste angeheftete Nachricht losgelöst"
+
+   # Available placeholders: id, name, text
+   motd_set: "Nutzer {id}, alias {name}, hat die Regeln gesetzt: {text}"
+
+   # Available placeholders: id, name, rank, text
+   ranked_message: "Nutzer {id}, alias {name}, hat eine {rank} Rangnachricht geschickt: {text}"
+
+   # Available placeholders: id
+   force_leave: "Entfernt Nutzer {id}, weil der Bot blockiert sind"
+---

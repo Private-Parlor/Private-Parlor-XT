@@ -7,7 +7,7 @@ module PrivateParlorXT
   class Config
     include YAML::Serializable
   
-    @[YAML::Field(key: "api_token")]
+    @[YAML::Field(key: "token")]
     getter token : String
   
     @[YAML::Field(key: "database")]
@@ -276,7 +276,7 @@ module PrivateParlorXT
       exit
     end
 
-    private def check_config(config : Config) : Config
+    private def self.check_config(config : Config) : Config
       message_entities = ["bold", "italic", "underline", "strikethrough", "spoiler", "code", "text_link", "custom_emoji"]
   
       if config.smileys.size != 4
@@ -294,17 +294,17 @@ module PrivateParlorXT
         config.karma_levels = {} of Int32 => String
       end
   
+      set_log(config)
       config = check_and_init_ranks(config)
       config = init_valid_codepoints(config)
       config = check_and_init_linked_network(config)
-      set_log(config)
     end
 
     # Checks every intermediate rank for invalid or otherwise undefined permissions
     # and initializes the Ranks hash
     #
     # Returns an updated `Config` object
-    private def check_and_init_ranks(config : Config) : Config
+    private def self.check_and_init_ranks(config : Config) : Config
       promote_keys = Set{
         CommandPermissions::Promote,
         CommandPermissions::PromoteLower,
@@ -329,9 +329,7 @@ module PrivateParlorXT
             MessagePermissions::Text, MessagePermissions::Animation, MessagePermissions::Audio, MessagePermissions::Document,
             MessagePermissions::Video, MessagePermissions::VideoNote, MessagePermissions::Voice, MessagePermissions::Photo,
             MessagePermissions::MediaGroup, MessagePermissions::Poll, MessagePermissions::Forward, MessagePermissions::Sticker,
-            MessagePermissions::Dice, MessagePermissions::Dart, MessagePermissions::Basketball, MessagePermissions::Soccerball,
-            MessagePermissions::SlotMachine, MessagePermissions::Bowling, MessagePermissions::Venue,
-            MessagePermissions::Location, MessagePermissions::Contact,
+            MessagePermissions::Venue, MessagePermissions::Location, MessagePermissions::Contact,
           }
         )
       end
@@ -357,7 +355,7 @@ module PrivateParlorXT
       config
     end
 
-    private def init_valid_codepoints(config : Config) : Config
+    private def self.init_valid_codepoints(config : Config) : Config
       unless codepoint_tuples = config.intermediate_valid_codepoints
         return config
       end
@@ -378,7 +376,7 @@ module PrivateParlorXT
     #
     # Otherwise if it is a string, try to open the file from the path and merge
     # the YAML dictionary there into  `linked_network`
-    private def check_and_init_linked_network(config : Config) : Config
+    private def self.check_and_init_linked_network(config : Config) : Config
       if (links = config.intermediary_linked_network) && links.is_a?(String)
         begin
           hash = {} of String => String
@@ -404,7 +402,7 @@ module PrivateParlorXT
     # Reset log with the severity level defined in `config.yaml`.
     #
     # A file can also be used to store log output. If the file does not exist, a new one will be made.
-    private def set_log(config : Config) : Nil
+    private def self.set_log(config : Config) : Nil
       # Skip setup if default values were given
       if config.log_level == Log::Severity::Info && config.log_file == nil
         return

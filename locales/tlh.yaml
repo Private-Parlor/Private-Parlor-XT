@@ -1,0 +1,343 @@
+# Short specifiers for units of time
+# 5 elements from largest unit to smallest: weeks, days, hours, mintues, seconds
+time_units: ['H', 'j', 'r', 't', 'l']
+
+# Format for timestamps
+# Currently in the form "MM-DD-YY" with 24 hour time and showing timzeone/offset name
+time_format: "%m-%d-%y %T %Z"
+
+# Term for off and on, respectively
+toggle: ["DaH pat Qotlhta'", "DaH pat chu'taH'"]
+
+# Values for the loading bar, from empty, to partially full, to full
+loading_bar: ["▱", "▱", "▰"]
+
+# Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
+# Placeholders should not be escaped
+# Special characters in HTML must be escaped
+
+replies:
+   joined: "<i>ja'chuqmeH Daq Damuvpu'.</i>"
+
+   joined_pseudonym: |-
+      <i>ja'chuqmeH Daq Damuvpu'.
+
+      QIn DangeHlaHpa' pongqoq DapoQ.
+      pongqoq DachenmoHmeH /tripcode yItur.</i>
+
+   rejoined: "<i>ja'chuqmeH Daq Damuvqa'pu'.</i>"
+    
+   left: "<i>ja'chuqmeH Daq Damejta'.</i>"
+
+   already_in_chat: "<i>DaH naDev SoH.</i>"
+
+   registration_closed: "<i>DaH DaqI'meH chaw'be'. SIbI'Ha' naDev DacheghlaH.</i>"
+
+   added_to_chat: "<i>ja'chuqmeH Daq DarItta'.</i>"
+
+   already_whitelisted: "<i>DaH wejHa' naDev mebvam.</i>"
+
+   not_in_chat: "<i>ja'chuqmeH Daqvam SoHbe'. DamuvmeH /start yItur.</i>"
+
+   not_in_cooldown: "<i>meb Samta' 'ach mebvam weghbe'pu'.</i>"
+
+   rejected_message: "<i>ngutlhmey motlhbe' ghaj QInlIjmo' ngeHpu'be' 'oH.</i>"
+
+   deanon_poll: "<i>So'ghach chaw'be' ghelmeH QInlIjmo' ngeHpu'be' 'oH.</i>"
+
+   missing_args: "<i>rIchwInvam Dalo'meH De' Da'ut</i>"
+
+   command_disabled: "<i>rIchwInvam QotlhtaH</i>"
+
+   # Available placeholders: type
+   media_disabled: "<i>QotlhtaH <code>{type}</code> QInmeyvam.</i>"
+
+   no_reply: "<i>rIchwInvam Dalo'meH QIn Dajang 'e' Da'ut.</i>"
+
+   not_in_cache: "<i>tameyDaq SamlaHbe'pu' QInvetlh</i>"
+
+   no_tripcode_set: |-
+      <i>pongqoq Daghajbe'.
+      'oH DachenmoHmeH /tripcode yItur.</i>
+
+   no_user_found: "<i>pong ghajbogh meb SamlaHbe'pu'</i>"
+
+   no_user_oid_found: "<i>OID ghajbogh meb SamlaHbe'pu'</i>"
+
+   # Available placeholders: ranks
+   no_rank_found: "<i>pong ghajbogh patlh SamlaHbe'pu'. patlhmey: {ranks}</i>"
+
+   # Available placeholders: rank
+   promoted: "<i>{rank} Danumta'! rIchwInmeylIj Dalo'laHbogh SoH'e' DaleghmeH /help yItur.</i>"
+
+   help_header: "<u><b>rIchwInmey</b></u>"
+
+   # Available placeholders: rank
+   help_rank_commands: "<u><b>{rank} rIchwInmey</b></u>"
+
+   help_reply_commands: "<u><b>QIn jangnISbogh rIchwInmey</b></u>"
+
+   # Available placeholders: toggle
+   toggle_karma: "<b>naD DaHevta'bogh vepmey</b>: {toggle}"
+
+   # Available placeholders: toggle
+   toggle_debug: "<b>lo' tI'meH Qagh</b>: {toggle}"
+
+   gave_upvote: "<i>QInvam DanaDta'!</i>"
+
+   got_upvote: "<i>Qapla'! naD DaHevta'! (naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur)</i>"
+
+   upvoted_own_message: "<i>QInlIj DanaDlaHbe'!</i>"
+
+   already_voted: "<i>QInvam DanaDbej'ta' qoj 'oH DanaDHabej'ta'.</i>"
+
+   gave_downvote: "<i>QInvam DanaDHa'ta'.</i>"
+
+   got_downvote: "<i>vay' DunaDHa'ta'! (naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur)</i>"
+
+   downvoted_own_message: "<i>QInlIj DanaDHa'laHbe'!</i>"
+
+   # Available placeholders: current_level, next_level, karma, limit, loading_bar, percentage
+   karma_info: |-
+      <b>pathllIj</b>: <i>{current_level}</i>
+      <b>pathl veb</b>: <i>{next_level}</i>
+
+      <b>naDmeylIj</b>: {karma}/{limit}
+      {loading_bar} ({percentage}%)
+
+   already_warned: "<i>QInvam ghuHmoHta' vay'.</i>"
+
+   private_sign: "<i>QIn DaqI'pa' \"Everybody\" chu' mablIj QIn mung pegh</i>"
+
+   # Available placeholders: username
+   username_reveal: "<i>QIn jangmeH DuneqjungmeH SoH Duthlobta' {username} </i>"
+
+   spamming: "<i>ngeHbe'pu' QInlIj. nom QInmey vIngeHQo'.</i>"
+
+   sign_spam: "<i>ngeHbe'pu' QInlIj. pIj vIqI'Qo'.</i>"
+
+   upvote_spam: "<i>DaH DanaDlaHbe'. pIj vInaDQo'.</i>"
+
+   downvote_spam: "<i>DaH DanaDHa'laHbe'. pIj vInaDHa'Qo'.</i>"
+   
+   invalid_tripcode_format: |-
+      <i>pongqoq Qur waS. Qur lugh:</i>
+      <code>pong#pegh ngoq</code>
+
+   # Available placeholders: name, tripcode
+   tripcode_set: |- 
+      <i>chenmoHta' pongqoqlIj. 'oH DaleghlaH:</i>
+      <b>{name}</b> <code>{tripcode}</code>:
+
+   # Available placeholders: tripcode
+   tripcode_info: "<b>pongqoqlIj</b>: <code>{tripcode}</code>"
+
+   tripcode_unset: "Dach"
+
+   # Available placeholders: oid, username, rank, rank_val, karma, karma_level warnings, smiley, warn_expiry, cooldown_until
+   user_info: |-
+      <b>ID</b>: {oid}, <b>pong</b>: {username}, <b>pathl</b>: {rank_val} ({rank})
+      <b>naDmeylIj</b>: {karma} {karma_level}
+      <b>ghuHmey</b>: {warnings} {smiley} {warn_expiry}
+      <b>bIwegh'a'</b>: {cooldown_until}
+
+   # Available placeholders: warn_expiry
+   info_warning: "({warn_expiry} ngugh wa' gruH teqta')"
+
+   # Available placeholders: oid, karma, cooldown_until
+   ranked_info: |-
+      <b>ID</b>: {oid}, <b>pong</b>: anonymous, <b>pathl</b>: n/a
+      <b>naDmeylIj</b>: {karma}
+      <b>bIwegh'a'</b>: {cooldown_until}
+
+   cooldown_true: "HIja', ngugh"
+
+   cooldown_false: "ghobe'"
+
+   # Available placeholders: total
+   user_count: "<b>{total}</b> <i>chuDmey</i>"
+
+   # Available placeholders: joined, left, blacklisted, total
+   user_count_full: "<b>{joined}</b> <i>mebpu',</i> <b>{left}</b> <i>mebpu' Dach,</i> <b>{blacklisted}</b> <i>jaghpu'</i> (<b>{total}</b> <i>chuDmey</i>)"
+
+   # Available placeholders: reason, duration
+   message_deleted: |-
+      "<i>pe'vIl QInvam teqta'. {duration} poH bIweghlI.
+      {reason}</i>"
+
+   # Available placeholders: reason
+   message_removed: |-
+      "<i>QInvam teqta'. bIweghbe' 'ach QInvam DangeHqa'Qo'.
+      {reason}</i>"
+
+   reason_prefix: "meq: " 
+
+   # Available placeholders: duration, reason
+   cooldown_given: |- 
+      "<i>{duration} poH bIweghta'
+      {reason}</i>"
+
+   # Available placeholders: time
+   on_cooldown: "<i>{time} ngugh bIweghbe'</i>"
+
+   unoriginal_message: "<i>SIrtaHbe' 'oHmo' ngeHpu'be' QInvam.</i>"
+
+   # Available placeholders: duration
+   r9k_cooldown: |-
+      <i>SIrtaHbe' 'oHmo' ngeHpu'be' QInvam.
+      {duration} poH bIweghta'.</i>
+
+   # Available placeholders: total
+   media_limit: "<i>DaH QInmey DangeHbe'laH. {total} repmey ngugh bInIDqa'laH.</i>"
+
+   # Available placeholders: reason
+   blacklisted: |-
+      <i>pe'vIl naDevvo' Duteqta'
+      {reason}
+      {contact}</i>
+
+   # Available placeholders: contact
+   blacklist_contact: "DaneqjunglaH: {contact}"
+
+   # Available placeholders: msgs_deleted
+   purge_complete: "<i>{msgs_deleted} QInmey Sampu' 'ej bIH teqta'</i>"
+
+   # Available placeholders: time
+   inactive: |- 
+      <i>SoH DachmeH naDevvo' Duteqta' ({time} jajmey Dach).
+      QInmey DaHevqa' /start yItur.</i>"
+
+   success: "✅" 
+
+   fail: "❌"
+
+# Special characters in HTML must be escaped
+command_descriptions:
+   start: ja'chuqmeH Daq muv (QInmey Hev)
+
+   stop: ja'chuqmeH Daq mej (QInmey Hevbe')
+
+   info:  mab De' Suq
+
+   users: naDev meb mI' legh
+
+   version: patIh nIqHomvam Suq
+
+   upvote: QIn naD
+
+   downvote: QIn naDHa'
+
+   toggle_karma: naD vepmey Qotlh qoj QotlhHa'
+
+   toggle_debug: lo' tI'meH Qagh Qotlh qoj QotlhHa' (QInmey DungeH)
+
+   reveal: mebvaD 'ang ponglIj
+
+   tripcode: pongqoqlIj chenmoH qoj legh
+
+   promote: meb num
+
+   demote: meb numHa'
+
+   sign: pong tlhej QIn 'e' qI'
+
+   tsign: pongqoq tlhej QIn 'e' qI'
+
+   ksign: naD patIh tlhej QIn 'e' qI'
+
+   ranksay: patIh tlhej QIn 'e' qI'
+
+   warn: QIn ghuHmoH 'ach 'oH teqbe'
+
+   delete: QIn teq 'ej ngeHwI' wegh
+
+   uncooldown: meb weghHa'
+
+   remove: QIn teq 'ach ngeHwI' weghbe'
+
+   purge: Hoch QInmey jaghvo' teq
+
+   spoiler: QIn So'
+
+   karma_info: naDmeylIj patIhlIj je legh
+
+   pin: QIn vev
+
+   unpin: QIn vevHa'
+
+   blacklist: ja'chuqmeH Daqvo' meb teq
+
+   whitelist: ja'chuqmeH Daq meb rIt
+
+   motd: qangtlhIn ja'chuqmeH Daqvam laD
+
+   help: rIchwInmeylIj legh
+
+   motd_set: qangtlhIn ja'chuqmeH Daqvam chenmoH
+
+   ranked_info: meb De' QInvam Suq
+
+# Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
+logs:
+   # Available placeholders: version
+   start: Private Parlor v{version} nIqHom chu'taH...
+
+   # Available placeholders: id, name
+   joined: "ja'chuqmeH Daqvam muvta' {id} meb (pong: {name})"
+
+   # Available placeholders: id, name
+   rejoined: "ja'chuqmeH Daqvam muvqa'ta' {id} meb (pong: {name})"
+
+   # Available placeholders: id, name
+   left: "ja'chuqmeH Daqvam mejta' {id} meb (pong: {name})."
+
+   # Available placeholders: id, name, rank, invoker
+   promoted: "{id} mebvaD (pong: {name}) patIh {rank} numta' {invoker}"
+
+   # Available placeholders: id, name, rank, invoker
+   demoted: "{id} mebvaD (pong: {name}) patIh {rank} numHa'ta' {invoker}"
+
+   # Available placeholders: id, name, oid, duration, reason
+   warned: "[{oid}] meb ghuHmoHta' {id} meb (pong: {name}) 'ej {duration} poH weghlI ghaH. {reason}"
+
+   # Available placeholders: id, name, msid, oid, duration, reason
+   message_deleted: "pe'vIl [{msid}] QIn teqta' {id} meb (pong: {name}) 'ej {duration} poH weghlI ghaH. {reason}"
+
+   # Available placeholders: id, name, msid, oid, reason
+   message_removed:  "[{msid}] QIn teqta' {id} meb (pong: {name}) 'ej {duration} poH weghlI ghaH. {reason}"
+
+   # Available placeholders: id, name, oid, cooldown_until
+   removed_cooldown: "[{oid}] meb weghHa' {id} meb (pong: {name}). {cooldown_until} Dor 'oH"
+
+   # Available placeholders: id, name, invoker, reason
+   blacklisted: "pe'vIl {id} meb (pong: {name}) teqta' {invoker}. {reason}"
+
+   # Available placeholders: id, invoker
+   whitelisted: "{id} meb rItta' {invoker}"
+
+   reason_prefix: "meq: " 
+
+   # Available placeholders: id, name, msid
+   spoiled: "[{msid}] QInvam So'ta' {id} meb (pong: {name})"
+
+   # Available placeholders: id, name, msid
+   unspoiled: "[{msid}] QInvam So'Ha'ta' {id} meb (pong: {name})"
+
+   # Available placeholders: sender_id, sender, receiver_id, receiver, msid
+   revealed: "[{msid}] QInvamDaq {receiver_id} mebvaD (pong: receiver) pong So'Ha'ta' {sender_id} meb (pong: {sender})"
+
+   # Available placeholders: id, name, msid
+   pinned: "[{msid}] QInvam vev {id} meb (pong: {name})"
+
+   # Available placeholders: id, name
+   unpinned: "[{msid}] QInvam ghoQ vevHa' {id} meb (pong: {name})"
+
+   # Available placeholders: id, name, text
+   motd_set: "qangtlhIn chenmoHqa'ta' {id} meb (pong: {name}). qangtlhIn chu': {text}"
+
+   # Available placeholders: id, name, rank, text
+   ranked_message: "patIh tlhej QIn ngeHta' {id} meb (pong: {name}). QIn: {text}"
+
+   # Available placeholders: id
+   force_leave: "{id} meb ngabpu'mo' pe'vIl ghaH teqta'"
+---

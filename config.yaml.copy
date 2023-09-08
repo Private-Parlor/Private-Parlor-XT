@@ -1,0 +1,630 @@
+# --------------------------------
+#  Mandatory Settings
+# --------------------------------
+
+##
+## API token obtained from @BotFather
+##
+## Accepted values: a token string
+## Default: <none>
+##
+token:
+
+##
+## Path to a SQLite datbase
+##
+## If using the management utility, the filename of the database
+## will be used in user blacklist reason when syncing blacklists; it should
+## end in either ".db" or ".sqlite"
+##
+## Will create the database at the path if it does not exist already
+##
+## Accepted values: a file path
+## Default: <none>
+##
+database: 
+
+# --------------------------------
+#  Localization
+# --------------------------------
+
+##
+## Language tag for Private Parlor's language/locale
+##
+## System messages and some log messages will be
+## displayed in the chosen language 
+##
+## Accepted values:
+##    en-US   (English, US)
+##    en-GB   (English, British)
+##    de      (German)
+##    tlh     (Klingon)
+##
+## Default: en-US
+##
+locale: en-US
+
+# --------------------------------
+#  Logging
+# --------------------------------
+
+##
+## Configue which severity of log message to output to the log
+##
+## Accepted values: TRACE, DEBUG, INFO, NOTICE, WARN, ERROR, FATAL, NONE
+## Default: INFO
+##
+#log_level: INFO
+
+##
+## Path to an optional log file
+##
+## If not set, STDOUT will be used for log output
+##
+## Accepted values: a file path
+## Default: <none>
+##
+#log_file: 
+
+##
+## ID of a channel to output bot logs to 
+##
+## Bot must be an admin of the channel with the permission to post messages for this to work
+##
+## Setting a value here will not prevent the program's logs from being written to STDOUT or a file
+##
+## ID should be a negative 13 digit value
+##
+## Accepted values: a negative 13 digit value (-100XXXXXXXXXX)
+## Default: <none>
+## 
+#log_channel: 
+
+# --------------------------------
+#  Message History
+# --------------------------------
+
+##
+## Modify lifespan of a message, in hours
+## 
+## Setting this to 0 will disable message expiration
+## NOTE: This will increase RAM usage if database history is not enabled
+##
+## Accepted values: an integer between 0 and 4294967295
+## Default: 24
+##
+#message_lifespan: 24
+
+##
+## Persist message history
+##
+## Enabling this will use the database instead of RAM to cache messages, so that
+## messages will be available if the bot restarts
+##
+## Accepted values: true, false
+## Default: false
+##
+#database_history: false
+
+# --------------------------------
+#  Miscellaneous
+# --------------------------------
+
+##
+## Contact shown to blacklisted users
+##
+## Accepted values: A link or a username
+## Default: <none>
+##
+#blacklist_contact:
+
+##
+## Allow users to send photos, videos, or GIFs with a spoiler overlay
+##
+## Accepted values: true, false
+## Default: false
+##
+#media_spoilers: false
+
+##
+## Relay forwarded messages as if they were a regular message
+##
+## This will prepend the message text with a "Forwarded From" header 
+## and a link to the original message.
+##
+## Must have "relay_forwarded_message" enabled for this to work
+##
+## Accepted values: true, false
+## Default: false
+##
+#regular_forwards: false
+
+##
+## Limit (in days) for which a user can be inactive and still receive messages
+##
+## If user is inactive, he will be kicked with an option to rejoin
+##
+## Accepted values: an integer between 0 and 2147483647
+## Default: 0
+##
+#inactivity_limit: 0
+
+##
+## Map of chats and links that a user can refer to in their message
+##
+## e.g., >>>/foo/ would be turned into an inline link to http://t.me/foochatbot
+##
+## The linked network can also be loaded from another YAML file
+## 
+## Accepted values: A string -> string mapping, or file path
+## Default: <none>
+##
+#linked_network:
+#  foo: foochatbot
+#  bar: barchatbot
+
+##
+## Duration (hours) in which new users cannot send media
+##
+## Accepted values: an integer between 0 and 2147483647
+## Default: 0
+##
+#media_limit_period: 0
+
+##
+## Open registration, so that new users can join
+## 
+## Accepted values: true, false
+## Default: true
+##
+#registration_open: true
+
+##
+## Enable pseudonymous mode 
+## 
+## This forces the use of tripcodes for all messages
+## 
+## Users will be required to set up a tripcode prior to chatting
+##
+## Accepted values: true, false
+## Default: false
+##
+#pseudonymous: false
+
+##
+## MessageEntity toggles
+##
+## Entity types specified here will be stripped from every user message.
+##
+## NOTE: Some Telegram clients will render formatting for entity types 
+## (URLs, phone numbers, emails, etc) anyways, despite being stripped.
+##
+## It is recommended to strip the default entity types
+##
+## Accepted values: an any-length array of strings, containing any of: 
+##    bold 
+##    italic
+##    underline 
+##    strikethrough 
+##    spoiler 
+##    code 
+##    text_link 
+##    custom_emoji
+##
+## Default: ["bold", "italic", "text_link"]
+##
+#strip_format: ["bold", "italic", "text_link"]
+
+##
+## Emoticons that are appended to /info messages
+##
+## 
+## Smileys start out happy then get sadder based on the number of the user's warnings
+##
+## Accepted values: a 4 element array of strings
+## Default: [":)", ":|", ":/", ":("]
+##
+#smileys: [":)", ":|", ":/", ":("]
+
+##
+## Secure Tripcodes
+##
+## Tripcodes can be bruteforced to impersonate another user; change the value 
+## of the salt to generate secure tripcodes
+## 
+## Accepted values: a salt string
+## Default: ""
+## 
+#tripcode_salt: CHANGEME
+
+##
+## Karma Levels
+##
+## Users can view their karma level and sign as their karma level if enabled
+##
+## Levels can be renamed, removed, or added; but values must be in ascending order
+##
+## Accepted values: An integer -> string mapping
+## Default: <none>
+##
+#karma_levels:
+#  -10: "Junk"
+#  0: "Normal"
+#  10: "Common"
+#  20: "Uncommon"
+#  30: "Rare"
+#  40: "Legendary"
+#  50: "Unique"
+
+# --------------------------------
+#  ROBOT9000
+# --------------------------------
+
+##
+## An algorithm by Randall Munroe designed to reduce noise of large chats and
+## encourage original content.
+##
+## ROBOT9000 will prevent users from repeating information that has
+## already been posted before. When a user's post is considered unoriginal,
+## the post will not be sent and the user will be cooldowned.
+##
+
+##
+## Toggle ROBOT9000 for text and captions
+##
+## This will prevent users from repeating text or captions sent previously 
+##
+## Enabling this will add a 'text' table to the database
+##
+## Accepted values: true, false
+## Default: false
+##
+#toggle_r9k_text: false
+
+##
+## Toggle ROBOT9000 for media
+##
+## This will prevent users from sending animations, videos, photos, etc. that 
+## were sent previously.
+##
+## Enabling this will add a 'file_ids' table to the database
+##
+## Accepted values: true, false
+## Default: false
+##
+#toggle_r9k_media: false
+
+##
+## Toggle ROBOT9000 for forwards
+##
+## This will check forwarded messages and ensure that their content has
+## not been sent previously.
+##
+## This will also check regular forwards for originality.
+##
+## Accepted values: true, false
+## Default: false
+##
+#toggle_r9k_forwards: false
+
+##
+## Cooldown length (in seconds)
+## 
+## Users who send an unoriginal message will be cooldowned
+## for this length of time.
+##
+## Accepted values: an integer
+## Default: 0
+##
+#r9k_cooldown: 0
+
+##
+## Warn for unoriginal messages
+##
+## Users who send an unoriginal message will be given a warning,
+## and a cooldown based on the user's current amount of warnings
+## unless r9k_cooldown is enabled.
+##
+## Accepted values: true, false
+## Default: false
+##
+##
+#r9k_warn: false
+
+##
+## Valid codepoints
+##
+## Takes a list of 2-element arrays, where the first element is the start of a 
+## Unicode codeblock range, and the second element is the end of that range.
+##
+## Text sent by a user will be checked to ensure that no character in the text
+## is absent from the given ranges.
+##
+## All ranges are expected to be inclusive.
+##
+## Ranges can contain the same value for both elements to permit a single character.
+## 
+## Accepted values: list of 2 element arrays containing hexadecimal
+## Default: [0x0000, 0x007F], [0x1F600, 0x1F64F] (ASCII and Basic Emoji)
+##
+#valid_codepoints: 
+#  - [0x0000, 0x007F]
+#  - [0x1F600, 0x1F64F] 
+
+# --------------------------------
+#  Ranks
+# --------------------------------
+
+##
+## A mapping of ranks recognized by the bot
+##
+## To add a rank, add a new entry and define the value, name, and permissisons
+##
+## Ranks with values below 0 are considered restricted,
+## where as ranks greater than 0 are considered privileged and
+## are not subject to the media limit period
+##
+## Accepted values: a integer -> Rank mapping
+## A rank requires a name, command permissions, and message permissions
+##
+## Accepted name values: any string
+##
+## Accepted command permission values: an any-length array, containing any of:
+##    Users
+##    Upvote
+##    Downvote
+##    Promote
+##    PromoteLower
+##    PromoteSame
+##    Demote
+##    Sign
+##    TSign
+##    Reveal
+##    Spoiler
+##    Pin
+##    Unpin
+##    Ranksay
+##    RanksayLower
+##    Warn
+##    Delete
+##    Uncooldown
+##    Remove
+##    Purge
+##    Blacklist
+##    Whitelist
+##    MotdSet
+##    RankedInfo
+##
+## Accepted message permission values: an any-length array, containing any of:
+##    Text
+##    Animation
+##    Audio
+##    Document
+##    Video
+##    VideoNote
+##    Voice
+##    Photo
+##    MediaGroup
+##    Poll
+##    Forward
+##    Sticker
+##    Venue
+##    Location
+##    Contact
+##
+## Default: 
+##    -10:
+##      name: "Banned"
+##      command_permissions: []
+##      message_permissions: []
+##
+ranks:
+  -10:
+    name: "Banned"
+    command_permissions: []
+    message_permissions: []
+  0:
+    name: "User"
+    command_permissions: [Upvote, Downvote, Sign, TSign]
+    message_permissions: [Text, Animation, Audio, Document, Video, VideoNote, 
+      Voice, Photo, MediaGroup, Poll, Forward, Sticker, Venue, Location, Contact]
+  10:
+    name: "Mod"
+    command_permissions: [Upvote, Downvote, Sign, TSign, RankedInfo, Users, 
+      Warn, Delete, Ranksay]
+    message_permissions: [Text, Animation, Audio, Document, Video, VideoNote, 
+      Voice, Photo, MediaGroup, Poll, Forward, Sticker, Venue, Location, Contact]
+  100:
+    name: "Admin"
+    command_permissions: [Upvote, Downvote, Sign, TSign, RankedInfo, Users, 
+      Warn, Delete, Uncooldown, Remove, Purge, Blacklist, Ranksay]
+    message_permissions: [Text, Animation, Audio, Document, Video, VideoNote, 
+      Voice, Photo, MediaGroup, Poll, Forward, Sticker, Venue, Location, Contact]
+  1000:
+    name: "Host"
+    command_permissions: [Upvote, Downvote, Sign, TSign, RankedInfo, Users, 
+      PromoteLower, Demote, Warn, Delete, Uncooldown, Remove, Purge, 
+      Blacklist, MotdSet, RanksayLower]
+    message_permissions: [Text, Animation, Audio, Document, Video, VideoNote, 
+      Voice, Photo, MediaGroup, Poll, Forward, Sticker, Venue, Location, Contact]
+
+##
+## Default rank used when adding a new user, 
+## demoting users, or reverting invalid ranks
+## 
+## Default rank must exist in the ranks defined above
+## 
+## Accepted values: any integer found in the above ranks mapping
+## Default: 0 (User rank)
+##
+default_rank: 0
+
+# --------------------------------
+#  Command Toggles
+# --------------------------------
+
+##
+## NOTE: 
+##    Disabling commands may improve bot response time
+##
+##    All of these settings take a 2 element array of true or false values
+##    First value toggles the command (true to enable, false to disable)
+##    Second value, if true, will register the command with BotFather
+##
+##    Disabling a command prevents it from being used by any user, even if
+##    the user has permission to use the command
+##
+
+enable_start: [true, true]
+enable_stop: [true, true]
+enable_info: [true, true]
+enable_users: [true, true]
+enable_version: [true, true]
+enable_toggle_karma: [true, true]
+enable_toggle_debug: [true, true]
+enable_reveal: [false, false]
+enable_tripcode: [true, true]
+enable_sign: [true, true]
+enable_tripsign: [true, true]
+enable_karma_sign: [false, false]
+enable_ranksay: [true, true]
+enable_motd: [true, true]
+enable_help: [true, true]
+enable_upvotes: [true, false]
+enable_downvotes: [true, false]
+enable_promote: [true, false]
+enable_demote: [true, false]
+enable_warn: [true, false]
+enable_delete: [true, false]
+enable_uncooldown: [true, false]
+enable_remove: [true, false]
+enable_purge: [true, false]
+enable_blacklist: [true, false]
+enable_whitelist: [false, false]
+enable_spoiler: [false, false]
+enable_karma_info: [false, false]
+enable_pin: [false, false]
+enable_unpin: [false, false]
+
+# --------------------------------
+#  Relay Toggles
+# --------------------------------
+
+##
+## NOTE: 
+##    Disabling message type relaying may improve bot response time
+##
+##    All of these settings take either a true or false value
+##    If true, messages of that type will be relayed
+##
+##    Disabling a message type prevents it from being used by any user, even if
+##    the user has permission to send messages of that type
+##
+
+relay_text: true
+relay_animation: true
+relay_audio: true
+relay_document: true
+relay_video: true
+relay_video_note: true
+relay_voice: true
+relay_photo: true
+relay_media_group: true
+relay_poll: true
+relay_forwarded_message: true
+relay_venue: false
+relay_location: false
+relay_contact: false
+
+# --------------------------------
+#  Cooldown Constatns
+# --------------------------------
+
+##
+## Length of time in hours until a warning expires
+##
+## Accepted values: an integer
+## Default: 168
+##
+#warn_lifespan: 168
+
+##
+## How much karma to remove when giving a user a warning
+##
+## Accepted values: an integer
+## Default: 10
+##
+#warn_deduction: 10
+
+# --------------------------------
+#  Spam Prevention
+# --------------------------------
+
+## 
+## Interval in seconds for which a user is cooldowned
+## after hitting the spam limit.
+##
+## Set to 0 to disable spam checking 
+## NOTE: Disabling will also disable upvote/downvote and sign spam checks
+##
+## Accepted values: an integer
+## Default: 10
+##
+#spam_interval_seconds: 10
+
+##
+## Limit usage of /sign and /tsign for once every interval (seconds)
+##
+## Set to 0 to disable
+##
+## Accepted values: an integer
+## Default: 600
+##
+#sign_limit_interval: 600
+
+##
+## Limit usage of upvotes  once every interval (seconds)
+##
+## Set to 0 to disable
+##
+## Accepted values: an integer
+## Default: 0
+##
+#upvote_limit_interval: 0
+
+##
+## Limit usage of downvotes once every interval (seconds)
+##
+## Set to 0 to disable
+##
+## Accepted values: an integer
+## Default: 0
+##
+#downvote_limit_interval: 0
+
+##
+## Spam scores
+##
+## TODO: Add description
+## 
+## Accepted values: any 32-bit integer
+##
+spam_handler:
+  spam_limit: 10000
+  decay_amount: 1000
+  score_character: 3
+  score_linebreak: 100
+  score_animation: 3000
+  score_audio: 3000
+  score_document: 3000
+  score_video: 3000
+  score_video_note: 5000
+  score_voice: 5000
+  score_photo: 3000
+  score_media_group: 6000
+  score_poll: 6000
+  score_forwarded_message: 3000
+  score_sticker: 3000
+  score_venue: 5000
+  score_location: 5000
+  score_contact: 5000
