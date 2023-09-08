@@ -2,7 +2,7 @@ require "../../handlers.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-  @[On(update: Tourmaline::UpdateAction::Text, config: "relay_text")]
+  @[On(update: :Text, config: "relay_text")]
   class TextHandler < UpdateHandler
     def initialize(config : Config)
     end

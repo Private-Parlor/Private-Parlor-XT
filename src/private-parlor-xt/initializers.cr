@@ -57,15 +57,19 @@ module PrivateParlorXT
     {{command_responds_to = command.annotation(RespondsTo)}}
 
     if config.{{command_responds_to[:config].id}}[0]
-      command = {{command}}.new(config)
+
+      {% if command_responds_to[:command].is_a?(ArrayLiteral) %}
+        {{handler = (command_responds_to[:command][0] + "_command").id}} = {{command}}.new(config)
+      {% else %}
+        {{handler = (command_responds_to[:command] + "_command").id}}  = {{command}}.new(config)
+      {% end %}
 
       arr << Tourmaline::CommandHandler.new({{command_responds_to[:command]}}) do |ctx|
-        command.do(ctx, relay, access, database, history, locale)
+        {{handler}}.do(ctx, relay, access, database, history, locale)
       end
     end
 
     # TODO: Register command with BotFather
-
   {% end %}
 
     arr
@@ -87,10 +91,11 @@ module PrivateParlorXT
     {{update_on = update.annotation(On)}}
 
     if config.{{update_on[:config].id}}
-      handler = {{update}}.new(config)
+
+      {{handler = (update_on[:update].id + "_update").id.downcase}}  = {{update}}.new(config)
 
       client.on({{update_on[:update]}}) do |ctx|
-        handler.do(ctx, relay, access, database, history, locale)
+        {{handler}}.do(ctx, relay, access, database, history, locale)
       end
     end
 
