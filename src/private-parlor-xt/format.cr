@@ -23,5 +23,11 @@ module PrivateParlorXT
         locale.replies.blacklist_contact.gsub("{contact}", "#{escape_html(contact)}")
       end
     end
+
+    def format_time(time : Time?, format : String) : String?
+      if time
+        time.to_s(format)
+      end
+    end
   end
 end

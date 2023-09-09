@@ -80,6 +80,21 @@ module PrivateParlorXT
       @left = Time.utc
     end
 
+    # Removes a cooldown from a user if it has expired.
+    #
+    # Returns true if the cooldown can be expired, false otherwise
+    def remove_cooldown(override : Bool = false) : Bool
+      if cooldown = @cooldown_until
+        if cooldown < Time.utc || override
+          @cooldown_until = nil
+        else
+          return false
+        end
+      end
+
+      true
+    end
+
     def remove_warning(amount : Int32, warn_lifespan : Time::Span) : Nil
       @warnings -= amount
 
@@ -102,6 +117,31 @@ module PrivateParlorXT
     # Returns `false` otherwise.
     def left? : Bool
       @left != nil
+    end
+
+    # Returns `true` if user is joined, not in cooldown, and not blacklisted; user can chat
+    #
+    # Returns false otherwise.
+    def can_chat? : Bool
+      self.remove_cooldown && !self.blacklisted? && !self.left?
+    end
+
+    # Returns `true` if user is joined, not in cooldown, not blacklisted, and not limited; user can chat
+    #
+    # Returns false otherwise.
+    def can_chat?(limit : Time::Span) : Bool
+      if self.rank > 0
+        self.can_chat?
+      else
+        self.remove_cooldown && !self.blacklisted? && !self.left? && (Time.utc - self.joined > limit)
+      end
+    end
+
+    # Returns `true` if user is joined and not blacklisted; user can use commands
+    #
+    # Returns false otherwise.
+    def can_use_command? : Bool
+      !self.blacklisted? && !self.left?
     end
   end
 end

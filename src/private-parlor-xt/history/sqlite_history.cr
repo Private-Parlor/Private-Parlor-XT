@@ -33,7 +33,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def new_message(sender_id : UserID, origin : MessageID) : Nil
+    def new_message(sender_id : UserID, origin : MessageID) : MessageID
       write do
         @connection.exec(
           "INSERT INTO message_groups VALUES (?, ?, ?, ?)",
@@ -116,6 +116,16 @@ module PrivateParlorXT
         user,
         as: MessageID
       ).to_set
+    end
+
+    def delete_message_group(message : MessageID) : MessageID?
+      origin_msid = get_origin_message(message)
+
+      write do
+        @connection.exec("DELETE FROM message_groups WHERE messageGroupID = ?", origin_msid)
+      end
+
+      origin_msid
     end
 
     # :inherit:

@@ -22,7 +22,7 @@ module PrivateParlorXT
     end
 
     # Create a new message group and add it to the history
-    abstract def new_message(sender_id : UserID, origin : MessageID) : Nil
+    abstract def new_message(sender_id : UserID, origin : MessageID) : MessageID
 
     # Add a receiver message to the history
     abstract def add_to_history(origin : MessageID, receiver : MessageID, receiver_id : UserID) : Nil
@@ -41,6 +41,9 @@ module PrivateParlorXT
 
     # Get all message IDs sent by a given user
     abstract def get_messages_from_user(user : UserID) : Set(MessageID)
+
+    # Delete a message group from the history
+    abstract def delete_message_group(message : MessageID) : MessageID?
 
     # Deletes old messages from the history
     #

@@ -9,6 +9,12 @@ module PrivateParlorXT
   locale = Locale.parse_locale(Path["./locales"], config.locale)
   database = SQLiteDatabase.instance(DB.open("sqlite3://#{config.database}"))
 
+  if config.spam_interval != 0
+    spam = config.spam_handler
+  else
+    spam = nil
+  end
+
   if config.database_history
     history = SQLiteHistory.instance(config.message_lifespan.hours, DB.open("sqlite3://#{config.database}"))
   else
@@ -22,7 +28,7 @@ module PrivateParlorXT
 
   relay = Relay.instance(config.log_channel, client)
 
-  initialize_handlers(client, config, relay, access, database, history, locale)
+  initialize_handlers(client, config, relay, access, database, history, locale, spam)
 
   # 30 messages every second; going above may result in rate limits
   sending_routine = Tasker.every(500.milliseconds) do

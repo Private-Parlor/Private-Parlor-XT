@@ -19,14 +19,34 @@ module PrivateParlorXT
       @log_channel = channel_id
     end
 
-    # TODO: Implement relay_* functions
-
     # Relay a message to a single user. Used for system messages.
     def send_to_user(reply_message : MessageID?, user : Int64, text : String)
       @queue.add_to_queue_priority(
         user,
         reply_message,
         ->(receiver : UserID, reply : MessageID?) { @client.send_message(receiver, text, disable_web_page_preview: false, reply_to_message_id: reply) }
+      )
+    end
+
+    def send_text(reply : MessageID?, user : User, origin : MessageID, text : String, locale : Locale, history : History, database : Database)
+      if reply
+        reply_msids = history.get_all_receivers(reply)
+
+        if reply_msids.empty?
+          send_to_user(origin, user.id, locale.replies.not_in_cache)
+          history.delete_message_group(origin)
+          return
+        end
+      end
+
+      @queue.add_to_queue(
+        origin,
+        user.id,
+        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        reply_msids,
+        ->(receiver : Int64, reply : Int64 | Nil) { 
+          @client.send_message(receiver, text, disable_web_page_preview: false, reply_to_message_id: reply)
+        }
       )
     end
 

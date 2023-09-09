@@ -570,7 +570,7 @@ relay_contact: false
 ## Accepted values: an integer
 ## Default: 10
 ##
-#spam_interval_seconds: 10
+#spam_interval: 10
 
 ##
 ## Limit usage of /sign and /tsign for once every interval (seconds)

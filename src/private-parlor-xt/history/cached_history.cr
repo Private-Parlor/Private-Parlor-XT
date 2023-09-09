@@ -30,9 +30,10 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def new_message(sender_id : UserID, origin : MessageID) : Nil
+    def new_message(sender_id : UserID, origin : MessageID) : MessageID
       message = MessageGroup.new(sender_id, origin)
       @message_map.merge!({origin => message})
+      origin
     end
 
     # :inherit:
@@ -84,7 +85,7 @@ module PrivateParlorXT
     end
 
     # Deletes a `MessageGroup` from the `message_map`
-    private def delete_message_group(message : MessageID) : MessageID
+    def delete_message_group(message : MessageID) : MessageID?
       message = @message_map[message]
 
       message.receivers.each_value do |cached_msid|

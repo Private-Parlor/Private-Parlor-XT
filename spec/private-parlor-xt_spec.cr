@@ -31,7 +31,7 @@ module PrivateParlorXT
 
     it "generates update handlers" do
       client = PrivateParlorXT::MockClient.new
-      PrivateParlorXT.generate_update_handlers(client, config, relay, access, database, history, locale)
+      PrivateParlorXT.generate_update_handlers(client, config, relay, access, database, history, locale, nil)
 
       registered_actions = client.dispatcher.event_handlers.keys
 

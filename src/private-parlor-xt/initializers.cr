@@ -8,7 +8,8 @@ module PrivateParlorXT
     access : AuthorizedRanks,
     database : Database,
     history : History,
-    locale : Locale
+    locale : Locale,
+    spam : SpamHandler?
   ) : Nil
     events = [] of Tourmaline::EventHandler
 
@@ -35,6 +36,7 @@ module PrivateParlorXT
       database,
       history,
       locale,
+      spam,
     )
   end
 
@@ -46,7 +48,7 @@ module PrivateParlorXT
     access : AuthorizedRanks,
     database : Database,
     history : History,
-    locale : Locale
+    locale : Locale,
   ) : Array(Tourmaline::CommandHandler)
     arr = [] of Tourmaline::CommandHandler
 
@@ -82,7 +84,8 @@ module PrivateParlorXT
     access : AuthorizedRanks,
     database : Database,
     history : History,
-    locale : Locale
+    locale : Locale,
+    spam : SpamHandler?
   ) : Nil
     {% for update in UpdateHandler.all_subclasses.select { |sub_class|
                        (on = sub_class.annotation(On))
@@ -95,7 +98,7 @@ module PrivateParlorXT
       {{handler = (update_on[:update].id + "_update").id.downcase}}  = {{update}}.new(config)
 
       client.on({{update_on[:update]}}) do |ctx|
-        {{handler}}.do(ctx, relay, access, database, history, locale)
+        {{handler}}.do(ctx, relay, access, database, history, locale, spam)
       end
     end
 

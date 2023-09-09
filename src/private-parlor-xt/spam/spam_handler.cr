@@ -137,7 +137,7 @@ module PrivateParlorXT
     end
 
     def spammy_text?(user : UserID, text : String) : Bool
-      spammy?(user, (text.size * score_text_character) + (text.lines.size * score_text_linebreak))
+      spammy?(user, (text.size * score_character) + (text.lines.size * score_line))
     end
 
     def expire
