@@ -44,7 +44,7 @@ module PrivateParlorXT
         user.id,
         user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
         reply_msids,
-        ->(receiver : Int64, reply : Int64 | Nil) { 
+        ->(receiver : Int64, reply : Int64 | Nil) {
           @client.send_message(receiver, text, disable_web_page_preview: false, reply_to_message_id: reply)
         }
       )

@@ -88,7 +88,7 @@ module PrivateParlorXT
         })
       elsif Time.utc - user.joined < @media_limit_period
         response = Format.substitute_message(locale.replies.media_limit, locale, {
-          "total" => (@media_limit_period - (Time.utc - user.joined)).hours.to_s
+          "total" => (@media_limit_period - (Time.utc - user.joined)).hours.to_s,
         })
       else
         response = locale.replies.not_in_chat

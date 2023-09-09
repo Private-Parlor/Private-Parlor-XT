@@ -15,7 +15,7 @@ module PrivateParlorXT
         response = Format.substitute_message(locale.replies.media_disabled, locale, {"type" => "text"})
         return relay.send_to_user(message.message_id.to_i64, user.id, response)
       end
-      
+
       return if message.forward_date
       return unless text = message.text
 

@@ -48,7 +48,7 @@ module PrivateParlorXT
     access : AuthorizedRanks,
     database : Database,
     history : History,
-    locale : Locale,
+    locale : Locale
   ) : Array(Tourmaline::CommandHandler)
     arr = [] of Tourmaline::CommandHandler
 
