@@ -67,7 +67,7 @@ module PrivateParlorXT
     # Check if user's spam score will exceed the limit
     #
     # Returns true if score is greater than spam limit, false otherwise.
-    def spammy?(user : UserID, increment : Int32) : Bool
+    private def spammy?(user : UserID, increment : Int32) : Bool
       score = 0 unless score = @scores[user]?
 
       if score > spam_limit || score + increment > spam_limit
@@ -138,6 +138,10 @@ module PrivateParlorXT
 
     def spammy_text?(user : UserID, text : String) : Bool
       spammy?(user, (text.size * score_character) + (text.lines.size * score_line))
+    end
+
+    def spammy_sticker?(user : UserID) : Bool
+      spammy?(user, score_sticker)
     end
 
     def spammy_venue?(user : UserID) : Bool

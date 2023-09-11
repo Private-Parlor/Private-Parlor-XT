@@ -532,6 +532,7 @@ relay_photo: true
 relay_media_group: true
 relay_poll: true
 relay_forwarded_message: true
+relay_sticker: true
 relay_venue: false
 relay_location: false
 relay_contact: false

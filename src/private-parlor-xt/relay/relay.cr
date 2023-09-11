@@ -57,6 +57,32 @@ module PrivateParlorXT
       )
     end
 
+    def send_sticker(reply : MessageID?, user : User, origin : MessageID, sticker_file : String, locale : Locale, history : History, database : Database)
+      if reply
+        reply_msids = history.get_all_receivers(reply)
+
+        if reply_msids.empty?
+          send_to_user(origin, user.id, locale.replies.not_in_cache)
+          history.delete_message_group(origin)
+          return
+        end
+      end
+
+      @queue.add_to_queue(
+        origin,
+        user.id,
+        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        reply_msids,
+        ->(receiver : Int64, reply : Int64 | Nil) {
+          @client.send_sticker(
+            receiver,
+            sticker_file,
+            reply_to_message_id: reply,
+          )
+        }
+      )
+    end
+
     def send_venue(reply : MessageID?, user : User, origin : MessageID, venue : Tourmaline::Venue, locale : Locale, history : History, database : Database)
       if reply
         reply_msids = history.get_all_receivers(reply)
