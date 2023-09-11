@@ -148,6 +148,10 @@ module PrivateParlorXT
       spammy?(user, score_location)
     end
 
+    def spammy_contact?(user : UserID) : Bool
+      spammy?(user, score_contact)
+    end
+
     def expire
       @scores.each do |user, score|
         if (score - @decay_amount) <= 0

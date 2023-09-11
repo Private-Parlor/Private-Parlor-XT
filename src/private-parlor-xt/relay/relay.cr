@@ -117,6 +117,35 @@ module PrivateParlorXT
       )
     end
 
+    def send_contact(reply : MessageID?, user : User, origin : MessageID, contact : Tourmaline::Contact, locale : Locale, history : History, database : Database)
+      if reply
+        reply_msids = history.get_all_receivers(reply)
+
+        if reply_msids.empty?
+          send_to_user(origin, user.id, locale.replies.not_in_cache)
+          history.delete_message_group(origin)
+          return
+        end
+      end
+
+      @queue.add_to_queue(
+        origin,
+        user.id,
+        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        reply_msids,
+        ->(receiver : Int64, reply : Int64 | Nil) {
+          @client.send_contact(
+            receiver,
+            phone_number:                contact.phone_number,
+            first_name:                  contact.first_name,
+            last_name:                   contact.last_name,
+            vcard:                       contact.vcard,
+            reply_to_message_id: reply,
+          )
+        }
+      )
+    end
+
     def log_output(text : String) : Nil
       Log.info { text }
       unless @log_channel.empty?
