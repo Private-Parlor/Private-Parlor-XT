@@ -4,7 +4,12 @@ require "tourmaline"
 module PrivateParlorXT
   @[On(update: :Text, config: "relay_text")]
   class TextHandler < UpdateHandler
+    @entity_types : Array(String)
+    @linked_network : Hash(String, String) = {} of String => String
+
     def initialize(config : Config)
+      @entity_types = config.entities
+      @linked_network = config.linked_network
     end
 
     def do(update : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale, spam : SpamHandler?)
@@ -25,7 +30,8 @@ module PrivateParlorXT
 
       # TODO: Add R9K check hook
 
-      text = check_text(text, user, message.message_id.to_i64, message.entities)
+      text, entities = check_text(text, user, message, relay, locale)
+      return if text.empty?
 
       # TODO: Add pseudonymous hook
 
@@ -45,15 +51,24 @@ module PrivateParlorXT
         user,
         history.new_message(user.id, message.message_id.to_i64),
         text,
+        entities,
         locale,
         history,
         database
       )
     end
 
-    private def check_text(text : String, user : User, msid : MessageID, entities : Array(Tourmaline::MessageEntity)) : String
-      # TODO: Implement text checks
-      text
+    private def check_text(text : String, user : User, message : Tourmaline::Message, relay : Relay, locale : Locale) : Tuple(String, Array(Tourmaline::MessageEntity))
+      unless Format.allow_text?(text)
+        relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.rejected_message)
+        return "", [] of Tourmaline::MessageEntity
+      end
+
+      text, entities = Format.strip_format(text, message.entities, @entity_types, @linked_network)
+
+      # TODO: Handle ranksay/sign/tsign/karmasign
+
+      return text, entities
     end
   end
 end

@@ -28,7 +28,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_text(reply : MessageID?, user : User, origin : MessageID, text : String, locale : Locale, history : History, database : Database)
+    def send_text(reply : MessageID?, user : User, origin : MessageID, text : String, entities : Array(Tourmaline::MessageEntity), locale : Locale, history : History, database : Database)
       if reply
         reply_msids = history.get_all_receivers(reply)
 
@@ -45,7 +45,13 @@ module PrivateParlorXT
         user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
         reply_msids,
         ->(receiver : Int64, reply : Int64 | Nil) {
-          @client.send_message(receiver, text, disable_web_page_preview: false, reply_to_message_id: reply)
+          @client.send_message(
+            receiver,
+            text,
+            parse_mode: nil,
+            entities: entities,
+            disable_web_page_preview: false,
+            reply_to_message_id: reply)
         }
       )
     end
