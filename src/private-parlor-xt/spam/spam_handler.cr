@@ -140,6 +140,10 @@ module PrivateParlorXT
       spammy?(user, (text.size * score_character) + (text.lines.size * score_line))
     end
 
+    def spammy_venue?(user : UserID) : Bool
+      spammy?(user, score_venue)
+    end
+
     def expire
       @scores.each do |user, score|
         if (score - @decay_amount) <= 0

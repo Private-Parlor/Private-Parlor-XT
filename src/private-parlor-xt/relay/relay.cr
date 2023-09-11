@@ -51,7 +51,41 @@ module PrivateParlorXT
             parse_mode: nil,
             entities: entities,
             disable_web_page_preview: false,
-            reply_to_message_id: reply)
+            reply_to_message_id: reply,
+          )
+        }
+      )
+    end
+
+    def send_venue(reply : MessageID?, user : User, origin : MessageID, venue : Tourmaline::Venue, locale : Locale, history : History, database : Database)
+      if reply
+        reply_msids = history.get_all_receivers(reply)
+
+        if reply_msids.empty?
+          send_to_user(origin, user.id, locale.replies.not_in_cache)
+          history.delete_message_group(origin)
+          return
+        end
+      end
+
+      @queue.add_to_queue(
+        origin,
+        user.id,
+        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        reply_msids,
+        ->(receiver : Int64, reply : Int64 | Nil) {
+          @client.send_venue(
+            receiver,
+            latitude: venue.location.latitude,
+            longitude: venue.location.longitude,
+            title: venue.title,
+            address: venue.address,
+            foursquare_id: venue.foursquare_id,
+            foursquare_type: venue.foursquare_type,
+            google_place_id: venue.google_place_id,
+            google_place_type: venue.google_place_type,
+            reply_to_message_id: reply,
+          )
         }
       )
     end

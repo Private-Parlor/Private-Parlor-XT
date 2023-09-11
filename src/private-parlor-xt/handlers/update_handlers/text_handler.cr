@@ -16,7 +16,7 @@ module PrivateParlorXT
       message, user = get_message_and_user(update, database, relay, locale)
       return unless message && user
 
-      unless access.authorized?(user.rank, :text)
+      unless access.authorized?(user.rank, :Text)
         response = Format.substitute_message(locale.replies.media_disabled, locale, {"type" => "text"})
         return relay.send_to_user(message.message_id.to_i64, user.id, response)
       end
