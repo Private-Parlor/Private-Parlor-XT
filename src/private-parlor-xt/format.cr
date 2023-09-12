@@ -12,6 +12,20 @@ module PrivateParlorXT
       end
     end
 
+    def format_cooldown_until(expiration : Time?, locale : Locale) : String
+      if time = format_time(expiration, locale.time_format)
+        "#{locale.replies.cooldown_true} #{time}"
+      else
+        locale.replies.cooldown_false
+      end
+    end
+
+    def format_warn_expiry(expiration : Time?, locale : Locale) : String?
+      if time = format_time(expiration, locale.time_format)
+        locale.replies.info_warning.gsub("{warn_expiry}", "#{time}")
+      end
+    end
+
     def strip_format(text : String, entities : Array(Tourmaline::MessageEntity), strip_types : Array(String), linked_network : Hash(String, String)) : Tuple(String, Array(Tourmaline::MessageEntity))
       formatted_text = replace_links(text, entities)
 
@@ -96,6 +110,16 @@ module PrivateParlorXT
     def format_contact_reply(contact : String?, locale : Locale) : String?
       if contact
         locale.replies.blacklist_contact.gsub("{contact}", "#{escape_html(contact)}")
+      end
+    end
+
+    # Returns a smiley based on the number of given warnings
+    def format_smiley(warnings : Int32, smileys : Array(String)) : String
+      case warnings
+      when (0..0) then smileys[0]
+      when (1..2) then smileys[1]
+      when (2..5) then smileys[2]
+      else             smileys[3]
       end
     end
 

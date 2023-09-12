@@ -19,7 +19,7 @@ module PrivateParlorXT
     end
 
     # Get user by `UserID`
-    abstract def get_user(id : UserID) : User?
+    abstract def get_user(id : UserID?) : User?
 
     # Get the total count of users, users that have stopped the bot, and
     # users that are blacklisted

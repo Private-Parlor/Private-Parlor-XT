@@ -61,6 +61,12 @@ module PrivateParlorXT
       Random.new(@id + Time.utc.at_beginning_of_day.to_unix).base64(3)
     end
 
+    # Get the user's obfuscated karma
+    def get_obfuscated_karma : Int32
+      offset = ((@karma * 0.2).abs + 2).round.to_i
+      @karma + Random.rand(0..(offset + 1)) - offset
+    end
+
     # Set *left* to nil, meaning that the User has joined the chat.
     def rejoin : Nil
       @left = nil

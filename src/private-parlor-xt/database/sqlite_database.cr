@@ -31,7 +31,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_user(id : UserID) : User?
+    def get_user(id : UserID?) : User?
       @connection.query_one?("SELECT * FROM users WHERE id = ?", id, as: SQLiteUser)
     end
 

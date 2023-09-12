@@ -14,7 +14,7 @@ module PrivateParlorXT
 
     abstract def do(ctx : Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale)
 
-    private def get_message_and_user(ctx : Context, database : Database, relay : Relay, locale : Locale) : Tuple(Tourmaline::Message?, User?)
+    private def get_message_and_user(ctx : Tourmaline::Context, database : Database, relay : Relay, locale : Locale) : Tuple(Tourmaline::Message?, User?)
       unless (message = ctx.message) && (info = message.from)
         return nil, nil
       end
@@ -24,7 +24,7 @@ module PrivateParlorXT
         return message, nil
       end
 
-      unless user.can_user_command?
+      unless user.can_use_command?
         deny_user(user, relay, locale)
         return message, nil
       end
@@ -36,9 +36,9 @@ module PrivateParlorXT
 
     private def deny_user(user : User, relay : Relay, locale : Locale) : Nil
       if user.blacklisted?
-        response = Format.substitute_mesage(locale.replies.blacklisted, locale, {
-          "contact" => Format.format_contact_reply(@blacklist_contact, @locale),
-          "reason"  => Format.format_reason_reply(user.blacklist_reason, @locale),
+        response = Format.substitute_message(locale.replies.blacklisted, locale, {
+          "contact" => Format.format_contact_reply(@blacklist_contact, locale),
+          "reason"  => Format.format_reason_reply(user.blacklist_reason, locale),
         })
       else
         response = locale.replies.not_in_chat
