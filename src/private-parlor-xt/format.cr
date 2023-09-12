@@ -128,5 +128,12 @@ module PrivateParlorXT
         time.to_s(format)
       end
     end
+
+    # Returns a message containing the program version and a link to its Git repo.
+    #
+    # Feel free to edit this if you fork the code.
+    def format_version : String
+      "Private Parlor v#{VERSION} ~ <a href=\"https://github.com/Private-Parlor/Private-Parlor-XT\">[Source]</a>"
+    end
   end
 end
