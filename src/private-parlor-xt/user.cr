@@ -86,6 +86,10 @@ module PrivateParlorXT
       @left = Time.utc
     end
 
+    def toggle_karma : Nil
+      @hide_karma = !hide_karma
+    end
+
     def toggle_debug : Nil
       @debug_enabled = !debug_enabled
     end
