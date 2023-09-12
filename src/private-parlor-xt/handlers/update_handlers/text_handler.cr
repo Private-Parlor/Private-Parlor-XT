@@ -70,5 +70,30 @@ module PrivateParlorXT
 
       return text, entities
     end
+
+    # Same as overriden method, but returns nil if message is a command
+    private def get_message_and_user(update : Tourmaline::Context, database : Database, relay : Relay, locale : Locale) : Tuple(Tourmaline::Message?, User?)
+      unless (message = update.message) && (info = message.from)
+        return nil, nil
+      end
+
+      if entity = message.entities[0]?
+        return nil, nil if entity.type == "bot_command"
+      end
+
+      unless user = database.get_user(info.id.to_i64)
+        relay.send_to_user(nil, info.id.to_i64, locale.replies.not_in_chat)
+        return message, nil
+      end
+
+      unless user.can_chat?(@media_limit_period)
+        deny_user(user, relay, locale)
+        return message, nil
+      end
+
+      user.update_names(info.username, info.full_name)
+
+      return message, user
+    end
   end
 end
