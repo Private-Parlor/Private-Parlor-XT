@@ -57,6 +57,48 @@ module PrivateParlorXT
       )
     end
 
+    def send_poll_copy(reply : MessageID?, user : User, poll : Tourmaline::Poll)
+      @client.send_poll(
+        user.id,
+        question: poll.question,
+        options: poll.options.map(&.text),
+        is_anonymous: true,
+        type: poll.type,
+        allows_multiple_answers: poll.allows_multiple_answers?,
+        correct_option_id: poll.correct_option_id,
+        explanation: poll.explanation,
+        explanation_entities: poll.explanation_entities,
+        open_period: poll.open_period,
+        reply_to_message_id: reply,
+      )
+    end
+
+    def send_poll(reply : MessageID?, user : User, origin : MessageID, poll : MessageID, locale : Locale, history : History, database : Database)
+      if reply
+        reply_msids = history.get_all_receivers(reply)
+
+        if reply_msids.empty?
+          send_to_user(origin, user.id, locale.replies.not_in_cache)
+          history.delete_message_group(origin)
+          return
+        end
+      end
+
+      @queue.add_to_queue(
+        origin,
+        user.id,
+        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        reply_msids,
+        ->(receiver : Int64, reply : Int64 | Nil) {
+          @client.forward_message(
+            receiver,
+            user.id,
+            poll,
+          )
+        }
+      )
+    end
+
     def send_sticker(reply : MessageID?, user : User, origin : MessageID, sticker_file : String, locale : Locale, history : History, database : Database)
       if reply
         reply_msids = history.get_all_receivers(reply)

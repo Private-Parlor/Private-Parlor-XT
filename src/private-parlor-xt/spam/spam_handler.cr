@@ -140,6 +140,10 @@ module PrivateParlorXT
       spammy?(user, (text.size * score_character) + (text.lines.size * score_line))
     end
 
+    def spammy_poll?(user : UserID) : Bool
+      spammy?(user, score_poll)
+    end
+
     def spammy_sticker?(user : UserID) : Bool
       spammy?(user, score_sticker)
     end

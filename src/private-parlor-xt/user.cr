@@ -80,6 +80,10 @@ module PrivateParlorXT
       @left = Time.utc
     end
 
+    def toggle_debug : Nil
+      @debug_enabled = !debug_enabled
+    end
+
     # Removes a cooldown from a user if it has expired.
     #
     # Returns true if the cooldown can be expired, false otherwise
