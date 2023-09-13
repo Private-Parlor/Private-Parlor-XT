@@ -24,32 +24,37 @@ module PrivateParlorXT
         return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.spamming)
       end
 
-      user.set_active
-      database.update_user(user)
-
       cached_message = history.new_message(user.id, message.message_id.to_i64)
+
+      if reply = message.reply_to_message
+        reply_msids = history.get_all_receivers(reply.message_id.to_i64)
+
+        if reply_msids.empty?
+          relay.send_to_user(cached_message, user.id, locale.replies.not_in_cache)
+          history.delete_message_group(cached_message)
+          return
+        end
+      end
+
       poll_copy = relay.send_poll_copy(cached_message, user, poll)
       history.add_to_history(cached_message, poll_copy.message_id.to_i64, user.id)
 
-      # Disable debug mode so the user does not get a second copy of the poll
+      user.set_active
+      database.update_user(user)
+      
+      # Exclude sender with debug mode enabled, so a second copy of the poll is not sent
       if user.debug_enabled
-        user.toggle_debug
-      end
-
-      if reply = message.reply_to_message
-        reply = reply.message_id.to_i64
+        receivers = database.get_active_users(user.id)
       else
-        reply = nil
+        receivers = database.get_active_users
       end
 
       relay.send_poll(
-        reply,
-        user,
         cached_message,
+        user,
+        receivers,
+        reply_msids,
         poll_copy.message_id.to_i64,
-        locale,
-        history,
-        database
       )
     end
   end

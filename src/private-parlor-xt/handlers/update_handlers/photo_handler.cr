@@ -40,28 +40,38 @@ module PrivateParlorXT
 
       # TODO: Add pseudonymous hook
 
+      new_message = history.new_message(user.id, message.message_id.to_i64)
+
+      if reply = message.reply_to_message
+        reply_msids = history.get_all_receivers(reply.message_id.to_i64)
+
+        if reply_msids.empty?
+          relay.send_to_user(new_message, user.id, locale.replies.not_in_cache)
+          history.delete_message_group(new_message)
+          return
+        end
+      end
+
       # TODO: Add R9K write hook
 
       user.set_active
       database.update_user(user)
-
-      if reply = message.reply_to_message
-        reply = reply.message_id.to_i64
+      
+      if user.debug_enabled
+        receivers = database.get_active_users
       else
-        reply = nil
+        receivers = database.get_active_users(user.id)
       end
 
       relay.send_photo(
-        reply,
+        new_message,
         user,
-        history.new_message(user.id, message.message_id.to_i64),
+        receivers,
+        reply_msids,
         photo.file_id,
         caption,
         entities,
         @allow_spoilers ? message.has_media_spoiler? : false,
-        locale,
-        history,
-        database,
       )
     end
   end

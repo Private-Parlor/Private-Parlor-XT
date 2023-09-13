@@ -28,21 +28,11 @@ module PrivateParlorXT
       )
     end
 
-    def send_text(reply : MessageID?, user : User, origin : MessageID, text : String, entities : Array(Tourmaline::MessageEntity), locale : Locale, history : History, database : Database)
-      if reply
-        reply_msids = history.get_all_receivers(reply)
-
-        if reply_msids.empty?
-          send_to_user(origin, user.id, locale.replies.not_in_cache)
-          history.delete_message_group(origin)
-          return
-        end
-      end
-
+    def send_text(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, text : String, entities : Array(Tourmaline::MessageEntity))
       @queue.add_to_queue(
         origin,
         user.id,
-        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        receivers,
         reply_msids,
         ->(receiver : Int64, reply : Int64 | Nil) {
           @client.send_message(
@@ -57,21 +47,11 @@ module PrivateParlorXT
       )
     end
 
-    def send_photo(reply : MessageID?, user : User, origin : MessageID, photo : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?, locale : Locale, history : History, database : Database)
-      if reply
-        reply_msids = history.get_all_receivers(reply)
-
-        if reply_msids.empty?
-          send_to_user(origin, user.id, locale.replies.not_in_cache)
-          history.delete_message_group(origin)
-          return
-        end
-      end
-
+    def send_photo(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, photo : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
       @queue.add_to_queue(
         origin,
         user.id,
-        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        receivers,
         reply_msids,
         ->(receiver : Int64, reply : Int64 | Nil) {
           @client.send_photo(
@@ -103,21 +83,11 @@ module PrivateParlorXT
       )
     end
 
-    def send_poll(reply : MessageID?, user : User, origin : MessageID, poll : MessageID, locale : Locale, history : History, database : Database)
-      if reply
-        reply_msids = history.get_all_receivers(reply)
-
-        if reply_msids.empty?
-          send_to_user(origin, user.id, locale.replies.not_in_cache)
-          history.delete_message_group(origin)
-          return
-        end
-      end
-
+    def send_poll(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, poll : MessageID)
       @queue.add_to_queue(
         origin,
         user.id,
-        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        receivers,
         reply_msids,
         ->(receiver : Int64, reply : Int64 | Nil) {
           @client.forward_message(
@@ -129,23 +99,13 @@ module PrivateParlorXT
       )
     end
 
-    def send_sticker(reply : MessageID?, user : User, origin : MessageID, sticker_file : String, locale : Locale, history : History, database : Database)
-      if reply
-        reply_msids = history.get_all_receivers(reply)
-
-        if reply_msids.empty?
-          send_to_user(origin, user.id, locale.replies.not_in_cache)
-          history.delete_message_group(origin)
-          return
-        end
-      end
-
+    def send_sticker(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, sticker_file : String)
       @queue.add_to_queue(
         origin,
         user.id,
-        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        receivers,
         reply_msids,
-        ->(receiver : Int64, reply : Int64 | Nil) {
+        ->(receiver : UserID, reply : MessageID?) {
           @client.send_sticker(
             receiver,
             sticker_file,
@@ -155,23 +115,13 @@ module PrivateParlorXT
       )
     end
 
-    def send_venue(reply : MessageID?, user : User, origin : MessageID, venue : Tourmaline::Venue, locale : Locale, history : History, database : Database)
-      if reply
-        reply_msids = history.get_all_receivers(reply)
-
-        if reply_msids.empty?
-          send_to_user(origin, user.id, locale.replies.not_in_cache)
-          history.delete_message_group(origin)
-          return
-        end
-      end
-
+    def send_venue(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, venue : Tourmaline::Venue)
       @queue.add_to_queue(
         origin,
         user.id,
-        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        receivers,
         reply_msids,
-        ->(receiver : Int64, reply : Int64 | Nil) {
+        ->(receiver : UserID, reply : MessageID?) {
           @client.send_venue(
             receiver,
             latitude: venue.location.latitude,
@@ -188,23 +138,13 @@ module PrivateParlorXT
       )
     end
 
-    def send_location(reply : MessageID?, user : User, origin : MessageID, location : Tourmaline::Location, locale : Locale, history : History, database : Database)
-      if reply
-        reply_msids = history.get_all_receivers(reply)
-
-        if reply_msids.empty?
-          send_to_user(origin, user.id, locale.replies.not_in_cache)
-          history.delete_message_group(origin)
-          return
-        end
-      end
-
+    def send_location(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, location : Tourmaline::Location)
       @queue.add_to_queue(
         origin,
         user.id,
-        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        receivers,
         reply_msids,
-        ->(receiver : Int64, reply : Int64 | Nil) {
+        ->(receiver : UserID, reply : MessageID?) {
           @client.send_location(
             receiver,
             latitude: location.latitude,
@@ -215,23 +155,13 @@ module PrivateParlorXT
       )
     end
 
-    def send_contact(reply : MessageID?, user : User, origin : MessageID, contact : Tourmaline::Contact, locale : Locale, history : History, database : Database)
-      if reply
-        reply_msids = history.get_all_receivers(reply)
-
-        if reply_msids.empty?
-          send_to_user(origin, user.id, locale.replies.not_in_cache)
-          history.delete_message_group(origin)
-          return
-        end
-      end
-
+    def send_contact(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, contact : Tourmaline::Contact)
       @queue.add_to_queue(
         origin,
         user.id,
-        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        receivers,
         reply_msids,
-        ->(receiver : Int64, reply : Int64 | Nil) {
+        ->(receiver : UserID, reply : MessageID?) {
           @client.send_contact(
             receiver,
             phone_number:                contact.phone_number,
