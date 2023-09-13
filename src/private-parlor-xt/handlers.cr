@@ -99,6 +99,19 @@ module PrivateParlorXT
 
       relay.send_to_user(nil, user.id, response)
     end
+
+    private def check_text(text : String, user : User, message : Tourmaline::Message, relay : Relay, locale : Locale) : Tuple(String, Array(Tourmaline::MessageEntity))
+      unless Format.allow_text?(text)
+        relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.rejected_message)
+        return "", [] of Tourmaline::MessageEntity
+      end
+
+      text, entities = Format.strip_format(text, message.entities, @entity_types, @linked_network)
+
+      # TODO: Handle ranksay/sign/tsign/karmasign
+
+      return text, entities
+    end
   end
 
   abstract class HearsHandler

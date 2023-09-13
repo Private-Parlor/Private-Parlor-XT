@@ -57,6 +57,36 @@ module PrivateParlorXT
       )
     end
 
+    def send_photo(reply : MessageID?, user : User, origin : MessageID, photo : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?, locale : Locale, history : History, database : Database)
+      if reply
+        reply_msids = history.get_all_receivers(reply)
+
+        if reply_msids.empty?
+          send_to_user(origin, user.id, locale.replies.not_in_cache)
+          history.delete_message_group(origin)
+          return
+        end
+      end
+
+      @queue.add_to_queue(
+        origin,
+        user.id,
+        user.debug_enabled ? database.get_active_users : database.get_active_users(user.id),
+        reply_msids,
+        ->(receiver : Int64, reply : Int64 | Nil) {
+          @client.send_photo(
+            receiver,
+            photo,
+            caption: caption,
+            parse_mode: Tourmaline::ParseMode::None,
+            caption_entities: entities,
+            has_spoiler: spoiler,
+            reply_to_message_id: reply,
+          )
+        }
+      )
+    end
+
     def send_poll_copy(reply : MessageID?, user : User, poll : Tourmaline::Poll)
       @client.send_poll(
         user.id,
