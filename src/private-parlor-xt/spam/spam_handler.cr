@@ -148,6 +148,10 @@ module PrivateParlorXT
       spammy?(user, score_animation)
     end
 
+    def spammy_video?(user : UserID) : Bool
+      spammy?(user, score_video)
+    end
+
     def spammy_document?(user : UserID) : Bool
       spammy?(user, score_document)
     end
