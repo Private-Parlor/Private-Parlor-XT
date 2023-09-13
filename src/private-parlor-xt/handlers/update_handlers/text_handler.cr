@@ -81,6 +81,10 @@ module PrivateParlorXT
         return nil, nil if entity.type == "bot_command"
       end
 
+      if text = message.text
+        return nil, nil if text.starts_with?(/^[+-]1/)
+      end
+
       unless user = database.get_user(info.id.to_i64)
         relay.send_to_user(nil, info.id.to_i64, locale.replies.not_in_chat)
         return message, nil

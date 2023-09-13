@@ -94,6 +94,16 @@ module PrivateParlorXT
       @debug_enabled = !debug_enabled
     end
 
+    # Increment the user's karma by a given amount (1 by default)
+    def increment_karma(amount : Int32 = 1) : Nil
+      @karma += amount
+    end
+
+    # Decrement the user's karma by a given amount (1 by default)
+    def decrement_karma(amount : Int32 = 1) : Nil
+      @karma -= amount
+    end
+
     # Removes a cooldown from a user if it has expired.
     #
     # Returns true if the cooldown can be expired, false otherwise

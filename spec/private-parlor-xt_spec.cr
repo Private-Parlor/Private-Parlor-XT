@@ -1,6 +1,8 @@
 require "./spec_helper"
 
 module PrivateParlorXT
+  VERSION = "spec"
+
   describe PrivateParlorXT do
     config = MockConfig.new
     client = MockClient.new

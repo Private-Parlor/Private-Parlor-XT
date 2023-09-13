@@ -178,6 +178,19 @@ module PrivateParlorXT
       history.get_messages_from_user(100).should(eq(expected))
     end
 
+    it "adds rating to message" do
+      history = CachedHistory.instance(HISTORY_LIFESPAN)
+      sender = 100
+      origin = 1
+
+      history.new_message(sender, origin)
+
+      history.add_to_history(origin, 2, 101)
+
+      history.add_rating(2, 101).should(be_true)
+      history.add_rating(2, 101).should(be_false)
+    end
+
     it "deletes old messages" do
       history = CachedHistory.instance(Time::Span.zero)
 

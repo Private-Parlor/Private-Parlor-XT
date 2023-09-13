@@ -10,6 +10,7 @@ module PrivateParlorXT
     #
     # Generally this should use the same connection that was used for the database
     private def initialize(@lifespan : Time::Span, @connection : DB::Database)
+      ensure_schema()
     end
 
     # :inherit:
@@ -116,6 +117,19 @@ module PrivateParlorXT
         user,
         as: MessageID
       ).to_set
+    end
+
+    # :inherit:
+    def add_rating(message : MessageID, user : UserID) : Bool
+      if @connection.query_one?("SELECT userID FROM karma WHERE messageGroupID = ? AND userID = ?", message, user, as: UserID)
+        return false
+      end
+
+      write do
+        @connection.exec("INSERT INTO karma VALUES (?, ?)", args: [message, user])
+      end
+
+      true
     end
 
     def delete_message_group(message : MessageID) : MessageID?

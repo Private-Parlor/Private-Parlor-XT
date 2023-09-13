@@ -21,8 +21,17 @@ module PrivateParlorXT
       history,
       locale,
     ))
+
+    events = events.concat(generate_hears_handlers(config,
+      relay,
+      access,
+      database,
+      history,
+      locale,
+      spam,
+    ))
+
     # TODO: Add Inline Queries
-    # TODO: Add Hears Handlers
 
     events.each do |handler|
       client.register(handler)
@@ -72,6 +81,40 @@ module PrivateParlorXT
     end
 
     # TODO: Register command with BotFather
+  {% end %}
+
+    arr
+  end
+
+  # Intialize all "hears" handlers that inherit from `HearsHandler`
+  # and are annotated with `Hears`
+  def self.generate_hears_handlers(
+    config : Config,
+    relay : Relay,
+    access : AuthorizedRanks,
+    database : Database,
+    history : History,
+    locale : Locale,
+    spam : SpamHandler?
+  ) : Array(Tourmaline::HearsHandler)
+    arr = [] of Tourmaline::HearsHandler
+
+    {% for command in HearsHandler.all_subclasses.select { |sub_class|
+                        (hears = sub_class.annotation(Hears))
+                      } %}
+
+    {{command_hears = command.annotation(Hears)}}
+
+    if config.{{command_hears[:config].id}}[0]
+
+      # Handler name is command's name but snake cased
+      {{handler = (command.stringify.split("::").last.underscore).id}}  = {{command}}.new(config)
+
+      arr << Tourmaline::HearsHandler.new({{command_hears[:text]}}) do |ctx|
+        {{handler}}.do(ctx, relay, access, database, history, locale, spam)
+      end
+    end
+
   {% end %}
 
     arr

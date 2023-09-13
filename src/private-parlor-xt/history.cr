@@ -42,6 +42,11 @@ module PrivateParlorXT
     # Get all message IDs sent by a given user
     abstract def get_messages_from_user(user : UserID) : Set(MessageID)
 
+    # Adds a rating entry to the database with the given data
+    #
+    # Returns true if the user's rating was successfully added; false if the user's rating already exists.
+    abstract def add_rating(message : MessageID, user : UserID) : Bool
+
     # Delete a message group from the history
     abstract def delete_message_group(message : MessageID) : MessageID?
 

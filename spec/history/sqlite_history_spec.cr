@@ -162,6 +162,15 @@ module PrivateParlorXT
       db.close
     end
 
+    it "adds rating to message" do
+      db = instantiate_sqlite_history
+
+      db.add_rating(3, 20000).should(be_true)
+      db.add_rating(2, 60200).should(be_false)
+
+      db.close
+    end
+
     it "deletes old messages" do
       db = instantiate_sqlite_history
 
