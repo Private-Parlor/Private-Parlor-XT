@@ -35,7 +35,7 @@ module PrivateParlorXT
 
       # TODO: Add R9K check hook
 
-      caption, entities = check_text(caption, user, message, relay, locale)
+      caption, entities = check_text(caption, user, message, message.caption_entities, relay, locale)
 
       # TODO: Add pseudonymous hook
 

@@ -30,7 +30,7 @@ module PrivateParlorXT
 
       # TODO: Add R9K check hook
 
-      text, entities = check_text(text, user, message, relay, locale)
+      text, entities = check_text(text, user, message, message.entities, relay, locale)
       return if text.empty?
 
       # TODO: Add pseudonymous hook
