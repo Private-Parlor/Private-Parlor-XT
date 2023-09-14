@@ -24,25 +24,18 @@ module PrivateParlorXT
       end
 
       cached_message = history.new_message(user.id, message.message_id.to_i64)
-
       poll_copy = relay.send_poll_copy(cached_message, user, poll)
       history.add_to_history(cached_message, poll_copy.message_id.to_i64, user.id)
 
       user.set_active
       database.update_user(user)
 
-      # Exclude sender with debug mode enabled, so a second copy of the poll is not sent
-      if user.debug_enabled
-        receivers = database.get_active_users(user.id)
-      else
-        receivers = database.get_active_users
-      end
+      receivers = database.get_active_users(user.id)
 
-      relay.send_poll(
+      relay.send_forward(
         cached_message,
         user,
         receivers,
-        reply_msids,
         poll_copy.message_id.to_i64,
       )
     end
