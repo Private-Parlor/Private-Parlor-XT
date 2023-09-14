@@ -180,13 +180,13 @@ module PrivateParlorXT
       )
     end
 
-    def send_poll(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, poll : MessageID)
+    def send_poll(origin : MessageID, user : User, receivers : Array(UserID), poll : MessageID)
       @queue.add_to_queue(
         origin,
         user.id,
         receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        nil,
+        ->(receiver : UserID, _reply : MessageID?) {
           @client.forward_message(
             receiver,
             user.id,
