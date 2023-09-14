@@ -196,6 +196,22 @@ module PrivateParlorXT
       )
     end
 
+    def send_video_note(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, video_note : String)
+      @queue.add_to_queue(
+        origin,
+        user.id,
+        receivers,
+        reply_msids,
+        ->(receiver : UserID, reply : MessageID?) {
+          @client.send_video_note(
+            receiver,
+            video_note,
+            reply_to_message_id: reply,
+          )
+        }
+      )
+    end
+
     def send_sticker(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, sticker_file : String)
       @queue.add_to_queue(
         origin,

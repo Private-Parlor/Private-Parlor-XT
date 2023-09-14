@@ -168,6 +168,10 @@ module PrivateParlorXT
       spammy?(user, score_poll)
     end
 
+    def spammy_video_note?(user : UserID) : Bool
+      spammy?(user, score_video_note)
+    end
+
     def spammy_sticker?(user : UserID) : Bool
       spammy?(user, score_sticker)
     end
