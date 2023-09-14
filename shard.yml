@@ -5,9 +5,10 @@ authors:
   - Charybdis
 
 dependencies:
+  # Using fork to for some custom methods and nil for parse mode parameters
   tourmaline:
-    github: protoncr/tourmaline
-    branch: master
+    github: Charibdys/tourmaline
+    branch: none-parsemode
   tasker:
     github: spider-gazelle/tasker
     branch: master

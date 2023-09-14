@@ -29,6 +29,6 @@ shards:
     version: 2.1.4+git.commit.d64995112631c391f7924ab87e144210f5c565bf
 
   tourmaline:
-    git: https://github.com/protoncr/tourmaline.git
-    version: 0.29.0+git.commit.81940948612f5cec50cf89d95bb760dc1bee3ae6
+    git: https://github.com/charibdys/tourmaline.git
+    version: 0.29.0+git.commit.7e54cd3dd7d460b3343e3b6ea9c4d5b139ae09ed
 
