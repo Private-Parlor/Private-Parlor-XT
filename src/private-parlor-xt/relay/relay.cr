@@ -107,6 +107,25 @@ module PrivateParlorXT
       )
     end
 
+    def send_audio(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, audio : String, caption : String, entities : Array(Tourmaline::MessageEntity))
+      @queue.add_to_queue(
+        origin,
+        user.id,
+        receivers,
+        reply_msids,
+        ->(receiver : Int64, reply : Int64 | Nil) {
+          @client.send_audio(
+            receiver,
+            audio,
+            caption: caption,
+            parse_mode: Tourmaline::ParseMode::None,
+            caption_entities: entities,
+            reply_to_message_id: reply,
+          )
+        }
+      )
+    end
+
     def send_document(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, document : String, caption : String, entities : Array(Tourmaline::MessageEntity))
       @queue.add_to_queue(
         origin,
