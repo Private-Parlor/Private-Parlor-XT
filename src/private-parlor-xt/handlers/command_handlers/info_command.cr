@@ -19,12 +19,12 @@ module PrivateParlorXT
 
       if reply = message.reply_to_message
         ranked_info(
-          user, 
-          message.message_id.to_i64, 
-          reply.message_id.to_i64, 
-          access, database, 
-          history, 
-          relay, 
+          user,
+          message.message_id.to_i64,
+          reply.message_id.to_i64,
+          access, database,
+          history,
+          relay,
           locale
         )
       else
@@ -39,10 +39,10 @@ module PrivateParlorXT
       unless reply_user = database.get_user(history.get_sender(reply))
         return relay.send_to_user(message, user.id, locale.replies.not_in_cache)
       end
-  
+
       user.set_active
       database.update_user(user)
-  
+
       reply_user.remove_cooldown
 
       response = Format.substitute_message(locale.replies.ranked_info, locale, {
@@ -60,14 +60,14 @@ module PrivateParlorXT
 
       if !@karma_levels.empty?
         current_level = ""
-  
+
         @karma_levels.each_cons_pair do |lower, higher|
           if lower[0] <= user.karma && user.karma < higher[0]
             current_level = lower[1]
             break
           end
         end
-  
+
         if current_level == "" && user.karma >= @karma_levels.last_key
           current_level = @karma_levels[@karma_levels.last_key]
         elsif user.karma < @karma_levels.first_key

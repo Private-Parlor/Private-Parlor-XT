@@ -9,7 +9,7 @@ module PrivateParlorXT
     class Album
       property message_ids : Array(MessageID)
       property media : Array(Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo | Tourmaline::InputMediaAudio | Tourmaline::InputMediaDocument)
-    
+
       # Creates and instance of `Album`, representing a prepared media group to queue and relay
       #
       # ## Arguments:
@@ -54,7 +54,7 @@ module PrivateParlorXT
 
       # TODO: Add pseudonymous hook
 
-      if spam && @albums[album]? == nil 
+      if spam && @albums[album]? == nil
         if spam.spammy_album?(user.id)
           return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.spamming)
         end

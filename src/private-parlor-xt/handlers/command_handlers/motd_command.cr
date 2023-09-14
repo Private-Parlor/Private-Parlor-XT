@@ -4,7 +4,6 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: ["motd", "rules"], config: "enable_motd")]
   class MotdCommand < CommandHandler
-
     def initialize(config : Config)
     end
 

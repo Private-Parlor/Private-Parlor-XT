@@ -4,7 +4,6 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: ["toggle_debug", "toggledebug"], config: "enable_toggle_debug")]
   class ToggleDebugCommand < CommandHandler
-
     def initialize(config : Config)
     end
 

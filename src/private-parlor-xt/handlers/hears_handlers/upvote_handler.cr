@@ -44,7 +44,7 @@ module PrivateParlorXT
 
       unless reply_user.hide_karma
         relay.send_to_user(
-          history.get_receiver_message(reply.message_id.to_i64, reply_user.id), 
+          history.get_receiver_message(reply.message_id.to_i64, reply_user.id),
           reply_user.id,
           locale.replies.got_upvote
         )

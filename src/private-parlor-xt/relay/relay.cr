@@ -293,10 +293,10 @@ module PrivateParlorXT
         ->(receiver : UserID, reply : MessageID?) {
           @client.send_contact(
             receiver,
-            phone_number:                contact.phone_number,
-            first_name:                  contact.first_name,
-            last_name:                   contact.last_name,
-            vcard:                       contact.vcard,
+            phone_number: contact.phone_number,
+            first_name: contact.first_name,
+            last_name: contact.last_name,
+            vcard: contact.vcard,
             reply_to_message_id: reply,
           )
         }

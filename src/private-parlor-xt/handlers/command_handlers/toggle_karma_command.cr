@@ -4,7 +4,6 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: ["toggle_karma", "togglekarma"], config: "enable_toggle_karma")]
   class ToggleKarmaCommand < CommandHandler
-
     def initialize(config : Config)
     end
 

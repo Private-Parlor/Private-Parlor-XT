@@ -2,7 +2,6 @@ require "../../handlers.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-
   @[On(update: :Sticker, config: "relay_sticker")]
   class StickerHandler < UpdateHandler
     def initialize(config : Config)
@@ -42,7 +41,7 @@ module PrivateParlorXT
 
       user.set_active
       database.update_user(user)
-      
+
       if user.debug_enabled
         receivers = database.get_active_users
       else

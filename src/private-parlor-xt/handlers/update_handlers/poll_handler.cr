@@ -2,7 +2,6 @@ require "../../handlers.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-
   @[On(update: :Poll, config: "relay_poll")]
   class PollHandler < UpdateHandler
     def initialize(config : Config)
@@ -41,7 +40,7 @@ module PrivateParlorXT
 
       user.set_active
       database.update_user(user)
-      
+
       # Exclude sender with debug mode enabled, so a second copy of the poll is not sent
       if user.debug_enabled
         receivers = database.get_active_users(user.id)

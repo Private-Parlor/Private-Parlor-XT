@@ -51,7 +51,7 @@ module PrivateParlorXT
 
       user.set_active
       database.update_user(user)
-      
+
       if user.debug_enabled
         receivers = database.get_active_users
       else
@@ -67,7 +67,6 @@ module PrivateParlorXT
         entities,
       )
     end
-
 
     # Same as overriden method, but returns nil if message is a command
     private def get_message_and_user(update : Tourmaline::Context, database : Database, relay : Relay, locale : Locale) : Tuple(Tourmaline::Message?, User?)

@@ -4,7 +4,6 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "version", config: "enable_version")]
   class VersionCommand < CommandHandler
-
     def initialize(config : Config)
     end
 
