@@ -31,12 +31,18 @@ module PrivateParlorXT
       user.set_active
       database.update_user(user)
 
-      receivers = database.get_active_users(user.id)
+      # Exclude sender with debug mode enabled, so a second copy of the poll is not sent
+      if user.debug_enabled
+        receivers = database.get_active_users(user.id)
+      else
+        receivers = database.get_active_users
+      end
 
       relay.send_poll(
         cached_message,
         user,
         receivers,
+        reply_msids,
         poll_copy.message_id.to_i64,
       )
     end
