@@ -228,6 +228,22 @@ module PrivateParlorXT
       )
     end
 
+    def send_album(origins : Array(MessageID), user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, media : Array(Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo | Tourmaline::InputMediaAudio | Tourmaline::InputMediaDocument))
+      @queue.add_to_queue(
+        origins,
+        user.id,
+        receivers,
+        reply_msids,
+        ->(receiver : UserID, reply : MessageID?) {
+          @client.send_media_group(
+            receiver,
+            media,
+            reply_to_message_id: reply,
+          )
+        }
+      )
+    end
+
     def send_venue(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, venue : Tourmaline::Venue)
       @queue.add_to_queue(
         origin,

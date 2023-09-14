@@ -176,6 +176,10 @@ module PrivateParlorXT
       spammy?(user, score_sticker)
     end
 
+    def spammy_album?(user : UserID) : Bool
+      spammy?(user, score_media_group)
+    end
+
     def spammy_venue?(user : UserID) : Bool
       spammy?(user, score_venue)
     end
