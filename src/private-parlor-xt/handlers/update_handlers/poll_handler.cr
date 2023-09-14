@@ -25,16 +25,6 @@ module PrivateParlorXT
 
       cached_message = history.new_message(user.id, message.message_id.to_i64)
 
-      if reply = message.reply_to_message
-        reply_msids = history.get_all_receivers(reply.message_id.to_i64)
-
-        if reply_msids.empty?
-          relay.send_to_user(cached_message, user.id, locale.replies.not_in_cache)
-          history.delete_message_group(cached_message)
-          return
-        end
-      end
-
       poll_copy = relay.send_poll_copy(cached_message, user, poll)
       history.add_to_history(cached_message, poll_copy.message_id.to_i64, user.id)
 
