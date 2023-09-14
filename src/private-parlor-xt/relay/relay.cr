@@ -20,7 +20,7 @@ module PrivateParlorXT
     end
 
     # Relay a message to a single user. Used for system messages.
-    def send_to_user(reply_message : MessageID?, user : Int64, text : String)
+    def send_to_user(reply_message : MessageID?, user : UserID, text : String)
       @queue.add_to_queue_priority(
         user,
         reply_message,
@@ -28,13 +28,13 @@ module PrivateParlorXT
       )
     end
 
-    def send_text(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, text : String, entities : Array(Tourmaline::MessageEntity))
+    def send_text(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, text : String, entities : Array(Tourmaline::MessageEntity))
       @queue.add_to_queue(
         origin,
         user.id,
         receivers,
         reply_msids,
-        ->(receiver : Int64, reply : Int64 | Nil) {
+        ->(receiver : UserID, reply : MessageID?) {
           @client.send_message(
             receiver,
             text,
@@ -47,13 +47,13 @@ module PrivateParlorXT
       )
     end
 
-    def send_photo(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, photo : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
+    def send_photo(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, photo : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
       @queue.add_to_queue(
         origin,
         user.id,
         receivers,
         reply_msids,
-        ->(receiver : Int64, reply : Int64 | Nil) {
+        ->(receiver : UserID, reply : MessageID?) {
           @client.send_photo(
             receiver,
             photo,
@@ -67,13 +67,13 @@ module PrivateParlorXT
       )
     end
 
-    def send_animation(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, animation : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
+    def send_animation(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, animation : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
       @queue.add_to_queue(
         origin,
         user.id,
         receivers,
         reply_msids,
-        ->(receiver : Int64, reply : Int64 | Nil) {
+        ->(receiver : UserID, reply : MessageID?) {
           @client.send_animation(
             receiver,
             animation,
@@ -87,13 +87,13 @@ module PrivateParlorXT
       )
     end
 
-    def send_video(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, video : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
+    def send_video(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, video : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
       @queue.add_to_queue(
         origin,
         user.id,
         receivers,
         reply_msids,
-        ->(receiver : Int64, reply : Int64 | Nil) {
+        ->(receiver : UserID, reply : MessageID?) {
           @client.send_video(
             receiver,
             video,
@@ -107,13 +107,13 @@ module PrivateParlorXT
       )
     end
 
-    def send_audio(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, audio : String, caption : String, entities : Array(Tourmaline::MessageEntity))
+    def send_audio(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, audio : String, caption : String, entities : Array(Tourmaline::MessageEntity))
       @queue.add_to_queue(
         origin,
         user.id,
         receivers,
         reply_msids,
-        ->(receiver : Int64, reply : Int64 | Nil) {
+        ->(receiver : UserID, reply : MessageID?) {
           @client.send_audio(
             receiver,
             audio,
@@ -126,13 +126,32 @@ module PrivateParlorXT
       )
     end
 
-    def send_document(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, document : String, caption : String, entities : Array(Tourmaline::MessageEntity))
+    def send_voice(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, voice : String, caption : String, entities : Array(Tourmaline::MessageEntity))
       @queue.add_to_queue(
         origin,
         user.id,
         receivers,
         reply_msids,
-        ->(receiver : Int64, reply : Int64 | Nil) {
+        ->(receiver : UserID, reply : MessageID?) {
+          @client.send_audio(
+            receiver,
+            voice,
+            caption: caption,
+            parse_mode: Tourmaline::ParseMode::None,
+            caption_entities: entities,
+            reply_to_message_id: reply,
+          )
+        }
+      )
+    end
+
+    def send_document(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, document : String, caption : String, entities : Array(Tourmaline::MessageEntity))
+      @queue.add_to_queue(
+        origin,
+        user.id,
+        receivers,
+        reply_msids,
+        ->(receiver : UserID, reply : MessageID?) {
           @client.send_document(
             receiver,
             document,
@@ -161,13 +180,13 @@ module PrivateParlorXT
       )
     end
 
-    def send_poll(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, poll : MessageID)
+    def send_poll(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, poll : MessageID)
       @queue.add_to_queue(
         origin,
         user.id,
         receivers,
         reply_msids,
-        ->(receiver : Int64, reply : Int64 | Nil) {
+        ->(receiver : UserID, reply : MessageID?) {
           @client.forward_message(
             receiver,
             user.id,
@@ -177,7 +196,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_sticker(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, sticker_file : String)
+    def send_sticker(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, sticker_file : String)
       @queue.add_to_queue(
         origin,
         user.id,
@@ -193,7 +212,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_venue(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, venue : Tourmaline::Venue)
+    def send_venue(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, venue : Tourmaline::Venue)
       @queue.add_to_queue(
         origin,
         user.id,
@@ -216,7 +235,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_location(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, location : Tourmaline::Location)
+    def send_location(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, location : Tourmaline::Location)
       @queue.add_to_queue(
         origin,
         user.id,
@@ -233,7 +252,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_contact(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(Int64, Int64)?, contact : Tourmaline::Contact)
+    def send_contact(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, contact : Tourmaline::Contact)
       @queue.add_to_queue(
         origin,
         user.id,
