@@ -137,8 +137,17 @@ module PrivateParlorXT
     {{update_on = update.annotation(On)}}
 
     if config.{{update_on[:config].id}}
+      {% if update == ForwardHandler %}
+        if config.regular_forwards
+          {{handler = (update_on[:update].id + "_update").id.downcase}} = RegularForwardHandler.new(config)
+        else
+          {{handler = (update_on[:update].id + "_update").id.downcase}} = ForwardHandler.new(config)
+        end
+      {% else %}
+        {{handler = (update_on[:update].id + "_update").id.downcase}}  = {{update}}.new(config)
+      {% end %}
 
-      {{handler = (update_on[:update].id + "_update").id.downcase}}  = {{update}}.new(config)
+      
 
       client.on({{update_on[:update]}}) do |ctx|
         {{handler}}.do(ctx, relay, access, database, history, locale, spam)

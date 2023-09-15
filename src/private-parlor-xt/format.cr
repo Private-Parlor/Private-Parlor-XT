@@ -101,6 +101,97 @@ module PrivateParlorXT
       end
     end
 
+    # Checks the text and entities for a forwarded message to determine if it
+    # was relayed as a regular message
+    #
+    # Returns true if the forward message was relayed regularly, nil otherwise
+    def regular_forward?(text : String?, entities : Array(Tourmaline::MessageEntity)) : Bool?
+      return unless text
+      if ent = entities.first?
+        text.starts_with?("Forwarded from") && ent.type == "bold"
+      end
+    end
+
+    def get_forward_header(message : Tourmaline::Message, entities : Array(Tourmaline::MessageEntity)) : Tuple(String?, Array(Tourmaline::MessageEntity))
+      if from = message.forward_from
+        if from.is_bot?
+          Format.format_username_forward(from.full_name, from.username, entities)
+        elsif from.id
+          Format.format_user_forward(from.full_name, from.id, entities)
+        else
+          return nil, [] of Tourmaline::MessageEntity
+        end
+      elsif (from = message.forward_from_chat) && message.forward_from_message_id
+        if from.username
+          Format.format_username_forward(from.name, from.username, entities, message.forward_from_message_id)
+        else
+          Format.format_private_channel_forward(from.name, from.id, entities, message.forward_from_message_id)
+        end
+      elsif from = message.forward_sender_name
+        Format.format_private_user_forward(from, entities)
+      else
+        return nil, [] of Tourmaline::MessageEntity
+      end
+    end
+
+    def format_user_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      header = "Forwarded from #{name}\n\n"
+      entities = offset_entities(entities, header.size)
+
+      entities = [
+        Tourmaline::MessageEntity.new("bold", 0, header.size),
+        Tourmaline::MessageEntity.new("text_link", 15, name.size, "tg://user?id=#{id}")
+      ].concat(entities)
+
+      return header, entities
+    end
+  
+    def format_private_user_forward(name : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      header = "Forwarded from #{name}\n\n"
+      entities = offset_entities(entities, header.size)
+
+      entities = [
+        Tourmaline::MessageEntity.new("bold", 0, header.size),
+        Tourmaline::MessageEntity.new("italic", 15, name.size)
+      ].concat(entities)
+
+      return header, entities
+    end
+  
+    # For bots or public channels
+    def format_username_forward(name : String, username : String?, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
+      header = "Forwarded from #{name}\n\n"
+      entities = offset_entities(entities, header.size)
+
+      entities = [
+        Tourmaline::MessageEntity.new("bold", 0, header.size),
+        Tourmaline::MessageEntity.new("text_link", 15, name.size, "tg://resolve?domain=#{escape_html(username)}#{"&post=#{msid}" if msid}")
+      ].concat(entities)
+
+      return header, entities
+    end
+  
+    # Removes the "-100" prefix for private channels
+    def format_private_channel_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
+      header = "Forwarded from #{name}\n\n"
+      entities = offset_entities(entities, header.size)
+
+      entities = [
+        Tourmaline::MessageEntity.new("bold", 0, header.size),
+        Tourmaline::MessageEntity.new("text_link", 15, name.size, "tg://privatepost?channel=#{id.to_s[4..]}#{"&post=#{msid}" if msid}")
+      ].concat(entities)
+
+      return header, entities
+    end
+
+    def offset_entities(entities : Array(Tourmaline::MessageEntity), offset : Int32) : Array(Tourmaline::MessageEntity)
+      entities.each do |entity|
+        entity.offset += offset
+      end
+
+      entities
+    end
+
     def format_reason_reply(reason : String?, locale : Locale) : String?
       if reason
         "#{locale.replies.reason_prefix}#{reason}"
