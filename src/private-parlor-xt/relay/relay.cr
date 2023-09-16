@@ -303,6 +303,10 @@ module PrivateParlorXT
       )
     end
 
+    def pin_message(receiver : UserID, message : MessageID)
+      @client.pin_chat_message(receiver, message)
+    end
+
     def log_output(text : String) : Nil
       Log.info { text }
       unless @log_channel.empty?

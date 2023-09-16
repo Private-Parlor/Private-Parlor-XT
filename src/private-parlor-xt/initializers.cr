@@ -147,8 +147,6 @@ module PrivateParlorXT
         {{handler = (update_on[:update].id + "_update").id.downcase}}  = {{update}}.new(config)
       {% end %}
 
-      
-
       client.on({{update_on[:update]}}) do |ctx|
         {{handler}}.do(ctx, relay, access, database, history, locale, spam)
       end
