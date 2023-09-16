@@ -27,7 +27,7 @@ module PrivateParlorXT
       # TODO: Add R9K check hook
       new_message = history.new_message(user.id, message.message_id.to_i64)
       # TODO: Add R9K write hook
-      
+
       user.set_active
       database.update_user(user)
 
