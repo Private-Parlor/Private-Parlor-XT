@@ -19,6 +19,10 @@ module PrivateParlorXT
       @log_channel = channel_id
     end
 
+    def get_client_user() : Tourmaline::User
+      @client.bot
+    end
+
     # Relay a message to a single user. Used for system messages.
     def send_to_user(reply_message : MessageID?, user : UserID, text : String)
       @queue.add_to_queue_priority(
@@ -313,6 +317,10 @@ module PrivateParlorXT
 
     def unpin_latest_pin(receiver : UserID)
       @client.unpin_chat_message(receiver)
+    end
+
+    def edit_message_media(receiver : UserID, media : Tourmaline::InputMedia, message : MessageID)
+      @client.edit_message_media(media, receiver, message)
     end
 
     def log_output(text : String) : Nil
