@@ -1,11 +1,12 @@
 require "../../handlers.cr"
-require "./album_handler.cr"
+require "../../album_helpers.cr"
 require "tasker"
 require "tourmaline"
 
 module PrivateParlorXT
-
   class RegularForwardHandler < UpdateHandler
+    include AlbumHelpers
+
     @albums : Hash(String, AlbumHandler::Album) = {} of String => AlbumHandler::Album
 
     def initialize(config : Config)
@@ -40,7 +41,7 @@ module PrivateParlorXT
       # TODO: Add R9K write hook
 
       new_message = history.new_message(user.id, message.message_id.to_i64)
-      
+
       user.set_active
       database.update_user(user)
 
@@ -51,7 +52,6 @@ module PrivateParlorXT
       end
 
       # Foward regular forwards, otherwise add header to text and offset entities then send as a captioned type
-
       if Format.regular_forward?(text, entities)
         return relay.send_forward(
           new_message,
@@ -61,7 +61,12 @@ module PrivateParlorXT
         )
       end
 
-      header, entities = Format.get_forward_header(message, entities)
+      if (album = message.media_group_id) && @albums[album]?
+        header = ""
+      else
+        header, entities = Format.get_forward_header(message, entities)
+      end
+
       unless header
         return relay.send_forward(
           new_message,
@@ -73,10 +78,19 @@ module PrivateParlorXT
 
       text = header + text
 
-      relay_regular_forward(message, text, entities, new_message, user, receivers, relay)
+      relay_regular_forward(
+        message,
+        text,
+        entities,
+        new_message,
+        user,
+        receivers,
+        history,
+        relay,
+      )
     end
 
-    def relay_regular_forward(message : Tourmaline::Message, text : String, entities : Array(Tourmaline::MessageEntity), cached_message : MessageID, user : User, receivers : Array(UserID), relay : Relay)
+    def relay_regular_forward(message : Tourmaline::Message, text : String, entities : Array(Tourmaline::MessageEntity), cached_message : MessageID, user : User, receivers : Array(UserID), history : History, relay : Relay)
       if message.text
         relay.send_text(
           cached_message,
@@ -87,7 +101,23 @@ module PrivateParlorXT
           entities,
         )
       elsif album = message.media_group_id
-        # TODO: Add regular forward album handler
+        return unless input = get_album_input(message, text, entities)
+
+        if @albums[album]?
+          @albums[album].message_ids << message.message_id.to_i64
+          @albums[album].media << input
+          return
+        end
+
+        media_group = Album.new(message.message_id.to_i64, input)
+        @albums.merge!({album => media_group})
+
+        # Wait an arbitrary amount of time for Telegram MediaGroup updates to come in before relaying the album.
+        Tasker.in(500.milliseconds) {
+          next unless temp_album = @albums.delete(album)
+
+          relay_album(temp_album, user, receivers, nil, history, relay)
+        }
       elsif file = message.animation
         relay.send_animation(
           cached_message,
