@@ -24,7 +24,6 @@ module PrivateParlorXT
         return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.not_in_cache)
       end
 
-
       unless (from = reply.from) && from.id == relay.get_client_user.id
         # Prevent spoiling messages that were not sent from the bot
         return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.fail)
@@ -93,7 +92,7 @@ module PrivateParlorXT
 
       relay.log_output(log)
 
-      return true
+      true
     end
   end
 end

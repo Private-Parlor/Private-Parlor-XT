@@ -30,14 +30,14 @@ module PrivateParlorXT
           "msid" => reply.message_id.to_s,
         })
       else
-        database.get_active_users.each do |user|
-          relay.unpin_latest_pin(user)
+        database.get_active_users.each do |receiver|
+          relay.unpin_latest_pin(receiver)
         end
 
         log = Format.substitute_message(locale.logs.unpinned_recent, locale, {
-        "id"   => user.id.to_s,
-        "name" => user.get_formatted_name,
-      })
+          "id"   => user.id.to_s,
+          "name" => user.get_formatted_name,
+        })
       end
 
       user.set_active
