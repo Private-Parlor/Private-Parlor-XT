@@ -247,5 +247,82 @@ module PrivateParlorXT
     def format_version : String
       "Private Parlor v#{VERSION} ~ <a href=\"https://github.com/Private-Parlor/Private-Parlor-XT\">[Source]</a>"
     end
+
+    # Returns a message containing the commands the user can use.
+    def format_help(user : User, ranks : Hash(Int32, Rank), locale : Locale) : String
+      ranked = {
+        CommandPermissions::Promote      => "/promote [name/OID/ID] [rank] - #{locale.command_descriptions.promote}",
+        CommandPermissions::PromoteSame  => "/promote [name/OID/ID] [rank] - #{locale.command_descriptions.promote}",
+        CommandPermissions::PromoteLower => "/promote [name/OID/ID] [rank] - #{locale.command_descriptions.promote}",
+        CommandPermissions::Demote       => "/demote [name/OID/ID] [rank] - #{locale.command_descriptions.demote}",
+        CommandPermissions::Ranksay      => "/#{ranks[user.rank].name.downcase}say [text] - #{locale.command_descriptions.ranksay}",
+        CommandPermissions::Sign         => "/sign [text] - #{locale.command_descriptions.sign}",
+        CommandPermissions::TSign        => "/tsign [text] - #{locale.command_descriptions.tsign}",
+        CommandPermissions::Uncooldown   => "/uncooldown [name/OID] - #{locale.command_descriptions.uncooldown}",
+        CommandPermissions::Whitelist    => "/whitelist [ID] - #{locale.command_descriptions.whitelist}",
+        CommandPermissions::Purge        => "/purge - #{locale.command_descriptions.purge}",
+        CommandPermissions::MotdSet      => "/motd - #{locale.command_descriptions.motd_set}",
+      }
+
+      reply_required = {
+        CommandPermissions::Upvote     => "+1 - #{locale.command_descriptions.upvote}",
+        CommandPermissions::Downvote   => "-1 - #{locale.command_descriptions.downvote}",
+        CommandPermissions::Warn       => "/warn [reason] - #{locale.command_descriptions.warn}",
+        CommandPermissions::Delete     => "/delete [reason] - #{locale.command_descriptions.delete}",
+        CommandPermissions::Spoiler    => "/spoiler - #{locale.command_descriptions.spoiler}",
+        CommandPermissions::Remove     => "/remove [reason] - #{locale.command_descriptions.remove}",
+        CommandPermissions::Blacklist  => "/blacklist [reason] - #{locale.command_descriptions.blacklist}",
+        CommandPermissions::RankedInfo => "/info - #{locale.command_descriptions.ranked_info}",
+        CommandPermissions::Reveal     => "/reveal - #{locale.command_descriptions.reveal}",
+        CommandPermissions::Pin        => "/pin - #{locale.command_descriptions.pin}",
+        CommandPermissions::Unpin      => "/unpin - #{locale.command_descriptions.unpin}",
+      }
+
+      String.build do |str|
+        str << substitute_message(locale.replies.help_header, locale)
+        str << escape_html("\n/start - #{locale.command_descriptions.start}")
+        str << escape_html("\n/stop - #{locale.command_descriptions.stop}")
+        str << escape_html("\n/info - #{locale.command_descriptions.info}")
+        str << escape_html("\n/users - #{locale.command_descriptions.users}")
+        str << escape_html("\n/version - #{locale.command_descriptions.version}")
+        str << escape_html("\n/toggle_karma - #{locale.command_descriptions.toggle_karma}")
+        str << escape_html("\n/toggle_debug - #{locale.command_descriptions.toggle_debug}")
+        str << escape_html("\n/tripcode - #{locale.command_descriptions.tripcode}")
+        str << escape_html("\n/motd - #{locale.command_descriptions.motd}")
+        str << escape_html("\n/help - #{locale.command_descriptions.help}")
+
+        rank_commands = [] of String
+        reply_commands = [] of String
+
+        if rank = ranks[user.rank]?
+          if rank.command_permissions.includes?(:ranksay_lower)
+            ranks.each do |k, v|
+              if k <= user.rank && k != -10 && v.command_permissions.includes?(:ranksay)
+                rank_commands << escape_html("/#{v.name.downcase}say [text] - #{locale.command_descriptions.ranksay}")
+              end
+            end
+          end
+
+          rank.command_permissions.each do |permission|
+            if ranked.keys.includes?(permission)
+              rank_commands << escape_html(ranked[permission])
+            elsif reply_required.keys.includes?(permission)
+              reply_commands << escape_html(reply_required[permission])
+            end
+          end
+
+          unless rank_commands.empty?
+            str << "\n\n"
+            str << substitute_message(locale.replies.help_rank_commands, locale, {"rank" => rank.name})
+            rank_commands.each { |line| str << escape_html("\n#{line}") }
+          end
+          unless reply_commands.empty?
+            str << "\n\n"
+            str << substitute_message(locale.replies.help_reply_commands, locale)
+            reply_commands.each { |line| str << escape_html("\n#{line}") }
+          end
+        end
+      end
+    end
   end
 end
