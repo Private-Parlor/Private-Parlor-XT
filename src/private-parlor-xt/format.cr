@@ -214,6 +214,27 @@ module PrivateParlorXT
       end
     end
 
+    # Formats a loading bar for the /karmainfo command
+    def format_karma_loading_bar(percentage : Float32, locale : Locale) : String
+      pips = (percentage.floor.to_i).divmod(10)
+
+      if pips[0] != 10
+        String.build(10) do |str|
+          str << locale.loading_bar[2] * pips[0]
+
+          if pips[1] >= 5
+            str << locale.loading_bar[1]
+          else
+            str << locale.loading_bar[0]
+          end
+
+          str << locale.loading_bar[0] * (10 - (pips[0] + 1))
+        end
+      else
+        locale.loading_bar[2] * 10
+      end
+    end
+
     def format_time(time : Time?, format : String) : String?
       if time
         time.to_s(format)
