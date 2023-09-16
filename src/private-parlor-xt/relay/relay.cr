@@ -307,6 +307,14 @@ module PrivateParlorXT
       @client.pin_chat_message(receiver, message)
     end
 
+    def unpin_message(receiver : UserID, message : MessageID)
+      @client.unpin_chat_message(receiver, message)
+    end
+
+    def unpin_latest_pin(receiver : UserID)
+      @client.unpin_chat_message(receiver)
+    end
+
     def log_output(text : String) : Nil
       Log.info { text }
       unless @log_channel.empty?

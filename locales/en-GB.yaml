@@ -322,8 +322,11 @@ logs:
    # Available placeholders: id, name, msid
    pinned: "User {id}, aka {name}, pinned receiver message [{msid}]"
 
+   # Available placeholders: id, name, msid
+   unpinned: "User {id}, aka {name}, unpinned receiver message [{msid}]"
+
    # Available placeholders: id, name
-   unpinned: "User {id}, aka {name}, unpinned most recently pinned message"
+   unpinned_recent: "User {id}, aka {name}, unpinned most recently pinned message"
 
    # Available placeholders: id, name, text
    motd_set: "User {id}, aka {name}, set the MOTD to: {text}"

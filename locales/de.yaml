@@ -323,8 +323,11 @@ logs:
    # Available placeholders: id, name, msid
    pinned: "Nutzer {id}, alias {name}, hat die Nachricht [{msid}] angeheftet"
 
+   # Available placeholders: id, name, msid
+   unpinned: "Nutzer {id}, alias {name}, hat die Nachricht [{msid}] losgelöst"
+
    # Available placeholders: id, name
-   unpinned: "Nutzer {id}, alias {name}, hat die neueste angeheftete Nachricht losgelöst"
+   unpinned_recent: "Nutzer {id}, alias {name}, hat die neueste angeheftete Nachricht losgelöst"
 
    # Available placeholders: id, name, text
    motd_set: "Nutzer {id}, alias {name}, hat die Regeln gesetzt: {text}"

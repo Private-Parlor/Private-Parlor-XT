@@ -58,6 +58,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "unpinned")]
     getter unpinned : String
 
+    @[YAML::Field(key: "unpinned_recent")]
+    getter unpinned_recent : String
+
     @[YAML::Field(key: "motd_set")]
     getter motd_set : String
 

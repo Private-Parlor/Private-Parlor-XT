@@ -329,8 +329,11 @@ logs:
    # Available placeholders: id, name, msid
    pinned: "[{msid}] QInvam vev {id} meb (pong: {name})"
 
+   # Available placeholders: id, name, msid
+   unpinned: "[{msid}] QInvam vevHa' {id} meb (pong: {name})"
+
    # Available placeholders: id, name
-   unpinned: "[{msid}] QInvam ghoQ vevHa' {id} meb (pong: {name})"
+   unpinned_recent: "QInvam ghoQ vevHa' {id} meb (pong: {name})"
 
    # Available placeholders: id, name, text
    motd_set: "qangtlhIn chenmoHqa'ta' {id} meb (pong: {name}). qangtlhIn chu': {text}"
