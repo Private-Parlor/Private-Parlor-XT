@@ -1,6 +1,44 @@
 require "./handlers.cr"
+require "./services.cr"
 
 module PrivateParlorXT
+
+  def self.initialize_services() : Services
+    config = Config.parse_config
+    locale = Locale.parse_locale(Path["./locales"], config.locale)
+    database = SQLiteDatabase.instance(DB.open("sqlite3://#{config.database}"))
+
+    if config.spam_interval != 0
+      spam = config.spam_handler
+    else
+      spam = nil
+    end
+
+    if config.database_history
+      history = SQLiteHistory.instance(config.message_lifespan.hours, DB.open("sqlite3://#{config.database}"))
+    else
+      history = CachedHistory.instance(config.message_lifespan.hours)
+    end
+
+    access = AuthorizedRanks.instance(config.ranks)
+
+    client = Client.new(config.token)
+    client.default_parse_mode = Tourmaline::ParseMode::HTML # TODO: Change to MarkdownV2
+
+    relay = Relay.instance(config.log_channel, client)
+
+    Services.new(
+      HandlerConfig.new(config),
+      locale,
+      database,
+      history,
+      access,
+      client,
+      relay,
+      spam,
+    )
+  end
+
   def self.initialize_handlers(
     client : Tourmaline::Client,
     config : Config,
@@ -9,7 +47,8 @@ module PrivateParlorXT
     database : Database,
     history : History,
     locale : Locale,
-    spam : SpamHandler?
+    spam : SpamHandler?,
+    services : Services
   ) : Nil
     events = [] of Tourmaline::EventHandler
 
@@ -29,6 +68,7 @@ module PrivateParlorXT
       history,
       locale,
       spam,
+      services,
     ))
 
     # TODO: Add Inline Queries
@@ -95,7 +135,8 @@ module PrivateParlorXT
     database : Database,
     history : History,
     locale : Locale,
-    spam : SpamHandler?
+    spam : SpamHandler?,
+    services : Services,
   ) : Array(Tourmaline::HearsHandler)
     arr = [] of Tourmaline::HearsHandler
 
@@ -111,7 +152,7 @@ module PrivateParlorXT
       {{handler = (command.stringify.split("::").last.underscore).id}}  = {{command}}.new(config)
 
       arr << Tourmaline::HearsHandler.new({{command_hears[:text]}}) do |ctx|
-        {{handler}}.do(ctx, relay, access, database, history, locale, spam)
+        {{handler}}.do(ctx, services)
       end
     end
 

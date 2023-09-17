@@ -28,7 +28,18 @@ module PrivateParlorXT
 
   relay = Relay.instance(config.log_channel, client)
 
-  initialize_handlers(client, config, relay, access, database, history, locale, spam)
+  services = Services.new(
+    HandlerConfig.new(config),
+    locale,
+    database,
+    history,
+    access,
+    client,
+    relay,
+    spam,
+  )
+
+  initialize_handlers(client, config, relay, access, database, history, locale, spam, services)
 
   # 30 messages every second; going above may result in rate limits
   sending_routine = Tasker.every(500.milliseconds) do

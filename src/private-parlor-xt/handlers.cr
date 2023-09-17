@@ -115,19 +115,17 @@ module PrivateParlorXT
   end
 
   abstract class HearsHandler
-    @blacklist_contact : String? = nil
-
     abstract def initialize(config : Config)
 
-    abstract def do(ctx : Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale, spam : SpamHandler?)
+    abstract def do(ctx : Context, services : Services)
 
-    private def get_message_and_user(ctx : Tourmaline::Context, database : Database, relay : Relay, locale : Locale) : Tuple(Tourmaline::Message?, User?)
+    private def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
       unless (message = ctx.message) && (info = message.from)
         return nil, nil
       end
 
-      unless user = database.get_user(info.id.to_i64)
-        relay.send_to_user(nil, info.id.to_i64, locale.replies.not_in_chat)
+      unless user = services.database.get_user(info.id.to_i64)
+        services.relay.send_to_user(nil, info.id.to_i64, locale.replies.not_in_chat)
         return message, nil
       end
 
@@ -136,17 +134,17 @@ module PrivateParlorXT
       return message, user
     end
 
-    private def deny_user(user : User, relay : Relay, locale : Locale) : Nil
+    private def deny_user(user : User, services : Services) : Nil
       if user.blacklisted?
-        response = Format.substitute_message(locale.replies.blacklisted, locale, {
-          "contact" => Format.format_contact_reply(@blacklist_contact, locale),
-          "reason"  => Format.format_reason_reply(user.blacklist_reason, locale),
+        response = Format.substitute_message(services.locale.replies.blacklisted, services.locale, {
+          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.locale),
+          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.locale),
         })
       else
-        response = locale.replies.not_in_chat
+        response = services.locale.replies.not_in_chat
       end
 
-      relay.send_to_user(nil, user.id, response)
+      services.relay.send_to_user(nil, user.id, response)
     end
   end
 end
