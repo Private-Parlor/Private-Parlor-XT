@@ -4,14 +4,7 @@ require "./user.cr"
 module PrivateParlorXT
   abstract class Database
     # Creates a new database
-    private def initialize
-    end
-
-    # Return the current instance of Database
-    #
-    # There should only be one instance throughout the lifetime of the process
-    def self.instance
-      @@instance ||= new()
+    def initialize
     end
 
     # Close connection to the database

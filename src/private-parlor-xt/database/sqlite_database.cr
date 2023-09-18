@@ -6,7 +6,7 @@ module PrivateParlorXT
     @connection : DB::Database
 
     # :inherit:
-    private def initialize(@connection : DB::Database)
+    def initialize(@connection : DB::Database)
       ensure_schema()
     end
 

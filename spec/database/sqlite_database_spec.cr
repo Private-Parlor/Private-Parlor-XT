@@ -2,17 +2,9 @@ require "../spec_helper.cr"
 
 module PrivateParlorXT
   describe SQLiteDatabase, tags: "database" do
-    # TODO: Ideally these tests would do something smarter than re-creating
-    # the same database over and over
-    around_each do |example|
-      create_sqlite_database
-      example.run
-      delete_sqlite_database
-    end
-
     describe "#get_user" do
       it "returns a User object if the user exists" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         user = db.get_user(80300)
 
@@ -26,7 +18,7 @@ module PrivateParlorXT
       end
 
       it "returns nil if the user does not exist" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         db.get_user(12345).should(be_nil)
 
@@ -36,7 +28,7 @@ module PrivateParlorXT
 
     describe "#get_user_counts" do
       it "returns total number of users, inactive, and blacklisted" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         tuple = db.get_user_counts
 
@@ -50,7 +42,7 @@ module PrivateParlorXT
 
     describe "#get_blacklisted_users" do
       it "returns all blacklisted users" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         users = db.get_blacklisted_users
 
@@ -60,7 +52,7 @@ module PrivateParlorXT
       end
 
       it "returns users blacklisted recently" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         new_user = db.add_user(12345, nil, "BLACKLISTED", -10)
         new_user.set_left
@@ -76,7 +68,7 @@ module PrivateParlorXT
 
     describe "#get_warned_users" do
       it "returns all warned users" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         users = db.get_warned_users
 
@@ -98,7 +90,7 @@ module PrivateParlorXT
 
     describe "#get_invalid_rank_users" do
       it "returns all users with invalid ranks" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         users = db.get_invalid_rank_users([1000, 0, -10])
 
@@ -111,7 +103,7 @@ module PrivateParlorXT
 
     describe "#get_inactive_users" do
       it "returns all inactive users" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         db.add_user(12345, "", "Active", 0)
 
@@ -125,7 +117,7 @@ module PrivateParlorXT
 
     describe "#get_user_by_name" do
       it "returns a user with the given name" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         user = db.get_user_by_name("voorb")
 
@@ -139,7 +131,7 @@ module PrivateParlorXT
       end
 
       it "returns nil if the user does not exist" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         user = db.get_user_by_name("beisp")
 
@@ -151,7 +143,7 @@ module PrivateParlorXT
 
     describe "#get_user_by_oid" do
       it "returns a user with the given OID" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         oid = SQLiteUser.new(20000).get_obfuscated_id
 
@@ -167,7 +159,7 @@ module PrivateParlorXT
       end
 
       it "returns nil if the user does not exist" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         oid = SQLiteUser.new(12345).get_obfuscated_id
 
@@ -181,7 +173,7 @@ module PrivateParlorXT
 
     describe "#get_user_by_arg" do
       it "returns a user with the id" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         user = db.get_user_by_arg("20000")
 
@@ -195,7 +187,7 @@ module PrivateParlorXT
       end
 
       it "returns a user with the oid" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         oid = SQLiteUser.new(20000).get_obfuscated_id
 
@@ -211,7 +203,7 @@ module PrivateParlorXT
       end
 
       it "returns a user with the name" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         user = db.get_user_by_arg("@examp")
 
@@ -227,7 +219,7 @@ module PrivateParlorXT
 
     describe "#get_active_users" do
       it "returns recently active users, ordered first by rank" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         arr = db.get_active_users
 
@@ -239,7 +231,7 @@ module PrivateParlorXT
       end
 
       it "excludes user from result if given a user ID" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         arr = db.get_active_users(exclude: 80300)
 
@@ -252,7 +244,7 @@ module PrivateParlorXT
 
     describe "#add_user" do
       it "returns new user after adding to the database" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         new_user = db.add_user(12345, nil, "NewUser", 0)
 
@@ -266,7 +258,7 @@ module PrivateParlorXT
 
     describe "#update_user" do
       it "updates user with new data" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         user = SQLiteUser.new(20000)
         user.update_names("examp", "EXAMP")
@@ -287,7 +279,7 @@ module PrivateParlorXT
 
     describe "#no_users?" do
       it "returns false if the database contains users" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         db.no_users?.should(be_false)
 
@@ -297,7 +289,7 @@ module PrivateParlorXT
 
     describe "#expire_warnings" do
       it "removes warnings and updates warn expiration date" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         unless user_with_multiple_warnings = db.get_user(80300)
           fail("User ID 803000 should exist in the database")
@@ -334,7 +326,7 @@ module PrivateParlorXT
 
     describe "#get_motd" do
       it "returns nil if there is no MOTD" do
-        db = instantiate_sqlite_database
+        db = create_sqlite_database
 
         motd = db.get_motd
 
@@ -345,7 +337,7 @@ module PrivateParlorXT
     end
 
     it "returns the MOTD if set" do
-      db = instantiate_sqlite_database
+      db = create_sqlite_database
 
       db.set_motd("test")
 

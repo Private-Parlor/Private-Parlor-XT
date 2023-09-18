@@ -26,8 +26,6 @@ module PrivateParlorXT
     getter message_map : Hash(MessageID, MessageGroup) = {} of MessageID => MessageGroup
 
     def close
-      message_map.clear
-      Log.debug { "Explicitly cleared contents of message_map hash" }
     end
 
     # :inherit:

@@ -9,13 +9,8 @@ module PrivateParlorXT
     # :inherit:
     #
     # Generally this should use the same connection that was used for the database
-    private def initialize(@lifespan : Time::Span, @connection : DB::Database)
+    def initialize(@lifespan : Time::Span, @connection : DB::Database)
       ensure_schema()
-    end
-
-    # :inherit:
-    def self.instance(lifespan : Time::Span, connection : DB::Database)
-      @@instance ||= new(lifespan, connection)
     end
 
     # Closes the databsase connection

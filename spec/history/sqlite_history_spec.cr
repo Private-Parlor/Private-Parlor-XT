@@ -2,17 +2,9 @@ require "../spec_helper.cr"
 
 module PrivateParlorXT
   describe SQLiteHistory, tags: "database" do
-    # TODO: Ideally these tests would do something smarter than re-creating
-    # the same database over and over
-    around_each do |example|
-      create_sqlite_database
-      example.run
-      delete_sqlite_database
-    end
-
     describe "#new_message" do
       it "adds new message to database" do
-        db = instantiate_sqlite_history
+        db = create_sqlite_history
         sender = 100
         origin = 50
 
@@ -26,7 +18,7 @@ module PrivateParlorXT
     end
 
     it "adds receiver message to database" do
-      db = instantiate_sqlite_history
+      db = create_sqlite_history
       sender = 100
       origin = 50
 
@@ -50,7 +42,7 @@ module PrivateParlorXT
 
     describe "#get_origin_message" do
       it "gets original message ID from receiver message ID" do
-        db = instantiate_sqlite_history
+        db = create_sqlite_history
 
         msid = db.get_origin_message(9)
 
@@ -64,7 +56,7 @@ module PrivateParlorXT
       end
 
       it "gets original message ID from debug receiver message ID" do
-        db = instantiate_sqlite_history
+        db = create_sqlite_history
 
         msid = db.get_origin_message(5)
 
@@ -78,7 +70,7 @@ module PrivateParlorXT
       end
 
       it "returns nil if receiver message ID has no original message" do
-        db = instantiate_sqlite_history
+        db = create_sqlite_history
 
         db.get_origin_message(12345).should(be_nil)
 
@@ -88,7 +80,7 @@ module PrivateParlorXT
 
     describe "#get_all_receivers" do
       it "gets all receiver messages IDs from a message group" do
-        db = instantiate_sqlite_history
+        db = create_sqlite_history
 
         expected = {
           20000 => 5,
@@ -104,7 +96,7 @@ module PrivateParlorXT
       end
 
       it "returns an empty hash if original message does not exist" do
-        db = instantiate_sqlite_history
+        db = create_sqlite_history
 
         db.get_all_receivers(12345).should(eq({} of Int64 => Int64))
 
@@ -114,7 +106,7 @@ module PrivateParlorXT
 
     describe "#get_receiver_message" do
       it "gets receiver message ID for a given user" do
-        db = instantiate_sqlite_history
+        db = create_sqlite_history
 
         db.get_receiver_message(7, 80300).should(eq(6))
         db.get_receiver_message(6, 20000).should(eq(5))
@@ -124,7 +116,7 @@ module PrivateParlorXT
       end
 
       it "returns nil if original message does not exist" do
-        db = instantiate_sqlite_history
+        db = create_sqlite_history
 
         db.get_receiver_message(50, 100).should(be_nil)
 
@@ -134,7 +126,7 @@ module PrivateParlorXT
 
     describe "#get_sender" do
       it "gets the sender ID of a message group from a receiver message ID" do
-        db = instantiate_sqlite_history
+        db = create_sqlite_history
 
         db.get_sender(10).should(eq(60200))
 
@@ -142,7 +134,7 @@ module PrivateParlorXT
       end
 
       it "returns nil if original message does not exist" do
-        db = instantiate_sqlite_history
+        db = create_sqlite_history
 
         db.get_sender(50).should(be_nil)
 
@@ -151,7 +143,7 @@ module PrivateParlorXT
     end
 
     it "gets all message IDs sent by a given user" do
-      db = instantiate_sqlite_history
+      db = create_sqlite_history
 
       db.new_message(80300, 11)
 
@@ -163,7 +155,7 @@ module PrivateParlorXT
     end
 
     it "adds rating to message" do
-      db = instantiate_sqlite_history
+      db = create_sqlite_history
 
       db.add_rating(3, 20000).should(be_true)
       db.add_rating(2, 60200).should(be_false)
@@ -172,7 +164,7 @@ module PrivateParlorXT
     end
 
     it "deletes old messages" do
-      db = instantiate_sqlite_history
+      db = create_sqlite_history
 
       db.expire
 

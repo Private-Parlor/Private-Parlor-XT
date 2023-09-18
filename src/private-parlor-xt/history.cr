@@ -5,19 +5,12 @@ module PrivateParlorXT
     @lifespan : Time::Span = 24.hours
 
     # Initialize a message history where messages older than `lifespan` are considered expired
-    private def initialize(@lifespan : Time::Span)
-    end
-
-    # Return the current instance of History
-    #
-    # There should only be one instance throughout the lifetime of the process
-    def self.instance(lifespan : Time::Span)
-      @@instance ||= new(lifespan)
+    def initialize(@lifespan : Time::Span)
     end
 
     # Cleanup when finished with History
     #
-    # Mainly applicable for database implementation
+    # Mainly applicable for implementations using a database
     def close
     end
 

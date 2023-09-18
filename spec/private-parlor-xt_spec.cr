@@ -9,14 +9,8 @@ module PrivateParlorXT
     relay = Relay.instance("", client)
     access = MockAuthorizedRanks.new(config)
     locale = Locale.parse_locale(Path["#{__DIR__}/../locales/"], "en-US")
-    database = instantiate_sqlite_database
+    database = create_sqlite_database
     history = MockCachedHistory.new(config)
-
-    around_each do |example|
-      create_sqlite_database
-      example.run
-      delete_sqlite_database
-    end
 
     it "generates command handlers" do
       arr = PrivateParlorXT.generate_command_handlers(config, relay, access, database, history, locale)

@@ -7,7 +7,7 @@ module PrivateParlorXT
 
   config = Config.parse_config
   locale = Locale.parse_locale(Path["./locales"], config.locale)
-  database = SQLiteDatabase.instance(DB.open("sqlite3://#{config.database}"))
+  database = SQLiteDatabase.new(DB.open("sqlite3://#{config.database}"))
 
   if config.spam_interval != 0
     spam = config.spam_handler
@@ -16,9 +16,9 @@ module PrivateParlorXT
   end
 
   if config.database_history
-    history = SQLiteHistory.instance(config.message_lifespan.hours, DB.open("sqlite3://#{config.database}"))
+    history = SQLiteHistory.new(config.message_lifespan.hours, DB.open("sqlite3://#{config.database}"))
   else
-    history = CachedHistory.instance(config.message_lifespan.hours)
+    history = CachedHistory.new(config.message_lifespan.hours)
   end
 
   access = AuthorizedRanks.instance(config.ranks)
