@@ -55,7 +55,7 @@ module PrivateParlorXT
       ),
     }
 
-    authorized_ranks = AuthorizedRanks.instance(ranks)
+    authorized_ranks = AuthorizedRanks.new(ranks)
 
     describe "#authorized?" do
       it "returns true if user is authorized to use command" do

@@ -2,10 +2,27 @@ require "../spec_helper.cr"
 
 module PrivateParlorXT
   describe SQLiteDatabase, tags: "database" do
+    connection = DB.open("sqlite3://%3Amemory%3A")
+    db = SQLiteDatabase.new(connection)
+
+    around_each do |test|
+      connection = DB.open("sqlite3://%3Amemory%3A")
+      db = SQLiteDatabase.new(connection)
+
+      # Add users
+      connection.exec("INSERT INTO users VALUES (20000,'examp','example',1000,'2023-01-02 06:00:00.000',NULL,'2023-07-02 06:00:00.000',NULL,NULL,0,NULL,0,0,0,NULL);")
+      connection.exec("INSERT INTO users VALUES (60200,'voorb','voorbeeld',0,'2023-01-02 06:00:00.000',NULL,'2023-01-02 06:00:00.000',NULL,NULL,1,'2023-03-02 12:00:00.000',-10,0,0,NULL);")
+      connection.exec("INSERT INTO users VALUES (80300,NULL,'beispiel',10,'2023-01-02 06:00:00.000',NULL,'2023-03-02 12:00:00.000',NULL,NULL,2,'2023-04-02 12:00:00.000',-20,0,1,NULL);")
+      connection.exec("INSERT INTO users VALUES (40000,NULL,'esimerkki',0,'2023-01-02 06:00:00.000','2023-02-04 06:00:00.000','2023-02-04 06:00:00.000',NULL,NULL,0,NULL,0,0,0,NULL);")
+      connection.exec("INSERT INTO users VALUES (70000,NULL,'BLACKLISTED',-10,'2023-01-02 06:00:00.000','2023-04-02 10:00:00.000','2023-01-02 06:00:00.000',NULL,NULL,0,NULL,0,0,0,NULL);")
+      
+      test.run
+      
+      db.close
+    end
+
     describe "#get_user" do
       it "returns a User object if the user exists" do
-        db = create_sqlite_database
-
         user = db.get_user(80300)
 
         unless user
@@ -13,47 +30,31 @@ module PrivateParlorXT
         end
 
         user.id.should(eq(80300))
-
-        db.close
       end
 
       it "returns nil if the user does not exist" do
-        db = create_sqlite_database
-
         db.get_user(12345).should(be_nil)
-
-        db.close
       end
     end
 
     describe "#get_user_counts" do
       it "returns total number of users, inactive, and blacklisted" do
-        db = create_sqlite_database
-
         tuple = db.get_user_counts
 
         tuple[:total].should(eq(5))
         tuple[:left].should(eq(2))
         tuple[:blacklisted].should(eq(1))
-
-        db.close
       end
     end
 
     describe "#get_blacklisted_users" do
       it "returns all blacklisted users" do
-        db = create_sqlite_database
-
         users = db.get_blacklisted_users
 
         users[0].id.should(eq(70000))
-
-        db.close
       end
 
       it "returns users blacklisted recently" do
-        db = create_sqlite_database
-
         new_user = db.add_user(12345, nil, "BLACKLISTED", -10)
         new_user.set_left
         db.update_user(new_user)
@@ -61,15 +62,11 @@ module PrivateParlorXT
         users = db.get_blacklisted_users(1.hours)
 
         users[0].id.should(eq(new_user.id))
-
-        db.close
       end
     end
 
     describe "#get_warned_users" do
       it "returns all warned users" do
-        db = create_sqlite_database
-
         users = db.get_warned_users
 
         if users.size > 2
@@ -83,42 +80,30 @@ module PrivateParlorXT
             user.warnings.should(eq(2))
           end
         end
-
-        db.close
       end
     end
 
     describe "#get_invalid_rank_users" do
       it "returns all users with invalid ranks" do
-        db = create_sqlite_database
-
         users = db.get_invalid_rank_users([1000, 0, -10])
 
         users[0].rank.should(eq(10))
         users[0].id.should(eq(80300))
-
-        db.close
       end
     end
 
     describe "#get_inactive_users" do
       it "returns all inactive users" do
-        db = create_sqlite_database
-
         db.add_user(12345, "", "Active", 0)
 
         users = db.get_inactive_users(1.days)
 
         users.size.should(eq(3))
-
-        db.close
       end
     end
 
     describe "#get_user_by_name" do
       it "returns a user with the given name" do
-        db = create_sqlite_database
-
         user = db.get_user_by_name("voorb")
 
         unless user
@@ -126,25 +111,17 @@ module PrivateParlorXT
         end
 
         user.id.should(eq(60200))
-
-        db.close
       end
 
       it "returns nil if the user does not exist" do
-        db = create_sqlite_database
-
         user = db.get_user_by_name("beisp")
 
         user.should(be_nil)
-
-        db.close
       end
     end
 
     describe "#get_user_by_oid" do
       it "returns a user with the given OID" do
-        db = create_sqlite_database
-
         oid = SQLiteUser.new(20000).get_obfuscated_id
 
         user = db.get_user_by_oid(oid)
@@ -154,27 +131,19 @@ module PrivateParlorXT
         end
 
         user.id.should(eq(20000))
-
-        db.close
       end
 
       it "returns nil if the user does not exist" do
-        db = create_sqlite_database
-
         oid = SQLiteUser.new(12345).get_obfuscated_id
 
         user = db.get_user_by_oid(oid)
 
         user.should(be_nil)
-
-        db.close
       end
     end
 
     describe "#get_user_by_arg" do
       it "returns a user with the id" do
-        db = create_sqlite_database
-
         user = db.get_user_by_arg("20000")
 
         unless user
@@ -182,13 +151,9 @@ module PrivateParlorXT
         end
 
         user.id.should(eq(20000))
-
-        db.close
       end
 
       it "returns a user with the oid" do
-        db = create_sqlite_database
-
         oid = SQLiteUser.new(20000).get_obfuscated_id
 
         user = db.get_user_by_arg(oid)
@@ -198,13 +163,9 @@ module PrivateParlorXT
         end
 
         user.id.should(eq(20000))
-
-        db.close
       end
 
       it "returns a user with the name" do
-        db = create_sqlite_database
-
         user = db.get_user_by_arg("@examp")
 
         unless user
@@ -212,54 +173,38 @@ module PrivateParlorXT
         end
 
         user.id.should(eq(20000))
-
-        db.close
       end
     end
 
     describe "#get_active_users" do
       it "returns recently active users, ordered first by rank" do
-        db = create_sqlite_database
-
         arr = db.get_active_users
 
         arr[0].should(eq(20000))
         arr[1].should(eq(80300))
         arr[2].should(eq(60200))
-
-        db.close
       end
 
       it "excludes user from result if given a user ID" do
-        db = create_sqlite_database
-
         arr = db.get_active_users(exclude: 80300)
 
         arr[0].should(eq(20000))
         arr[1].should(eq(60200))
-
-        db.close
       end
     end
 
     describe "#add_user" do
       it "returns new user after adding to the database" do
-        db = create_sqlite_database
-
         new_user = db.add_user(12345, nil, "NewUser", 0)
 
         new_user.should(be_a(SQLiteUser))
 
         new_user.id.should(eq(12345))
-
-        db.close
       end
     end
 
     describe "#update_user" do
       it "updates user with new data" do
-        db = create_sqlite_database
-
         user = SQLiteUser.new(20000)
         user.update_names("examp", "EXAMP")
 
@@ -272,25 +217,17 @@ module PrivateParlorXT
         end
 
         updated_user.realname.should(eq("EXAMP"))
-
-        db.close
       end
     end
 
     describe "#no_users?" do
       it "returns false if the database contains users" do
-        db = create_sqlite_database
-
         db.no_users?.should(be_false)
-
-        db.close
       end
     end
 
     describe "#expire_warnings" do
       it "removes warnings and updates warn expiration date" do
-        db = create_sqlite_database
-
         unless user_with_multiple_warnings = db.get_user(80300)
           fail("User ID 803000 should exist in the database")
         end
@@ -319,26 +256,18 @@ module PrivateParlorXT
 
         user_beisp.warn_expiry.should_not(eq(original_expiration))
         user_beisp.warnings.should(eq(1))
-
-        db.close
       end
     end
 
     describe "#get_motd" do
       it "returns nil if there is no MOTD" do
-        db = create_sqlite_database
-
         motd = db.get_motd
 
         motd.should(be_nil)
-
-        db.close
       end
     end
 
     it "returns the MOTD if set" do
-      db = create_sqlite_database
-
       db.set_motd("test")
 
       motd = db.get_motd
@@ -348,8 +277,6 @@ module PrivateParlorXT
       end
 
       motd.should(eq("test"))
-
-      db.close
     end
   end
 end

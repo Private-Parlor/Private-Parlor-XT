@@ -8,11 +8,7 @@ module PrivateParlorXT
     @client : Tourmaline::Client
     @log_channel : String
 
-    private def initialize(@log_channel : String, @client : Tourmaline::Client)
-    end
-
-    def self.instance(log_channel : String, client : Tourmaline::Client)
-      @@instance ||= new(log_channel, client)
+    def initialize(@log_channel : String, @client : Tourmaline::Client)
     end
 
     def set_log_channel(channel_id : String)

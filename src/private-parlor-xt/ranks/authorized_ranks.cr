@@ -6,11 +6,7 @@ module PrivateParlorXT
   class AuthorizedRanks
     getter ranks : Hash(Int32, Rank)
 
-    private def initialize(@ranks : Hash(Int32, Rank))
-    end
-
-    def self.instance(ranks : Hash(Int32, Rank))
-      @@instance ||= new(ranks)
+    def initialize(@ranks : Hash(Int32, Rank))
     end
 
     # Returns `true` if user rank has the given command permission; user is authorized.

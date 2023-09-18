@@ -15,7 +15,6 @@ module PrivateParlorXT
     getter database : Database
     getter history : History
     getter access : AuthorizedRanks
-    getter client : Client
     getter relay : Relay
     getter spam : SpamHandler? = nil
 
@@ -25,7 +24,6 @@ module PrivateParlorXT
       @database : Database,
       @history : History,
       @access : AuthorizedRanks,
-      @client : Client,
       @relay : Relay,
       @spam : SpamHandler?,
     )

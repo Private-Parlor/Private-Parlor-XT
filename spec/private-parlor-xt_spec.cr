@@ -6,11 +6,11 @@ module PrivateParlorXT
   describe PrivateParlorXT do
     config = MockConfig.new
     client = MockClient.new
-    relay = Relay.instance("", client)
-    access = MockAuthorizedRanks.new(config)
+    relay = Relay.new("", client)
+    access = AuthorizedRanks.new(config.ranks)
     locale = Locale.parse_locale(Path["#{__DIR__}/../locales/"], "en-US")
-    database = create_sqlite_database
-    history = MockCachedHistory.new(config)
+    database = SQLiteDatabase.new(DB.open("sqlite3://%3Amemory%3A"))
+    history = CachedHistory.new(config.message_lifespan.hours)
 
     it "generates command handlers" do
       arr = PrivateParlorXT.generate_command_handlers(config, relay, access, database, history, locale)

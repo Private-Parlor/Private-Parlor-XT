@@ -6,91 +6,184 @@ require "./mocks/*"
 
 HISTORY_LIFESPAN = Time::Span.zero
 
-def create_sqlite_database : PrivateParlorXT::SQLiteDatabase
-  connection = DB.open("sqlite3://%3Amemory%3A")
+module PrivateParlorXT
+  def self.create_services(config : HandlerConfig? = nil, database : Database? = nil, history : History? = nil, ranks : Hash(Int32, String)? = nil, client : MockClient? = nil, spam : SpamHandler? = nil) : Services
+    unless config
+      config = HandlerConfig.new(MockConfig.new)
+    end
 
-  connection.exec("CREATE TABLE IF NOT EXISTS system_config (
-    name TEXT NOT NULL,
-    value TEXT NOT NULL,
-    PRIMARY KEY (name)
-  )")
+    unless database
+      database = SQLiteDatabase.new(DB.open("sqlite3://%3Amemory%3A"))
+    end
 
-  connection.exec("CREATE TABLE IF NOT EXISTS users (
-    id BIGINT NOT NULL,
-    username TEXT,
-    realname TEXT NOT NULL,
-    rank INTEGER NOT NULL,
-    joined TIMESTAMP NOT NULL,
-    left TIMESTAMP,
-    lastActive TIMESTAMP NOT NULL,
-    cooldownUntil TIMESTAMP,
-    blacklistReason TEXT,
-    warnings INTEGER NOT NULL,
-    warnExpiry TIMESTAMP,
-    karma INTEGER NOT NULL,
-    hideKarma TINYINT NOT NULL,
-    debugEnabled TINYINT NOT NULL,
-    tripcode TEXT,
-    PRIMARY KEY(id)
-  )")
+    unless history
+      history = CachedHistory.new(HISTORY_LIFESPAN)
+    end
 
-  # Add users
-  connection.exec("INSERT INTO users VALUES (20000,'examp','example',1000,'2023-01-02 06:00:00.000',NULL,'2023-07-02 06:00:00.000',NULL,NULL,0,NULL,0,0,0,NULL);")
-  connection.exec("INSERT INTO users VALUES (60200,'voorb','voorbeeld',0,'2023-01-02 06:00:00.000',NULL,'2023-01-02 06:00:00.000',NULL,NULL,1,'2023-03-02 12:00:00.000',-10,0,0,NULL);")
-  connection.exec("INSERT INTO users VALUES (80300,NULL,'beispiel',10,'2023-01-02 06:00:00.000',NULL,'2023-03-02 12:00:00.000',NULL,NULL,2,'2023-04-02 12:00:00.000',-20,0,1,NULL);")
-  connection.exec("INSERT INTO users VALUES (40000,NULL,'esimerkki',0,'2023-01-02 06:00:00.000','2023-02-04 06:00:00.000','2023-02-04 06:00:00.000',NULL,NULL,0,NULL,0,0,0,NULL);")
-  connection.exec("INSERT INTO users VALUES (70000,NULL,'BLACKLISTED',-10,'2023-01-02 06:00:00.000','2023-04-02 10:00:00.000','2023-01-02 06:00:00.000',NULL,NULL,0,NULL,0,0,0,NULL);")
+    unless ranks
+      ranks = ranks = {
+        1000 => Rank.new(
+          "Host",
+          Set{
+            CommandPermissions::Promote,
+            CommandPermissions::Demote,
+            CommandPermissions::RanksayLower,
+            CommandPermissions::Upvote,
+            CommandPermissions::Downvote,
+          },
+          Set{
+            MessagePermissions::Text,
+            MessagePermissions::Photo,
+          },
+        ),
+        100 => Rank.new(
+          "Admin",
+          Set{
+            CommandPermissions::PromoteLower,
+            CommandPermissions::Demote,
+            CommandPermissions::RanksayLower,
+            CommandPermissions::Upvote,
+            CommandPermissions::Downvote,
+          },
+          Set{
+            MessagePermissions::Text,
+            MessagePermissions::Photo,
+          },
+        ),
+        10 => Rank.new(
+          "Mod",
+          Set{
+            CommandPermissions::PromoteSame,
+            CommandPermissions::Ranksay,
+            CommandPermissions::Upvote,
+            CommandPermissions::Downvote,
+          },
+          Set{
+            MessagePermissions::Text,
+            MessagePermissions::Photo,
+          },
+        ),
+        0 => Rank.new(
+          "User",
+          Set{
+            CommandPermissions::Upvote,
+            CommandPermissions::Downvote,
+          },
+          Set{
+            MessagePermissions::Text,
+          },
+        ),
+        -10 => Rank.new(
+          "Blacklisted",
+          Set(CommandPermissions).new,
+          Set(MessagePermissions).new,
+        ),
+      }
+    end
 
-  PrivateParlorXT::SQLiteDatabase.new(connection)
-end
+    Services.new(
+      config,
+      Locale.parse_locale(Path["#{__DIR__}/../locales/"], "en-US"),
+      database,
+      history,
+      AuthorizedRanks.new(ranks),
+      Relay.new("", client || MockClient.new),
+      spam,
+    )
+  end
 
-def create_sqlite_history : PrivateParlorXT::SQLiteHistory
-  connection = DB.open("sqlite3://%3Amemory%3A")
-  connection.exec("PRAGMA foreign_keys = ON")
+  def self.generate_users(database : SQLiteDatabase)
+    database.add_user(20000_i64, nil, "example", 1000)
+    database.add_user(60200_i64, nil, "voorbeeld", 0)
+    database.add_user(80300_i64, nil, "beispiel", 10)
+    database.add_user(40000_i64, nil, "esimerkki", 0)
+    database.add_user(70000_i64, nil, "BLACKLISTED", -10)
 
-  connection.exec("CREATE TABLE IF NOT EXISTS message_groups (
-    messageGroupID BIGINT NOT NULL,
-    senderID BIGINT NOT NULL,
-    sentTime TIMESTAMP NOT NULL,
-    warned TINYINT NOT NULL,
-    PRIMARY KEY (messageGroupID)
-  )")
+    user_one = SQLiteUser.new(20000_i64, "examp","example",1000,Time.utc(2023, 1, 2, 6),nil,Time.utc(2023, 7, 2, 6),nil,nil,0,nil,0,false,false,nil)
+    user_two = SQLiteUser.new(60200_i64, "voorb","voorbeeld",0,Time.utc(2023, 1, 2, 6),nil,Time.utc(2023, 1, 2, 6),nil,nil,1,Time.utc(2023, 3, 2, 12),-10,false,false,nil)
+    user_three = SQLiteUser.new(80300_i64, nil,"beispiel",10,Time.utc(2023, 1, 2, 6),nil,Time.utc(2023, 3, 2, 12),nil,nil,2,Time.utc(2023, 4, 2, 12),-20,false,true,nil)
+    user_four = SQLiteUser.new(40000_i64, nil,"esimerkki",0,Time.utc(2023, 1, 2, 6),Time.utc(2023, 2, 4, 6),Time.utc(2023, 2, 4, 6),nil,nil,0,nil,0,false,false,nil)
+    user_five = SQLiteUser.new(70000_i64, nil,"BLACKLISTED",-10,Time.utc(2023, 1, 2, 6),Time.utc(2023, 4, 2, 10),Time.utc(2023, 1, 2, 6),nil,nil,0,nil,0,false,false,nil)
 
-  connection.exec("CREATE TABLE IF NOT EXISTS receivers (
-    receiverMSID BIGINT NOT NULL,
-    receiverID BIGINT NOT NULL,
-    messageGroupID BIGINT NOT NULL,
-    PRIMARY KEY (receiverMSID),
-    FOREIGN KEY (messageGroupID) REFERENCES message_groups(messageGroupID)
-    ON DELETE CASCADE
-  )")
+    database.update_user(user_one)
+    database.update_user(user_two)
+    database.update_user(user_three)
+    database.update_user(user_four)
+    database.update_user(user_five)
+  end
 
-  connection.exec("CREATE TABLE IF NOT EXISTS karma (
-    messageGroupID BIGINT NOT NULL,
-    userID BIGINT NOT NULL,
-    PRIMARY KEY (messageGroupID),
-    FOREIGN KEY (messageGroupID) REFERENCES receivers(receiverMSID)
-    ON DELETE CASCADE
-  )")
+  def self.generate_history(history : History)
+    history.new_message(80300, 1)
+    history.new_message(20000, 4)
+    history.new_message(60200, 8)
 
-    # Add message groups
-    connection.exec("INSERT INTO message_groups VALUES (1,80300,'2023-01-02 06:00:00.000',0)")
-    connection.exec("INSERT INTO message_groups VALUES (4,20000,'2023-01-02 06:00:00.000',0)")
-    connection.exec("INSERT INTO message_groups VALUES (8,60200,'2023-01-02 06:00:00.000',1)")
-  
-    # Add receivers
-    connection.exec("INSERT INTO receivers VALUES (2,60200,1)")
-    connection.exec("INSERT INTO receivers VALUES (3,20000,1)")
-  
-    connection.exec("INSERT INTO receivers VALUES (5,20000,4)")
-    connection.exec("INSERT INTO receivers VALUES (6,80300,4)")
-    connection.exec("INSERT INTO receivers VALUES (7,60200,4)")
-  
-    connection.exec("INSERT INTO receivers VALUES (9,20000,8)")
-    connection.exec("INSERT INTO receivers VALUES (10,80300,8)")
-  
-    # Add karma
-    connection.exec("INSERT INTO karma VALUES (2,60200)")
+    history.add_to_history(1, 2, 60200)
+    history.add_to_history(1, 3, 20000)
 
-    PrivateParlorXT::SQLiteHistory.new(HISTORY_LIFESPAN, connection)
+    history.add_to_history(4, 5, 20000)
+    history.add_to_history(4, 6, 80300)
+    history.add_to_history(4, 7, 60200)
+
+    history.add_to_history(8, 9, 20000)
+    history.add_to_history(8, 10, 80300)
+
+    history.add_rating(2, 60200)
+  end
+
+  def self.create_context(client : MockClient, update : Tourmaline::Update) : Tourmaline::Context
+    Tourmaline::Context.new(client, update)
+  end
+
+  def self.create_update(update_id : Int32 | Int64, message : Tourmaline::Message? = nil) : Tourmaline::Update
+    Tourmaline::Update.new(update_id, message)
+  end
+
+  def self.create_message(
+    message_id : Int64, 
+    tourmaline_user : Tourmaline::User, 
+    forward_date : Time? = nil, 
+    reply_to_message : Tourmaline::Message? = nil,
+    media_group_id : String? = nil,
+    text : String? = nil,
+    entities : Array(Tourmaline::MessageEntity) = [] of Tourmaline::MessageEntity,
+    caption : String? = nil,
+    animation : Tourmaline::Animation? = nil,
+    audio : Tourmaline::Audio? = nil,
+    document : Tourmaline::Document? = nil,
+    photo : Array(Tourmaline::PhotoSize) = [] of Tourmaline::PhotoSize,
+    video : Tourmaline::Video? = nil,
+    video_note : Tourmaline::VideoNote? = nil,
+    voice : Tourmaline::Voice? = nil,
+    has_media_spoiler : Bool? = nil,
+    contact : Tourmaline::Contact? = nil,
+    poll : Tourmaline::Poll? = nil,
+    venue : Tourmaline::Venue? = nil,
+    location : Tourmaline::Location? = nil,
+    ) : Tourmaline::Message
+    Tourmaline::Message.new(
+      message_id,
+      Time.utc,
+      Tourmaline::Chat.new(tourmaline_user.id, "private"),
+      from: tourmaline_user,
+      forward_date: forward_date,
+      reply_to_message: reply_to_message,
+      media_group_id: media_group_id,
+      text: text,
+      entities: entities,
+      caption: caption,
+      caption_entities: entities,
+      animation: animation,
+      audio: audio,
+      document: document,
+      photo: photo,
+      video: video,
+      video_note: video_note,
+      voice: voice,
+      has_media_spoiler: has_media_spoiler,
+      contact: contact,
+      poll: poll,
+      venue: venue,
+      location: location,
+    )
+  end
 end
