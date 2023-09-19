@@ -60,7 +60,7 @@ module PrivateParlorXT
     end
 
     # Adds user's upvote to message history and update reply_user's karma
-    # Returns false if user has already upvotes the message or user attempted
+    # Returns false if user has already upvoted the message or user attempted
     # to give himself karma
     def upvote_message(user : User, reply_user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services) : Bool
       if user.id == reply_user.id

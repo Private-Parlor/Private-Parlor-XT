@@ -13,44 +13,22 @@ module PrivateParlorXT
       message, user = get_message_and_user(ctx, services)
       return unless message && user
 
-      unless services.access.authorized?(user.rank, :Downvote)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
-      end
-      unless reply = message.reply_to_message
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.no_reply)
-      end
-      unless reply_user = services.database.get_user(services.history.get_sender(reply.message_id.to_i64))
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.not_in_cache)
-      end
-      if (spam = services.spam) && spam.spammy_downvote?(user.id, services.config.downvote_limit_interval)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
-      end
+      return unless is_authorized?(user, message, :Downvote, services)
 
-      user.set_active
-      services.database.update_user(user)
+      return unless reply = get_reply_message(user, message, services)
 
-      if user.id == reply_user.id
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.downvoted_own_message)
-      end
-      if !services.history.add_rating(reply.message_id.to_i64, user.id)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.already_voted)
-      end
+      return unless reply_user = get_reply_user(user, reply, services)
 
-      reply_user.decrement_karma
-      services.database.update_user(reply_user)
+      return if is_spamming?(user, message, services)
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.gave_downvote)
+      update_user_activity(user, services)
 
-      unless reply_user.hide_karma
-        services.relay.send_to_user(
-          services.history.get_receiver_message(reply.message_id.to_i64, reply_user.id),
-          reply_user.id,
-          services.locale.replies.got_downvote
-        )
-      end
+      return unless downvote_message(user, reply_user, message, reply, services)
+
+      send_replies(user, reply_user, message, reply, services)
     end
 
-    private def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
+    def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
       unless (message = ctx.message) && (info = message.from)
         return nil, nil
       end
@@ -68,6 +46,48 @@ module PrivateParlorXT
       user.update_names(info.username, info.full_name)
 
       return message, user
+    end
+
+    def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
+      return false unless spam = services.spam
+
+      if spam.spammy_downvote?(user.id, services.config.downvote_limit_interval)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
+        return true
+      end
+
+      return false
+    end
+
+    # Adds user's dowvote to message history and update reply_user's karma
+    # Returns false if user has already downvoted the message or user attempted
+    # to remove his own karma
+    def downvote_message(user : User, reply_user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services) : Bool
+      if user.id == reply_user.id
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.downvoted_own_message)
+        return false
+      end
+      if !services.history.add_rating(reply.message_id.to_i64, user.id)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.already_voted)
+        return false
+      end
+
+      reply_user.decrement_karma
+      services.database.update_user(reply_user)
+
+      true
+    end
+
+    def send_replies(user : User, reply_user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services) : Nil
+      services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.gave_downvote)
+
+      unless reply_user.hide_karma
+        services.relay.send_to_user(
+          services.history.get_receiver_message(reply.message_id.to_i64, reply_user.id),
+          reply_user.id,
+          services.locale.replies.got_downvote
+        )
+      end
     end
   end
 end
