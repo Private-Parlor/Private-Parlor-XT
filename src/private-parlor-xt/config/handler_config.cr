@@ -8,9 +8,9 @@ module PrivateParlorXT
     getter downvote_limit_interval : Int32 = 0
 
     def initialize(config : Config)
-      blacklist_contact = config.blacklist_contact
-      upvote_limit_interval = config.upvote_limit_interval
-      downvote_limit_interval = config.downvote_limit_interval
+      @blacklist_contact = config.blacklist_contact
+      @upvote_limit_interval = config.upvote_limit_interval
+      @downvote_limit_interval = config.downvote_limit_interval
     end
   end
 end

@@ -6,6 +6,8 @@ module PrivateParlorXT
     getter relay_new_chat_members : Array(Bool) = [true, true]
 
     def initialize
+      @upvote_limit_interval = 120
+      @downvote_limit_interval = 120
     end
   end
 end

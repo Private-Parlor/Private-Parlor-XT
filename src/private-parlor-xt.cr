@@ -21,12 +21,12 @@ module PrivateParlorXT
     history = CachedHistory.new(config.message_lifespan.hours)
   end
 
-  access = AuthorizedRanks.instance(config.ranks)
+  access = AuthorizedRanks.new(config.ranks)
 
   client = Client.new(config.token)
   client.default_parse_mode = Tourmaline::ParseMode::HTML # TODO: Change to MarkdownV2
 
-  relay = Relay.instance(config.log_channel, client)
+  relay = Relay.new(config.log_channel, client)
 
   services = Services.new(
     HandlerConfig.new(config),
@@ -34,7 +34,6 @@ module PrivateParlorXT
     database,
     history,
     access,
-    client,
     relay,
     spam,
   )

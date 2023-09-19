@@ -10,6 +10,48 @@ module PrivateParlorXT
   annotation Hears
   end
 
+  abstract class Handler
+    abstract def initialize(config : Config)
+
+    abstract def do(ctx : Context, services : Services)
+
+    def update_user_activity(user : User, services : Services)
+      user.set_active
+      services.database.update_user(user)
+    end
+
+    def is_authorized?(user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services,) : Bool
+      unless services.access.authorized?(user.rank, authority)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
+        return false
+      end
+
+      true
+    end
+
+    def get_reply_message(user : User, message : Tourmaline::Message, services : Services) : Tourmaline::Message?
+      unless message.reply_to_message
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.no_reply)
+        return
+      end
+
+      message.reply_to_message
+    end
+
+    def get_reply_user(user : User, reply_message : Tourmaline::Message, services : Services) : User?
+      reply_user_id = services.history.get_sender(reply_message.message_id.to_i64)
+
+      reply_user = services.database.get_user(reply_user_id)
+      
+      unless reply_user
+        services.relay.send_to_user(reply_message.message_id.to_i64, user.id, services.locale.replies.not_in_cache)
+        return
+      end
+
+      reply_user
+    end
+  end
+
   abstract class CommandHandler
     @blacklist_contact : String? = nil
 
@@ -38,14 +80,12 @@ module PrivateParlorXT
     end
 
     private def deny_user(user : User, relay : Relay, locale : Locale) : Nil
-      if user.blacklisted?
-        response = Format.substitute_message(locale.replies.blacklisted, locale, {
-          "contact" => Format.format_contact_reply(@blacklist_contact, locale),
-          "reason"  => Format.format_reason_reply(user.blacklist_reason, locale),
-        })
-      else
-        response = locale.replies.not_in_chat
-      end
+      return unless user.blacklisted?
+      
+      response = Format.substitute_message(locale.replies.blacklisted, locale, {
+        "contact" => Format.format_contact_reply(@blacklist_contact, locale),
+        "reason"  => Format.format_reason_reply(user.blacklist_reason, locale),
+      })
 
       relay.send_to_user(nil, user.id, response)
     end
@@ -114,12 +154,12 @@ module PrivateParlorXT
     end
   end
 
-  abstract class HearsHandler
+  abstract class HearsHandler < Handler
     abstract def initialize(config : Config)
 
     abstract def do(ctx : Context, services : Services)
 
-    private def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
+    def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
       unless (message = ctx.message) && (info = message.from)
         return nil, nil
       end

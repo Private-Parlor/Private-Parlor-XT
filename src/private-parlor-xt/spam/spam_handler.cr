@@ -64,6 +64,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "score_contact")]
     getter score_contact : Int32 = 5000
 
+    def initialize()
+    end
+
     # Check if user's spam score will exceed the limit
     #
     # Returns true if score is greater than spam limit, false otherwise.
