@@ -61,15 +61,7 @@ module PrivateParlorXT
       locale,
     ))
 
-    events = events.concat(generate_hears_handlers(config,
-      relay,
-      access,
-      database,
-      history,
-      locale,
-      spam,
-      services,
-    ))
+    events = events.concat(generate_hears_handlers(config, services))
 
     # TODO: Add Inline Queries
 
@@ -77,16 +69,7 @@ module PrivateParlorXT
       client.register(handler)
     end
 
-    generate_update_handlers(
-      client,
-      config,
-      relay,
-      access,
-      database,
-      history,
-      locale,
-      spam,
-    )
+    generate_update_handlers(config, client, services)
   end
 
   # Intialize all command handlers that inherit from `CommandHandler`
@@ -128,16 +111,7 @@ module PrivateParlorXT
 
   # Intialize all "hears" handlers that inherit from `HearsHandler`
   # and are annotated with `Hears`
-  def self.generate_hears_handlers(
-    config : Config,
-    relay : Relay,
-    access : AuthorizedRanks,
-    database : Database,
-    history : History,
-    locale : Locale,
-    spam : SpamHandler?,
-    services : Services,
-  ) : Array(Tourmaline::HearsHandler)
+  def self.generate_hears_handlers(config : Config, services : Services) : Array(Tourmaline::HearsHandler)
     arr = [] of Tourmaline::HearsHandler
 
     {% for command in HearsHandler.all_subclasses.select { |sub_class|
@@ -161,16 +135,7 @@ module PrivateParlorXT
     arr
   end
 
-  def self.generate_update_handlers(
-    client : Tourmaline::Client,
-    config : Config,
-    relay : Relay,
-    access : AuthorizedRanks,
-    database : Database,
-    history : History,
-    locale : Locale,
-    spam : SpamHandler?
-  ) : Nil
+  def self.generate_update_handlers(config : Config, client : Client, services : Services) : Nil
     {% for update in UpdateHandler.all_subclasses.select { |sub_class|
                        (on = sub_class.annotation(On))
                      } %}
@@ -189,7 +154,7 @@ module PrivateParlorXT
       {% end %}
 
       client.on({{update_on[:update]}}) do |ctx|
-        {{handler}}.do(ctx, relay, access, database, history, locale, spam)
+        {{handler}}.do(ctx, services)
       end
     end
 

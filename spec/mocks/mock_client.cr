@@ -1,8 +1,8 @@
 require "../spec_helper.cr"
 
 module PrivateParlorXT
-  # A subtype of `Tourmaline::Client` without using Telegram API on init
-  class MockClient < Tourmaline::Client
+  # A subtype of `Client` without using Telegram API on init
+  class MockClient < Client
     def initialize(@bot_token : String = "",
                    @endpoint = DEFAULT_API_URL,
                    @default_parse_mode : Tourmaline::ParseMode = :markdown,

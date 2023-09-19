@@ -12,6 +12,15 @@ module PrivateParlorXT
     database = SQLiteDatabase.new(DB.open("sqlite3://%3Amemory%3A"))
     history = CachedHistory.new(config.message_lifespan.hours)
 
+    services = Services.new(
+      HandlerConfig.new(config),
+      locale,
+      database,
+      history,
+      access,
+      relay,
+    )
+
     it "generates command handlers" do
       arr = PrivateParlorXT.generate_command_handlers(config, relay, access, database, history, locale)
 
@@ -27,7 +36,7 @@ module PrivateParlorXT
 
     it "generates update handlers" do
       client = PrivateParlorXT::MockClient.new
-      PrivateParlorXT.generate_update_handlers(client, config, relay, access, database, history, locale, nil)
+      PrivateParlorXT.generate_update_handlers(config, client, services)
 
       registered_actions = client.dispatcher.event_handlers.keys
 

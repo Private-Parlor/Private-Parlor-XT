@@ -7,7 +7,7 @@ module PrivateParlorXT
     def initialize(config : Config)
     end
 
-    def do(update : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale, spam : SpamHandler?)
+    def do(context : Tourmaline::Context, services : Services)
     end
   end
 end
