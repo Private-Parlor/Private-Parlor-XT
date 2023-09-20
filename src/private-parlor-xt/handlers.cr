@@ -13,20 +13,11 @@ module PrivateParlorXT
   abstract class Handler
     abstract def initialize(config : Config)
 
-    abstract def do(ctx : Context, services : Services)
+    abstract def do(context : Context, services : Services)
 
     def update_user_activity(user : User, services : Services)
       user.set_active
       services.database.update_user(user)
-    end
-
-    def is_authorized?(user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services,) : Bool
-      unless services.access.authorized?(user.rank, authority)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
-        return false
-      end
-
-      true
     end
 
     def get_reply_message(user : User, message : Tourmaline::Message, services : Services) : Tourmaline::Message?
@@ -91,26 +82,23 @@ module PrivateParlorXT
     end
   end
 
-  abstract class UpdateHandler
-    @blacklist_contact : String? = nil
-    @media_limit_period : Time::Span = 0.hours
-
+  abstract class UpdateHandler < Handler
     abstract def initialize(config : Config)
 
-    abstract def do(update : Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale, spam : SpamHandler?)
+    abstract def do(context : Context, services : Services)
 
-    private def get_message_and_user(update : Tourmaline::Context, database : Database, relay : Relay, locale : Locale) : Tuple(Tourmaline::Message?, User?)
+    def get_message_and_user(update : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
       unless (message = update.message) && (info = message.from)
         return nil, nil
       end
 
-      unless user = database.get_user(info.id.to_i64)
-        relay.send_to_user(nil, info.id.to_i64, locale.replies.not_in_chat)
+      unless user = services.database.get_user(info.id.to_i64)
+        services. relay.send_to_user(nil, info.id.to_i64, services.locale.replies.not_in_chat)
         return message, nil
       end
 
-      unless user.can_chat?(@media_limit_period)
-        deny_user(user, relay, locale)
+      unless user.can_chat?(services.config.media_limit_period)
+        deny_user(user, services)
         return message, nil
       end
 
@@ -119,45 +107,92 @@ module PrivateParlorXT
       return message, user
     end
 
-    private def deny_user(user : User, relay : Relay, locale : Locale) : Nil
-      if user.blacklisted?
-        response = Format.substitute_message(locale.replies.blacklisted, locale, {
-          "contact" => Format.format_contact_reply(@blacklist_contact, locale),
-          "reason"  => Format.format_reason_reply(user.blacklist_reason, locale),
-        })
-      elsif cooldown_until = user.cooldown_until
-        response = Format.substitute_message(locale.replies.on_cooldown, locale, {
-          "time" => Format.format_time(cooldown_until, locale.time_format),
-        })
-      elsif Time.utc - user.joined < @media_limit_period
-        response = Format.substitute_message(locale.replies.media_limit, locale, {
-          "total" => (@media_limit_period - (Time.utc - user.joined)).hours.to_s,
-        })
-      else
-        response = locale.replies.not_in_chat
+    def is_authorized?(user : User, message : Tourmaline::Message, authority : MessagePermissions, services : Services) : Bool
+      unless services.access.authorized?(user.rank, authority)
+        response = Format.substitute_message(services.locale.replies.media_disabled, services.locale, {"type" => authority.to_s})
+        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+        return false
       end
 
-      relay.send_to_user(nil, user.id, response)
+      true
     end
 
-    private def check_text(text : String, user : User, message : Tourmaline::Message, entities : Array(Tourmaline::MessageEntity), relay : Relay, locale : Locale) : Tuple(String, Array(Tourmaline::MessageEntity))
+    def meets_requirements?(message : Tourmaline::Message) : Bool
+      return false if message.forward_date
+      return false if message.media_group_id
+
+      return true
+    end
+
+    private def deny_user(user : User, services : Services) : Nil
+      if user.blacklisted?
+        response = Format.substitute_message(services.locale.replies.blacklisted, services.locale, {
+          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.locale),
+          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.locale),
+        })
+      elsif cooldown_until = user.cooldown_until
+        response = Format.substitute_message(services.locale.replies.on_cooldown, services.locale, {
+          "time" => Format.format_time(cooldown_until, services.locale.time_format),
+        })
+      elsif Time.utc - user.joined < services.config.media_limit_period
+        response = Format.substitute_message(services.locale.replies.media_limit, services.locale, {
+          "total" => (services.config.media_limit_period - (Time.utc - user.joined)).hours.to_s,
+        })
+      else
+        response = services.locale.replies.not_in_chat
+      end
+
+      services.relay.send_to_user(nil, user.id, response)
+    end
+
+    def check_text(text : String?, user : User, message : Tourmaline::Message, services : Services) : Bool
+      return true unless text
+
       unless Format.allow_text?(text)
-        relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.rejected_message)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.rejected_message)
+        return false
+      end
+
+      true
+    end
+
+    def format_text(text : String?, entities : Array(Tourmaline::MessageEntity), services : Services) : Tuple(String, Array(Tourmaline::MessageEntity))
+      unless text
         return "", [] of Tourmaline::MessageEntity
       end
 
-      text, entities = Format.strip_format(text, entities, @entity_types, @linked_network)
+      text, entities = Format.strip_format(text, entities, services.config.entity_types, services.config.linked_network)
 
       # TODO: Handle ranksay/sign/tsign/karmasign
 
       return text, entities
     end
+
+    def get_reply_receivers(reply : Tourmaline::Message, message : Tourmaline::Message, user : User, services : Services) : Hash(UserID, MessageID)?
+      replies = services.history.get_all_receivers(reply.message_id.to_i64)
+      
+      if replies.empty?
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.not_in_cache)
+        return
+      end
+
+      replies
+    end
+
+    def get_message_receivers(user : User, services : Services) : Array(UserID)
+      if user.debug_enabled
+        services.database.get_active_users
+      else
+        services.database.get_active_users(user.id)
+      end
+    end
+
   end
 
   abstract class HearsHandler < Handler
     abstract def initialize(config : Config)
 
-    abstract def do(ctx : Context, services : Services)
+    abstract def do(context : Context, services : Services)
 
     def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
       unless (message = ctx.message) && (info = message.from)

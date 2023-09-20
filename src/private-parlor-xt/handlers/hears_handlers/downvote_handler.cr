@@ -9,8 +9,8 @@ module PrivateParlorXT
     def initialize(config : Config)
     end
 
-    def do(ctx : Tourmaline::Context, services : Services)
-      message, user = get_message_and_user(ctx, services)
+    def do(context : Tourmaline::Context, services : Services)
+      message, user = get_message_and_user(context, services)
       return unless message && user
 
       return unless is_authorized?(user, message, :Downvote, services)
@@ -46,6 +46,15 @@ module PrivateParlorXT
       user.update_names(info.username, info.full_name)
 
       return message, user
+    end
+
+    def is_authorized?(user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services,) : Bool
+      unless services.access.authorized?(user.rank, authority)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
+        return false
+      end
+
+      true
     end
 
     def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool

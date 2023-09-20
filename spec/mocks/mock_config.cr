@@ -8,6 +8,7 @@ module PrivateParlorXT
     def initialize
       @upvote_limit_interval = 120
       @downvote_limit_interval = 120
+      @media_limit_period = 120
     end
   end
 end

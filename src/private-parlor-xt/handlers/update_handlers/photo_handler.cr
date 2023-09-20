@@ -4,66 +4,43 @@ require "tourmaline"
 module PrivateParlorXT
   @[On(update: :Photo, config: "relay_photo")]
   class PhotoHandler < UpdateHandler
-    @entity_types : Array(String)
-    @linked_network : Hash(String, String) = {} of String => String
-    @allow_spoilers : Bool? = false
-
+    
     def initialize(config : Config)
-      @entity_types = config.entities
-      @linked_network = config.linked_network
-      @allow_spoilers = config.media_spoilers
     end
 
-    def do(update : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale, spam : SpamHandler?)
-      message, user = get_message_and_user(update, database, relay, locale)
+    def do(context : Tourmaline::Context, services : Services)
+      message, user = get_message_and_user(context, services)
       return unless message && user
 
-      unless access.authorized?(user.rank, :Photo)
-        response = Format.substitute_message(locale.replies.media_disabled, locale, {"type" => "photo"})
-        return relay.send_to_user(message.message_id.to_i64, user.id, response)
-      end
+      return unless meets_requirements?(message)
 
-      return if message.forward_date
-      return if message.media_group_id
+      return unless is_authorized?(user, message, :Photo, services)
 
-      if spam && spam.spammy_photo?(user.id)
-        return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.spamming)
-      end
+      return if is_spamming?(user, message, services)
 
       return unless photo = message.photo.last
 
-      caption = message.caption || ""
+      return unless check_text(message.caption, user, message, services)
 
       # TODO: Add R9K check hook
 
-      caption, entities = check_text(caption, user, message, message.caption_entities, relay, locale)
+      caption, entities = format_text(message.caption, message.caption_entities, services)
 
       # TODO: Add pseudonymous hook
 
-      new_message = history.new_message(user.id, message.message_id.to_i64)
-
       if reply = message.reply_to_message
-        reply_msids = history.get_all_receivers(reply.message_id.to_i64)
-
-        if reply_msids.empty?
-          relay.send_to_user(new_message, user.id, locale.replies.not_in_cache)
-          history.delete_message_group(new_message)
-          return
-        end
+        return unless reply_msids = get_reply_receivers(reply, message, user, services)
       end
+
+      new_message = services.history.new_message(user.id, message.message_id.to_i64)
 
       # TODO: Add R9K write hook
 
-      user.set_active
-      database.update_user(user)
+      update_user_activity(user, services)
 
-      if user.debug_enabled
-        receivers = database.get_active_users
-      else
-        receivers = database.get_active_users(user.id)
-      end
+      receivers = get_message_receivers(user, services)
 
-      relay.send_photo(
+      services.relay.send_photo(
         new_message,
         user,
         receivers,
@@ -71,8 +48,19 @@ module PrivateParlorXT
         photo.file_id,
         caption,
         entities,
-        @allow_spoilers ? message.has_media_spoiler? : false,
+        services.config.allow_spoilers ? message.has_media_spoiler? : false,
       )
+    end
+
+    def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
+      return false unless spam = services.spam
+      
+      if spam.spammy_photo?(user.id)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
+        return true
+      end
+
+      return true
     end
   end
 end
