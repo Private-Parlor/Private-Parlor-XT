@@ -42,7 +42,7 @@ module PrivateParlorXT
         return true
       end
 
-      return true
+      false
     end
 
     def deanonymous_poll(user : User, message : Tourmaline::Message, services : Services) : Bool

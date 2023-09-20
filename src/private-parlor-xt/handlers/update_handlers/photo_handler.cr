@@ -60,7 +60,7 @@ module PrivateParlorXT
         return true
       end
 
-      return true
+      false
     end
   end
 end

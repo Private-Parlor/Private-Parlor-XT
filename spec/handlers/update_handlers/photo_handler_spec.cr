@@ -31,7 +31,7 @@ module PrivateParlorXT
         )
 
         ctx = create_context(client, create_update(11, message))
-        spam_services = create_services(client: client, spam: SpamHandler.new())
+        spam_services = create_services(client: client, spam: SpamHandler.new(spam_limit: 10, score_photo: 6))
 
         unless spam = spam_services.spam
           fail("Services should contain a spam handler")

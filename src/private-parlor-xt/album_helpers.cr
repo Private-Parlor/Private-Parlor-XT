@@ -4,9 +4,13 @@ require "tasker"
 
 module PrivateParlorXT
   module AlbumHelpers
+    WAIT_TIME = 500.milliseconds
+
+    alias AlbumMedia = Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo | Tourmaline::InputMediaAudio | Tourmaline::InputMediaDocument
+
     class Album
-      property message_ids : Array(MessageID)
-      property media : Array(Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo | Tourmaline::InputMediaAudio | Tourmaline::InputMediaDocument)
+      property message_ids : Array(MessageID) = [] of MessageID
+      property media : Array(AlbumMedia) = [] of AlbumMedia
 
       # Creates and instance of `Album`, representing a prepared media group to queue and relay
       #
@@ -17,13 +21,13 @@ module PrivateParlorXT
       #
       # `media`
       # :     the media type corresponding with the given MSID
-      def initialize(message : MessageID, media : Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo | Tourmaline::InputMediaAudio | Tourmaline::InputMediaDocument)
-        @message_ids = [message]
-        @media = [media]
+      def initialize(message : MessageID, media : AlbumMedia)
+        @message_ids << message
+        @media << media
       end
     end
 
-    def get_album_input(message : Tourmaline::Message, caption : String, entities : Array(Tourmaline::MessageEntity), allow_spoilers : Bool? = false) : Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo | Tourmaline::InputMediaAudio | Tourmaline::InputMediaDocument | Nil
+    def get_album_input(message : Tourmaline::Message, caption : String, entities : Array(Tourmaline::MessageEntity), allow_spoilers : Bool? = false) : AlbumMedia?
       if media = message.photo.last?
         Tourmaline::InputMediaPhoto.new(media.file_id, caption: caption, caption_entities: entities, parse_mode: nil, has_spoiler: message.has_media_spoiler? && allow_spoilers)
       elsif media = message.video
@@ -37,20 +41,25 @@ module PrivateParlorXT
       end
     end
 
-    def relay_album(album : Album, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, history : History, relay : Relay)
-      cached_messages = Array(MessageID).new
+    def relay_album(albums : Hash(String, Album), album : String, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, services : Services)
+      # Wait an arbitrary amount of time for Telegram MediaGroup updates to come in before relaying the album.
+      Tasker.in(WAIT_TIME) {
+        next unless prepared_album = albums.delete(album)
 
-      album.message_ids.each do |msid|
-        cached_messages << history.new_message(user.id, msid)
-      end
+        cached_messages = Array(MessageID).new
 
-      relay.send_album(
-        cached_messages,
-        user,
-        receivers,
-        reply_msids,
-        album.media,
-      )
+        prepared_album.message_ids.each do |msid|
+          cached_messages << services.history.new_message(user.id, msid)
+        end
+
+        services.relay.send_album(
+          cached_messages,
+          user,
+          receivers,
+          reply_msids,
+          prepared_album.media,
+        )
+      }
     end
   end
 end

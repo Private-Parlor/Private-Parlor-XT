@@ -64,7 +64,30 @@ module PrivateParlorXT
     @[YAML::Field(key: "score_contact")]
     getter score_contact : Int32 = 5000
 
-    def initialize()
+    def initialize(
+      @scores : Hash(UserID, Int32) = {} of UserID => Int32,
+      @sign_last_used : Hash(UserID, Time) = {} of UserID => Time,
+      @upvote_last_used : Hash(UserID, Time) = {} of UserID => Time,
+      @downvote_last_used : Hash(UserID, Time) = {} of UserID => Time,
+      @spam_limit : Int32 = 10000,
+      @decay_amount : Int32 = 1000,
+      @score_character : Int32 = 3,
+      @score_line : Int32 = 100,
+      @score_animation : Int32 = 3000,
+      @score_audio : Int32 = 3000,
+      @score_document : Int32 = 3000,
+      @score_video : Int32 = 3000,
+      @score_video_note : Int32 = 5000,
+      @score_voice : Int32 = 5000,
+      @score_photo : Int32 = 3000,
+      @score_media_group : Int32 = 6000,
+      @score_poll : Int32 = 6000,
+      @score_forwarded_message : Int32 = 3000,
+      @score_sticker : Int32 = 3000,
+      @score_venue : Int32 = 5000,
+      @score_location : Int32 = 5000,
+      @score_contact : Int32 = 5000,
+    )
     end
 
     # Check if user's spam score will exceed the limit
