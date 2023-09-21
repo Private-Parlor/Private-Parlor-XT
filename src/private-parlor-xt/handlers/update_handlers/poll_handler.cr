@@ -7,37 +7,43 @@ module PrivateParlorXT
     def initialize(config : Config)
     end
 
-    def do(update : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale, spam : SpamHandler?)
-      message, user = get_message_and_user(update, database, relay, locale)
+    def do(context : Tourmaline::Context, services : Services)
+      message, user = get_message_and_user(context, services)
       return unless message && user
 
-      unless access.authorized?(user.rank, :Poll)
-        response = Format.substitute_message(locale.replies.media_disabled, locale, {"type" => "poll"})
-        return relay.send_to_user(message.message_id.to_i64, user.id, response)
-      end
-
       return if message.forward_date
+
+      return unless is_authorized?(user, message, :Poll, services)
+
+      return if is_spamming?(user, message, services)
+
       return unless poll = message.poll
 
-      if spam && spam.spammy_poll?(user.id)
-        return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.spamming)
-      end
+      cached_message = services.history.new_message(user.id, message.message_id.to_i64)
+      poll_copy = services.relay.send_poll_copy(cached_message, user, poll)
+      services.history.add_to_history(cached_message, poll_copy.message_id.to_i64, user.id)
 
-      cached_message = history.new_message(user.id, message.message_id.to_i64)
-      poll_copy = relay.send_poll_copy(cached_message, user, poll)
-      history.add_to_history(cached_message, poll_copy.message_id.to_i64, user.id)
+      update_user_activity(user, services)
 
-      user.set_active
-      database.update_user(user)
+      receivers = get_message_receivers(user, services)
 
-      receivers = database.get_active_users(user.id)
-
-      relay.send_forward(
+      services.relay.send_forward(
         cached_message,
         user,
         receivers,
         poll_copy.message_id.to_i64,
       )
+    end
+
+    def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
+      return false unless spam = services.spam
+      
+      if spam.spammy_poll?(user.id)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
+        return true
+      end
+
+      false
     end
   end
 end
