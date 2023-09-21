@@ -4,61 +4,42 @@ require "tourmaline"
 module PrivateParlorXT
   @[On(update: :Text, config: "relay_text")]
   class TextHandler < UpdateHandler
-    @entity_types : Array(String)
-    @linked_network : Hash(String, String) = {} of String => String
-
     def initialize(config : Config)
-      @entity_types = config.entities
-      @linked_network = config.linked_network
     end
 
-    def do(update : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale, spam : SpamHandler?)
-      message, user = get_message_and_user(update, database, relay, locale)
+    def do(context : Tourmaline::Context, services : Services)
+      message, user = get_message_and_user(context, services)
       return unless message && user
 
-      unless access.authorized?(user.rank, :Text)
-        response = Format.substitute_message(locale.replies.media_disabled, locale, {"type" => "text"})
-        return relay.send_to_user(message.message_id.to_i64, user.id, response)
-      end
+      return unless meets_requirements?(message)
 
-      return if message.forward_date
+      return unless is_authorized?(user, message, :Text, services)
+
       return unless text = message.text
 
-      if spam && spam.spammy_text?(user.id, text)
-        return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.spamming)
-      end
+      return if is_spamming?(user, message, text, services)
+
+      return unless check_text(text, user, message, services)
 
       # TODO: Add R9K check hook
 
-      text, entities = check_text(text, user, message, message.entities, relay, locale)
-      return if text.empty?
+      text, entities = format_text(text, message.entities, services)
 
       # TODO: Add pseudonymous hook
 
-      new_message = history.new_message(user.id, message.message_id.to_i64)
-
       if reply = message.reply_to_message
-        reply_msids = history.get_all_receivers(reply.message_id.to_i64)
-
-        if reply_msids.empty?
-          relay.send_to_user(new_message, user.id, locale.replies.not_in_cache)
-          history.delete_message_group(new_message)
-          return
-        end
+        return unless reply_msids = get_reply_receivers(reply, message, user, services)
       end
 
       # TODO: Add R9K write hook
 
-      user.set_active
-      database.update_user(user)
+      new_message = services.history.new_message(user.id, message.message_id.to_i64)
 
-      if user.debug_enabled
-        receivers = database.get_active_users
-      else
-        receivers = database.get_active_users(user.id)
-      end
+      update_user_activity(user, services)
 
-      relay.send_text(
+      receivers = get_message_receivers(user, services)
+
+      services.relay.send_text(
         new_message,
         user,
         receivers,
@@ -68,33 +49,21 @@ module PrivateParlorXT
       )
     end
 
-    # Same as overriden method, but returns nil if message is a command
-    private def get_message_and_user(update : Tourmaline::Context, database : Database, relay : Relay, locale : Locale) : Tuple(Tourmaline::Message?, User?)
-      unless (message = update.message) && (info = message.from)
-        return nil, nil
+    def meets_requirements?(message : Tourmaline::Message) : Bool
+      return false if message.forward_date
+
+      true
+    end
+
+    def is_spamming?(user : User, message : Tourmaline::Message, text : String, services : Services) : Bool
+      return false unless spam = services.spam
+      
+      if spam.spammy_text?(user.id, text)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
+        return true
       end
 
-      if entity = message.entities[0]?
-        return nil, nil if entity.type == "bot_command"
-      end
-
-      if text = message.text
-        return nil, nil if text.starts_with?(/^[+-]1/)
-      end
-
-      unless user = database.get_user(info.id.to_i64)
-        relay.send_to_user(nil, info.id.to_i64, locale.replies.not_in_chat)
-        return message, nil
-      end
-
-      unless user.can_chat?(@media_limit_period)
-        deny_user(user, relay, locale)
-        return message, nil
-      end
-
-      user.update_names(info.username, info.full_name)
-
-      return message, user
+      false
     end
   end
 end

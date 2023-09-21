@@ -56,7 +56,7 @@ module PrivateParlorXT
   end
 
   begin
-    log = Format.substitute_message(locale.logs.start, locale, {"version" => VERSION})
+    log = Format.substitute_message(locale.logs.start, {"version" => VERSION})
     relay.log_output(log)
   rescue ex
     Log.error(exception: ex) {

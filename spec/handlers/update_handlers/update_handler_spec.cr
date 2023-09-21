@@ -152,6 +152,38 @@ module PrivateParlorXT
 
         tuple.should(eq({nil, nil}))
       end
+
+      it "returns nil if message text starts with a command" do
+        command_message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          text: "/test",
+        )
+
+        upvote_message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          text: "+1",
+        )
+
+        downvote_message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          text: "-1",
+        )
+
+        command_context = create_context(client, create_update(11, command_message))
+        upvote_context = create_context(client, create_update(11, upvote_message))
+        downvote_context = create_context(client, create_update(11, downvote_message))
+
+        command_tuple = handler.get_message_and_user(command_context, services)
+        upvote_tuple = handler.get_message_and_user(upvote_context, services)
+        downvote_tuple = handler.get_message_and_user(downvote_context, services)
+
+        command_tuple.should(eq({nil, nil}))
+        upvote_tuple.should(eq({nil, nil}))
+        downvote_tuple.should(eq({nil, nil}))
+      end
     end
 
     describe "#is_authorized?" do
