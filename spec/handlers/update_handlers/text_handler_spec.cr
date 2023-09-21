@@ -104,26 +104,5 @@ module PrivateParlorXT
         ).should(be_false)
       end
     end
-
-    describe "#meets_requirements?" do
-      it "returns true if message is not a forward" do
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
-        )
-
-        handler.meets_requirements?(message).should(be_true)
-      end
-
-      it "returns false if message is a forward" do
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
-          forward_date: Time.utc
-        )
-
-        handler.meets_requirements?(message).should(be_false)
-      end
-    end
   end
 end

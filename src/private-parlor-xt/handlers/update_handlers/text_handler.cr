@@ -11,7 +11,7 @@ module PrivateParlorXT
       message, user = get_message_and_user(context, services)
       return unless message && user
 
-      return unless meets_requirements?(message)
+      return if message.forward_date
 
       return unless is_authorized?(user, message, :Text, services)
 
@@ -47,12 +47,6 @@ module PrivateParlorXT
         text,
         entities,
       )
-    end
-
-    def meets_requirements?(message : Tourmaline::Message) : Bool
-      return false if message.forward_date
-
-      true
     end
 
     def is_spamming?(user : User, message : Tourmaline::Message, text : String, services : Services) : Bool
