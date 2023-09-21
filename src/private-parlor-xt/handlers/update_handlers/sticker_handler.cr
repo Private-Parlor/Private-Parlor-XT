@@ -7,54 +7,50 @@ module PrivateParlorXT
     def initialize(config : Config)
     end
 
-    def do(update : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale, spam : SpamHandler?)
-      message, user = get_message_and_user(update, database, relay, locale)
+    def do(context : Tourmaline::Context, services : Services)
+      message, user = get_message_and_user(context, services)
       return unless message && user
 
-      unless access.authorized?(user.rank, :Sticker)
-        response = Format.substitute_message(locale.replies.media_disabled, locale, {"type" => "sticker"})
-        return relay.send_to_user(message.message_id.to_i64, user.id, response)
-      end
-
       return if message.forward_date
-      return unless sticker = message.sticker
 
-      if spam && spam.spammy_sticker?(user.id)
-        return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.spamming)
-      end
+      return unless is_authorized?(user, message, :Sticker, services)
+
+      return if is_spamming?(user, message, services)
+      
+      return unless sticker = message.sticker
 
       # TODO: Add R9K check hook here
 
-      new_message = history.new_message(user.id, message.message_id.to_i64)
-
       if reply = message.reply_to_message
-        reply_msids = history.get_all_receivers(reply.message_id.to_i64)
-
-        if reply_msids.empty?
-          relay.send_to_user(new_message, user.id, locale.replies.not_in_cache)
-          history.delete_message_group(new_message)
-          return
-        end
+        return unless reply_msids = get_reply_receivers(reply, message, user, services)
       end
 
       # TODO: Add R9K write hook here
 
-      user.set_active
-      database.update_user(user)
+      new_message = services.history.new_message(user.id, message.message_id.to_i64)
 
-      if user.debug_enabled
-        receivers = database.get_active_users
-      else
-        receivers = database.get_active_users(user.id)
-      end
+      update_user_activity(user, services)
 
-      relay.send_sticker(
+      receivers = get_message_receivers(user, services)
+
+      services.relay.send_sticker(
         new_message,
         user,
         receivers,
         reply_msids,
         sticker.file_id,
       )
+    end
+
+    def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
+      return false unless spam = services.spam
+      
+      if spam.spammy_sticker?(user.id)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
+        return true
+      end
+
+      false
     end
   end
 end
