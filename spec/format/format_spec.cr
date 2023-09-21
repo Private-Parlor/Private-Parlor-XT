@@ -216,7 +216,7 @@ module PrivateParlorXT
         entities.size.should(eq(2))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
-        entities[0].length.should(eq(24))
+        entities[0].length.should(eq(22))
 
         entities[1].type.should(eq("text_link"))
         entities[1].offset.should(eq(15))
@@ -248,7 +248,7 @@ module PrivateParlorXT
         entities.size.should(eq(2))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
-        entities[0].length.should(eq(27))
+        entities[0].length.should(eq(25))
 
         entities[1].type.should(eq("text_link"))
         entities[1].offset.should(eq(15))
@@ -280,7 +280,7 @@ module PrivateParlorXT
         entities.size.should(eq(2))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
-        entities[0].length.should(eq(32))
+        entities[0].length.should(eq(30))
 
         entities[1].type.should(eq("text_link"))
         entities[1].offset.should(eq(15))
@@ -311,7 +311,7 @@ module PrivateParlorXT
         entities.size.should(eq(2))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
-        entities[0].length.should(eq(40))
+        entities[0].length.should(eq(38))
 
         entities[1].type.should(eq("text_link"))
         entities[1].offset.should(eq(15))
@@ -337,11 +337,110 @@ module PrivateParlorXT
         entities.size.should(eq(2))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
-        entities[0].length.should(eq(29))
+        entities[0].length.should(eq(27))
 
         entities[1].type.should(eq("italic"))
         entities[1].offset.should(eq(15))
         entities[1].length.should(eq(12))
+      end
+    end
+
+    describe "#format_user_forward" do
+      it "correctly handles UTF-16 code units in given name" do
+        header, entities = Format.format_user_forward(
+          "Dodo 🦤🏝🍽",
+          9000, 
+          [] of Tourmaline::MessageEntity
+        )
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from Dodo 🦤🏝🍽\n\n"))
+        
+        entities.size.should(eq(2))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(26))
+
+        entities[1].type.should(eq("text_link"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(11))
+      end
+    end
+
+    describe "#format_private_user_forward" do
+      it "correctly handles UTF-16 code units in given name" do
+        header, entities = Format.format_private_user_forward(
+          "Private 🔒🦤 Dodo",
+          [] of Tourmaline::MessageEntity
+        )
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from Private 🔒🦤 Dodo\n\n"))
+        
+        entities.size.should(eq(2))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(32))
+
+        entities[1].type.should(eq("italic"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(17))
+      end
+    end
+
+    describe "#format_username_forward" do
+      it "correctly handles UTF-16 code units in given name" do
+        header, entities = Format.format_username_forward(
+          "🤖 Dodo Bot 🦤",
+          "dodobot",
+          [] of Tourmaline::MessageEntity
+        )
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from 🤖 Dodo Bot 🦤\n\n"))
+        
+        entities.size.should(eq(2))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(29))
+
+        entities[1].type.should(eq("text_link"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(14))
+      end
+    end
+
+    describe "format_private_channel_forward" do
+      it "correctly handles UTF-16 code units in given name" do
+        header, entities = Format.format_private_channel_forward(
+          "🦤 Private 🔒 Dodo 📣",
+          9000,
+          [] of Tourmaline::MessageEntity
+        )
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from 🦤 Private 🔒 Dodo 📣\n\n"))
+        
+        entities.size.should(eq(2))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(36))
+
+        entities[1].type.should(eq("text_link"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(21))
       end
     end
 

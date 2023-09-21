@@ -155,11 +155,15 @@ module PrivateParlorXT
 
     def format_user_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "Forwarded from #{name}\n\n"
-      entities = offset_entities(entities, header.size)
+
+      header_size = header[..-3].to_utf16.size
+      name_size = name.to_utf16.size
+
+      entities = offset_entities(entities, header_size)
 
       entities = [
-        Tourmaline::MessageEntity.new("bold", 0, header.size),
-        Tourmaline::MessageEntity.new("text_link", 15, name.size, "tg://user?id=#{id}"),
+        Tourmaline::MessageEntity.new("bold", 0, header_size),
+        Tourmaline::MessageEntity.new("text_link", 15, name_size, "tg://user?id=#{id}"),
       ].concat(entities)
 
       return header, entities
@@ -167,11 +171,15 @@ module PrivateParlorXT
 
     def format_private_user_forward(name : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "Forwarded from #{name}\n\n"
-      entities = offset_entities(entities, header.size)
+
+      header_size = header[..-3].to_utf16.size
+      name_size = name.to_utf16.size
+
+      entities = offset_entities(entities, header_size)
 
       entities = [
-        Tourmaline::MessageEntity.new("bold", 0, header.size),
-        Tourmaline::MessageEntity.new("italic", 15, name.size),
+        Tourmaline::MessageEntity.new("bold", 0, header_size),
+        Tourmaline::MessageEntity.new("italic", 15, name_size),
       ].concat(entities)
 
       return header, entities
@@ -180,11 +188,15 @@ module PrivateParlorXT
     # For bots or public channels
     def format_username_forward(name : String, username : String?, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "Forwarded from #{name}\n\n"
-      entities = offset_entities(entities, header.size)
+
+      header_size = header[..-3].to_utf16.size
+      name_size = name.to_utf16.size
+
+      entities = offset_entities(entities, header_size)
 
       entities = [
-        Tourmaline::MessageEntity.new("bold", 0, header.size),
-        Tourmaline::MessageEntity.new("text_link", 15, name.size, "tg://resolve?domain=#{escape_html(username)}#{"&post=#{msid}" if msid}"),
+        Tourmaline::MessageEntity.new("bold", 0, header_size),
+        Tourmaline::MessageEntity.new("text_link", 15, name_size, "tg://resolve?domain=#{username}#{"&post=#{msid}" if msid}"),
       ].concat(entities)
 
       return header, entities
@@ -193,11 +205,15 @@ module PrivateParlorXT
     # Removes the "-100" prefix for private channels
     def format_private_channel_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "Forwarded from #{name}\n\n"
-      entities = offset_entities(entities, header.size)
+
+      header_size = header[..-3].to_utf16.size
+      name_size = name.to_utf16.size
+
+      entities = offset_entities(entities, header_size)
 
       entities = [
-        Tourmaline::MessageEntity.new("bold", 0, header.size),
-        Tourmaline::MessageEntity.new("text_link", 15, name.size, "tg://privatepost?channel=#{id.to_s[4..]}#{"&post=#{msid}" if msid}"),
+        Tourmaline::MessageEntity.new("bold", 0, header_size),
+        Tourmaline::MessageEntity.new("text_link", 15, name_size, "tg://privatepost?channel=#{id.to_s[4..]}#{"&post=#{msid}" if msid}"),
       ].concat(entities)
 
       return header, entities
