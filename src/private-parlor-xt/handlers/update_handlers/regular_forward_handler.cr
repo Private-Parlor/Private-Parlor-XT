@@ -155,7 +155,7 @@ module PrivateParlorXT
           entities,
           message.has_media_spoiler?,
         )
-      elsif file = message.photo
+      elsif (file = message.photo) && file.last?
         services.relay.send_photo(
           cached_message,
           user,
