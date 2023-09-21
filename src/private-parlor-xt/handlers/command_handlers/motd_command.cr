@@ -23,7 +23,7 @@ module PrivateParlorXT
 
         database.set_motd(arg)
 
-        log = Format.substitute_message(locale.logs.motd_set, locale, {
+        log = Format.substitute_message(locale.logs.motd_set, {
           "id"   => user.id.to_s,
           "name" => user.get_formatted_name,
           "text" => arg,

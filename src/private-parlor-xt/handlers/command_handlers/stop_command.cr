@@ -21,7 +21,7 @@ module PrivateParlorXT
 
       relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.left)
 
-      log = Format.substitute_message(locale.logs.left, locale, {
+      log = Format.substitute_message(locale.logs.left, {
         "id"   => user.id.to_s,
         "name" => user.get_formatted_name,
       })

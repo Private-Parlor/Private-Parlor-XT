@@ -60,7 +60,7 @@ module PrivateParlorXT
       return unless reply_msids = history.get_all_receivers(reply.message_id.to_i64)
 
       if reply.has_media_spoiler?
-        log = Format.substitute_message(locale.logs.unspoiled, locale, {
+        log = Format.substitute_message(locale.logs.unspoiled, {
           "id"   => user.id.to_s,
           "name" => user.get_formatted_name,
           "msid" => reply.message_id.to_s,
@@ -68,7 +68,7 @@ module PrivateParlorXT
       else
         input.has_spoiler = true
 
-        log = Format.substitute_message(locale.logs.spoiled, locale, {
+        log = Format.substitute_message(locale.logs.spoiled, {
           "id"   => user.id.to_s,
           "name" => user.get_formatted_name,
           "msid" => reply.message_id.to_s,

@@ -162,6 +162,11 @@ module PrivateParlorXT
     poll : Tourmaline::Poll? = nil,
     venue : Tourmaline::Venue? = nil,
     location : Tourmaline::Location? = nil,
+    forward_from : Tourmaline::User? = nil, 
+    forward_from_chat : Tourmaline::Chat? = nil,
+    forward_from_message_id : Int64? = nil,
+    forward_signature : String? = nil,
+    forward_sender_name : String? = nil,
     ) : Tourmaline::Message
 
     message = Tourmaline::Message.new(
@@ -188,6 +193,11 @@ module PrivateParlorXT
       poll: poll,
       venue: venue,
       location: location,
+      forward_from: forward_from, 
+      forward_from_chat: forward_from_chat,
+      forward_from_message_id: forward_from_message_id,
+      forward_signature: forward_signature,
+      forward_sender_name: forward_sender_name,
     )
 
     if date = forward_date

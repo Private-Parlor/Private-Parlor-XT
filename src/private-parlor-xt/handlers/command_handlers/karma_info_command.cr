@@ -45,7 +45,7 @@ module PrivateParlorXT
         end
       end
 
-      response = Format.substitute_message(locale.replies.karma_info, locale, {
+      response = Format.substitute_message(locale.replies.karma_info, {
         "current_level" => current_level[1],
         "next_level"    => next_level[1],
         "karma"         => user.karma.to_s,

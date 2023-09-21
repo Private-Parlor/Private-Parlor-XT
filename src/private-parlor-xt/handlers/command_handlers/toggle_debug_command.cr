@@ -15,7 +15,7 @@ module PrivateParlorXT
       user.toggle_debug
       database.update_user(user)
 
-      response = Format.substitute_message(locale.replies.toggle_debug, locale, {
+      response = Format.substitute_message(locale.replies.toggle_debug, {
         "toggle" => user.debug_enabled ? locale.toggle[1] : locale.toggle[0],
       })
 

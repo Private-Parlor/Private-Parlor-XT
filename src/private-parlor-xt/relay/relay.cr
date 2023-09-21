@@ -343,7 +343,7 @@ module PrivateParlorXT
           user.set_left
           database.update_user(user)
 
-          log = Format.substitute_message(locale.logs.force_leave, locale, {"id" => user.id.to_s})
+          log = Format.substitute_message(locale.logs.force_leave, {"id" => user.id.to_s})
 
           log_output(log)
         end

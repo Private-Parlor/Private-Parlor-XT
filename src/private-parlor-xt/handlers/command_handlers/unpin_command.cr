@@ -5,6 +5,7 @@ module PrivateParlorXT
   @[RespondsTo(command: "unpin", config: "enable_unpin")]
   class UnpinCommand < CommandHandler
     def initialize(config : Config)
+      @blacklist_contact = config.blacklist_contact
     end
 
     def do(ctx : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale)
@@ -24,7 +25,7 @@ module PrivateParlorXT
           relay.unpin_message(receiver, receiver_message)
         end
 
-        log = Format.substitute_message(locale.logs.unpinned, locale, {
+        log = Format.substitute_message(locale.logs.unpinned, {
           "id"   => user.id.to_s,
           "name" => user.get_formatted_name,
           "msid" => reply.message_id.to_s,
@@ -34,7 +35,7 @@ module PrivateParlorXT
           relay.unpin_latest_pin(receiver)
         end
 
-        log = Format.substitute_message(locale.logs.unpinned_recent, locale, {
+        log = Format.substitute_message(locale.logs.unpinned_recent, {
           "id"   => user.id.to_s,
           "name" => user.get_formatted_name,
         })

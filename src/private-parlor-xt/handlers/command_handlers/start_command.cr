@@ -21,7 +21,7 @@ module PrivateParlorXT
 
       if user = database.get_user(info.id.to_i64)
         if user.blacklisted?
-          response = Format.substitute_message(locale.replies.blacklisted, locale, {
+          response = Format.substitute_message(locale.replies.blacklisted, {
             "contact" => Format.format_contact_reply(@blacklist_contact, locale),
             "reason"  => Format.format_reason_reply(user.blacklist_reason, locale),
           })
@@ -35,7 +35,7 @@ module PrivateParlorXT
 
           relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.rejoined)
 
-          log = Format.substitute_message(locale.logs.rejoined, locale, {"id" => user.id.to_s, "name" => user.get_formatted_name})
+          log = Format.substitute_message(locale.logs.rejoined, {"id" => user.id.to_s, "name" => user.get_formatted_name})
 
           relay.log_output(log)
         else
@@ -65,7 +65,7 @@ module PrivateParlorXT
           relay.send_to_user(message.message_id.to_i64, info.id.to_i64, locale.replies.joined)
         end
 
-        log = Format.substitute_message(locale.logs.joined, locale, {
+        log = Format.substitute_message(locale.logs.joined, {
           "id"   => info.id.to_s,
           "name" => info.username || info.full_name,
         })

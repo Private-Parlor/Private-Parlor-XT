@@ -28,7 +28,7 @@ module PrivateParlorXT
         relay.pin_message(receiver, receiver_message)
       end
 
-      log = Format.substitute_message(locale.logs.pinned, locale, {
+      log = Format.substitute_message(locale.logs.pinned, {
         "id"   => user.id.to_s,
         "name" => user.get_formatted_name,
         "msid" => reply.message_id.to_s,

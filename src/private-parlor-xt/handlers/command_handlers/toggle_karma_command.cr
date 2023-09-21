@@ -15,7 +15,7 @@ module PrivateParlorXT
       user.toggle_karma
       database.update_user(user)
 
-      response = Format.substitute_message(locale.replies.toggle_karma, locale, {
+      response = Format.substitute_message(locale.replies.toggle_karma, {
         "toggle" => user.hide_karma ? locale.toggle[0] : locale.toggle[1],
       })
 

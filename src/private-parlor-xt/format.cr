@@ -6,7 +6,7 @@ module PrivateParlorXT
     extend self
 
     # Globally substitutes placeholders in message with the given variables
-    def substitute_message(msg : String, locale : Locale, variables : Hash(String, String?) = {"" => ""}) : String
+    def substitute_message(msg : String, variables : Hash(String, String?) = {"" => ""}) : String
       msg.gsub(/{\w+}/) do |match|
         escape_html(variables[match[1..-2]])
       end
@@ -71,9 +71,15 @@ module PrivateParlorXT
       while (start_index = text.index(/>>>\/\w+\//, offset)) && start_index != nil
         chat_string_index = start_index + 4
 
-        next unless end_index = text.index('/', chat_string_index)
+        unless end_index = text.index('/', chat_string_index)
+          offset = chat_string_index
+          next
+        end
 
-        next unless chat = linked_network[text[chat_string_index...end_index]]?
+        unless chat = linked_network[text[chat_string_index...end_index]]?
+          offset = chat_string_index
+          next
+        end
 
         entities << Tourmaline::MessageEntity.new(
           "text_link",
@@ -99,6 +105,19 @@ module PrivateParlorXT
       else
         true
       end
+    end
+
+    # Returns arguments found after a command from a message text.
+    def get_arg(text : String?) : String | Nil
+      return unless text
+
+      text.split(2)[1]?
+    end
+
+    def get_args(text : String?, count : Int) : Array(String) | Nil
+      return unless text
+
+      text.split(count + 1)[1..]?
     end
 
     # Checks the text and entities for a forwarded message to determine if it
@@ -279,7 +298,7 @@ module PrivateParlorXT
       }
 
       String.build do |str|
-        str << substitute_message(locale.replies.help_header, locale)
+        str << locale.replies.help_header
         str << escape_html("\n/start - #{locale.command_descriptions.start}")
         str << escape_html("\n/stop - #{locale.command_descriptions.stop}")
         str << escape_html("\n/info - #{locale.command_descriptions.info}")
@@ -313,12 +332,12 @@ module PrivateParlorXT
 
           unless rank_commands.empty?
             str << "\n\n"
-            str << substitute_message(locale.replies.help_rank_commands, locale, {"rank" => rank.name})
+            str << substitute_message(locale.replies.help_rank_commands, {"rank" => rank.name})
             rank_commands.each { |line| str << escape_html("\n#{line}") }
           end
           unless reply_commands.empty?
             str << "\n\n"
-            str << substitute_message(locale.replies.help_reply_commands, locale)
+            str << locale.replies.help_reply_commands
             reply_commands.each { |line| str << escape_html("\n#{line}") }
           end
         end

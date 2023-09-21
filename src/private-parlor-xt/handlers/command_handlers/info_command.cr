@@ -45,7 +45,7 @@ module PrivateParlorXT
 
       reply_user.remove_cooldown
 
-      response = Format.substitute_message(locale.replies.ranked_info, locale, {
+      response = Format.substitute_message(locale.replies.ranked_info, {
         "oid"            => reply_user.get_obfuscated_id.to_s,
         "karma"          => reply_user.get_obfuscated_karma.to_s,
         "cooldown_until" => Format.format_cooldown_until(reply_user.cooldown_until, locale),
@@ -79,7 +79,7 @@ module PrivateParlorXT
 
       user.remove_cooldown
 
-      response = Format.substitute_message(locale.replies.user_info, locale, {
+      response = Format.substitute_message(locale.replies.user_info, {
         "oid"            => user.get_obfuscated_id.to_s,
         "username"       => user.get_formatted_name,
         "rank_val"       => user.rank.to_s,

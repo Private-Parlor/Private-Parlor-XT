@@ -73,7 +73,7 @@ module PrivateParlorXT
     private def deny_user(user : User, relay : Relay, locale : Locale) : Nil
       return unless user.blacklisted?
       
-      response = Format.substitute_message(locale.replies.blacklisted, locale, {
+      response = Format.substitute_message(locale.replies.blacklisted, {
         "contact" => Format.format_contact_reply(@blacklist_contact, locale),
         "reason"  => Format.format_reason_reply(user.blacklist_reason, locale),
       })
@@ -109,7 +109,7 @@ module PrivateParlorXT
 
     def is_authorized?(user : User, message : Tourmaline::Message, authority : MessagePermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, authority)
-        response = Format.substitute_message(services.locale.replies.media_disabled, services.locale, {"type" => authority.to_s})
+        response = Format.substitute_message(services.locale.replies.media_disabled, {"type" => authority.to_s})
         services.relay.send_to_user(message.message_id.to_i64, user.id, response)
         return false
       end
@@ -126,16 +126,16 @@ module PrivateParlorXT
 
     private def deny_user(user : User, services : Services) : Nil
       if user.blacklisted?
-        response = Format.substitute_message(services.locale.replies.blacklisted, services.locale, {
+        response = Format.substitute_message(services.locale.replies.blacklisted, {
           "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.locale),
           "reason"  => Format.format_reason_reply(user.blacklist_reason, services.locale),
         })
       elsif cooldown_until = user.cooldown_until
-        response = Format.substitute_message(services.locale.replies.on_cooldown, services.locale, {
+        response = Format.substitute_message(services.locale.replies.on_cooldown, {
           "time" => Format.format_time(cooldown_until, services.locale.time_format),
         })
       elsif Time.utc - user.joined < services.config.media_limit_period
-        response = Format.substitute_message(services.locale.replies.media_limit, services.locale, {
+        response = Format.substitute_message(services.locale.replies.media_limit, {
           "total" => (services.config.media_limit_period - (Time.utc - user.joined)).hours.to_s,
         })
       else
@@ -211,7 +211,7 @@ module PrivateParlorXT
 
     private def deny_user(user : User, services : Services) : Nil
       if user.blacklisted?
-        response = Format.substitute_message(services.locale.replies.blacklisted, services.locale, {
+        response = Format.substitute_message(services.locale.replies.blacklisted, {
           "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.locale),
           "reason"  => Format.format_reason_reply(user.blacklist_reason, services.locale),
         })

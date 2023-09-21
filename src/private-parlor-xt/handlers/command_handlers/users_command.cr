@@ -17,14 +17,14 @@ module PrivateParlorXT
       counts = database.get_user_counts
 
       if access.authorized?(user.rank, :Users)
-        response = Format.substitute_message(locale.replies.user_count_full, locale, {
+        response = Format.substitute_message(locale.replies.user_count_full, {
           "joined"      => (counts[:total] - counts[:left]).to_s,
           "left"        => counts[:left].to_s,
           "blacklisted" => counts[:blacklisted].to_s,
           "total"       => counts[:total].to_s,
         })
       else
-        response = Format.substitute_message(locale.replies.user_count, locale, {
+        response = Format.substitute_message(locale.replies.user_count, {
           "total" => counts[:total].to_s,
         })
       end

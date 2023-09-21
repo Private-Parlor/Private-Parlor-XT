@@ -222,32 +222,6 @@ module PrivateParlorXT
 
         handler.check_text(nil, user, message, services).should(be_true)
       end
-
-      it "returns true if text is allowed" do
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
-        )
-
-        text = "example text"
-
-        user = SQLiteUser.new(9000, rank: 0)
-
-        handler.check_text(text, user, message, services).should(be_true)
-      end
-
-      it "returns false if text is not allowed" do
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
-        )
-
-        text = "𝐀𝐁𝐂"
-
-        user = SQLiteUser.new(9000, rank: 0)
-
-        handler.check_text(text, user, message, services).should(be_false)
-      end
     end
 
     describe "#get_reply_receivers" do
