@@ -4,74 +4,81 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "start", config: "enable_start")]
   class StartCommand < CommandHandler
-    @blacklist_contact : String?
     @registration_open : Bool?
     @pseudonymous : Bool?
     @default_rank : Int32
 
     def initialize(config : Config)
-      @blacklist_contact = config.blacklist_contact
       @registration_open = config.registration_open
       @pseudonymous = config.pseudonymous
       @default_rank = config.default_rank
     end
 
-    def do(ctx : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale)
-      return unless (message = ctx.message) && (info = message.from)
+    def do(context : Tourmaline::Context, services : Services)
+      return unless (message = context.message) && (info = message.from)
 
-      if user = database.get_user(info.id.to_i64)
-        if user.blacklisted?
-          response = Format.substitute_message(locale.replies.blacklisted, {
-            "contact" => Format.format_contact_reply(@blacklist_contact, locale),
-            "reason"  => Format.format_reason_reply(user.blacklist_reason, locale),
-          })
-
-          relay.send_to_user(nil, user.id, response)
-        elsif user.left?
-          user.rejoin
-          user.update_names(info.username, info.full_name)
-          user.set_active
-          database.update_user(user)
-
-          relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.rejoined)
-
-          log = Format.substitute_message(locale.logs.rejoined, {"id" => user.id.to_s, "name" => user.get_formatted_name})
-
-          relay.log_output(log)
-        else
-          user.update_names(info.username, info.full_name)
-          user.set_active
-          database.update_user(user)
-          relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.already_in_chat)
-        end
+      if user = services.database.get_user(info.id.to_i64)
+        existing_user(user, info.username, info.full_name, message.message_id.to_i64, services)
       else
-        unless @registration_open
-          return relay.send_to_user(nil, info.id.to_i64, locale.replies.registration_closed)
-        end
+        new_user(info.id.to_i64, info.username, info.full_name, message.message_id.to_i64, services)
+      end
+    end
 
-        if database.no_users?
-          database.add_user(info.id.to_i64, info.username, info.full_name, access.max_rank)
-        else
-          database.add_user(info.id.to_i64, info.username, info.full_name, @default_rank)
-        end
-
-        if motd = database.get_motd
-          relay.send_to_user(nil, info.id.to_i64, motd)
-        end
-
-        if @pseudonymous
-          relay.send_to_user(message.message_id.to_i64, info.id.to_i64, locale.replies.joined_pseudonym)
-        else
-          relay.send_to_user(message.message_id.to_i64, info.id.to_i64, locale.replies.joined)
-        end
-
-        log = Format.substitute_message(locale.logs.joined, {
-          "id"   => info.id.to_s,
-          "name" => info.username || info.full_name,
+    def existing_user(user : User, username : String?, fullname : String, message_id : MessageID, services : Services)
+      if user.blacklisted?
+        response = Format.substitute_message(services.locale.replies.blacklisted, {
+          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.locale),
+          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.locale),
         })
 
-        relay.log_output(log)
+        services.relay.send_to_user(nil, user.id, response)
+      elsif user.left?
+        user.rejoin
+        user.update_names(username, fullname)
+        user.set_active
+        services.database.update_user(user)
+
+        services.relay.send_to_user(message_id, user.id, services.locale.replies.rejoined)
+
+        log = Format.substitute_message(services.locale.logs.rejoined, {"id" => user.id.to_s, "name" => user.get_formatted_name})
+
+        services.relay.log_output(log)
+      else
+        user.update_names(username, fullname)
+        user.set_active
+
+        services.database.update_user(user)
+        services.relay.send_to_user(message_id, user.id, services.locale.replies.already_in_chat)
       end
+    end
+
+    def new_user(id : UserID, username : String?, fullname : String, message_id : MessageID, services : Services)
+      unless @registration_open
+        return services.relay.send_to_user(nil, id, services.locale.replies.registration_closed)
+      end
+
+      if services.database.no_users?
+        services.database.add_user(id, username, fullname, services.access.max_rank)
+      else
+        services.database.add_user(id, username, fullname, @default_rank)
+      end
+
+      if motd = services.database.get_motd
+        services.relay.send_to_user(nil, id, motd)
+      end
+
+      if @pseudonymous
+        services.relay.send_to_user(message_id, id, services.locale.replies.joined_pseudonym)
+      else
+        services.relay.send_to_user(message_id, id, services.locale.replies.joined)
+      end
+
+      log = Format.substitute_message(services.locale.logs.joined, {
+        "id"   => id.to_s,
+        "name" => username || fullname,
+      })
+
+      services.relay.log_output(log)
     end
   end
 end
