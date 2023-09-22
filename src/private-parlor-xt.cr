@@ -38,7 +38,7 @@ module PrivateParlorXT
     spam,
   )
 
-  initialize_handlers(client, config, relay, access, database, history, locale, spam, services)
+  initialize_handlers(client, config, services)
 
   # 30 messages every second; going above may result in rate limits
   sending_routine = Tasker.every(500.milliseconds) do

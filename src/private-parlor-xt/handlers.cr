@@ -48,15 +48,15 @@ module PrivateParlorXT
 
     abstract def initialize(config : Config)
 
-    abstract def do(ctx : Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale)
+    abstract def do(context : Context, services : Services)
 
-    private def get_message_and_user(ctx : Tourmaline::Context, database : Database, relay : Relay, locale : Locale) : Tuple(Tourmaline::Message?, User?)
+    private def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
       unless (message = ctx.message) && (info = message.from)
         return nil, nil
       end
 
-      unless user = database.get_user(info.id.to_i64)
-        relay.send_to_user(nil, info.id.to_i64, locale.replies.not_in_chat)
+      unless user = services.database.get_user(info.id.to_i64)
+        services.relay.send_to_user(nil, info.id.to_i64, services.locale.replies.not_in_chat)
         return message, nil
       end
 
@@ -78,7 +78,7 @@ module PrivateParlorXT
         "reason"  => Format.format_reason_reply(user.blacklist_reason, locale),
       })
 
-      relay.send_to_user(nil, user.id, response)
+      services.relay.send_to_user(nil, user.id, response)
     end
   end
 

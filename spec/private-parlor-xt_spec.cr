@@ -22,7 +22,7 @@ module PrivateParlorXT
     )
 
     it "generates command handlers" do
-      arr = PrivateParlorXT.generate_command_handlers(config, relay, access, database, history, locale)
+      arr = PrivateParlorXT.generate_command_handlers(config, services)
 
       contains_mock = false
       arr.each do |command|

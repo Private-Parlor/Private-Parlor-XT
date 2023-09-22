@@ -39,27 +39,10 @@ module PrivateParlorXT
     )
   end
 
-  def self.initialize_handlers(
-    client : Tourmaline::Client,
-    config : Config,
-    relay : Relay,
-    access : AuthorizedRanks,
-    database : Database,
-    history : History,
-    locale : Locale,
-    spam : SpamHandler?,
-    services : Services
-  ) : Nil
+  def self.initialize_handlers(client : Tourmaline::Client, config : Config, services : Services) : Nil
     events = [] of Tourmaline::EventHandler
 
-    events = events.concat(generate_command_handlers(
-      config,
-      relay,
-      access,
-      database,
-      history,
-      locale,
-    ))
+    events = events.concat(generate_command_handlers(config, services))
 
     events = events.concat(generate_hears_handlers(config, services))
 
@@ -74,14 +57,7 @@ module PrivateParlorXT
 
   # Intialize all command handlers that inherit from `CommandHandler`
   # and are annotated with `RespondsTo`
-  def self.generate_command_handlers(
-    config : Config,
-    relay : Relay,
-    access : AuthorizedRanks,
-    database : Database,
-    history : History,
-    locale : Locale
-  ) : Array(Tourmaline::CommandHandler)
+  def self.generate_command_handlers(config : Config, services : Services) : Array(Tourmaline::CommandHandler)
     arr = [] of Tourmaline::CommandHandler
 
     {% for command in CommandHandler.all_subclasses.select { |sub_class|
@@ -99,7 +75,7 @@ module PrivateParlorXT
       {% end %}
 
       arr << Tourmaline::CommandHandler.new({{command_responds_to[:command]}}) do |ctx|
-        {{handler}}.do(ctx, relay, access, database, history, locale)
+        {{handler}}.do(ctx, services)
       end
     end
 
