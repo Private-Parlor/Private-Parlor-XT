@@ -111,18 +111,16 @@ module PrivateParlorXT
       elsif album = message.media_group_id
         return unless input = get_album_input(message, text, entities)
 
-        if @albums[album]?
-          @albums[album].message_ids << message.message_id.to_i64
-          @albums[album].media << input
-          return
-        end
-
-        media_group = Album.new(message.message_id.to_i64, input)
-        @albums.merge!({album => media_group})
-
-        puts @albums
-
-        relay_album(@albums, album, user, receivers, nil, services)
+        relay_album(
+          @albums, 
+          album,
+          message.message_id.to_i64, 
+          input,
+          user, 
+          receivers, 
+          nil, 
+          services
+        )
       elsif file = message.animation
         services.relay.send_animation(
           cached_message,

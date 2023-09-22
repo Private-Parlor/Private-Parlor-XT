@@ -41,7 +41,16 @@ module PrivateParlorXT
       end
     end
 
-    def relay_album(albums : Hash(String, Album), album : String, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, services : Services)
+    def relay_album(albums : Hash(String, Album), album : String, message_id : MessageID, input : AlbumMedia, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, services : Services)
+      if albums[album]?
+        albums[album].message_ids << message_id
+        albums[album].media << input
+        return
+      end
+
+      media_group = Album.new(message_id, input)
+      albums.merge!({album => media_group})
+      
       # Wait an arbitrary amount of time for Telegram MediaGroup updates to come in before relaying the album.
       Tasker.in(WAIT_TIME) {
         next unless prepared_album = albums.delete(album)
