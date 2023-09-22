@@ -103,6 +103,7 @@ module PrivateParlorXT
         end
 
         handler.is_spamming?(beispiel, message, spam_services).should(be_false)
+        handler.is_spamming?(beispiel, message, spam_services).should(be_false)
       end
     end
 
