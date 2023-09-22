@@ -346,11 +346,17 @@ module PrivateParlorXT
     end
 
     describe "#format_user_forward" do
-      it "correctly handles UTF-16 code units in given name" do
+      it "handles UTF-16 code units in given name and updates entities" do
         header, entities = Format.format_user_forward(
           "Dodo 🦤🏝🍽",
           9000, 
-          [] of Tourmaline::MessageEntity
+          [
+            Tourmaline::MessageEntity.new(
+              "underline",
+              offset: 0,
+              length: 10,
+            )
+          ]
         )
 
         unless header
@@ -359,7 +365,7 @@ module PrivateParlorXT
 
         header.should(eq("Forwarded from Dodo 🦤🏝🍽\n\n"))
         
-        entities.size.should(eq(2))
+        entities.size.should(eq(3))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
         entities[0].length.should(eq(26))
@@ -367,14 +373,24 @@ module PrivateParlorXT
         entities[1].type.should(eq("text_link"))
         entities[1].offset.should(eq(15))
         entities[1].length.should(eq(11))
+
+        entities[2].type.should(eq("underline"))
+        entities[2].offset.should(eq(28))
+        entities[2].length.should(eq(10))
       end
     end
 
     describe "#format_private_user_forward" do
-      it "correctly handles UTF-16 code units in given name" do
+      it "handles UTF-16 code units in given name and updates entities" do
         header, entities = Format.format_private_user_forward(
           "Private 🔒🦤 Dodo",
-          [] of Tourmaline::MessageEntity
+          [
+            Tourmaline::MessageEntity.new(
+              "underline",
+              offset: 0,
+              length: 10,
+            )
+          ]
         )
 
         unless header
@@ -383,7 +399,7 @@ module PrivateParlorXT
 
         header.should(eq("Forwarded from Private 🔒🦤 Dodo\n\n"))
         
-        entities.size.should(eq(2))
+        entities.size.should(eq(3))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
         entities[0].length.should(eq(32))
@@ -391,15 +407,25 @@ module PrivateParlorXT
         entities[1].type.should(eq("italic"))
         entities[1].offset.should(eq(15))
         entities[1].length.should(eq(17))
+
+        entities[2].type.should(eq("underline"))
+        entities[2].offset.should(eq(34))
+        entities[2].length.should(eq(10))
       end
     end
 
     describe "#format_username_forward" do
-      it "correctly handles UTF-16 code units in given name" do
+      it "handles UTF-16 code units in given name and updates entities" do
         header, entities = Format.format_username_forward(
           "🤖 Dodo Bot 🦤",
           "dodobot",
-          [] of Tourmaline::MessageEntity
+          [
+            Tourmaline::MessageEntity.new(
+              "underline",
+              offset: 0,
+              length: 10,
+            )
+          ]
         )
 
         unless header
@@ -408,7 +434,7 @@ module PrivateParlorXT
 
         header.should(eq("Forwarded from 🤖 Dodo Bot 🦤\n\n"))
         
-        entities.size.should(eq(2))
+        entities.size.should(eq(3))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
         entities[0].length.should(eq(29))
@@ -416,15 +442,25 @@ module PrivateParlorXT
         entities[1].type.should(eq("text_link"))
         entities[1].offset.should(eq(15))
         entities[1].length.should(eq(14))
+
+        entities[2].type.should(eq("underline"))
+        entities[2].offset.should(eq(31))
+        entities[2].length.should(eq(10))
       end
     end
 
     describe "format_private_channel_forward" do
-      it "correctly handles UTF-16 code units in given name" do
+      it "handles UTF-16 code units in given name and updates entities" do
         header, entities = Format.format_private_channel_forward(
           "🦤 Private 🔒 Dodo 📣",
           9000,
-          [] of Tourmaline::MessageEntity
+          [
+            Tourmaline::MessageEntity.new(
+              "underline",
+              offset: 0,
+              length: 10,
+            )
+          ]
         )
 
         unless header
@@ -433,7 +469,7 @@ module PrivateParlorXT
 
         header.should(eq("Forwarded from 🦤 Private 🔒 Dodo 📣\n\n"))
         
-        entities.size.should(eq(2))
+        entities.size.should(eq(3))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
         entities[0].length.should(eq(36))
@@ -441,6 +477,10 @@ module PrivateParlorXT
         entities[1].type.should(eq("text_link"))
         entities[1].offset.should(eq(15))
         entities[1].length.should(eq(21))
+
+        entities[2].type.should(eq("underline"))
+        entities[2].offset.should(eq(38))
+        entities[2].length.should(eq(10))
       end
     end
 

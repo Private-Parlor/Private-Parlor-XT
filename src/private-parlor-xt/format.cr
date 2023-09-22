@@ -159,7 +159,7 @@ module PrivateParlorXT
       header_size = header[..-3].to_utf16.size
       name_size = name.to_utf16.size
 
-      entities = offset_entities(entities, header_size)
+      entities = offset_entities(entities, header_size + 2)
 
       entities = [
         Tourmaline::MessageEntity.new("bold", 0, header_size),
@@ -175,7 +175,7 @@ module PrivateParlorXT
       header_size = header[..-3].to_utf16.size
       name_size = name.to_utf16.size
 
-      entities = offset_entities(entities, header_size)
+      entities = offset_entities(entities, header_size + 2)
 
       entities = [
         Tourmaline::MessageEntity.new("bold", 0, header_size),
@@ -192,7 +192,7 @@ module PrivateParlorXT
       header_size = header[..-3].to_utf16.size
       name_size = name.to_utf16.size
 
-      entities = offset_entities(entities, header_size)
+      entities = offset_entities(entities, header_size + 2)
 
       entities = [
         Tourmaline::MessageEntity.new("bold", 0, header_size),
@@ -209,7 +209,7 @@ module PrivateParlorXT
       header_size = header[..-3].to_utf16.size
       name_size = name.to_utf16.size
 
-      entities = offset_entities(entities, header_size)
+      entities = offset_entities(entities, header_size + 2)
 
       entities = [
         Tourmaline::MessageEntity.new("bold", 0, header_size),
