@@ -5,17 +5,18 @@ module PrivateParlorXT
   @[RespondsTo(command: "help", config: "enable_help")]
   class HelpCommand < CommandHandler
     def initialize(config : Config)
-      @blacklist_contact = config.blacklist_contact
     end
 
-    def do(ctx : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale)
-      message, user = get_message_and_user(ctx, database, relay, locale)
+    def do(context : Tourmaline::Context, services : Services) : Nil
+      message, user = get_message_and_user(context, services)
       return unless message && user
 
-      user.set_active
-      database.update_user(user)
+      update_user_activity(user, services)
 
-      relay.send_to_user(message.message_id.to_i64, user.id, Format.format_help(user, access.ranks, locale))
+      services.relay.send_to_user(
+        message.message_id.to_i64, 
+        user.id, 
+        Format.format_help(user, services.access.ranks, services.locale))
     end
   end
 end
