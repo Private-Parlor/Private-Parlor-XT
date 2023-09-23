@@ -92,8 +92,6 @@ module PrivateParlorXT
         tuple = {user.rank, services.access.ranks[user.rank]}
       elsif args.size == 2
         tuple = services.access.find_rank(args[1].downcase, args[1].to_i?)
-      else
-        return services.relay.send_to_user(message, user.id, services.locale.replies.missing_args)
       end
   
       unless tuple

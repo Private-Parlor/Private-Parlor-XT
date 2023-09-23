@@ -11,6 +11,7 @@ module PrivateParlorXT
     getter allow_spoilers : Bool? = false
     getter media_limit_period : Time::Span = 0.hours
     getter karma_levels : Hash(Int32, String) = {} of Int32 => String
+    getter default_rank : Int32 = 0
 
     def initialize(config : Config)
       @blacklist_contact = config.blacklist_contact
@@ -21,6 +22,7 @@ module PrivateParlorXT
       @allow_spoilers = config.media_spoilers
       @media_limit_period = config.media_limit_period.hours
       @karma_levels = config.karma_levels
+      @default_rank = config.default_rank
     end
   end
 end

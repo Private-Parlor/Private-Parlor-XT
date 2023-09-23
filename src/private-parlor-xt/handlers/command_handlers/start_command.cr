@@ -6,12 +6,10 @@ module PrivateParlorXT
   class StartCommand < CommandHandler
     @registration_open : Bool?
     @pseudonymous : Bool?
-    @default_rank : Int32
 
     def initialize(config : Config)
       @registration_open = config.registration_open
       @pseudonymous = config.pseudonymous
-      @default_rank = config.default_rank
     end
 
     def do(context : Tourmaline::Context, services : Services)
@@ -60,7 +58,7 @@ module PrivateParlorXT
       if services.database.no_users?
         services.database.add_user(id, username, fullname, services.access.max_rank)
       else
-        services.database.add_user(id, username, fullname, @default_rank)
+        services.database.add_user(id, username, fullname, services.config.default_rank)
       end
 
       if motd = services.database.get_motd

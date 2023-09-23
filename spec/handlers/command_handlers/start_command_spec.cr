@@ -1,19 +1,22 @@
 require "../../spec_helper.cr"
 
-module PrivateParlorXT
-  DEFAULT_RANK = 10
-
+module PrivateParlorXT\
   describe StartCommand do
+    default_rank = 10
+
     client = MockClient.new
+    config = HandlerConfig.new(
+      MockConfig.new(
+        default_rank: default_rank
+      )
+    )
 
-    services = create_services(client: client)
+    services = create_services(client: client, config: config)
 
-    handler = StartCommand.new(MockConfig.new(
-      default_rank: DEFAULT_RANK,
-    ))
+    handler = StartCommand.new(MockConfig.new)
 
     around_each do |test|
-      services = create_services(client: client)
+      services = create_services(client: client, config: config)
 
       test.run
 
@@ -128,7 +131,7 @@ module PrivateParlorXT
           fail("User 9000 should have been added to the database")
         end
 
-        new_user.rank.should(eq(DEFAULT_RANK))
+        new_user.rank.should(eq(default_rank))
       end
     end
   end
