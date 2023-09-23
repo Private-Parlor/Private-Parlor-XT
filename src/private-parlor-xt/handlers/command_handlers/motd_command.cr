@@ -7,38 +7,32 @@ module PrivateParlorXT
     def initialize(config : Config)
     end
 
-    def do(ctx : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale)
-      message, user = get_message_and_user(ctx, database, relay, locale)
+    def do(context : Tourmaline::Context, services : Services) : Nil
+      message, user = get_message_and_user(context, services)
       return unless message && user
 
-      return unless text = message.text
+      if arg = Format.get_arg(message.text)
+        return unless is_authorized?(user, message, :MotdSet, services)
 
-      if arg = text.split(2)[1]?
-        unless access.authorized?(user.rank, :MotdSet)
-          return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.fail)
-        end
+        update_user_activity(user, services)
 
-        user.set_active
-        database.update_user(user)
+        services.database.set_motd(arg)
 
-        database.set_motd(arg)
-
-        log = Format.substitute_message(locale.logs.motd_set, {
+        log = Format.substitute_message(services.locale.logs.motd_set, {
           "id"   => user.id.to_s,
           "name" => user.get_formatted_name,
           "text" => arg,
         })
 
-        relay.log_output(log)
+        services.relay.log_output(log)
 
-        relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.success)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.success)
       else
-        return unless motd = database.get_motd
+        return unless motd = services.database.get_motd
 
-        user.set_active
-        database.update_user(user)
+        update_user_activity(user, services)
 
-        relay.send_to_user(message.message_id.to_i64, user.id, motd)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, motd)
       end
     end
   end
