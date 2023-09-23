@@ -86,6 +86,10 @@ module PrivateParlorXT
       @left = Time.utc
     end
 
+    def set_rank(rank : Int32) : Nil
+      @rank = rank
+    end
+
     def toggle_karma : Nil
       @hide_karma = !hide_karma
     end

@@ -21,7 +21,7 @@ module PrivateParlorXT
     end
 
     unless ranks
-      ranks = ranks = {
+      ranks = {
         1000 => Rank.new(
           "Host",
           Set{
