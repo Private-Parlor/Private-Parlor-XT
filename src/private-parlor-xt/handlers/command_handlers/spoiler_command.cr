@@ -7,39 +7,36 @@ module PrivateParlorXT
     def initialize(config : Config)
     end
 
-    def do(ctx : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale)
-      message, user = get_message_and_user(ctx, database, relay, locale)
+    def do(context : Tourmaline::Context, services : Services) : Nil
+      message, user = get_message_and_user(context, services)
       return unless message && user
 
-      unless access.authorized?(user.rank, :Spoiler)
-        return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.fail)
-      end
-      unless reply = message.reply_to_message
-        return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.no_reply)
-      end
+      return unless is_authorized?(user, message, :Spoiler, services)
+
+      return unless reply = get_reply_message(user, message, services)
+
       if reply.forward_date
-        return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.fail)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
       end
-      unless history.get_sender(reply.message_id.to_i64)
-        return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.not_in_cache)
+      unless services.history.get_sender(reply.message_id.to_i64)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.not_in_cache)
       end
 
-      unless (from = reply.from) && from.id == relay.get_client_user.id
+      unless (from = reply.from) && from.id == services.relay.get_client_user.id
         # Prevent spoiling messages that were not sent from the bot
-        return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.fail)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
       end
 
-      user.set_active
-      database.update_user(user)
+      update_user_activity(user, services)
 
       unless input = get_message_input(reply)
-        return relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.fail)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
       end
 
-      if spoil_messages(reply, user, input, history, relay, locale)
-        relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.success)
+      if spoil_messages(reply, user, input, services)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.success)
       else
-        relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.fail)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
       end
     end
 
@@ -56,11 +53,11 @@ module PrivateParlorXT
     # Spoils the given media message for all receivers by editing the media with the given input.
     #
     # Returns true on success, false or nil otherwise.
-    def spoil_messages(reply : Tourmaline::Message, user : User, input : Tourmaline::InputMedia, history : History, relay : Relay, locale : Locale) : Bool?
-      return unless reply_msids = history.get_all_receivers(reply.message_id.to_i64)
+    def spoil_messages(reply : Tourmaline::Message, user : User, input : Tourmaline::InputMedia, services : Services) : Bool?
+      return unless reply_msids = services.history.get_all_receivers(reply.message_id.to_i64)
 
       if reply.has_media_spoiler?
-        log = Format.substitute_message(locale.logs.unspoiled, {
+        log = Format.substitute_message(services.locale.logs.unspoiled, {
           "id"   => user.id.to_s,
           "name" => user.get_formatted_name,
           "msid" => reply.message_id.to_s,
@@ -68,7 +65,7 @@ module PrivateParlorXT
       else
         input.has_spoiler = true
 
-        log = Format.substitute_message(locale.logs.spoiled, {
+        log = Format.substitute_message(services.locale.logs.spoiled, {
           "id"   => user.id.to_s,
           "name" => user.get_formatted_name,
           "msid" => reply.message_id.to_s,
@@ -81,7 +78,7 @@ module PrivateParlorXT
 
       reply_msids.each do |receiver, receiver_message|
         begin
-          relay.edit_message_media(receiver, input, receiver_message)
+          services.relay.edit_message_media(receiver, input, receiver_message)
         rescue Tourmaline::Error::MessageCantBeEdited
           # Either message was a forward or
           # User set debug_mode to true before message was spoiled; simply continue on
@@ -90,7 +87,7 @@ module PrivateParlorXT
         end
       end
 
-      relay.log_output(log)
+      services.relay.log_output(log)
 
       true
     end
