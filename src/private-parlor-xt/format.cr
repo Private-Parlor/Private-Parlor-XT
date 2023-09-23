@@ -280,7 +280,7 @@ module PrivateParlorXT
     #
     # Feel free to edit this if you fork the code.
     def format_version : String
-      "Private Parlor v#{VERSION} ~ <a href=\"https://github.com/Private-Parlor/Private-Parlor-XT\">[Source]</a>"
+      "Private Parlor XT v#{VERSION} ~ <a href=\"https://github.com/Private-Parlor/Private-Parlor-XT\">[Source]</a>"
     end
 
     # Returns a message containing the commands the user can use.
