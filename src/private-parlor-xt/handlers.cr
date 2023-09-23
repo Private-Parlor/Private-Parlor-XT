@@ -43,14 +43,14 @@ module PrivateParlorXT
     end
   end
 
-  abstract class CommandHandler
+  abstract class CommandHandler < Handler
     @blacklist_contact : String? = nil
 
     abstract def initialize(config : Config)
 
     abstract def do(context : Context, services : Services)
 
-    private def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
+    def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
       unless (message = ctx.message) && (info = message.from)
         return nil, nil
       end
@@ -61,7 +61,7 @@ module PrivateParlorXT
       end
 
       unless user.can_use_command?
-        deny_user(user, relay, locale)
+        deny_user(user, services)
         return message, nil
       end
 
@@ -70,15 +70,34 @@ module PrivateParlorXT
       return message, user
     end
 
-    private def deny_user(user : User, relay : Relay, locale : Locale) : Nil
+    private def deny_user(user : User, services : Services) : Nil
       return unless user.blacklisted?
       
-      response = Format.substitute_message(locale.replies.blacklisted, {
-        "contact" => Format.format_contact_reply(@blacklist_contact, locale),
-        "reason"  => Format.format_reason_reply(user.blacklist_reason, locale),
+      response = Format.substitute_message(services.locale.replies.blacklisted, {
+        "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.locale),
+        "reason"  => Format.format_reason_reply(user.blacklist_reason, services.locale),
       })
 
       services.relay.send_to_user(nil, user.id, response)
+    end
+
+    def is_authorized?(user : User, message : Tourmaline::Message, permission : CommandPermissions, services : Services) : Bool
+      unless services.access.authorized?(user.rank, permission)
+        response = Format.substitute_message(services.locale.replies.media_disabled, {"type" => permission.to_s})
+        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+        return false
+      end
+
+      true
+    end
+
+    def is_authorized?(user : User, message : Tourmaline::Message, services : Services, *permissions : CommandPermissions) : CommandPermissions?
+      if authority = services.access.authorized?(user.rank, *permissions)
+        authority
+      else
+        response = Format.substitute_message(services.locale.replies.media_disabled, {"type" => authority.to_s})
+        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+      end
     end
   end
 
