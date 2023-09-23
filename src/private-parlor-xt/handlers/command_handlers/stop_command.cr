@@ -7,26 +7,26 @@ module PrivateParlorXT
     def initialize(config : Config)
     end
 
-    def do(ctx : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale)
-      return unless (message = ctx.message) && (info = message.from)
+    def do(context : Tourmaline::Context, services : Services) : Nil
+      return unless (message = context.message) && (info = message.from)
 
-      unless (user = database.get_user(info.id.to_i64)) && !user.left?
-        return relay.send_to_user(nil, info.id.to_i64, locale.replies.not_in_chat)
+      unless (user = services.database.get_user(info.id.to_i64)) && !user.left?
+        return services.relay.send_to_user(nil, info.id.to_i64, services.locale.replies.not_in_chat)
       end
 
       user.update_names(info.username, info.full_name)
       user.set_active
       user.set_left
-      database.update_user(user)
+      services.database.update_user(user)
 
-      relay.send_to_user(message.message_id.to_i64, user.id, locale.replies.left)
+      services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.left)
 
-      log = Format.substitute_message(locale.logs.left, {
+      log = Format.substitute_message(services.locale.logs.left, {
         "id"   => user.id.to_s,
         "name" => user.get_formatted_name,
       })
 
-      relay.log_output(log)
+      services.relay.log_output(log)
     end
   end
 end
