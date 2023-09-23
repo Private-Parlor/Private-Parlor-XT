@@ -7,19 +7,19 @@ module PrivateParlorXT
     def initialize(config : Config)
     end
 
-    def do(ctx : Tourmaline::Context, relay : Relay, access : AuthorizedRanks, database : Database, history : History, locale : Locale)
-      message, user = get_message_and_user(ctx, database, relay, locale)
+    def do(context : Tourmaline::Context, services : Services) : Nil
+      message, user = get_message_and_user(context, services)
       return unless message && user
 
-      user.set_active
       user.toggle_debug
-      database.update_user(user)
+    
+      update_user_activity(user, services)
 
-      response = Format.substitute_message(locale.replies.toggle_debug, {
-        "toggle" => user.debug_enabled ? locale.toggle[1] : locale.toggle[0],
+      response = Format.substitute_message(services.locale.replies.toggle_debug, {
+        "toggle" => user.debug_enabled ? services.locale.toggle[1] : services.locale.toggle[0],
       })
 
-      relay.send_to_user(message.message_id.to_i64, user.id, response)
+      services.relay.send_to_user(message.message_id.to_i64, user.id, response)
     end
   end
 end
