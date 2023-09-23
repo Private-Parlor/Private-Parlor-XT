@@ -15,6 +15,19 @@ module PrivateParlorXT
 
         Format.substitute_message(placeholder_text, parameters).should(eq(expected))
       end
+
+      it "does not raise KeyError when placeholder is not found in parameters" do
+        placeholder_text = "User {id} sent a {type} message [{message_id}] (origin: {message_id})"
+
+        parameters = {
+          "id" => 9000.to_s,
+          "message_id" => 20.to_s,
+        }
+
+        expected = "User 9000 sent a  message [20] (origin: 20)"
+
+        Format.substitute_message(placeholder_text, parameters).should(eq(expected))
+      end
     end
 
     describe "#remove_entities" do

@@ -8,7 +8,7 @@ module PrivateParlorXT
     # Globally substitutes placeholders in message with the given variables
     def substitute_message(msg : String, variables : Hash(String, String?) = {"" => ""}) : String
       msg.gsub(/{\w+}/) do |match|
-        escape_html(variables[match[1..-2]])
+        escape_html(variables[match[1..-2]]?)
       end
     end
 
