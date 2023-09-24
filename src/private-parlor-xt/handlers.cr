@@ -77,8 +77,7 @@ module PrivateParlorXT
 
     def is_authorized?(user : User, message : Tourmaline::Message, permission : CommandPermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, permission)
-        response = Format.substitute_message(services.locale.replies.media_disabled, {"type" => permission.to_s})
-        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.command_disabled)
         return false
       end
 
@@ -89,8 +88,7 @@ module PrivateParlorXT
       if authority = services.access.authorized?(user.rank, *permissions)
         authority
       else
-        response = Format.substitute_message(services.locale.replies.media_disabled, {"type" => authority.to_s})
-        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.command_disabled)
       end
     end
   end

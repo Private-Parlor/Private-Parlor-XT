@@ -4,6 +4,7 @@ module PrivateParlorXT
   # Contains a limited set of configuration variables that are needed for handlers
   class HandlerConfig
     getter blacklist_contact : String? = nil
+    getter sign_limit_interval : Int32 = 600
     getter upvote_limit_interval : Int32 = 0
     getter downvote_limit_interval : Int32 = 0
     getter entity_types : Array(String) = ["bold", "italic", "text_link"]
@@ -15,6 +16,7 @@ module PrivateParlorXT
 
     def initialize(config : Config)
       @blacklist_contact = config.blacklist_contact
+      @sign_limit_interval = config.sign_limit_interval
       @upvote_limit_interval = config.upvote_limit_interval
       @downvote_limit_interval = config.downvote_limit_interval
       @entity_types = config.entities
