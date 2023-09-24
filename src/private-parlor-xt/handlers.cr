@@ -44,12 +44,6 @@ module PrivateParlorXT
   end
 
   abstract class CommandHandler < Handler
-    @blacklist_contact : String? = nil
-
-    abstract def initialize(config : Config)
-
-    abstract def do(context : Context, services : Services)
-
     def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
       unless (message = ctx.message) && (info = message.from)
         return nil, nil
@@ -102,10 +96,6 @@ module PrivateParlorXT
   end
 
   abstract class UpdateHandler < Handler
-    abstract def initialize(config : Config)
-
-    abstract def do(context : Context, services : Services)
-
     def get_message_and_user(update : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
       unless (message = update.message) && (info = message.from)
         return nil, nil
@@ -214,10 +204,6 @@ module PrivateParlorXT
   end
 
   abstract class HearsHandler < Handler
-    abstract def initialize(config : Config)
-
-    abstract def do(context : Context, services : Services)
-
     def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
       unless (message = ctx.message) && (info = message.from)
         return nil, nil

@@ -77,6 +77,10 @@ module PrivateParlorXT
       arr << Tourmaline::CommandHandler.new({{command_responds_to[:command]}}) do |ctx|
         {{handler}}.do(ctx, services)
       end
+    else
+      arr << Tourmaline::CommandHandler.new({{command_responds_to[:command]}}) do |ctx|
+        command_disabled(ctx, services)
+      end
     end
 
     # TODO: Register command with BotFather
@@ -103,6 +107,10 @@ module PrivateParlorXT
 
       arr << Tourmaline::HearsHandler.new({{command_hears[:text]}}) do |ctx|
         {{handler}}.do(ctx, services)
+      end
+    else
+      arr << Tourmaline::HearsHandler.new({{command_hears[:text]}}) do |ctx|
+        command_disabled(ctx, services)
       end
     end
 
@@ -132,8 +140,30 @@ module PrivateParlorXT
       client.on({{update_on[:update]}}) do |ctx|
         {{handler}}.do(ctx, services)
       end
+    else
+      client.on({{update_on[:update]}}) do |ctx|
+        media_disabled(ctx, {{update_on[:update]}}, services)
+      end
     end
 
     {% end %}
+  end
+
+  def self.media_disabled(context : Tourmaline::Context, type : Tourmaline::UpdateAction, services : Services)
+    return unless message = context.message
+    return unless info = message.from
+
+    response = Format.substitute_message(services.locale.replies.media_disabled, {
+      "type" => type.to_s
+    })
+
+    services.relay.send_to_user(message.message_id.to_i64, info.id.to_i64, response)
+  end
+
+  def self.command_disabled(context : Tourmaline::Context, services : Services)
+    return unless message = context.message
+    return unless info = message.from
+
+    services.relay.send_to_user(message.message_id.to_i64, info.id.to_i64, services.locale.replies.command_disabled)
   end
 end
