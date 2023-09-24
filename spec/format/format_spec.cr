@@ -66,6 +66,28 @@ module PrivateParlorXT
       end
     end
 
+    describe "#generate_tripcode" do
+      it "generates 8chan secure tripcodes" do
+        salt = "ASecureSalt"
+        Format.generate_tripcode("name#password", salt).should(eq({"name", "!tOi2ytmic0"}))
+        Format.generate_tripcode("example#1", salt).should(eq({"example", "!8KD/BUYBBu"}))
+        Format.generate_tripcode("example#pass", salt).should(eq({"example", "!LhfgvU61/K"}))
+      end
+
+      it "generates 2channel tripcodes" do
+        Format.generate_tripcode("name#password", "").should(eq({"name", "!ozOtJW9BFA"}))
+        Format.generate_tripcode("example#1", "").should(eq({"example", "!tsGpSwX8mo"}))
+        Format.generate_tripcode("example#pass", "").should(eq({"example", "!XksB4AwhxU"}))
+        
+        Format.generate_tripcode(
+          "example#AnExcessivelyLongTripcodePassword", ""
+        ).should(eq({"example", "!v8ZIGlF0Uc"}))
+        Format.generate_tripcode(
+          "example#AnExcess", ""
+        ).should(eq({"example", "!v8ZIGlF0Uc"}))
+      end
+    end
+
     describe "#replace_links" do
       it "appends text link to string" do
         text = "Text link example"

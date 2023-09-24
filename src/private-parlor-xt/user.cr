@@ -90,6 +90,10 @@ module PrivateParlorXT
       @rank = rank
     end
 
+    def set_tripcode(tripcode : String) : Nil
+      @tripcode = tripcode
+    end
+
     def toggle_karma : Nil
       @hide_karma = !hide_karma
     end

@@ -1,9 +1,15 @@
+require "digest"
 require "tourmaline"
 
 module PrivateParlorXT
   module Format
     include Tourmaline::Helpers
     extend self
+
+    @[Link("crypt")]
+    lib LibCrypt
+      fun crypt(password : UInt8*, salt : UInt8*) : UInt8*
+    end
 
     # Globally substitutes placeholders in message with the given variables
     def substitute_message(msg : String, variables : Hash(String, String?) = {"" => ""}) : String
@@ -46,6 +52,62 @@ module PrivateParlorXT
       end
 
       entities - stripped_entities
+    end
+
+    # Generate a 2channel or secure 8chan style tripcode from a given string in the format `name#pass`.
+    #
+    # Returns a named tuple containing the tripname and tripcode.
+    #
+    # Using procedures based on code by Fredrick R. Brennan and Tinyboard Development Group
+    # 
+    # 8chan secure tripcode:
+    # Copyright (c) 2010-2014 Tinyboard Development Group
+    #
+    # github.com/ctrlcctrlv/infinity/blob/1535f2c976bdc503c12b5e92e605ee665e3239e7/inc/functions.php#L2755
+    #
+    # 2channel tripcode:
+    # Copyright (c) Fredrick R. Brennan, 2020
+    #
+    # github.com/ctrlcctrlv/tripkeys/blob/33dcb519a8c08185aecba15eee9aa80760dddc87/doc/2ch_tripcode_annotated.pl
+    def generate_tripcode(tripkey : String, salt : String?) : Tuple(String, String)
+      split = tripkey.split('#', 2)
+      name = split[0]
+      pass = split[1]
+
+      if !salt.empty?
+        # 8chan secure tripcode
+        pass = String.new(pass.encode("Shift_JIS"), "Shift_JIS")
+        trip = Digest::SHA1.base64digest(pass + salt)
+
+        tripcode = "!#{trip[0...10]}"
+      else
+        # 2channel tripcode
+        character_map = {
+          ':' => 'A',
+          ';' => 'B',
+          '<' => 'C',
+          '=' => 'D',
+          '>' => 'E',
+          '?' => 'F',
+          '@' => 'G',
+          '[' => 'a',
+          '\\' => 'b',
+          ']' => 'c',
+          '^' => 'd',
+          '_' => 'e',
+          '`' => 'f',
+        }
+
+        salt = (pass + "H.")[1, 2]
+        salt = salt.gsub(/[^\.-z]/, '.')
+        salt = salt.gsub(character_map)
+
+        trip = String.new(LibCrypt.crypt(pass[...8], salt))
+
+        tripcode = "!#{trip[-10...]}"
+      end
+
+      {name, tripcode}
     end
 
     def replace_links(text : String, entities : Array(Tourmaline::MessageEntity)) : String

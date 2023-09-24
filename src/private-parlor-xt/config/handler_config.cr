@@ -13,6 +13,7 @@ module PrivateParlorXT
     getter media_limit_period : Time::Span = 0.hours
     getter karma_levels : Hash(Int32, String) = {} of Int32 => String
     getter default_rank : Int32 = 0
+    getter tripcode_salt : String = ""
 
     def initialize(config : Config)
       @blacklist_contact = config.blacklist_contact
@@ -25,6 +26,7 @@ module PrivateParlorXT
       @media_limit_period = config.media_limit_period.hours
       @karma_levels = config.karma_levels
       @default_rank = config.default_rank
+      @tripcode_salt = config.salt
     end
   end
 end
