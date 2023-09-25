@@ -1,13 +1,16 @@
+require "../constants.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-  alias MessageProc = Proc(Int64, Int64 | Nil, Tourmaline::Message) | Proc(Int64, Int64 | Nil, Array(Tourmaline::Message))
+  alias MessageProc = Proc(UserID, MessageID?, Tourmaline::Message) | 
+                      Proc(UserID, MessageID?, Array(Tourmaline::Message)) |
+                      Proc(UserID, MessageID?, Bool)
 
   class QueuedMessage
-    getter origin_msid : Int64 | Array(Int64) | Nil
-    getter sender : Int64 | Nil
-    getter receiver : Int64
-    getter reply_to : Int64 | Nil
+    getter origin_msid : MessageID | Array(MessageID) | Nil
+    getter sender : UserID?
+    getter receiver : UserID
+    getter reply_to : MessageID?
     getter function : MessageProc
 
     # Creates an instance of `QueuedMessage`.
@@ -29,10 +32,10 @@ module PrivateParlorXT
     # `function`
     # :     a proc that points to a Tourmaline CoreMethod send function and takes a user ID and MSID as its arguments
     def initialize(
-      @origin_msid : Int64 | Array(Int64) | Nil,
-      @sender : Int64 | Nil,
-      @receiver : Int64,
-      @reply_to : Int64 | Nil,
+      @origin_msid : MessageID | Array(MessageID) | Nil,
+      @sender : UserID?,
+      @receiver : UserID,
+      @reply_to : MessageID?,
       @function : MessageProc
     )
     end

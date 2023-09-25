@@ -190,5 +190,17 @@ module PrivateParlorXT
         authority.should(be_nil)
       end
     end
+
+    describe "#delete_messages" do
+      it "deletes message group from history" do
+        generate_history(services.history)
+
+        handler.delete_messages(6, 20000, false, false, services)
+        handler.delete_messages(9, 20000, false, true, services)
+
+        services.history.get_origin_message(6).should(be_nil)
+        services.history.get_origin_message(9).should(be_nil)
+      end
+    end
   end
 end

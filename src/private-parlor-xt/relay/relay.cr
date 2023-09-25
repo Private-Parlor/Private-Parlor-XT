@@ -303,6 +303,28 @@ module PrivateParlorXT
       )
     end
 
+    def delete_message(receiver : UserID, message : MessageID)
+      @queue.add_to_queue_priority(
+        receiver,
+        message,
+        ->(receiver : UserID, message : MessageID?){
+          return false unless message
+          @client.delete_message(receiver, message)
+        }
+      )
+    end
+
+    def remove_message(receiver : UserID, message : MessageID)
+      @queue.add_to_queue(
+        receiver,
+        message,
+        ->(receiver : UserID, message : MessageID?){
+          return false unless message
+          @client.delete_message(receiver, message)
+        }
+      )
+    end
+
     def pin_message(receiver : UserID, message : MessageID)
       @client.pin_chat_message(receiver, message)
     end

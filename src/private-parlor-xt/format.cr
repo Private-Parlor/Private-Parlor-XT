@@ -32,6 +32,18 @@ module PrivateParlorXT
       end
     end
 
+    def format_reason_reply(reason : String?, locale : Locale) : String?
+      if reason
+        "#{locale.replies.reason_prefix}#{reason}"
+      end
+    end
+
+    def format_reason_log(reason : String?, locale : Locale) : String?
+      if reason
+        "#{locale.replies.reason_prefix}#{reason}"
+      end
+    end
+
     def strip_format(text : String, entities : Array(Tourmaline::MessageEntity), strip_types : Array(String), linked_network : Hash(String, String)) : Tuple(String, Array(Tourmaline::MessageEntity))
       formatted_text = replace_links(text, entities)
 
