@@ -344,6 +344,16 @@ module PrivateParlorXT
       end
     end
 
+    def format_time_span(time : Time::Span, locale : Locale) : String
+      case
+      when time < 1.minute then "#{time.to_i}#{locale.time_units[4]}"
+      when time < 1.hour then "#{time.total_minutes.floor.to_i}#{locale.time_units[3]}"
+      when time < 1.day then "#{time.total_hours.floor.to_i}#{locale.time_units[2]}"
+      when time < 1.week then "#{time.total_days.floor.to_i}#{locale.time_units[1]}"
+      else                    "#{time.total_weeks.floor.to_i}#{locale.time_units[0]}"
+      end
+    end
+
     # Returns a smiley based on the number of given warnings
     def format_smiley(warnings : Int32, smileys : Array(String)) : String
       case warnings

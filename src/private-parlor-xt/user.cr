@@ -112,6 +112,33 @@ module PrivateParlorXT
       @karma -= amount
     end
 
+    def cooldown(base : Int32) : Time::Span
+      begin
+        warnings = @warnings
+        if @warnings < 0
+          warnings = 0
+        end
+        duration = base ** warnings
+      rescue OverflowError
+        duration = 525950
+      end
+
+      if duration > 525950
+        duration = 52.weeks
+      else
+        duration = duration.minutes
+      end
+
+      @cooldown_until = Time.utc + duration
+
+      duration
+    end
+
+    def warn(lifespan : Int32) : Nil
+      @warnings += 1
+      @warn_expiry = Time.utc + lifespan.hours
+    end
+
     # Removes a cooldown from a user if it has expired.
     #
     # Returns true if the cooldown can be expired, false otherwise

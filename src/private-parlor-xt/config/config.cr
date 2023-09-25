@@ -221,6 +221,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "relay_contact")]
     getter relay_contact : Bool? = false
 
+    @[YAML::Field(key: "cooldown_base")]
+    getter cooldown_base : Int32 = 5
+
     @[YAML::Field(key: "warn_lifespan")]
     getter warn_lifespan : Int32 = 7 * 24
 

@@ -538,8 +538,26 @@ relay_location: false
 relay_contact: false
 
 # --------------------------------
-#  Cooldown Constatns
+#  Cooldown Constants
 # --------------------------------
+
+##
+## Base from which user cooldown times are computed from
+##
+## Cooldown times increase exponentially based on the number of user warnings
+## I.e., using 5 as a base will produce the following cooldown times:
+##    0 warnings: 1 minute
+##    1 warning : 5 minutes
+##    2 warnings: 25 minutes
+##    3 warnings: 125 minutes; ~2 hours...
+##
+## Cooldown times cannot exceed 1 year
+##
+## Accepted values: a positive integer
+## Default: 5
+##
+#cooldown_base: 5
+
 
 ##
 ## Length of time in hours until a warning expires

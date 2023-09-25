@@ -14,6 +14,9 @@ module PrivateParlorXT
     getter karma_levels : Hash(Int32, String) = {} of Int32 => String
     getter default_rank : Int32 = 0
     getter tripcode_salt : String = ""
+    getter cooldown_base : Int32 = 5
+    getter warn_lifespan : Int32 = 7 * 24
+    getter warn_deduction : Int32 = 10
 
     def initialize(config : Config)
       @blacklist_contact = config.blacklist_contact
@@ -27,6 +30,9 @@ module PrivateParlorXT
       @karma_levels = config.karma_levels
       @default_rank = config.default_rank
       @tripcode_salt = config.salt
+      @cooldown_base = config.cooldown_base
+      @warn_lifespan = config.warn_lifespan
+      @Warn_deduction = config.warn_deduction
     end
   end
 end
