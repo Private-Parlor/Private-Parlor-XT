@@ -10,7 +10,7 @@ module PrivateParlorXT
       @queue_mutex = Mutex.new
     end
 
-    def reject_messsages(&) : Nil
+    def reject_messages(&) : Nil
       @queue_mutex.synchronize do
         @queue.reject! do |msg|
           yield msg

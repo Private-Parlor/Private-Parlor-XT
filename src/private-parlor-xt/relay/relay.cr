@@ -303,6 +303,12 @@ module PrivateParlorXT
       )
     end
 
+    def reject_blacklisted_messages(user : UserID)
+      @queue.reject_messages do |msg|
+        msg.receiver == user || msg.sender == user
+      end
+    end
+
     def delete_message(receiver : UserID, message : MessageID)
       @queue.add_to_queue_priority(
         receiver,
@@ -370,7 +376,7 @@ module PrivateParlorXT
           log_output(log)
         end
 
-        @queue.reject_messsages do |queued_message|
+        @queue.reject_messages do |queued_message|
           queued_message.receiver == msg.receiver
         end
         return

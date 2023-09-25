@@ -139,6 +139,12 @@ module PrivateParlorXT
       @warn_expiry = Time.utc + lifespan.hours
     end
 
+    def blacklist(reason : String?) : Nil
+      @rank = -10
+      self.set_left
+      @blacklist_reason = reason
+    end
+
     # Removes a cooldown from a user if it has expired.
     #
     # Returns true if the cooldown can be expired, false otherwise
