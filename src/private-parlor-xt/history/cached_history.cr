@@ -9,6 +9,7 @@ module PrivateParlorXT
       getter sent : Time = Time.utc
       property receivers : Hash(UserID, MessageID) = {} of UserID => MessageID
       property ratings : Set(Int64) = Set(Int64).new
+      property warned : Bool? = false
 
       # Creates an instance of `MessageGroup`
       #
@@ -86,6 +87,20 @@ module PrivateParlorXT
     # :inherit:
     def add_rating(message : MessageID, user : UserID) : Bool
       @message_map[message].ratings.add?(user)
+    end
+
+    # :inherit:
+    def add_warning(message : MessageID) : Nil
+      if msg = @message_map[message]
+        msg.warned = true
+      end
+    end
+
+    # :inherit:
+    def get_warning(message : MessageID) : Bool?
+      if msg = @message_map[message]
+        msg.warned
+      end
     end
 
     # Deletes a `MessageGroup` from the `message_map`

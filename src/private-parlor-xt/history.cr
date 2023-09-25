@@ -40,6 +40,12 @@ module PrivateParlorXT
     # Returns true if the user's rating was successfully added; false if the user's rating already exists.
     abstract def add_rating(message : MessageID, user : UserID) : Bool
 
+    # Adds a warning to the given message
+    abstract def add_warning(message : MessageID) : Nil
+
+    # Returns true if the given message was already warned; false or nil otherwise
+    abstract def get_warning(message : MessageID) : Bool?
+
     # Delete a message group from the history
     abstract def delete_message_group(message : MessageID) : MessageID?
 

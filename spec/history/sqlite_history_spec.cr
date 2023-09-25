@@ -144,6 +144,12 @@ module PrivateParlorXT
       db.add_rating(2, 60200).should(be_false)
     end
 
+    it "adds warning to message and gets warning" do
+      db.get_warning(2).should(be_false)
+      db.add_warning(2)
+      db.get_warning(2).should(be_true)
+    end
+
     it "deletes old messages" do
       db.expire
 

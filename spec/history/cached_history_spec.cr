@@ -187,6 +187,21 @@ module PrivateParlorXT
       history.add_rating(2, 101).should(be_false)
     end
 
+    it "adds warning to message and gets warning" do
+      history = CachedHistory.new(HISTORY_LIFESPAN)
+      sender = 100
+      origin = 1
+
+      history.new_message(sender, origin)
+
+      history.add_to_history(origin, 2, 101)
+      
+
+      history.get_warning(2).should(be_false)
+      history.add_warning(2)
+      history.get_warning(2).should(be_true)
+    end
+
     it "deletes old messages" do
       history = CachedHistory.new(Time::Span.zero)
 

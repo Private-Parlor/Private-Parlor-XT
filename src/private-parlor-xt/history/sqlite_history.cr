@@ -127,6 +127,29 @@ module PrivateParlorXT
       true
     end
 
+    # :inherit:
+    def add_warning(message : MessageID) : Nil
+      write do
+        @connection.exec(
+          "UPDATE message_groups
+          SET warned = TRUE
+          WHERE messageGroupID = ?",
+          get_origin_message(message)
+        )
+      end
+    end
+
+    # :inherit:
+    def get_warning(message : MessageID) : Bool?
+      @connection.query_one?(
+        "SELECT warned
+        FROM message_groups
+        WHERE messageGroupID = ?",
+        get_origin_message(message),
+        as: Bool
+      )
+    end
+
     def delete_message_group(message : MessageID) : MessageID?
       origin_msid = get_origin_message(message)
 
