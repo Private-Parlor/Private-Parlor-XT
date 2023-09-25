@@ -160,6 +160,8 @@ module PrivateParlorXT
     def check_text(text : String?, user : User, message : Tourmaline::Message, services : Services) : Bool
       return true unless text
 
+      return true if message.preformatted?
+
       unless Format.allow_text?(text)
         services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.rejected_message)
         return false
@@ -168,14 +170,14 @@ module PrivateParlorXT
       true
     end
 
-    def format_text(text : String?, entities : Array(Tourmaline::MessageEntity), services : Services) : Tuple(String, Array(Tourmaline::MessageEntity))
+    def format_text(text : String?, entities : Array(Tourmaline::MessageEntity), preformatted : Bool?, services : Services) : Tuple(String, Array(Tourmaline::MessageEntity))
       unless text
         return "", [] of Tourmaline::MessageEntity
       end
 
-      text, entities = Format.strip_format(text, entities, services.config.entity_types, services.config.linked_network)
-
-      # TODO: Handle ranksay/sign/tsign/karmasign
+      unless preformatted
+        text, entities = Format.strip_format(text, entities, services.config.entity_types, services.config.linked_network)
+      end
 
       return text, entities
     end

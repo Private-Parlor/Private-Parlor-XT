@@ -23,7 +23,7 @@ module PrivateParlorXT
 
       # TODO: Add R9K check hook
 
-      text, entities = format_text(text, message.entities, services)
+      text, entities = format_text(text, message.entities, message.preformatted?, services)
 
       # TODO: Add pseudonymous hook
 
@@ -51,6 +51,8 @@ module PrivateParlorXT
 
     def is_spamming?(user : User, message : Tourmaline::Message, text : String, services : Services) : Bool
       return false unless spam = services.spam
+
+      return false if message.preformatted?
       
       if spam.spammy_text?(user.id, text)
         services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)

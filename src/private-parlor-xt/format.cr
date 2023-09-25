@@ -286,6 +286,23 @@ module PrivateParlorXT
       return header, entities
     end
 
+    def format_tripcode_sign(name : String, tripcode : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      header = "#{name} #{tripcode}:\n"
+
+      header_size = header[..-3].to_utf16.size
+      name_size = name.to_utf16.size
+      tripcode_size = tripcode.to_utf16.size
+
+      entities = offset_entities(entities, header_size + 2)
+
+      entities = [
+        Tourmaline::MessageEntity.new("bold", 0, name_size),
+        Tourmaline::MessageEntity.new("code", name_size + 1, tripcode_size),
+      ].concat(entities)
+
+      return header, entities
+    end
+
     def offset_entities(entities : Array(Tourmaline::MessageEntity), offset : Int32) : Array(Tourmaline::MessageEntity)
       entities.each do |entity|
         entity.offset += offset
@@ -293,6 +310,15 @@ module PrivateParlorXT
 
       entities
     end
+
+    def reset_entities(entities : Array(Tourmaline::MessageEntity), amount : Int32) : Array(Tourmaline::MessageEntity)
+      entities.each do |entity|
+        entity.offset -= amount
+      end
+
+      entities
+    end
+
 
     def format_reason_reply(reason : String?, locale : Locale) : String?
       if reason

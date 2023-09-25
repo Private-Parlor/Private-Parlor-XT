@@ -14,3 +14,9 @@ module PrivateParlorXT
     end
   end
 end
+
+module Tourmaline
+  class Message
+    property? preformatted : Bool? = false
+  end
+end

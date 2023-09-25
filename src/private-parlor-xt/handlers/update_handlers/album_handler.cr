@@ -30,7 +30,7 @@ module PrivateParlorXT
 
       # TODO: Add R9K check hook
 
-      caption, entities = format_text(message.caption, message.caption_entities, services)
+      caption, entities = format_text(message.caption, message.caption_entities, message.preformatted?, services)
 
       # TODO: Add pseudonymous hook
 
