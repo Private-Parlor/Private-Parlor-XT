@@ -25,6 +25,7 @@ module PrivateParlorXT
         1000 => Rank.new(
           "Host",
           Set{
+            CommandPermissions::Purge,
             CommandPermissions::Promote,
             CommandPermissions::Demote,
             CommandPermissions::RanksayLower,
