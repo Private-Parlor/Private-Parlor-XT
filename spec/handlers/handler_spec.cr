@@ -21,7 +21,7 @@ module PrivateParlorXT
 
     describe "#update_user_activity" do
       it "updates user activity time" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -50,7 +50,7 @@ module PrivateParlorXT
           reply_to_message: reply_to,
         )
 
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -65,7 +65,7 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
         )
 
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -82,7 +82,7 @@ module PrivateParlorXT
           Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         )
 
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -99,7 +99,7 @@ module PrivateParlorXT
           Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         )
 
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -117,7 +117,7 @@ module PrivateParlorXT
           Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         )
 
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 

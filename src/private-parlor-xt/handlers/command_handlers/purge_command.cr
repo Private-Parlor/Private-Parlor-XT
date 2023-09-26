@@ -27,7 +27,7 @@ module PrivateParlorXT
       end
 
       response = Format.substitute_message(services.locale.replies.purge_complete, {
-        "msgs_deleted" => message_count.to_s
+        "msgs_deleted" => message_count.to_s,
       })
 
       # TODO: Move this message to the end of the queue

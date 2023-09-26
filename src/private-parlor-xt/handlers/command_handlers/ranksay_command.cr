@@ -17,16 +17,16 @@ module PrivateParlorXT
       return if message.forward_date
 
       return unless authority = is_authorized?(
-        user, 
-        message,
-        services,
-        :Ranksay, :RanksayLower
-      )
+                      user,
+                      message,
+                      services,
+                      :Ranksay, :RanksayLower
+                    )
 
       return unless text = message.text || message.caption
 
       unless arg = Format.get_arg(text)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.missing_args) 
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.missing_args)
       end
 
       return if is_spamming?(user, message, arg, services)
@@ -35,7 +35,7 @@ module PrivateParlorXT
 
       entities = message.entities.empty? ? message.caption_entities : message.entities
 
-      if command_entity = entities.find { |item| item.type == "bot_command" && item.offset == 0}
+      if command_entity = entities.find { |item| item.type == "bot_command" && item.offset == 0 }
         entities = entities - [command_entity]
       end
 
@@ -46,7 +46,7 @@ module PrivateParlorXT
       text, entities = Format.format_ranksay(rank_name, arg, entities)
 
       if message.text
-        message.text = text 
+        message.text = text
         message.entities = entities
       elsif message.caption
         message.caption = text

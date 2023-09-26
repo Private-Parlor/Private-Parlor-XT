@@ -313,7 +313,7 @@ module PrivateParlorXT
       @queue.add_to_queue_priority(
         receiver,
         message,
-        ->(receiver : UserID, message : MessageID?){
+        ->(receiver : UserID, message : MessageID?) {
           return false unless message
           @client.delete_message(receiver, message)
         }
@@ -324,7 +324,7 @@ module PrivateParlorXT
       @queue.add_to_queue(
         receiver,
         message,
-        ->(receiver : UserID, message : MessageID?){
+        ->(receiver : UserID, message : MessageID?) {
           return false unless message
           @client.delete_message(receiver, message)
         }

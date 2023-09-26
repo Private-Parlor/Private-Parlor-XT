@@ -16,7 +16,7 @@ module PrivateParlorXT
       return unless is_authorized?(user, message, :Sticker, services)
 
       return if is_spamming?(user, message, services)
-      
+
       return unless sticker = message.sticker
 
       # TODO: Add R9K check hook here
@@ -44,7 +44,7 @@ module PrivateParlorXT
 
     def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
-      
+
       if spam.spammy_sticker?(user.id)
         services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
         return true

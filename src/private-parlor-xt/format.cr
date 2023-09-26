@@ -71,7 +71,7 @@ module PrivateParlorXT
     # Returns a named tuple containing the tripname and tripcode.
     #
     # Using procedures based on code by Fredrick R. Brennan and Tinyboard Development Group
-    # 
+    #
     # 8chan secure tripcode:
     # Copyright (c) 2010-2014 Tinyboard Development Group
     #
@@ -95,19 +95,19 @@ module PrivateParlorXT
       else
         # 2channel tripcode
         character_map = {
-          ':' => 'A',
-          ';' => 'B',
-          '<' => 'C',
-          '=' => 'D',
-          '>' => 'E',
-          '?' => 'F',
-          '@' => 'G',
-          '[' => 'a',
+          ':'  => 'A',
+          ';'  => 'B',
+          '<'  => 'C',
+          '='  => 'D',
+          '>'  => 'E',
+          '?'  => 'F',
+          '@'  => 'G',
+          '['  => 'a',
           '\\' => 'b',
-          ']' => 'c',
-          '^' => 'd',
-          '_' => 'e',
-          '`' => 'f',
+          ']'  => 'c',
+          '^'  => 'd',
+          '_'  => 'e',
+          '`'  => 'f',
         }
 
         salt = (pass + "H.")[1, 2]
@@ -305,11 +305,11 @@ module PrivateParlorXT
 
       entities.concat([
         Tourmaline::MessageEntity.new(
-          "text_link", 
-          arg.to_utf16.size + 1, 
+          "text_link",
+          arg.to_utf16.size + 1,
           signature_size,
           url: "tg://user?id=#{id}"
-        )
+        ),
       ])
 
       return "#{arg} #{signature}", entities
@@ -351,7 +351,7 @@ module PrivateParlorXT
       signature_size = signature.to_utf16.size
 
       entities.concat([
-        Tourmaline::MessageEntity.new("bold", arg.to_utf16.size + 1, signature_size)
+        Tourmaline::MessageEntity.new("bold", arg.to_utf16.size + 1, signature_size),
       ])
 
       return "#{arg} #{signature}", entities
@@ -373,7 +373,6 @@ module PrivateParlorXT
       entities
     end
 
-
     def format_reason_reply(reason : String?, locale : Locale) : String?
       if reason
         "#{locale.replies.reason_prefix}#{reason}"
@@ -389,10 +388,10 @@ module PrivateParlorXT
     def format_time_span(time : Time::Span, locale : Locale) : String
       case
       when time < 1.minute then "#{time.to_i}#{locale.time_units[4]}"
-      when time < 1.hour then "#{time.total_minutes.floor.to_i}#{locale.time_units[3]}"
-      when time < 1.day then "#{time.total_hours.floor.to_i}#{locale.time_units[2]}"
-      when time < 1.week then "#{time.total_days.floor.to_i}#{locale.time_units[1]}"
-      else                    "#{time.total_weeks.floor.to_i}#{locale.time_units[0]}"
+      when time < 1.hour   then "#{time.total_minutes.floor.to_i}#{locale.time_units[3]}"
+      when time < 1.day    then "#{time.total_hours.floor.to_i}#{locale.time_units[2]}"
+      when time < 1.week   then "#{time.total_days.floor.to_i}#{locale.time_units[1]}"
+      else                      "#{time.total_weeks.floor.to_i}#{locale.time_units[0]}"
       end
     end
 

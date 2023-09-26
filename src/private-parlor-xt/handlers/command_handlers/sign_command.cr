@@ -24,14 +24,14 @@ module PrivateParlorXT
       return unless text = message.text || message.caption
 
       unless arg = Format.get_arg(text)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.missing_args) 
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.missing_args)
       end
 
       return if is_spamming?(user, message, arg, services)
 
       entities = message.entities.empty? ? message.caption_entities : message.entities
 
-      if command_entity = entities.find { |item| item.type == "bot_command" && item.offset == 0}
+      if command_entity = entities.find { |item| item.type == "bot_command" && item.offset == 0 }
         entities = entities - [command_entity]
       end
 
@@ -42,7 +42,7 @@ module PrivateParlorXT
       text, entities = Format.format_user_sign(user.get_formatted_name, user.id, arg, entities)
 
       if message.text
-        message.text = text 
+        message.text = text
         message.entities = entities
       elsif message.caption
         message.caption = text

@@ -102,12 +102,12 @@ module PrivateParlorXT
     database.add_user(70000_i64, nil, "BLACKLISTED", -10)
     database.add_user(50000_i64, nil, "cooldown", 0)
 
-    user_one = SQLiteUser.new(20000_i64, "examp","example",1000,Time.utc(2023, 1, 2, 6),nil,Time.utc(2023, 7, 2, 6),nil,nil,0,nil,0,false,false,nil)
-    user_two = SQLiteUser.new(60200_i64, "voorb","voorbeeld",0,Time.utc(2023, 1, 2, 6),nil,Time.utc(2023, 1, 2, 6),nil,nil,1,Time.utc(2023, 3, 2, 12),-10,false,false,"Voorb#SecurePassword")
-    user_three = SQLiteUser.new(80300_i64, nil,"beispiel",10,Time.utc(2023, 1, 2, 6),nil,Time.utc(2023, 3, 2, 12),nil,nil,2,Time.utc(2023, 4, 2, 12),-20,false,true,nil)
-    user_four = SQLiteUser.new(40000_i64, nil,"esimerkki",0,Time.utc(2023, 1, 2, 6),Time.utc(2023, 2, 4, 6),Time.utc(2023, 2, 4, 6),nil,nil,0,nil,0,false,false,nil)
-    user_five = SQLiteUser.new(70000_i64, nil,"BLACKLISTED",-10,Time.utc(2023, 1, 2, 6),Time.utc(2023, 4, 2, 10),Time.utc(2023, 1, 2, 6),nil,nil,0,nil,0,false,false,nil)
-    user_six = SQLiteUser.new(50000_i64, nil,"cooldown",0,Time.utc(2023, 1, 2, 6),nil,Time.utc(2023, 2, 4, 6),Time.utc(2033, 2, 4, 6),nil,0,nil,0,false,false,nil)
+    user_one = SQLiteUser.new(20000_i64, "examp", "example", 1000, Time.utc(2023, 1, 2, 6), nil, Time.utc(2023, 7, 2, 6), nil, nil, 0, nil, 0, false, false, nil)
+    user_two = SQLiteUser.new(60200_i64, "voorb", "voorbeeld", 0, Time.utc(2023, 1, 2, 6), nil, Time.utc(2023, 1, 2, 6), nil, nil, 1, Time.utc(2023, 3, 2, 12), -10, false, false, "Voorb#SecurePassword")
+    user_three = SQLiteUser.new(80300_i64, nil, "beispiel", 10, Time.utc(2023, 1, 2, 6), nil, Time.utc(2023, 3, 2, 12), nil, nil, 2, Time.utc(2023, 4, 2, 12), -20, false, true, nil)
+    user_four = SQLiteUser.new(40000_i64, nil, "esimerkki", 0, Time.utc(2023, 1, 2, 6), Time.utc(2023, 2, 4, 6), Time.utc(2023, 2, 4, 6), nil, nil, 0, nil, 0, false, false, nil)
+    user_five = SQLiteUser.new(70000_i64, nil, "BLACKLISTED", -10, Time.utc(2023, 1, 2, 6), Time.utc(2023, 4, 2, 10), Time.utc(2023, 1, 2, 6), nil, nil, 0, nil, 0, false, false, nil)
+    user_six = SQLiteUser.new(50000_i64, nil, "cooldown", 0, Time.utc(2023, 1, 2, 6), nil, Time.utc(2023, 2, 4, 6), Time.utc(2033, 2, 4, 6), nil, 0, nil, 0, false, false, nil)
 
     database.update_user(user_one)
     database.update_user(user_two)
@@ -144,9 +144,9 @@ module PrivateParlorXT
   end
 
   def self.create_message(
-    message_id : Int64, 
-    tourmaline_user : Tourmaline::User, 
-    forward_date : Time? = nil, 
+    message_id : Int64,
+    tourmaline_user : Tourmaline::User,
+    forward_date : Time? = nil,
     reply_to_message : Tourmaline::Message? = nil,
     media_group_id : String? = nil,
     text : String? = nil,
@@ -164,13 +164,12 @@ module PrivateParlorXT
     poll : Tourmaline::Poll? = nil,
     venue : Tourmaline::Venue? = nil,
     location : Tourmaline::Location? = nil,
-    forward_from : Tourmaline::User? = nil, 
+    forward_from : Tourmaline::User? = nil,
     forward_from_chat : Tourmaline::Chat? = nil,
     forward_from_message_id : Int64? = nil,
     forward_signature : String? = nil,
-    forward_sender_name : String? = nil,
-    ) : Tourmaline::Message
-
+    forward_sender_name : String? = nil
+  ) : Tourmaline::Message
     message = Tourmaline::Message.new(
       message_id,
       Time.utc,
@@ -195,7 +194,7 @@ module PrivateParlorXT
       poll: poll,
       venue: venue,
       location: location,
-      forward_from: forward_from, 
+      forward_from: forward_from,
       forward_from_chat: forward_from_chat,
       forward_from_message_id: forward_from_message_id,
       forward_signature: forward_signature,
@@ -204,7 +203,7 @@ module PrivateParlorXT
 
     if date = forward_date
       message.forward_date = date
-    end 
+    end
 
     message
   end

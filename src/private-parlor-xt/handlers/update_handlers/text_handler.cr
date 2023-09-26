@@ -53,7 +53,7 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       return false if message.preformatted?
-      
+
       if spam.spammy_text?(user.id, text)
         services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
         return true

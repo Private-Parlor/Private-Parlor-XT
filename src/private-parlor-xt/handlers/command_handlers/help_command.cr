@@ -14,8 +14,8 @@ module PrivateParlorXT
       update_user_activity(user, services)
 
       services.relay.send_to_user(
-        message.message_id.to_i64, 
-        user.id, 
+        message.message_id.to_i64,
+        user.id,
         Format.format_help(user, services.access.ranks, services.locale))
     end
   end

@@ -23,7 +23,7 @@ module PrivateParlorXT
       return unless is_authorized?(user, message, :MediaGroup, services)
 
       return if is_spamming?(user, message, services)
-      
+
       return unless album = message.media_group_id
 
       return unless check_text(message.caption, user, message, services)
@@ -45,22 +45,22 @@ module PrivateParlorXT
       return unless input = get_album_input(message, caption, entities, services.config.allow_spoilers)
 
       relay_album(
-        @albums, 
-        album, 
+        @albums,
+        album,
         message.message_id.to_i64,
         input,
-        user, 
-        receivers, 
-        reply_msids, 
+        user,
+        receivers,
+        reply_msids,
         services
       )
     end
 
     def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless (spam = services.spam)
-      
+
       return false if (album = message.media_group_id) && @albums[album]?
-      
+
       if spam.spammy_album?(user.id)
         services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
         return true
@@ -68,6 +68,5 @@ module PrivateParlorXT
 
       false
     end
-    
   end
 end

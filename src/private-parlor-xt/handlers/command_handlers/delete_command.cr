@@ -12,7 +12,7 @@ module PrivateParlorXT
       return unless message && user
 
       return unless is_authorized?(user, message, :Delete, services)
- 
+
       return unless reply = get_reply_message(user, message, services)
 
       return unless reply_user = get_reply_user(user, reply, services)
@@ -20,7 +20,7 @@ module PrivateParlorXT
       update_user_activity(user, services)
 
       original_message = delete_messages(
-        reply.message_id.to_i64, 
+        reply.message_id.to_i64,
         reply_user.id,
         reply_user.debug_enabled,
         true,
@@ -37,17 +37,17 @@ module PrivateParlorXT
       cooldown_until = Format.format_time_span(duration, services.locale)
 
       response = Format.substitute_message(services.locale.replies.message_deleted, {
-        "reason" => Format.format_reason_reply(reason, services.locale),
+        "reason"   => Format.format_reason_reply(reason, services.locale),
         "duration" => cooldown_until,
       })
 
       log = Format.substitute_message(services.locale.logs.message_deleted, {
-        "id"     => user.id.to_s,
-        "name"   => user.get_formatted_name,
-        "msid"   => original_message.to_s,
-        "oid"    => reply_user.get_obfuscated_id,
+        "id"       => user.id.to_s,
+        "name"     => user.get_formatted_name,
+        "msid"     => original_message.to_s,
+        "oid"      => reply_user.get_obfuscated_id,
         "duration" => cooldown_until,
-        "reason" => Format.format_reason_log(reason, services.locale),
+        "reason"   => Format.format_reason_log(reason, services.locale),
       })
 
       services.relay.send_to_user(original_message, reply_user.id, response)

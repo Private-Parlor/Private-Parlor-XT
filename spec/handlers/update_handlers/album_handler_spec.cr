@@ -2,7 +2,6 @@ require "../../spec_helper.cr"
 
 module PrivateParlorXT
   describe AlbumHandler do
-
     client = MockClient.new
 
     services = create_services(client: client)
@@ -22,10 +21,10 @@ module PrivateParlorXT
 
     describe "#is_spamming?" do
       it "returns true if user is spamming albums" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
-        
+
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
@@ -33,7 +32,7 @@ module PrivateParlorXT
 
         ctx = create_context(client, create_update(11, message))
         spam_services = create_services(
-          client: client, 
+          client: client,
           spam: SpamHandler.new(
             spam_limit: 10, score_media_group: 6
           )
@@ -53,7 +52,7 @@ module PrivateParlorXT
       end
 
       it "returns false if user is not spamming albums" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -62,13 +61,13 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
         )
 
-        spam_services = create_services(client: client, spam: SpamHandler.new())
+        spam_services = create_services(client: client, spam: SpamHandler.new)
 
         handler.is_spamming?(beispiel, message, services).should(be_false)
       end
 
       it "returns false if no spam handler" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -83,12 +82,12 @@ module PrivateParlorXT
       end
 
       it "returns false if message is part of a queued album" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
         album = AlbumHelpers::Album.new(
-          1_i64, 
+          1_i64,
           Tourmaline::InputMediaPhoto.new(
             "album_item_one",
           )
@@ -103,7 +102,7 @@ module PrivateParlorXT
 
         ctx = create_context(client, create_update(11, message))
         spam_services = create_services(
-          client: client, 
+          client: client,
           spam: SpamHandler.new(
             spam_limit: 10, score_media_group: 6
           )

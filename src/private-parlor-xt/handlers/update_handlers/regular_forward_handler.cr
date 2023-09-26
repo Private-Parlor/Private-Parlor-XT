@@ -70,7 +70,7 @@ module PrivateParlorXT
 
     def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
-      
+
       return false if (album = message.media_group_id) && @albums[album]?
 
       if spam.spammy_forward?(user.id)
@@ -112,13 +112,13 @@ module PrivateParlorXT
         return unless input = get_album_input(message, text, entities)
 
         relay_album(
-          @albums, 
+          @albums,
           album,
-          message.message_id.to_i64, 
+          message.message_id.to_i64,
           input,
-          user, 
-          receivers, 
-          nil, 
+          user,
+          receivers,
+          nil,
           services
         )
       elsif file = message.animation

@@ -1,7 +1,6 @@
 require "../../spec_helper.cr"
 
 module PrivateParlorXT
-
   describe TripcodeCommand do
     client = MockClient.new
 
@@ -16,7 +15,7 @@ module PrivateParlorXT
 
       services.database.close
     end
-    
+
     describe "#do" do
       it "sets user tripcode" do
         generate_users(services.database)

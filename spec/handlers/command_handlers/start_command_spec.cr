@@ -1,6 +1,7 @@
 require "../../spec_helper.cr"
 
-module PrivateParlorXT\
+module PrivateParlorXT \
+
   describe StartCommand do
     default_rank = 10
 
@@ -99,7 +100,7 @@ module PrivateParlorXT\
     describe "#new_user" do
       it "rejects user if registration is closed" do
         closed_registration_services = create_services(
-          client: client, 
+          client: client,
           config: HandlerConfig.new(
             MockConfig.new(
               registration_open: false

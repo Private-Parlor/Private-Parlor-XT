@@ -159,9 +159,9 @@ module PrivateParlorXT
         )
 
         authority = handler.is_authorized?(
-          user, 
-          message, 
-          services, 
+          user,
+          message,
+          services,
           :Promote, :PromoteLower, :PromoteSame
         )
 
@@ -181,9 +181,9 @@ module PrivateParlorXT
         )
 
         authority = handler.is_authorized?(
-          user, 
-          message, 
-          services, 
+          user,
+          message,
+          services,
           :Promote, :PromoteLower, :PromoteSame
         )
 

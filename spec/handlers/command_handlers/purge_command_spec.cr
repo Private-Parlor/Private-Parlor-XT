@@ -1,7 +1,6 @@
 require "../../spec_helper.cr"
 
 module PrivateParlorXT
-
   describe PurgeCommand do
     client = MockClient.new
 
@@ -16,7 +15,7 @@ module PrivateParlorXT
 
       services.database.close
     end
-    
+
     describe "#do" do
       it "deletes all message groups sent by the blacklisted user" do
         generate_users(services.database)
@@ -29,7 +28,7 @@ module PrivateParlorXT
 
         user.set_left
         services.database.update_user(user)
-          
+
         services.history.new_message(70000, 11)
         services.history.new_message(70000, 15)
 

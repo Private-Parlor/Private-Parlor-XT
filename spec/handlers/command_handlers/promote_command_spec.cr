@@ -31,7 +31,7 @@ module PrivateParlorXT
         end
 
         handler.promote_from_reply(nil, :PromoteSame, user, 11, reply_to, services)
-        
+
         unless reply_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
         end
@@ -50,14 +50,13 @@ module PrivateParlorXT
         end
 
         handler.promote_from_reply("mod", :Promote, user, 11, reply_to, services)
-        
+
         unless reply_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
         end
 
         reply_user.rank.should(eq(10))
       end
-      
     end
 
     describe "#promote_from_args" do
@@ -69,9 +68,9 @@ module PrivateParlorXT
         handler.promote_from_args(
           ["voorb"],
           :Promote,
-           user,
-           11,
-           services
+          user,
+          11,
+          services
         )
 
         unless promoted_user = services.database.get_user(60200)
@@ -89,9 +88,9 @@ module PrivateParlorXT
         handler.promote_from_args(
           ["voorb", "mod"],
           :Promote,
-           user,
-           11,
-           services
+          user,
+          11,
+          services
         )
 
         unless promoted_user = services.database.get_user(60200)

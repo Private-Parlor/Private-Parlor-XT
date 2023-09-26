@@ -4,7 +4,6 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: ["karma_info", "karmainfo"], config: "enable_karma_info")]
   class KarmaInfoCommand < CommandHandler
-
     def initialize(config : Config)
     end
 
@@ -25,12 +24,12 @@ module PrivateParlorXT
         if lower[0] <= user.karma && user.karma < higher[0]
           current_level = lower
           next_level = higher
-  
+
           percentage = ((user.karma - lower[0]) * 100) / (higher[0] - lower[0]).to_f32
           break
         end
       end
-  
+
       # Karma lies outside of bounds
       if current_level == next_level
         if (lowest = karma_levels.first?) && user.karma < lowest[0]

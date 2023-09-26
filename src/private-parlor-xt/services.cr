@@ -25,7 +25,7 @@ module PrivateParlorXT
       @history : History,
       @access : AuthorizedRanks,
       @relay : Relay,
-      @spam : SpamHandler? = nil,
+      @spam : SpamHandler? = nil
     )
     end
   end

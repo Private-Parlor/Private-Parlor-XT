@@ -193,7 +193,7 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
         )
 
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -275,7 +275,7 @@ module PrivateParlorXT
         unless hash = handler.get_reply_receivers(reply_to, message, user, services)
           fail("Handler method should have returned a hash of reply message receivers")
         end
-        
+
         hash[20000].should(eq(5))
         hash[60200].should(eq(7))
       end

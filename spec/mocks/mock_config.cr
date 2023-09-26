@@ -11,7 +11,7 @@ module PrivateParlorXT
       @media_limit_period = 120,
       @default_rank = 0,
       @registration_open = true,
-      @pseudonymous = false,
+      @pseudonymous = false
     )
     end
   end

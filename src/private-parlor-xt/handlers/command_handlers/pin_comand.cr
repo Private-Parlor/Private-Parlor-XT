@@ -12,7 +12,7 @@ module PrivateParlorXT
       return unless message && user
 
       return unless is_authorized?(user, message, :Pin, services)
- 
+
       return unless reply = get_reply_message(user, message, services)
 
       unless services.history.get_sender(reply.message_id.to_i64)

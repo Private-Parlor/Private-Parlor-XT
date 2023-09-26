@@ -5,7 +5,6 @@ require "tourmaline"
 module PrivateParlorXT
   @[Hears(text: /^\+1/, config: "enable_upvote")]
   class UpvoteHandler < HearsHandler
-
     def initialize(config : Config)
     end
 
@@ -48,7 +47,7 @@ module PrivateParlorXT
       return message, user
     end
 
-    def is_authorized?(user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services,) : Bool
+    def is_authorized?(user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, authority)
         services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
         return false

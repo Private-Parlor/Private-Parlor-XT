@@ -40,7 +40,7 @@ module PrivateParlorXT
 
     def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
-      
+
       if spam.spammy_venue?(user.id)
         services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
         return true

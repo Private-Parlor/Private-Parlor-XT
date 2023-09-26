@@ -12,7 +12,7 @@ module PrivateParlorXT
       return unless message && user
 
       user.toggle_debug
-    
+
       update_user_activity(user, services)
 
       response = Format.substitute_message(services.locale.replies.toggle_debug, {

@@ -50,7 +50,7 @@ module PrivateParlorXT
 
       media_group = Album.new(message_id, input)
       albums.merge!({album => media_group})
-      
+
       # Wait an arbitrary amount of time for Telegram MediaGroup updates to come in before relaying the album.
       Tasker.in(WAIT_TIME) {
         next unless prepared_album = albums.delete(album)

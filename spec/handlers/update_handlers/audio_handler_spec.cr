@@ -21,10 +21,10 @@ module PrivateParlorXT
 
     describe "#is_spamming?" do
       it "returns true if user is spamming audio" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
-        
+
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
@@ -32,7 +32,7 @@ module PrivateParlorXT
 
         ctx = create_context(client, create_update(11, message))
         spam_services = create_services(
-          client: client, 
+          client: client,
           spam: SpamHandler.new(
             spam_limit: 10, score_audio: 6
           )
@@ -52,7 +52,7 @@ module PrivateParlorXT
       end
 
       it "returns false if user is not spamming audio" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -61,13 +61,13 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
         )
 
-        spam_services = create_services(client: client, spam: SpamHandler.new())
+        spam_services = create_services(client: client, spam: SpamHandler.new)
 
         handler.is_spamming?(beispiel, message, services).should(be_false)
       end
 
       it "returns false if no spam handler" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 

@@ -21,10 +21,10 @@ module PrivateParlorXT
 
     describe "#is_spamming?" do
       it "returns true if user is spamming forwards" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
-        
+
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
@@ -47,7 +47,7 @@ module PrivateParlorXT
       end
 
       it "returns false if user is not spamming forwards" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -56,13 +56,13 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
         )
 
-        spam_services = create_services(client: client, spam: SpamHandler.new())
+        spam_services = create_services(client: client, spam: SpamHandler.new)
 
         handler.is_spamming?(beispiel, message, services).should(be_false)
       end
 
       it "returns false if no spam handler" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -77,12 +77,12 @@ module PrivateParlorXT
       end
 
       it "returns false if message is part of a queued album" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
         album = AlbumHelpers::Album.new(
-          1_i64, 
+          1_i64,
           Tourmaline::InputMediaPhoto.new(
             "album_item_one",
           )
@@ -163,7 +163,7 @@ module PrivateParlorXT
     describe "#get_header" do
       it "returns empty header and empty entities if message without caption is part of a queued album" do
         album = AlbumHelpers::Album.new(
-          1_i64, 
+          1_i64,
           Tourmaline::InputMediaPhoto.new(
             "album_item_one",
           )

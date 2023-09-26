@@ -29,7 +29,7 @@ module PrivateParlorXT
       connection.exec("INSERT INTO karma VALUES (2,60200)")
 
       test.run
-      
+
       db.close
     end
 
@@ -62,7 +62,7 @@ module PrivateParlorXT
         receivers[101].should(eq(51))
       rescue KeyError
         fail("A message with the ID of '51' should be in the receivers table")
-      end      
+      end
     end
 
     describe "#get_origin_message" do
@@ -87,7 +87,7 @@ module PrivateParlorXT
       end
 
       it "returns nil if receiver message ID has no original message" do
-        db.get_origin_message(12345).should(be_nil)        
+        db.get_origin_message(12345).should(be_nil)
       end
     end
 

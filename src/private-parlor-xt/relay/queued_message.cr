@@ -2,7 +2,7 @@ require "../constants.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-  alias MessageProc = Proc(UserID, MessageID?, Tourmaline::Message) | 
+  alias MessageProc = Proc(UserID, MessageID?, Tourmaline::Message) |
                       Proc(UserID, MessageID?, Array(Tourmaline::Message)) |
                       Proc(UserID, MessageID?, Bool)
 

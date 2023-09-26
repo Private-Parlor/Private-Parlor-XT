@@ -1,7 +1,6 @@
 require "../../spec_helper.cr"
 
 module PrivateParlorXT
-
   describe TripcodeSignCommand do
     client = MockClient.new
 
@@ -16,7 +15,7 @@ module PrivateParlorXT
 
       services.database.close
     end
-    
+
     describe "#do" do
       it "updates message contents" do
         generate_users(services.database)
@@ -72,10 +71,10 @@ module PrivateParlorXT
       it "returns true if user is sign spamming" do
         generate_users(services.database)
 
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
-        
+
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
@@ -83,7 +82,7 @@ module PrivateParlorXT
         )
 
         ctx = create_context(client, create_update(11, message))
-        spam_services = create_services(client: client, spam: SpamHandler.new())
+        spam_services = create_services(client: client, spam: SpamHandler.new)
 
         unless spam = spam_services.spam
           fail("Services should contain a spam handler")
@@ -101,10 +100,10 @@ module PrivateParlorXT
       it "returns true if user is spamming text" do
         generate_users(services.database)
 
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
-        
+
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
@@ -134,7 +133,7 @@ module PrivateParlorXT
       it "returns false if user is not sign spamming" do
         generate_users(services.database)
 
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -144,7 +143,7 @@ module PrivateParlorXT
           text: "/tsign Example",
         )
 
-        spam_services = create_services(client: client, spam: SpamHandler.new())
+        spam_services = create_services(client: client, spam: SpamHandler.new)
 
         handler.is_spamming?(beispiel, message, "", spam_services).should(be_false)
       end
@@ -152,7 +151,7 @@ module PrivateParlorXT
       it "returns false if no spam handler" do
         generate_users(services.database)
 
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 

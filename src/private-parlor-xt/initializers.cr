@@ -2,8 +2,7 @@ require "./handlers.cr"
 require "./services.cr"
 
 module PrivateParlorXT
-
-  def self.initialize_services() : Services
+  def self.initialize_services : Services
     config = Config.parse_config
     locale = Locale.parse_locale(Path["./locales"], config.locale)
     database = SQLiteDatabase.new(DB.open("sqlite3://#{config.database}"))
@@ -161,7 +160,7 @@ module PrivateParlorXT
     return unless info = message.from
 
     response = Format.substitute_message(services.locale.replies.media_disabled, {
-      "type" => type.to_s
+      "type" => type.to_s,
     })
 
     services.relay.send_to_user(message.message_id.to_i64, info.id.to_i64, response)

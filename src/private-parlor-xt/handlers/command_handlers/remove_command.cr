@@ -12,7 +12,7 @@ module PrivateParlorXT
       return unless message && user
 
       return unless is_authorized?(user, message, :Remove, services)
- 
+
       return unless reply = get_reply_message(user, message, services)
 
       return unless reply_user = get_reply_user(user, reply, services)
@@ -20,7 +20,7 @@ module PrivateParlorXT
       update_user_activity(user, services)
 
       original_message = delete_messages(
-        reply.message_id.to_i64, 
+        reply.message_id.to_i64,
         reply_user.id,
         reply_user.debug_enabled,
         false,
@@ -30,7 +30,7 @@ module PrivateParlorXT
       reason = Format.get_arg(message.text)
 
       response = Format.substitute_message(services.locale.replies.message_removed, {
-        "reason" => Format.format_reason_reply(reason, services.locale)
+        "reason" => Format.format_reason_reply(reason, services.locale),
       })
 
       log = Format.substitute_message(services.locale.logs.message_removed, {

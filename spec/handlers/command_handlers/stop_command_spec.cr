@@ -25,7 +25,7 @@ module PrivateParlorXT
         unless user
           fail("User 40000 should exist in the database")
         end
-        
+
         previous_left_time = user.left
 
         message = create_message(

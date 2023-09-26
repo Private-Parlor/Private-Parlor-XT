@@ -86,7 +86,7 @@ module PrivateParlorXT
       @score_sticker : Int32 = 3000,
       @score_venue : Int32 = 5000,
       @score_location : Int32 = 5000,
-      @score_contact : Int32 = 5000,
+      @score_contact : Int32 = 5000
     )
     end
 

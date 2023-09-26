@@ -195,7 +195,6 @@ module PrivateParlorXT
       history.new_message(sender, origin)
 
       history.add_to_history(origin, 2, 101)
-      
 
       history.get_warning(2).should(be_false)
       history.add_warning(2)

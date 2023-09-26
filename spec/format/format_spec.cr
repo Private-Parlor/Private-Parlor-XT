@@ -7,7 +7,7 @@ module PrivateParlorXT
         placeholder_text = "User {id} sent a message [{message_id}] (origin: {message_id})"
 
         parameters = {
-          "id" => 9000.to_s,
+          "id"         => 9000.to_s,
           "message_id" => 20.to_s,
         }
 
@@ -20,7 +20,7 @@ module PrivateParlorXT
         placeholder_text = "User {id} sent a {type} message [{message_id}] (origin: {message_id})"
 
         parameters = {
-          "id" => 9000.to_s,
+          "id"         => 9000.to_s,
           "message_id" => 20.to_s,
         }
 
@@ -78,7 +78,7 @@ module PrivateParlorXT
         Format.generate_tripcode("name#password", "").should(eq({"name", "!ozOtJW9BFA"}))
         Format.generate_tripcode("example#1", "").should(eq({"example", "!tsGpSwX8mo"}))
         Format.generate_tripcode("example#pass", "").should(eq({"example", "!XksB4AwhxU"}))
-        
+
         Format.generate_tripcode(
           "example#AnExcessivelyLongTripcodePassword", ""
         ).should(eq({"example", "!v8ZIGlF0Uc"}))
@@ -98,7 +98,7 @@ module PrivateParlorXT
             10,
             7,
             "https://crystal-lang.org",
-          )
+          ),
         ]
 
         expected = "Text link example\n(https://crystal-lang.org)"
@@ -109,8 +109,8 @@ module PrivateParlorXT
 
     describe "#format_network_links" do
       network = {
-        "foo" => "foochatbot",
-        "fizz" => "fizzchatbot"
+        "foo"  => "foochatbot",
+        "fizz" => "fizzchatbot",
       }
 
       it "only formats chats in linked network" do
@@ -157,7 +157,7 @@ module PrivateParlorXT
     describe "#get_arg" do
       it "returns the string that follows the first whitespace in text" do
         command = "/test something"
-        
+
         expected = "something"
 
         Format.get_arg(command).should(eq(expected))
@@ -198,7 +198,7 @@ module PrivateParlorXT
             19,
           ),
         ]
-        
+
         Format.regular_forward?(text, entities).should(be_true)
       end
 
@@ -247,7 +247,7 @@ module PrivateParlorXT
         end
 
         header.should(eq("Forwarded from example\n\n"))
-        
+
         entities.size.should(eq(2))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
@@ -279,7 +279,7 @@ module PrivateParlorXT
         end
 
         header.should(eq("Forwarded from ExampleBot\n\n"))
-        
+
         entities.size.should(eq(2))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
@@ -311,7 +311,7 @@ module PrivateParlorXT
         end
 
         header.should(eq("Forwarded from Example Channel\n\n"))
-        
+
         entities.size.should(eq(2))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
@@ -342,7 +342,7 @@ module PrivateParlorXT
         end
 
         header.should(eq("Forwarded from Private Example Channel\n\n"))
-        
+
         entities.size.should(eq(2))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
@@ -368,7 +368,7 @@ module PrivateParlorXT
         end
 
         header.should(eq("Forwarded from Private User\n\n"))
-        
+
         entities.size.should(eq(2))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
@@ -384,13 +384,13 @@ module PrivateParlorXT
       it "handles UTF-16 code units in given name and updates entities" do
         header, entities = Format.format_user_forward(
           "Dodo 🦤🏝🍽",
-          9000, 
+          9000,
           [
             Tourmaline::MessageEntity.new(
               "underline",
               offset: 0,
               length: 10,
-            )
+            ),
           ]
         )
 
@@ -399,7 +399,7 @@ module PrivateParlorXT
         end
 
         header.should(eq("Forwarded from Dodo 🦤🏝🍽\n\n"))
-        
+
         entities.size.should(eq(3))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
@@ -424,7 +424,7 @@ module PrivateParlorXT
               "underline",
               offset: 0,
               length: 10,
-            )
+            ),
           ]
         )
 
@@ -433,7 +433,7 @@ module PrivateParlorXT
         end
 
         header.should(eq("Forwarded from Private 🔒🦤 Dodo\n\n"))
-        
+
         entities.size.should(eq(3))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
@@ -459,7 +459,7 @@ module PrivateParlorXT
               "underline",
               offset: 0,
               length: 10,
-            )
+            ),
           ]
         )
 
@@ -468,7 +468,7 @@ module PrivateParlorXT
         end
 
         header.should(eq("Forwarded from 🤖 Dodo Bot 🦤\n\n"))
-        
+
         entities.size.should(eq(3))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
@@ -494,7 +494,7 @@ module PrivateParlorXT
               "underline",
               offset: 0,
               length: 10,
-            )
+            ),
           ]
         )
 
@@ -503,7 +503,7 @@ module PrivateParlorXT
         end
 
         header.should(eq("Forwarded from 🦤 Private 🔒 Dodo 📣\n\n"))
-        
+
         entities.size.should(eq(3))
         entities[0].type.should(eq("bold"))
         entities[0].offset.should(eq(0))
@@ -606,7 +606,7 @@ module PrivateParlorXT
 
         bar = Format.format_karma_loading_bar(33.3_f32, services.locale)
 
-        bar.should(eq(expected)) 
+        bar.should(eq(expected))
       end
     end
   end

@@ -38,7 +38,7 @@ module PrivateParlorXT
         end
 
         handler.demote_from_reply(nil, user, 11, reply_to, services)
-        
+
         unless reply_user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
@@ -53,7 +53,7 @@ module PrivateParlorXT
         end
 
         promoted_user.set_rank(100)
-        
+
         services.database.update_user(promoted_user)
 
         reply_to = create_message(
@@ -66,14 +66,13 @@ module PrivateParlorXT
         end
 
         handler.demote_from_reply("mod", user, 11, reply_to, services)
-        
+
         unless reply_user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
         reply_user.rank.should(eq(10))
       end
-      
     end
 
     describe "#demote_from_args" do
@@ -84,9 +83,9 @@ module PrivateParlorXT
 
         handler.demote_from_args(
           ["80300"],
-           user,
-           11,
-           services
+          user,
+          11,
+          services
         )
 
         unless demoted_user = services.database.get_user(80300)
@@ -103,7 +102,7 @@ module PrivateParlorXT
         end
 
         promoted_user.set_rank(100)
-        
+
         services.database.update_user(promoted_user)
 
         unless user = services.database.get_user(20000)
@@ -112,9 +111,9 @@ module PrivateParlorXT
 
         handler.demote_from_args(
           ["80300", "mod"],
-           user,
-           11,
-           services
+          user,
+          11,
+          services
         )
 
         unless demoted_user = services.database.get_user(80300)

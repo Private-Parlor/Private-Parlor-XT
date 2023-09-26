@@ -20,7 +20,7 @@ module PrivateParlorXT
         unless args = Format.get_args(message.text, count: 2)
           return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.missing_args)
         end
-        
+
         demote_from_args(args, user, message.message_id.to_i64, services)
       end
     end
@@ -31,31 +31,31 @@ module PrivateParlorXT
       else
         tuple = {services.config.default_rank, services.access.ranks[services.config.default_rank]}
       end
-  
+
       unless tuple
         return services.relay.send_to_user(message, user.id, Format.substitute_message(services.locale.replies.no_rank_found, {
-          "ranks" => services.access.rank_names(limit: user.rank).to_s
+          "ranks" => services.access.rank_names(limit: user.rank).to_s,
         }))
       end
 
       return unless demoted_user = get_reply_user(user, reply, services)
-        
+
       unless services.access.can_demote?(tuple[0], user.rank, demoted_user.rank)
         return services.relay.send_to_user(message, user.id, services.locale.replies.fail)
       end
-  
+
       update_user_activity(user, services)
-  
+
       demoted_user.set_rank(tuple[0])
       services.database.update_user(demoted_user)
-  
+
       log = Format.substitute_message(services.locale.logs.demoted, {
         "id"      => demoted_user.id.to_s,
         "name"    => demoted_user.get_formatted_name,
         "rank"    => tuple[1].name,
         "invoker" => user.get_formatted_name,
       })
-      
+
       services.relay.log_output(log)
 
       services.relay.send_to_user(message, user.id, services.locale.replies.success)
@@ -67,10 +67,10 @@ module PrivateParlorXT
       elsif args.size == 2
         tuple = services.access.find_rank(args[1].downcase, args[1].to_i?)
       end
-  
+
       unless tuple
         return services.relay.send_to_user(message, user.id, Format.substitute_message(services.locale.replies.no_rank_found, {
-          "ranks" => services.access.rank_names(limit: user.rank).to_s
+          "ranks" => services.access.rank_names(limit: user.rank).to_s,
         }))
       end
 
@@ -81,9 +81,9 @@ module PrivateParlorXT
       unless services.access.can_demote?(tuple[0], user.rank, demoted_user.rank)
         return services.relay.send_to_user(message, user.id, services.locale.replies.fail)
       end
-  
+
       update_user_activity(user, services)
-  
+
       demoted_user.set_rank(tuple[0])
       services.database.update_user(demoted_user)
 

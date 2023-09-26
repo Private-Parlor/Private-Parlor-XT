@@ -25,7 +25,7 @@ module PrivateParlorXT
         unless user
           fail("User 20000 should exist in the database")
         end
-        
+
         previous_toggle = user.debug_enabled
 
         message = create_message(

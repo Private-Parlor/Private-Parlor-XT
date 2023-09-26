@@ -32,7 +32,7 @@ module PrivateParlorXT
       # Sends a message to the user only if the user has started a
       # conversation with the bot prior to being whitelisted
       services.relay.send_to_user(nil, arg, services.locale.replies.added_to_chat)
-      
+
       log = Format.substitute_message(services.locale.logs.whitelisted, {
         "id"      => arg.to_s,
         "invoker" => user.get_formatted_name,

@@ -128,7 +128,7 @@ module PrivateParlorXT
           text: "+1",
         )
 
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -150,10 +150,10 @@ module PrivateParlorXT
 
     describe "#is_spamming?" do
       it "returns true if user is upvote spamming" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
-        
+
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
@@ -161,7 +161,7 @@ module PrivateParlorXT
         )
 
         ctx = create_context(client, create_update(11, message))
-        spam_services = create_services(client: client, spam: SpamHandler.new())
+        spam_services = create_services(client: client, spam: SpamHandler.new)
 
         unless spam = spam_services.spam
           fail("Services should contain a spam handler")
@@ -177,7 +177,7 @@ module PrivateParlorXT
       end
 
       it "returns false if user is not upvote spamming" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -187,13 +187,13 @@ module PrivateParlorXT
           text: "+1",
         )
 
-        spam_services = create_services(client: client, spam: SpamHandler.new())
+        spam_services = create_services(client: client, spam: SpamHandler.new)
 
         handler.is_spamming?(beispiel, message, services).should(be_false)
       end
 
       it "returns false if no spam handler" do
-        unless beispiel = services.database.get_user(80300) 
+        unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -262,7 +262,7 @@ module PrivateParlorXT
         unless reply_user = handler.get_reply_user(user, reply_message, services)
           fail("User 20000 should exist in the database")
         end
-        
+
         handler.upvote_message(user, reply_user, message, reply_message, services).should(be_false)
       end
 

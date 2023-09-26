@@ -1,7 +1,6 @@
 require "../../spec_helper.cr"
 
 module PrivateParlorXT
-
   describe SpoilerCommand do
     client = MockClient.new
 
@@ -24,11 +23,11 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
           photo: [
             Tourmaline::PhotoSize.new(
-              "photo_item_one", 
+              "photo_item_one",
               "unique_photo",
               1080,
               1080,
-            )
+            ),
           ],
           caption: "Photo caption",
           entities: [
@@ -36,7 +35,7 @@ module PrivateParlorXT
               "bold",
               0,
               10,
-            )
+            ),
           ]
         )
 
@@ -63,7 +62,7 @@ module PrivateParlorXT
           1_i64,
           Tourmaline::User.new(80300, false, "beispiel"),
           video: Tourmaline::Video.new(
-            "video_item_one", 
+            "video_item_one",
             "unique_video",
             1080,
             1080,
@@ -75,7 +74,7 @@ module PrivateParlorXT
               "bold",
               0,
               10,
-            )
+            ),
           ]
         )
 
@@ -102,7 +101,7 @@ module PrivateParlorXT
           1_i64,
           Tourmaline::User.new(80300, false, "beispiel"),
           animation: Tourmaline::Animation.new(
-            "animation_item_one", 
+            "animation_item_one",
             "unique_animation",
             1080,
             1080,
@@ -114,7 +113,7 @@ module PrivateParlorXT
               "bold",
               0,
               10,
-            )
+            ),
           ]
         )
 
@@ -141,7 +140,7 @@ module PrivateParlorXT
           1_i64,
           Tourmaline::User.new(80300, false, "beispiel"),
           document: Tourmaline::Document.new(
-            "document_item_one", 
+            "document_item_one",
             "unique_document",
           ),
         )
@@ -150,7 +149,7 @@ module PrivateParlorXT
           1_i64,
           Tourmaline::User.new(80300, false, "beispiel"),
           audio: Tourmaline::Audio.new(
-            "audio_item_one", 
+            "audio_item_one",
             "unique_audio",
             60,
           ),

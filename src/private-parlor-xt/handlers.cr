@@ -33,7 +33,7 @@ module PrivateParlorXT
       reply_user_id = services.history.get_sender(reply_message.message_id.to_i64)
 
       reply_user = services.database.get_user(reply_user_id)
-      
+
       unless reply_user
         services.relay.send_to_user(reply_message.message_id.to_i64, user.id, services.locale.replies.not_in_cache)
         return
@@ -66,7 +66,7 @@ module PrivateParlorXT
 
     private def deny_user(user : User, services : Services) : Nil
       return unless user.blacklisted?
-      
+
       response = Format.substitute_message(services.locale.replies.blacklisted, {
         "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.locale),
         "reason"  => Format.format_reason_reply(user.blacklist_reason, services.locale),
@@ -125,7 +125,7 @@ module PrivateParlorXT
       end
 
       unless user = services.database.get_user(info.id.to_i64)
-        services. relay.send_to_user(nil, info.id.to_i64, services.locale.replies.not_in_chat)
+        services.relay.send_to_user(nil, info.id.to_i64, services.locale.replies.not_in_chat)
         return message, nil
       end
 
@@ -204,7 +204,7 @@ module PrivateParlorXT
 
     def get_reply_receivers(reply : Tourmaline::Message, message : Tourmaline::Message, user : User, services : Services) : Hash(UserID, MessageID)?
       replies = services.history.get_all_receivers(reply.message_id.to_i64)
-      
+
       if replies.empty?
         services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.not_in_cache)
         return
@@ -220,7 +220,6 @@ module PrivateParlorXT
         services.database.get_active_users(user.id)
       end
     end
-
   end
 
   abstract class HearsHandler < Handler
