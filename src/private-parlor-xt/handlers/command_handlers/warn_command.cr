@@ -11,7 +11,7 @@ module PrivateParlorXT
       message, user = get_message_and_user(context, services)
       return unless message && user
 
-      return unless is_authorized?(user, message, :Warn, services)
+      return unless authorized?(user, message, :Warn, services)
 
       return unless reply = get_reply_message(user, message, services)
 

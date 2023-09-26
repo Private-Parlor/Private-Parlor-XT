@@ -60,7 +60,7 @@ module PrivateParlorXT
 
         tuple = handler.get_message_and_user(new_names_context, services)
 
-        unless returned_message = tuple[0]
+        unless tuple[0]
           fail("Did not get a message from method")
         end
         unless returned_user = tuple[1]
@@ -120,7 +120,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#is_authorized?" do
+    describe "#authorized?" do
       it "returns true if user can downvote" do
         message = create_message(
           11,
@@ -132,7 +132,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        handler.is_authorized?(beispiel, message, :Downvote, services).should(be_true)
+        handler.authorized?(beispiel, message, :Downvote, services).should(be_true)
       end
 
       it "returns false if user can't downvote" do
@@ -144,11 +144,11 @@ module PrivateParlorXT
 
         unauthorized_user = SQLiteUser.new(9000, rank: -10)
 
-        handler.is_authorized?(unauthorized_user, message, :Downvote, services).should(be_false)
+        handler.authorized?(unauthorized_user, message, :Downvote, services).should(be_false)
       end
     end
 
-    describe "#is_spamming?" do
+    describe "#spamming?" do
       it "returns true if user is downvote spamming" do
         unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
@@ -160,20 +160,19 @@ module PrivateParlorXT
           text: "-1",
         )
 
-        ctx = create_context(client, create_update(11, message))
         spam_services = create_services(client: client, spam: SpamHandler.new)
 
         unless spam = spam_services.spam
           fail("Services should contain a spam handler")
         end
 
-        handler.is_spamming?(beispiel, message, spam_services)
+        handler.spamming?(beispiel, message, spam_services)
 
-        unless expiration_time = spam.downvote_last_used[beispiel.id]?
+        unless spam.downvote_last_used[beispiel.id]?
           fail("Expiration time should not be nil")
         end
 
-        handler.is_spamming?(beispiel, message, spam_services).should(be_true)
+        handler.spamming?(beispiel, message, spam_services).should(be_true)
       end
 
       it "returns false if user is not downvote spamming" do
@@ -189,7 +188,7 @@ module PrivateParlorXT
 
         spam_services = create_services(client: client, spam: SpamHandler.new)
 
-        handler.is_spamming?(beispiel, message, services).should(be_false)
+        handler.spamming?(beispiel, message, spam_services).should(be_false)
       end
 
       it "returns false if no spam handler" do
@@ -205,7 +204,7 @@ module PrivateParlorXT
 
         spamless_services = create_services(client: client)
 
-        handler.is_spamming?(beispiel, message, spamless_services).should(be_false)
+        handler.spamming?(beispiel, message, spamless_services).should(be_false)
       end
     end
 

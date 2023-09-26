@@ -57,7 +57,7 @@ module PrivateParlorXT
 
         tuple = handler.get_message_and_user(new_names_context, services)
 
-        unless returned_message = tuple[0]
+        unless tuple[0]
           fail("Did not get a message from method")
         end
         unless returned_user = tuple[1]
@@ -115,7 +115,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#is_authorized?" do
+    describe "#authorized?" do
       it "returns true if user can use command" do
         user = services.database.get_user(80300)
 
@@ -128,7 +128,7 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
         )
 
-        handler.is_authorized?(user, message, :Ranksay, services).should(be_true)
+        handler.authorized?(user, message, :Ranksay, services).should(be_true)
       end
 
       it "returns false if use cannot use command" do
@@ -143,7 +143,7 @@ module PrivateParlorXT
           Tourmaline::User.new(60200, false, "beispiel"),
         )
 
-        handler.is_authorized?(user, message, :Ranksay, services).should(be_false)
+        handler.authorized?(user, message, :Ranksay, services).should(be_false)
       end
 
       it "returns CommandPermission when given a group of permissions" do
@@ -158,7 +158,7 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
         )
 
-        authority = handler.is_authorized?(
+        authority = handler.authorized?(
           user,
           message,
           services,
@@ -180,7 +180,7 @@ module PrivateParlorXT
           Tourmaline::User.new(60200, false, "voorbeeld"),
         )
 
-        authority = handler.is_authorized?(
+        authority = handler.authorized?(
           user,
           message,
           services,

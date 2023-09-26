@@ -11,7 +11,7 @@ module PrivateParlorXT
       message, user = get_message_and_user(context, services)
       return unless message && user
 
-      return unless is_authorized?(user, message, :Reveal, services)
+      return unless authorized?(user, message, :Reveal, services)
 
       if (chat = context.api.get_chat(user.id)) && chat.has_private_forwards?
         return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.private_sign)
@@ -44,6 +44,8 @@ module PrivateParlorXT
         "receiver"    => reply_user.get_formatted_name,
         "msid"        => reply.message_id.to_s,
       })
+
+      services.relay.log_output(log)
 
       services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.success)
     end

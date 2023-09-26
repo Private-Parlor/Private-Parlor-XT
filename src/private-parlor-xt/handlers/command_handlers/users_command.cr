@@ -15,7 +15,7 @@ module PrivateParlorXT
 
       counts = services.database.get_user_counts
 
-      if is_authorized?(user, message, :Users, services)
+      if authorized?(user, message, :Users, services)
         response = Format.substitute_message(services.locale.replies.user_count_full, {
           "joined"      => (counts[:total] - counts[:left]).to_s,
           "left"        => counts[:left].to_s,

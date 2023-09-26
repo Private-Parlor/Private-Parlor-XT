@@ -11,7 +11,7 @@ module PrivateParlorXT
       message, user = get_message_and_user(context, services)
       return unless message && user
 
-      return unless is_authorized?(user, message, :Uncooldown, services)
+      return unless authorized?(user, message, :Uncooldown, services)
 
       unless arg = Format.get_arg(message.text)
         return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.missing_args)

@@ -75,7 +75,7 @@ module PrivateParlorXT
       services.relay.send_to_user(nil, user.id, response)
     end
 
-    def is_authorized?(user : User, message : Tourmaline::Message, permission : CommandPermissions, services : Services) : Bool
+    def authorized?(user : User, message : Tourmaline::Message, permission : CommandPermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, permission)
         services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.command_disabled)
         return false
@@ -84,7 +84,7 @@ module PrivateParlorXT
       true
     end
 
-    def is_authorized?(user : User, message : Tourmaline::Message, services : Services, *permissions : CommandPermissions) : CommandPermissions?
+    def authorized?(user : User, message : Tourmaline::Message, services : Services, *permissions : CommandPermissions) : CommandPermissions?
       if authority = services.access.authorized?(user.rank, *permissions)
         authority
       else
@@ -139,7 +139,7 @@ module PrivateParlorXT
       return message, user
     end
 
-    def is_authorized?(user : User, message : Tourmaline::Message, authority : MessagePermissions, services : Services) : Bool
+    def authorized?(user : User, message : Tourmaline::Message, authority : MessagePermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, authority)
         response = Format.substitute_message(services.locale.replies.media_disabled, {"type" => authority.to_s})
         services.relay.send_to_user(message.message_id.to_i64, user.id, response)
@@ -153,7 +153,7 @@ module PrivateParlorXT
       return false if message.forward_date
       return false if message.media_group_id
 
-      return true
+      true
     end
 
     private def deny_user(user : User, services : Services) : Nil

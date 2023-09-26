@@ -67,7 +67,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#is_spamming?" do
+    describe "#spamming?" do
       it "returns true if user is sign spamming" do
         generate_users(services.database)
 
@@ -81,20 +81,19 @@ module PrivateParlorXT
           text: "/tsign Example",
         )
 
-        ctx = create_context(client, create_update(11, message))
         spam_services = create_services(client: client, spam: SpamHandler.new)
 
         unless spam = spam_services.spam
           fail("Services should contain a spam handler")
         end
 
-        handler.is_spamming?(beispiel, message, "", spam_services)
+        handler.spamming?(beispiel, message, "", spam_services)
 
-        unless expiration_time = spam.sign_last_used[beispiel.id]?
+        unless spam.sign_last_used[beispiel.id]?
           fail("Expiration time should not be nil")
         end
 
-        handler.is_spamming?(beispiel, message, "", spam_services).should(be_true)
+        handler.spamming?(beispiel, message, "", spam_services).should(be_true)
       end
 
       it "returns true if user is spamming text" do
@@ -110,7 +109,6 @@ module PrivateParlorXT
           text: "/tsign Example",
         )
 
-        ctx = create_context(client, create_update(11, message))
         spam_services = create_services(client: client, spam: SpamHandler.new(
           spam_limit: 10,
           score_character: 1,
@@ -121,13 +119,13 @@ module PrivateParlorXT
           fail("Services should contain a spam handler")
         end
 
-        handler.is_spamming?(beispiel, message, "Example", spam_services)
+        handler.spamming?(beispiel, message, "Example", spam_services)
 
-        unless score = spam.scores[beispiel.id]?
+        unless spam.scores[beispiel.id]?
           fail("Score should not be nil")
         end
 
-        handler.is_spamming?(beispiel, message, "Example", spam_services).should(be_true)
+        handler.spamming?(beispiel, message, "Example", spam_services).should(be_true)
       end
 
       it "returns false if user is not sign spamming" do
@@ -145,7 +143,7 @@ module PrivateParlorXT
 
         spam_services = create_services(client: client, spam: SpamHandler.new)
 
-        handler.is_spamming?(beispiel, message, "", spam_services).should(be_false)
+        handler.spamming?(beispiel, message, "", spam_services).should(be_false)
       end
 
       it "returns false if no spam handler" do
@@ -163,7 +161,7 @@ module PrivateParlorXT
 
         spamless_services = create_services(client: client)
 
-        handler.is_spamming?(beispiel, message, "", spamless_services).should(be_false)
+        handler.spamming?(beispiel, message, "", spamless_services).should(be_false)
       end
     end
   end

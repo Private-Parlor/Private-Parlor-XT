@@ -13,9 +13,9 @@ module PrivateParlorXT
 
       return unless meets_requirements?(message)
 
-      return unless is_authorized?(user, message, :Video, services)
+      return unless authorized?(user, message, :Video, services)
 
-      return if is_spamming?(user, message, services)
+      return if spamming?(user, message, services)
 
       return unless video = message.video
 
@@ -26,8 +26,6 @@ module PrivateParlorXT
       caption, entities = format_text(message.caption, message.caption_entities, message.preformatted?, services)
 
       # TODO: Add pseudonymous hook
-
-      new_message = services.history.new_message(user.id, message.message_id.to_i64)
 
       if reply = message.reply_to_message
         return unless reply_msids = get_reply_receivers(reply, message, user, services)
@@ -53,7 +51,7 @@ module PrivateParlorXT
       )
     end
 
-    def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
+    def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
       if spam.spammy_video?(user.id)

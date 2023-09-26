@@ -10,7 +10,11 @@ module PrivateParlorXT
     def do(context : Tourmaline::Context, services : Services) : Nil
       return unless (message = context.message) && (info = message.from)
 
-      unless (user = services.database.get_user(info.id.to_i64)) && !user.left?
+      unless user = services.database.get_user(info.id.to_i64)
+        return services.relay.send_to_user(nil, info.id.to_i64, services.locale.replies.not_in_chat)
+      end
+
+      if user.left?
         return services.relay.send_to_user(nil, info.id.to_i64, services.locale.replies.not_in_chat)
       end
 

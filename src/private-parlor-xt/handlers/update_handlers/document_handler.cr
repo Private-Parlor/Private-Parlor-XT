@@ -13,9 +13,9 @@ module PrivateParlorXT
 
       return unless meets_requirements?(message)
 
-      return unless is_authorized?(user, message, :Document, services)
+      return unless authorized?(user, message, :Document, services)
 
-      return if is_spamming?(user, message, services)
+      return if spamming?(user, message, services)
 
       return unless document = message.document
 
@@ -55,10 +55,10 @@ module PrivateParlorXT
       return false if message.media_group_id
       return false if message.animation
 
-      return true
+      true
     end
 
-    def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
+    def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
       if spam.spammy_document?(user.id)

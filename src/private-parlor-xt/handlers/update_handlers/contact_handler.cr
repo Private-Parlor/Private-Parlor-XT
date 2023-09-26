@@ -13,9 +13,9 @@ module PrivateParlorXT
 
       return if message.forward_date
 
-      return unless is_authorized?(user, message, :Contact, services)
+      return unless authorized?(user, message, :Contact, services)
 
-      return if is_spamming?(user, message, services)
+      return if spamming?(user, message, services)
 
       return unless contact = message.contact
 
@@ -38,7 +38,7 @@ module PrivateParlorXT
       )
     end
 
-    def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
+    def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
       if spam.spammy_contact?(user.id)

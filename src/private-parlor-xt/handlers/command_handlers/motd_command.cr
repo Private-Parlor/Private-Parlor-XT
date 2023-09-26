@@ -12,7 +12,7 @@ module PrivateParlorXT
       return unless message && user
 
       if arg = Format.get_arg(message.text)
-        return unless is_authorized?(user, message, :MotdSet, services)
+        return unless authorized?(user, message, :MotdSet, services)
 
         update_user_activity(user, services)
 

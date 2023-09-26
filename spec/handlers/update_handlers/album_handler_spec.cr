@@ -19,7 +19,7 @@ module PrivateParlorXT
       services.database.close
     end
 
-    describe "#is_spamming?" do
+    describe "#spamming?" do
       it "returns true if user is spamming albums" do
         unless beispiel = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
@@ -30,7 +30,6 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
         )
 
-        ctx = create_context(client, create_update(11, message))
         spam_services = create_services(
           client: client,
           spam: SpamHandler.new(
@@ -42,13 +41,13 @@ module PrivateParlorXT
           fail("Services should contain a spam handler")
         end
 
-        handler.is_spamming?(beispiel, message, spam_services)
+        handler.spamming?(beispiel, message, spam_services)
 
-        unless score = spam.scores[beispiel.id]?
+        unless spam.scores[beispiel.id]?
           fail("Score for user 80300 should not be nil")
         end
 
-        handler.is_spamming?(beispiel, message, spam_services).should(be_true)
+        handler.spamming?(beispiel, message, spam_services).should(be_true)
       end
 
       it "returns false if user is not spamming albums" do
@@ -63,7 +62,7 @@ module PrivateParlorXT
 
         spam_services = create_services(client: client, spam: SpamHandler.new)
 
-        handler.is_spamming?(beispiel, message, services).should(be_false)
+        handler.spamming?(beispiel, message, spam_services).should(be_false)
       end
 
       it "returns false if no spam handler" do
@@ -78,7 +77,7 @@ module PrivateParlorXT
 
         spamless_services = create_services(client: client)
 
-        handler.is_spamming?(beispiel, message, spamless_services).should(be_false)
+        handler.spamming?(beispiel, message, spamless_services).should(be_false)
       end
 
       it "returns false if message is part of a queued album" do
@@ -100,7 +99,6 @@ module PrivateParlorXT
           media_group_id: "album_one"
         )
 
-        ctx = create_context(client, create_update(11, message))
         spam_services = create_services(
           client: client,
           spam: SpamHandler.new(
@@ -108,12 +106,12 @@ module PrivateParlorXT
           )
         )
 
-        unless spam = spam_services.spam
+        unless spam_services.spam
           fail("Services should contain a spam handler")
         end
 
-        handler.is_spamming?(beispiel, message, spam_services).should(be_false)
-        handler.is_spamming?(beispiel, message, spam_services).should(be_false)
+        handler.spamming?(beispiel, message, spam_services).should(be_false)
+        handler.spamming?(beispiel, message, spam_services).should(be_false)
       end
     end
   end

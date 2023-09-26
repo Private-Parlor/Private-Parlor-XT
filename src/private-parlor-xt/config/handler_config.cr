@@ -33,7 +33,7 @@ module PrivateParlorXT
       @tripcode_salt = config.salt
       @cooldown_base = config.cooldown_base
       @warn_lifespan = config.warn_lifespan
-      @Warn_deduction = config.warn_deduction
+      @warn_deduction = config.warn_deduction
       @registration_open = config.registration_open
     end
   end

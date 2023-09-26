@@ -11,11 +11,11 @@ module PrivateParlorXT
       message, user = get_message_and_user(context, services)
       return unless message && user
 
-      return unless is_authorized?(user, message, :Forward, services)
+      return unless authorized?(user, message, :Forward, services)
 
       return if deanonymous_poll(user, message, services)
 
-      return if is_spamming?(user, message, services)
+      return if spamming?(user, message, services)
 
       # TODO: Add R9K check hook
       # TODO: Add R9K write hook
@@ -34,7 +34,7 @@ module PrivateParlorXT
       )
     end
 
-    def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
+    def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
       if spam.spammy_forward?(user.id)

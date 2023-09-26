@@ -29,19 +29,11 @@ module PrivateParlorXT
         return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.missing_args)
       end
 
-      return if is_spamming?(user, message, arg, services)
+      return if spamming?(user, message, arg, services)
 
       # TODO: Add R9K check and write hooks
 
-      entities = message.entities.empty? ? message.caption_entities : message.entities
-
-      if command_entity = entities.find { |item| item.type == "bot_command" && item.offset == 0 }
-        entities = entities - [command_entity]
-      end
-
-      # Remove command and all whitespace before the start of arg
-      arg_offset = text[...text.index(arg)].to_utf16.size
-      entities = Format.reset_entities(entities, arg_offset)
+      entities = update_entities(text, arg, message)
 
       current_level = get_karma_level(services.config.karma_levels, user)
 
@@ -58,7 +50,7 @@ module PrivateParlorXT
       message.preformatted = true
     end
 
-    def is_spamming?(user : User, message : Tourmaline::Message, arg : String, services : Services) : Bool
+    def spamming?(user : User, message : Tourmaline::Message, arg : String, services : Services) : Bool
       return false unless spam = services.spam
 
       if message.text && spam.spammy_text?(user.id, arg)
@@ -71,7 +63,7 @@ module PrivateParlorXT
         return true
       end
 
-      return false
+      false
     end
 
     def get_karma_level(karma_levels : Hash(Int32, String), user : User) : String
@@ -89,6 +81,18 @@ module PrivateParlorXT
       end
 
       current_level
+    end
+
+    def update_entities(text : String, arg : String, message : Tourmaline::Message) : Array(Tourmaline::MessageEntity)
+      entities = message.entities.empty? ? message.caption_entities : message.entities
+
+      if command_entity = entities.find { |item| item.type == "bot_command" && item.offset == 0 }
+        entities = entities - [command_entity]
+      end
+
+      # Remove command and all whitespace before the start of arg
+      arg_offset = text[...text.index(arg)].to_utf16.size
+      Format.reset_entities(entities, arg_offset)
     end
   end
 end

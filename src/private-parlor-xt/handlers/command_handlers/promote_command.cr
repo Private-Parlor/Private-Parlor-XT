@@ -11,7 +11,7 @@ module PrivateParlorXT
       message, user = get_message_and_user(context, services)
       return unless message && user
 
-      return unless authority = is_authorized?(
+      return unless authority = authorized?(
                       user,
                       message,
                       services,

@@ -20,9 +20,9 @@ module PrivateParlorXT
 
       return if message.forward_date
 
-      return unless is_authorized?(user, message, :MediaGroup, services)
+      return unless authorized?(user, message, :MediaGroup, services)
 
-      return if is_spamming?(user, message, services)
+      return if spamming?(user, message, services)
 
       return unless album = message.media_group_id
 
@@ -56,8 +56,8 @@ module PrivateParlorXT
       )
     end
 
-    def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
-      return false unless (spam = services.spam)
+    def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
+      return false unless spam = services.spam
 
       return false if (album = message.media_group_id) && @albums[album]?
 

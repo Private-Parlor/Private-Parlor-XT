@@ -58,7 +58,7 @@ module PrivateParlorXT
 
         tuple = handler.get_message_and_user(new_names_context, services)
 
-        unless returned_message = tuple[0]
+        unless tuple[0]
           fail("Did not get a message from method")
         end
         unless returned_user = tuple[1]
@@ -186,7 +186,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#is_authorized?" do
+    describe "#authorized?" do
       it "returns true if user can send update" do
         message = create_message(
           11,
@@ -197,7 +197,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        handler.is_authorized?(beispiel, message, :Text, services).should(be_true)
+        handler.authorized?(beispiel, message, :Text, services).should(be_true)
       end
 
       it "returns false if user can't send update" do
@@ -208,7 +208,7 @@ module PrivateParlorXT
 
         unauthorized_user = SQLiteUser.new(9000, rank: -10)
 
-        handler.is_authorized?(unauthorized_user, message, :Text, services).should(be_false)
+        handler.authorized?(unauthorized_user, message, :Text, services).should(be_false)
       end
     end
 

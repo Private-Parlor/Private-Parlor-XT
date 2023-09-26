@@ -11,7 +11,7 @@ module PrivateParlorXT
       message, user = get_message_and_user(context, services)
       return unless message && user
 
-      return unless is_authorized?(user, message, :Whitelist, services)
+      return unless authorized?(user, message, :Whitelist, services)
 
       if services.config.registration_open
         return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)

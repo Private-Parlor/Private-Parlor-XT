@@ -12,13 +12,13 @@ module PrivateParlorXT
       message, user = get_message_and_user(context, services)
       return unless message && user
 
-      return unless is_authorized?(user, message, :Downvote, services)
+      return unless authorized?(user, message, :Downvote, services)
 
       return unless reply = get_reply_message(user, message, services)
 
       return unless reply_user = get_reply_user(user, reply, services)
 
-      return if is_spamming?(user, message, services)
+      return if spamming?(user, message, services)
 
       update_user_activity(user, services)
 
@@ -47,7 +47,7 @@ module PrivateParlorXT
       return message, user
     end
 
-    def is_authorized?(user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services) : Bool
+    def authorized?(user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, authority)
         services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
         return false
@@ -56,7 +56,7 @@ module PrivateParlorXT
       true
     end
 
-    def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
+    def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
       if spam.spammy_downvote?(user.id, services.config.downvote_limit_interval)
@@ -64,7 +64,7 @@ module PrivateParlorXT
         return true
       end
 
-      return false
+      false
     end
 
     # Adds user's dowvote to message history and update reply_user's karma

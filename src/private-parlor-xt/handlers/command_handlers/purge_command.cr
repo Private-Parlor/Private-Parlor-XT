@@ -11,7 +11,7 @@ module PrivateParlorXT
       message, user = get_message_and_user(context, services)
       return unless message && user
 
-      return unless is_authorized?(user, message, :Purge, services)
+      return unless authorized?(user, message, :Purge, services)
 
       update_user_activity(user, services)
 

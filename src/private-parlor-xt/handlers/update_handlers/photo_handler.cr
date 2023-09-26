@@ -13,9 +13,9 @@ module PrivateParlorXT
 
       return unless meets_requirements?(message)
 
-      return unless is_authorized?(user, message, :Photo, services)
+      return unless authorized?(user, message, :Photo, services)
 
-      return if is_spamming?(user, message, services)
+      return if spamming?(user, message, services)
 
       return unless photo = message.photo.last
 
@@ -51,7 +51,7 @@ module PrivateParlorXT
       )
     end
 
-    def is_spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
+    def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
       if spam.spammy_photo?(user.id)

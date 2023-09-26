@@ -11,7 +11,7 @@ module PrivateParlorXT
       message, user = get_message_and_user(context, services)
       return unless message && user
 
-      return unless authority = is_authorized?(user, message, :Demote, services)
+      return unless authorized?(user, message, :Demote, services)
 
       if reply = message.reply_to_message
         arg = Format.get_arg(message.text)

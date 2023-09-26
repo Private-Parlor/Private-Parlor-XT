@@ -13,11 +13,11 @@ module PrivateParlorXT
 
       return if message.forward_date
 
-      return unless is_authorized?(user, message, :Text, services)
+      return unless authorized?(user, message, :Text, services)
 
       return unless text = message.text
 
-      return if is_spamming?(user, message, text, services)
+      return if spamming?(user, message, text, services)
 
       return unless check_text(text, user, message, services)
 
@@ -49,7 +49,7 @@ module PrivateParlorXT
       )
     end
 
-    def is_spamming?(user : User, message : Tourmaline::Message, text : String, services : Services) : Bool
+    def spamming?(user : User, message : Tourmaline::Message, text : String, services : Services) : Bool
       return false unless spam = services.spam
 
       return false if message.preformatted?

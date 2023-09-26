@@ -22,7 +22,7 @@ module PrivateParlorXT
     end
 
     def ranked_info(user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services)
-      return unless is_authorized?(user, message, :RankedInfo, services)
+      return unless authorized?(user, message, :RankedInfo, services)
 
       return unless reply_user = get_reply_user(user, reply, services)
 
@@ -44,7 +44,9 @@ module PrivateParlorXT
 
       karma_levels = services.config.karma_levels
 
-      unless karma_levels.empty?
+      if karma_levels.empty?
+        current_level = ""
+      else
         current_level = ""
 
         karma_levels.each_cons_pair do |lower, higher|
@@ -59,8 +61,6 @@ module PrivateParlorXT
         elsif user.karma < karma_levels.first_key
           current_level = "???"
         end
-      else
-        current_level = ""
       end
 
       user.remove_cooldown
