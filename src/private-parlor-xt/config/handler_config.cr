@@ -17,6 +17,7 @@ module PrivateParlorXT
     getter cooldown_base : Int32 = 5
     getter warn_lifespan : Int32 = 7 * 24
     getter warn_deduction : Int32 = 10
+    getter registration_open : Bool? = true
 
     def initialize(config : Config)
       @blacklist_contact = config.blacklist_contact
@@ -33,6 +34,7 @@ module PrivateParlorXT
       @cooldown_base = config.cooldown_base
       @warn_lifespan = config.warn_lifespan
       @Warn_deduction = config.warn_deduction
+      @registration_open = config.registration_open
     end
   end
 end

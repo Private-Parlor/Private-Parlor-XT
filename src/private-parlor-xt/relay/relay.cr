@@ -380,6 +380,11 @@ module PrivateParlorXT
           queued_message.receiver == msg.receiver
         end
         return
+      rescue ex : Tourmaline::Error::ChatNotFound
+        if msg.origin_msid
+          Log.error(exception: ex) { "Error occured when relaying message." }
+        end
+        return
       rescue ex
         return Log.error(exception: ex) { "Error occured when relaying message." }
       end

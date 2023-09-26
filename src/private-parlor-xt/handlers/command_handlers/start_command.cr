@@ -4,11 +4,9 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "start", config: "enable_start")]
   class StartCommand < CommandHandler
-    @registration_open : Bool?
     @pseudonymous : Bool?
 
     def initialize(config : Config)
-      @registration_open = config.registration_open
       @pseudonymous = config.pseudonymous
     end
 
@@ -51,7 +49,7 @@ module PrivateParlorXT
     end
 
     def new_user(id : UserID, username : String?, fullname : String, message_id : MessageID, services : Services)
-      unless @registration_open
+      unless services.config.registration_open
         return services.relay.send_to_user(nil, id, services.locale.replies.registration_closed)
       end
 
