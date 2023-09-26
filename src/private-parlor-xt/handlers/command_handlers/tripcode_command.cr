@@ -20,12 +20,12 @@ module PrivateParlorXT
 
         name, tripcode = Format.generate_tripcode(arg, services.config.tripcode_salt)
 
-        response = Format.substitute_message(services.replies.tripcode_set, {
+        response = Format.substitute_reply(services.replies.tripcode_set, {
           "name"     => name,
           "tripcode" => tripcode,
         })
       else
-        response = Format.substitute_message(services.replies.tripcode_info, {
+        response = Format.substitute_reply(services.replies.tripcode_info, {
           "tripcode" => user.tripcode ? user.tripcode : services.replies.tripcode_unset,
         })
       end

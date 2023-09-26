@@ -71,7 +71,7 @@ module PrivateParlorXT
       end
 
       unless parsed_rank
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, Format.substitute_message(services.replies.no_rank_found, {
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, Format.substitute_reply(services.replies.no_rank_found, {
           "ranks" => services.access.rank_names(limit: user.rank).to_s,
         }))
       end

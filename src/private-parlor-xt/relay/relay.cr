@@ -358,7 +358,7 @@ module PrivateParlorXT
     def log_output(text : String) : Nil
       Log.info { text }
       unless @log_channel.empty?
-        @client.send_message(@log_channel, text)
+        @client.send_message(@log_channel, text, parse_mode: nil)
       end
     end
 

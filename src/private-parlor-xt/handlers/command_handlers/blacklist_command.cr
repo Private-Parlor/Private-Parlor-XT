@@ -38,7 +38,7 @@ module PrivateParlorXT
         services,
       )
 
-      response = Format.substitute_message(services.replies.blacklisted, {
+      response = Format.substitute_reply(services.replies.blacklisted, {
         "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
         "reason"  => Format.format_reason_reply(reason, services.replies),
       })

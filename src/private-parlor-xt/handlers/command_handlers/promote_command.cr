@@ -55,7 +55,7 @@ module PrivateParlorXT
       end
 
       unless tuple
-        return services.relay.send_to_user(message, user.id, Format.substitute_message(services.replies.no_rank_found, {
+        return services.relay.send_to_user(message, user.id, Format.substitute_reply(services.replies.no_rank_found, {
           "ranks" => services.access.rank_names(limit: user.rank).to_s,
         }))
       end
@@ -71,7 +71,7 @@ module PrivateParlorXT
       promoted_user.set_rank(tuple[0])
       services.database.update_user(promoted_user)
 
-      services.relay.send_to_user(nil, promoted_user.id, Format.substitute_message(services.replies.promoted, {
+      services.relay.send_to_user(nil, promoted_user.id, Format.substitute_reply(services.replies.promoted, {
         "rank" => tuple[1].name,
       }))
 
@@ -95,7 +95,7 @@ module PrivateParlorXT
       end
 
       unless tuple
-        return services.relay.send_to_user(message, user.id, Format.substitute_message(services.replies.no_rank_found, {
+        return services.relay.send_to_user(message, user.id, Format.substitute_reply(services.replies.no_rank_found, {
           "ranks" => services.access.rank_names(limit: user.rank).to_s,
         }))
       end
@@ -111,7 +111,7 @@ module PrivateParlorXT
       promoted_user.set_rank(tuple[0])
       services.database.update_user(promoted_user)
 
-      services.relay.send_to_user(nil, promoted_user.id, Format.substitute_message(services.replies.promoted, {
+      services.relay.send_to_user(nil, promoted_user.id, Format.substitute_reply(services.replies.promoted, {
         "rank" => tuple[1].name,
       }))
 

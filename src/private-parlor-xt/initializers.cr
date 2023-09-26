@@ -22,7 +22,7 @@ module PrivateParlorXT
     access = AuthorizedRanks.new(config.ranks)
 
     client = Client.new(config.token)
-    client.default_parse_mode = Tourmaline::ParseMode::HTML # TODO: Change to MarkdownV2
+    client.default_parse_mode = Tourmaline::ParseMode::MarkdownV2 
 
     relay = Relay.new(config.log_channel, client)
 
@@ -165,7 +165,7 @@ module PrivateParlorXT
     return unless message = context.message
     return unless info = message.from
 
-    response = Format.substitute_message(services.replies.media_disabled, {
+    response = Format.substitute_reply(services.replies.media_disabled, {
       "type" => type.to_s,
     })
 

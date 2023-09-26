@@ -15,203 +15,202 @@ locale:
 
 # Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
 # Placeholders should not be escaped
-# Special characters in HTML must be escaped
+# Special characters in MarkdownV2 must be escaped
 replies:
-   joined: "<i>ja'chuqmeH Daq Damuvpu'.</i>"
+   joined: "_ja'chuqmeH Daq Damuvpu'\\._"
 
    joined_pseudonym: |-
-      <i>ja'chuqmeH Daq Damuvpu'.
+      _ja'chuqmeH Daq Damuvpu'\.
 
-      QIn DangeHlaHpa' pongqoq DapoQ.
-      pongqoq DachenmoHmeH /tripcode yItur.</i>
+      QIn DangeHlaHpa' pongqoq DapoQ\.
+      pongqoq DachenmoHmeH /tripcode yItur\._
 
-   rejoined: "<i>ja'chuqmeH Daq Damuvqa'pu'.</i>"
+   rejoined: "_ja'chuqmeH Daq Damuvqa'pu'\\._"
     
-   left: "<i>ja'chuqmeH Daq Damejta'.</i>"
+   left: "_ja'chuqmeH Daq Damejta'\\._"
 
-   already_in_chat: "<i>DaH naDev SoH.</i>"
+   already_in_chat: "_DaH naDev SoH\\._"
 
-   registration_closed: "<i>DaH DaqI'meH chaw'be'. SIbI'Ha' naDev DacheghlaH.</i>"
+   registration_closed: "_DaH DaqI'meH chaw'be'\\. SIbI'Ha' naDev DacheghlaH\\._"
 
-   added_to_chat: "<i>ja'chuqmeH Daq DarItta'.</i>"
+   added_to_chat: "_ja'chuqmeH Daq DarItta'\\._"
 
-   already_whitelisted: "<i>DaH wejHa' naDev mebvam.</i>"
+   already_whitelisted: "_DaH wejHa' naDev mebvam\\._"
 
-   not_in_chat: "<i>ja'chuqmeH Daqvam SoHbe'. DamuvmeH /start yItur.</i>"
+   not_in_chat: "_ja'chuqmeH Daqvam SoHbe'\\. DamuvmeH /start yItur\\._"
 
-   not_in_cooldown: "<i>meb Samta' 'ach mebvam weghbe'pu'.</i>"
+   not_in_cooldown: "_meb Samta' 'ach mebvam weghbe'pu'\\._"
 
-   rejected_message: "<i>ngutlhmey motlhbe' ghaj QInlIjmo' ngeHpu'be' 'oH.</i>"
+   rejected_message: "_ngutlhmey motlhbe' ghaj QInlIjmo' ngeHpu'be' 'oH\\._"
 
-   deanon_poll: "<i>So'ghach chaw'be' ghelmeH QInlIjmo' ngeHpu'be' 'oH.</i>"
+   deanon_poll: "_So'ghach chaw'be' ghelmeH QInlIjmo' ngeHpu'be' 'oH\\._"
 
-   missing_args: "<i>rIchwInvam Dalo'meH De' Da'ut</i>"
+   missing_args: "_rIchwInvam Dalo'meH De' Da'ut_"
 
-   command_disabled: "<i>rIchwInvam QotlhtaH</i>"
+   command_disabled: "_rIchwInvam QotlhtaH_"
 
    # Available placeholders: type
-   media_disabled: "<i>QotlhtaH <code>{type}</code> QInmeyvam.</i>"
+   media_disabled: "_QotlhtaH `{type}` QInmeyvam\\._"
 
-   no_reply: "<i>rIchwInvam Dalo'meH QIn Dajang 'e' Da'ut.</i>"
+   no_reply: "_rIchwInvam Dalo'meH QIn Dajang 'e' Da'ut\\._"
 
-   not_in_cache: "<i>tameyDaq SamlaHbe'pu' QInvetlh</i>"
+   not_in_cache: "_tameyDaq SamlaHbe'pu' QInvetlh_"
 
    no_tripcode_set: |-
-      <i>pongqoq Daghajbe'.
-      'oH DachenmoHmeH /tripcode yItur.</i>
+      _pongqoq Daghajbe'\.
+      'oH DachenmoHmeH /tripcode yItur\._
 
-   no_user_found: "<i>pong ghajbogh meb SamlaHbe'pu'</i>"
+   no_user_found: "_pong ghajbogh meb SamlaHbe'pu'_"
 
-   no_user_oid_found: "<i>OID ghajbogh meb SamlaHbe'pu'</i>"
+   no_user_oid_found: "_OID ghajbogh meb SamlaHbe'pu'_"
 
    # Available placeholders: ranks
-   no_rank_found: "<i>pong ghajbogh patlh SamlaHbe'pu'. patlhmey: {ranks}</i>"
+   no_rank_found: "_pong ghajbogh patlh SamlaHbe'pu'\\. patlhmey: {ranks}_"
 
    # Available placeholders: rank
-   promoted: "<i>{rank} Danumta'! rIchwInmeylIj Dalo'laHbogh SoH'e' DaleghmeH /help yItur.</i>"
+   promoted: "_{rank} Danumta'\\! rIchwInmeylIj Dalo'laHbogh SoH'e' DaleghmeH /help yItur\\._"
 
-   help_header: "<u><b>rIchwInmey</b></u>"
+   help_header: "__*rIchwInmey*__"
 
    # Available placeholders: rank
-   help_rank_commands: "<u><b>{rank} rIchwInmey</b></u>"
+   help_rank_commands: "__*{rank} rIchwInmey*__"
 
-   help_reply_commands: "<u><b>QIn jangnISbogh rIchwInmey</b></u>"
-
-   # Available placeholders: toggle
-   toggle_karma: "<b>naD DaHevta'bogh vepmey</b>: {toggle}"
+   help_reply_commands: "__*QIn jangnISbogh rIchwInmey*__"
 
    # Available placeholders: toggle
-   toggle_debug: "<b>lo' tI'meH Qagh</b>: {toggle}"
+   toggle_karma: "*naD DaHevta'bogh vepmey*: {toggle}"
 
-   gave_upvote: "<i>QInvam DanaDta'!</i>"
+   # Available placeholders: toggle
+   toggle_debug: "*lo' tI'meH Qagh*: {toggle}"
 
-   got_upvote: "<i>Qapla'! naD DaHevta'! (naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur)</i>"
+   gave_upvote: "_QInvam DanaDta'\\!_"
 
-   upvoted_own_message: "<i>QInlIj DanaDlaHbe'!</i>"
+   got_upvote: "_Qapla'\\! naD DaHevta'\\! \\(naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\\)_"
 
-   already_voted: "<i>QInvam DanaDbej'ta' qoj 'oH DanaDHabej'ta'.</i>"
+   upvoted_own_message: "_QInlIj DanaDlaHbe'\\!_"
 
-   gave_downvote: "<i>QInvam DanaDHa'ta'.</i>"
+   already_voted: "_QInvam DanaDbej'ta' qoj 'oH DanaDHabej'ta'\\._"
 
-   got_downvote: "<i>vay' DunaDHa'ta'! (naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur)</i>"
+   gave_downvote: "_QInvam DanaDHa'ta'\\._"
 
-   downvoted_own_message: "<i>QInlIj DanaDHa'laHbe'!</i>"
+   got_downvote: "_vay' DunaDHa'ta'\\! \\(naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\\)_"
+
+   downvoted_own_message: "_QInlIj DanaDHa'laHbe'\\!_"
 
    # Available placeholders: current_level, next_level, karma, limit, loading_bar, percentage
    karma_info: |-
-      <b>pathllIj</b>: <i>{current_level}</i>
-      <b>pathl veb</b>: <i>{next_level}</i>
+      *pathllIj*: _{current_level}_
+      *pathl veb*: _{next_level}_
 
-      <b>naDmeylIj</b>: {karma}/{limit}
-      {loading_bar} ({percentage}%)
+      *naDmeylIj*: {karma}/{limit}
+      {loading_bar} \({percentage}%\)
 
-   already_warned: "<i>QInvam ghuHmoHta' vay'.</i>"
+   already_warned: "_QInvam ghuHmoHta' vay'\\._"
 
-   private_sign: "<i>QIn DaqI'pa' \"Everybody\" chu' mablIj QIn mung pegh</i>"
+   private_sign: "_QIn DaqI'pa' \"Everybody\" chu' mablIj QIn mung pegh_"
 
    # Available placeholders: username
-   username_reveal: "<i>QIn jangmeH DuneqjungmeH SoH Duthlobta' {username} </i>"
+   username_reveal: "_QIn jangmeH DuneqjungmeH SoH Duthlobta' {username} _"
 
-   spamming: "<i>ngeHbe'pu' QInlIj. nom QInmey vIngeHQo'.</i>"
+   spamming: "_ngeHbe'pu' QInlIj\\. nom QInmey vIngeHQo'\\._"
 
-   sign_spam: "<i>ngeHbe'pu' QInlIj. pIj vIqI'Qo'.</i>"
+   sign_spam: "_ngeHbe'pu' QInlIj\\. pIj vIqI'Qo'\\._"
 
-   upvote_spam: "<i>DaH DanaDlaHbe'. pIj vInaDQo'.</i>"
+   upvote_spam: "_DaH DanaDlaHbe'\\. pIj vInaDQo'\\._"
 
-   downvote_spam: "<i>DaH DanaDHa'laHbe'. pIj vInaDHa'Qo'.</i>"
+   downvote_spam: "_DaH DanaDHa'laHbe'\\. pIj vInaDHa'Qo'\\._"
    
    invalid_tripcode_format: |-
-      <i>pongqoq Qur waS. Qur lugh:</i>
-      <code>pong#pegh ngoq</code>
+      _pongqoq Qur waS\. Qur lugh:_
+      `pong\#pegh ngoq`
 
    # Available placeholders: name, tripcode
    tripcode_set: |- 
-      <i>chenmoHta' pongqoqlIj. 'oH DaleghlaH:</i>
-      <b>{name}</b> <code>{tripcode}</code>:
+      _chenmoHta' pongqoqlIj\. 'oH DaleghlaH:_
+      *{name}* `{tripcode}`:
 
    # Available placeholders: tripcode
-   tripcode_info: "<b>pongqoqlIj</b>: <code>{tripcode}</code>"
+   tripcode_info: "*pongqoqlIj*: `{tripcode}`"
 
    tripcode_unset: "Dach"
 
    # Available placeholders: oid, username, rank, rank_val, karma, karma_level warnings, smiley, warn_expiry, cooldown_until
    user_info: |-
-      <b>ID</b>: {oid}, <b>pong</b>: {username}, <b>pathl</b>: {rank_val} ({rank})
-      <b>naDmeylIj</b>: {karma} {karma_level}
-      <b>ghuHmey</b>: {warnings} {smiley} {warn_expiry}
-      <b>bIwegh'a'</b>: {cooldown_until}
+      *ID*: {oid}, *pong*: {username}, *pathl*: {rank_val} \({rank}\)
+      *naDmeylIj*: {karma} {karma_level}
+      *ghuHmey*: {warnings} {smiley} {warn_expiry}
+      *bIwegh'a'*: {cooldown_until}
 
    # Available placeholders: warn_expiry
-   info_warning: "({warn_expiry} ngugh wa' gruH teqta')"
+   info_warning: "\\({warn_expiry} ngugh wa' gruH teqta'\\)"
 
    # Available placeholders: oid, karma, cooldown_until
    ranked_info: |-
-      <b>ID</b>: {oid}, <b>pong</b>: anonymous, <b>pathl</b>: n/a
-      <b>naDmeylIj</b>: {karma}
-      <b>bIwegh'a'</b>: {cooldown_until}
+      *ID*: {oid}, *pong*: anonymous, *pathl*: n/a
+      *naDmeylIj*: {karma}
+      *bIwegh'a'*: {cooldown_until}
 
    cooldown_true: "HIja', ngugh"
 
    cooldown_false: "ghobe'"
 
    # Available placeholders: total
-   user_count: "<b>{total}</b> <i>chuDmey</i>"
+   user_count: "*{total}* _chuDmey_"
 
    # Available placeholders: joined, left, blacklisted, total
-   user_count_full: "<b>{joined}</b> <i>mebpu',</i> <b>{left}</b> <i>mebpu' Dach,</i> <b>{blacklisted}</b> <i>jaghpu'</i> (<b>{total}</b> <i>chuDmey</i>)"
+   user_count_full: "*{joined}* _mebpu',_ *{left}* _mebpu' Dach,_ *{blacklisted}* _jaghpu'_ \\(*{total}* _chuDmey_\\)"
 
    # Available placeholders: reason, duration
    message_deleted: |-
-      "<i>pe'vIl QInvam teqta'. {duration} poH bIweghlI.
-      {reason}</i>"
+      _pe'vIl QInvam teqta'\. {duration} poH bIweghlI\.
+      {reason}_
 
    # Available placeholders: reason
    message_removed: |-
-      "<i>QInvam teqta'. bIweghbe' 'ach QInvam DangeHqa'Qo'.
-      {reason}</i>"
+      _QInvam teqta'\. bIweghbe' 'ach QInvam DangeHqa'Qo'\.
+      {reason}_
 
    reason_prefix: "meq: " 
 
    # Available placeholders: duration, reason
    cooldown_given: |- 
-      "<i>{duration} poH bIweghta'
-      {reason}</i>"
+      _{duration} poH bIweghta'
+      {reason}_
 
    # Available placeholders: time
-   on_cooldown: "<i>{time} ngugh bIweghbe'</i>"
+   on_cooldown: "_{time} ngugh bIweghbe'_"
 
-   unoriginal_message: "<i>SIrtaHbe' 'oHmo' ngeHpu'be' QInvam.</i>"
+   unoriginal_message: "_SIrtaHbe' 'oHmo' ngeHpu'be' QInvam\\._"
 
    # Available placeholders: duration
    r9k_cooldown: |-
-      <i>SIrtaHbe' 'oHmo' ngeHpu'be' QInvam.
-      {duration} poH bIweghta'.</i>
+      _SIrtaHbe' 'oHmo' ngeHpu'be' QInvam\.
+      {duration} poH bIweghta'\._
 
    # Available placeholders: total
-   media_limit: "<i>DaH QInmey DangeHbe'laH. {total} repmey ngugh bInIDqa'laH.</i>"
+   media_limit: "_DaH QInmey DangeHbe'laH\\. {total} repmey ngugh bInIDqa'laH\\._"
 
    # Available placeholders: reason
    blacklisted: |-
-      <i>pe'vIl naDevvo' Duteqta'
+      _pe'vIl naDevvo' Duteqta'
       {reason}
-      {contact}</i>
+      {contact}_
 
    # Available placeholders: contact
    blacklist_contact: "DaneqjunglaH: {contact}"
 
    # Available placeholders: msgs_deleted
-   purge_complete: "<i>{msgs_deleted} QInmey Sampu' 'ej bIH teqta'</i>"
+   purge_complete: "_{msgs_deleted} QInmey Sampu' 'ej bIH teqta'_"
 
    # Available placeholders: time
    inactive: |- 
-      <i>SoH DachmeH naDevvo' Duteqta' ({time} jajmey Dach).
-      QInmey DaHevqa' /start yItur.</i>"
+      _SoH DachmeH naDevvo' Duteqta' \({time} jajmey Dach\)\.
+      QInmey DaHevqa' /start yItur\._"
 
    success: "✅" 
 
    fail: "❌"
 
-# Special characters in HTML must be escaped
 command_descriptions:
    start: ja'chuqmeH Daq muv (QInmey Hev)
 

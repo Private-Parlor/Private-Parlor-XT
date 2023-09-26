@@ -36,7 +36,7 @@ module PrivateParlorXT
 
       cooldown_until = Format.format_time_span(duration, services.locale)
 
-      response = Format.substitute_message(services.replies.cooldown_given, {
+      response = Format.substitute_reply(services.replies.cooldown_given, {
         "reason"   => Format.format_reason_reply(reason, services.replies),
         "duration" => cooldown_until,
       })

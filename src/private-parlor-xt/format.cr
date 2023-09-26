@@ -14,7 +14,15 @@ module PrivateParlorXT
     # Globally substitutes placeholders in message with the given variables
     def substitute_message(msg : String, variables : Hash(String, String?) = {"" => ""}) : String
       msg.gsub(/{\w+}/) do |match|
-        escape_html(variables[match[1..-2]]?)
+        variables[match[1..-2]]?
+      end
+    end
+
+    # Globally substitutes placeholders in reply with the given variables
+    # Excapes placeholders according to MarkdownV2
+    def substitute_reply(msg : String, variables : Hash(String, String?) = {"" => ""}) : String
+      msg.gsub(/{\w+}/) do |match|
+        escape_md(variables[match[1..-2]]?, version: 2)
       end
     end
 
@@ -229,7 +237,7 @@ module PrivateParlorXT
 
     # Returns a link to a given user's account, for reveal messages
     def format_user_reveal(id : UserID, name : String, replies : Replies) : String
-      replies.username_reveal.gsub("{username}", "<a href=\"tg://user?id=#{id}\">#{escape_html(name)}</a>")
+      replies.username_reveal.gsub("{username}", "[#{escape_md(name, version: 2)}](tg://user?id=#{id})")
     end
 
     def format_user_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
@@ -375,7 +383,7 @@ module PrivateParlorXT
 
     def format_contact_reply(contact : String?, replies : Replies) : String?
       if contact
-        replies.blacklist_contact.gsub("{contact}", "#{escape_html(contact)}")
+        replies.blacklist_contact.gsub("{contact}", "#{escape_md(contact, version: 2)}")
       end
     end
 
@@ -430,7 +438,7 @@ module PrivateParlorXT
     #
     # Feel free to edit this if you fork the code.
     def format_version : String
-      "Private Parlor XT v#{VERSION} ~ <a href=\"https://github.com/Private-Parlor/Private-Parlor-XT\">[Source]</a>"
+      "Private Parlor XT v#{escape_md(VERSION, version: 2)} \\~ [\\[Source\\]](https://github.com/Private-Parlor/Private-Parlor-XT)"
     end
 
     # Returns a message containing the commands the user can use.
@@ -465,16 +473,17 @@ module PrivateParlorXT
 
       String.build do |str|
         str << replies.help_header
-        str << escape_html("\n/start - #{descriptions.start}")
-        str << escape_html("\n/stop - #{descriptions.stop}")
-        str << escape_html("\n/info - #{descriptions.info}")
-        str << escape_html("\n/users - #{descriptions.users}")
-        str << escape_html("\n/version - #{descriptions.version}")
-        str << escape_html("\n/toggle_karma - #{descriptions.toggle_karma}")
-        str << escape_html("\n/toggle_debug - #{descriptions.toggle_debug}")
-        str << escape_html("\n/tripcode - #{descriptions.tripcode}")
-        str << escape_html("\n/motd - #{descriptions.motd}")
-        str << escape_html("\n/help - #{descriptions.help}")
+        str << "\n"
+        str << escape_md("/start - #{descriptions.start}\n", version: 2)
+        str << escape_md("/stop - #{descriptions.stop}\n", version: 2)
+        str << escape_md("/info - #{descriptions.info}\n", version: 2)
+        str << escape_md("/users - #{descriptions.users}\n", version: 2)
+        str << escape_md("/version - #{descriptions.version}\n", version: 2)
+        str << escape_md("/toggle_karma - #{descriptions.toggle_karma}\n", version: 2)
+        str << escape_md("/toggle_debug - #{descriptions.toggle_debug}\n", version: 2)
+        str << escape_md("/tripcode - #{descriptions.tripcode}\n", version: 2)
+        str << escape_md("/motd - #{descriptions.motd}\n", version: 2)
+        str << escape_md("/help - #{descriptions.help}\n", version: 2)
 
         rank_commands = [] of String
         reply_commands = [] of String
@@ -483,28 +492,30 @@ module PrivateParlorXT
           if rank.command_permissions.includes?(:ranksay_lower)
             ranks.each do |k, v|
               if k <= user.rank && k != -10 && v.command_permissions.includes?(:ranksay)
-                rank_commands << escape_html("/#{v.name.downcase}say [text] - #{descriptions.ranksay}")
+                rank_commands << escape_md("/#{v.name.downcase}say [text] - #{descriptions.ranksay}\n", version: 2)
               end
             end
           end
 
           rank.command_permissions.each do |permission|
             if ranked.keys.includes?(permission)
-              rank_commands << escape_html(ranked[permission])
+              rank_commands << escape_md(ranked[permission], version: 2)
             elsif reply_required.keys.includes?(permission)
-              reply_commands << escape_html(reply_required[permission])
+              reply_commands << escape_md(reply_required[permission], version: 2)
             end
           end
 
           unless rank_commands.empty?
-            str << "\n\n"
-            str << substitute_message(replies.help_rank_commands, {"rank" => rank.name})
-            rank_commands.each { |line| str << escape_html("\n#{line}") }
+            str << "\n"
+            str << substitute_reply(replies.help_rank_commands, {"rank" => rank.name})
+            str << "\n"
+            rank_commands.each { |line| str << "#{line}\n"}
           end
           unless reply_commands.empty?
-            str << "\n\n"
+            str << "\n"
             str << replies.help_reply_commands
-            reply_commands.each { |line| str << escape_html("\n#{line}") }
+            str << "\n"
+            reply_commands.each { |line| str << "#{line}\n"}
           end
         end
       end

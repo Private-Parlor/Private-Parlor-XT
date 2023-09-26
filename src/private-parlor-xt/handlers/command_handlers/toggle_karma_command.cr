@@ -15,7 +15,7 @@ module PrivateParlorXT
 
       update_user_activity(user, services)
 
-      response = Format.substitute_message(services.replies.toggle_karma, {
+      response = Format.substitute_reply(services.replies.toggle_karma, {
         "toggle" => user.hide_karma ? services.locale.toggle[0] : services.locale.toggle[1],
       })
 

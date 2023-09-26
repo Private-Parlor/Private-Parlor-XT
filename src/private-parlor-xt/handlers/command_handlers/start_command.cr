@@ -22,7 +22,7 @@ module PrivateParlorXT
 
     def existing_user(user : User, username : String?, fullname : String, message_id : MessageID, services : Services)
       if user.blacklisted?
-        response = Format.substitute_message(services.replies.blacklisted, {
+        response = Format.substitute_reply(services.replies.blacklisted, {
           "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
           "reason"  => Format.format_reason_reply(user.blacklist_reason, services.replies),
         })

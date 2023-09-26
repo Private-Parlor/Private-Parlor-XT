@@ -15,196 +15,195 @@ locale:
 
 # Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
 # Placeholders should not be escaped
-# Special characters in HTML must be escaped
+# Special characters in MarkdownV2 must be escaped
 replies:
-   joined: "<i>Welcome to the chat!</i>"
+   joined: "_Welcome to the chat\\!_"
 
    joined_pseudonym: |-
-      <i>Welcome to the chat!
+      _Welcome to the chat\!
 
       A tripcode is required before you can send a message
-      Use the /tripcode command to set one</i>
+      Use the /tripcode command to set one_
 
-   rejoined: "<i>You rejoined the chat!</i>"
+   rejoined: "_You rejoined the chat\\!_"
     
-   left: "<i>You left the chat.</i>"
+   left: "_You left the chat\\._"
 
-   already_in_chat: "<i>You're already in the chat.</i>"
+   already_in_chat: "_You're already in the chat\\._"
 
-   registration_closed: "<i>Registration is closed. Check back later.</i>"
+   registration_closed: "_Registration is closed\\. Check back later\\._"
 
-   added_to_chat: "<i>You have been added to the chat!</i>"
+   added_to_chat: "_You have been added to the chat\\!_"
 
-   already_whitelisted: "<i>This user is already in the chat.</i>"
+   already_whitelisted: "_This user is already in the chat\\._"
 
-   not_in_chat: "<i>You're not in this chat! Type /start to join.</i>"
+   not_in_chat: "_You're not in this chat\\! Type /start to join\\._"
 
-   not_in_cooldown: "<i>User found, but the user was not in cooldown!</i>"
+   not_in_cooldown: "_User found, but the user was not in cooldown\\!_"
 
-   rejected_message: "<i>Your message was not relayed because it contains invalid characters.</i>"
+   rejected_message: "_Your message was not relayed because it contains invalid characters\\._"
 
-   deanon_poll: "<i>Your poll was not sent because it does not allow anonymous voting.</i>"
+   deanon_poll: "_Your poll was not sent because it does not allow anonymous voting\\._"
 
-   missing_args: "<i>You need to give an input to use this command.</i>"
+   missing_args: "_You need to give an input to use this command\\._"
 
-   command_disabled: "<i>This command is disabled.</i>"
+   command_disabled: "_This command is disabled\\._"
 
    # Available placeholders: type
-   media_disabled: "<i>Messages of type <code>{type}</code> are disabled.</i>"
+   media_disabled: "_Messages of type `{type}` are disabled\\._"
 
-   no_reply: "<i>You need to reply to a message to use this command.</i>"
+   no_reply: "_You need to reply to a message to use this command\\._"
 
-   not_in_cache: "<i>That message could not be found in the cache.</i>"
+   not_in_cache: "_That message could not be found in the cache\\._"
 
    no_tripcode_set: |-
-      <i>You do not have a tripcode set.
-      Use the /tripcode command to set one.</i>
+      _You do not have a tripcode set\.
+      Use the /tripcode command to set one\._
 
-   no_user_found: "<i>There was no user found with that name.</i>"
+   no_user_found: "_There was no user found with that name\\._"
 
-   no_user_oid_found:  "<i>There was no user found with that OID.</i>"
+   no_user_oid_found:  "_There was no user found with that OID\\._"
 
    # Available placeholders: ranks
-   no_rank_found: "<i>There was no rank found with that name. Ranks are: {ranks}</i>"
+   no_rank_found: "_There was no rank found with that name\\. Ranks are: {ranks}_"
 
    # Available placeholders: rank
-   promoted: "<i>You have been promoted to {rank}! Type /help to view the commands available to you.</i>"
+   promoted: "_You have been promoted to {rank}\\! Type /help to view the commands available to you\\._"
 
-   help_header: "<u><b>General Commands</b></u>"
+   help_header: "__*General Commands*__"
 
    # Available placeholders: rank
-   help_rank_commands: "<u><b>Commands available to {rank}</b></u>"
+   help_rank_commands: "__*Commands available to {rank}*__"
 
-   help_reply_commands: "<u><b>Commands that require a reply</b></u>"
-
-   # Available placeholders: toggle
-   toggle_karma: "<b>Karma notifications</b>: {toggle}"
+   help_reply_commands: "__*Commands that require a reply*__"
 
    # Available placeholders: toggle
-   toggle_debug: "<b>Debug mode</b>: {toggle}"
+   toggle_karma: "*Karma notifications*: {toggle}"
 
-   gave_upvote: "<i>You upvoted this message!</i>"
+   # Available placeholders: toggle
+   toggle_debug: "*Debug mode*: {toggle}"
 
-   got_upvote: "<i>You've just been upvoted! (check /info to see your karma or /togglekarma to turn these notifications off)</i>"
+   gave_upvote: "_You upvoted this message\\!_"
 
-   upvoted_own_message: "<i>You can't upvote your own message!</i>"
+   got_upvote: "_You've just been upvoted\\! \\(check /info to see your karma or /togglekarma to turn these notifications off\\)_"
 
-   already_voted: "<i>You have already upvoted or downvoted this message.</i>"
+   upvoted_own_message: "_You can't upvote your own message\\!_"
 
-   gave_downvote: "<i>You downvoted this message!</i>"
+   already_voted: "_You have already upvoted or downvoted this message\\._"
 
-   got_downvote: "<i>You've just been downvoted! (check /info to see your karma or /togglekarma to turn these notifications off)</i>"
+   gave_downvote: "_You downvoted this message\\!_"
 
-   downvoted_own_message: "<i>You can't downvote your own message!</i>"
+   got_downvote: "_You've just been downvoted\\! \\(check /info to see your karma or /togglekarma to turn these notifications off\\)_"
+
+   downvoted_own_message: "_You can't downvote your own message\\!_"
 
    # Available placeholders: current_level, next_level, karma, limit, loading_bar, percentage
    karma_info: |-
-      <b>Your level</b>: <i>{current_level}</i>
-      <b>Next level</b>: <i>{next_level}</i>
+      *Your level*: _{current_level}_
+      *Next level*: _{next_level}_
 
-      <b>Karma</b>: {karma}/{limit}
-      {loading_bar} ({percentage}%)
+      *Karma*: {karma}/{limit}
+      {loading_bar} \({percentage}%\)
 
-   already_warned: "<i>This message has already been warned.</i>"
+   already_warned: "_This message has already been warned\\._"
 
-   private_sign: "<i>Your account's forward privacy must be set to \"Everybody\" to sign with your username.</i>"
+   private_sign: "_Your account's forward privacy must be set to \"Everybody\" to sign with your username\\._"
 
    # Available placeholders: username
-   username_reveal: "<i>User {username} has requested to contact you in response to this message.</i>"
+   username_reveal: "_User {username} has requested to contact you in response to this message\\._"
 
-   spamming: "<i>Your message has not been sent, avoid sending messages too fast. Try again later.</i>"
+   spamming: "_Your message has not been sent, avoid sending messages too fast\\. Try again later\\._"
 
-   sign_spam: "<i>Your message has not been sent, avoid signing too often. Try again later.</i>"
+   sign_spam: "_Your message has not been sent, avoid signing too often\\. Try again later\\._"
 
-   upvote_spam: "<i>You can't upvote at this time, avoid upvoting too often. Try again later.</i>"
+   upvote_spam: "_You can't upvote at this time, avoid upvoting too often\\. Try again later\\._"
 
-   downvote_spam: "<i>You can't downvote at this time, avoid downvoting too often. Try again later.</i>"
+   downvote_spam: "_You can't downvote at this time, avoid downvoting too often\\. Try again later\\._"
 
    invalid_tripcode_format: |-
-      <i>Invalid tripcode format. The format is:</i>
-      <code>name#pass</code>
+      _Invalid tripcode format\. The format is:_
+      `name\#pass`
 
    # Available placeholders: name, tripcode
    tripcode_set: |- 
-      <i>Tripcode set. It will appear as:</i>
-      <b>{name}</b> <code>{tripcode}</code>:
+      _Tripcode set\. It will appear as:_
+      *{name}* `{tripcode}`:
 
    # Available placeholders: tripcode
-   tripcode_info: "<b>Tripcode</b>: <code>{tripcode}</code>"
+   tripcode_info: "*Tripcode*: `{tripcode}`"
 
    tripcode_unset: "unset"
 
    # Available placeholders: oid, username, rank, rank_val, karma, karma_level warnings, smiley, warn_expiry, cooldown_until
    user_info: |-
-      <b>id</b>: {oid}, <b>username</b>: {username}, <b>rank</b>: {rank_val} ({rank})
-      <b>karma</b>: {karma} {karma_level}
-      <b>warnings</b>: {warnings} {smiley} {warn_expiry}
-      <b>cooldown</b>: {cooldown_until}
+      *id*: {oid}, *username*: {username}, *rank*: {rank_val} \({rank}\)
+      *karma*: {karma} {karma_level}
+      *warnings*: {warnings} {smiley} {warn_expiry}
+      *cooldown*: {cooldown_until}
 
    # Available placeholders: warn_expiry
-   info_warning: "(one warning will expire at {warn_expiry})"
+   info_warning: "\\(one warning will expire at {warn_expiry}\\)"
 
    # Available placeholders: oid, karma, cooldown_until
    ranked_info: |-
-      <b>id</b>: {oid}, <b>username</b>: anonymous, <b>rank</b>: n/a
-      <b>karma</b>: {karma}
-      <b>cooldown</b>: {cooldown_until}
+      *id*: {oid}, *username*: anonymous, *rank*: n/a
+      *karma*: {karma}
+      *cooldown*: {cooldown_until}
 
    cooldown_true: "yes, until"
 
    cooldown_false: "no"
 
    # Available placeholders: total
-   user_count: "<b>{total}</b> <i>users</i>"
+   user_count: "*{total}* _users_"
 
    # Available placeholders: joined, left, blacklisted, total
-   user_count_full: "<b>{joined}</b> <i>joined,</i> <b>{left}</b> <i>left,</i> <b>{blacklisted}</b> <i>blacklisted users</i> (<i>total</i>: <b>{total}</b>)"
+   user_count_full: "*{joined}* _joined,_ *{left}* _left,_ *{blacklisted}* _blacklisted users_ \\(_total_: *{total}*\\)"
 
-   # Available placeholders: reason, duration
-   message_deleted: "<i>This message has been deleted{reason}. You have been given a cooldown of {duration}.</i>"
+   # Available placeholders: eason, duration
+   message_deleted: "_This message has been deleted{reason}\\. You have been given a cooldown of {duration}\\._"
 
    # Available placeholders: reason
-   message_removed: "<i>This message has been removed{reason}. No cooldown has been given, but please refrain from posting the same message again.</i>"
+   message_removed: "_This message has been removed{reason}\\. No cooldown has been given, but please refrain from posting the same message again\\._"
 
    reason_prefix: " for: " 
 
    # Available placeholders: duration, reason
-   cooldown_given: "<i>You've been given a cooldown of {duration}{reason}</i>"
+   cooldown_given: "_You've been given a cooldown of {duration}{reason}_"
 
    # Available placeholders: time
-   on_cooldown: "<i>You're on cooldown until {time}</i>"
+   on_cooldown: "_You're on cooldown until {time}_"
 
-   unoriginal_message: "<i>This message was not sent because it has already been posted before.</i>"
+   unoriginal_message: "_This message was not sent because it has already been posted before\\._"
 
    # Available placeholders: duration,
    r9k_cooldown: |-
-      <i>This message was not sent because it has already been posted before.
-      You have been muted for {duration}.</i>
+      _This message was not sent because it has already been posted before\.
+      You have been muted for {duration}\._
 
    # Available placeholders: total
-   media_limit: "<i>You cannot send media or forward messages at this time, try again in {total} hours.</i>"
+   media_limit: "_You cannot send media or forward messages at this time, try again in {total} hours\\._"
 
    # Available placeholders: reason
    blacklisted: |-
-      <i>You have been blacklisted{reason}
-      {contact}</i>
+      _You have been blacklisted{reason}
+      {contact}_
 
    # Available placeholders: contact
    blacklist_contact: "Contact: {contact}"
 
    # Available placeholders: msgs_deleted
-   purge_complete: "<i>{msgs_deleted} messages were matched and deleted.</i>"
+   purge_complete: "_{msgs_deleted} messages were matched and deleted\\._"
 
    # Available placeholders: time
    inactive: |- 
-      <i>You have been kicked due to inactivity (AFK for {time} days).
-      Type /start to receive messages again!</i>"
+      _You have been kicked due to inactivity \(AFK for {time} days\)\.
+      Type /start to receive messages again\!_"
 
    success: "✅" 
 
    fail: "❌"
 
-# Special characters in HTML must be escaped
 command_descriptions:
    start: Join the chat (start receiving messages)
 
