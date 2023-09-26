@@ -230,7 +230,7 @@ module PrivateParlorXT
       end
 
       unless user = services.database.get_user(info.id.to_i64)
-        services.relay.send_to_user(nil, info.id.to_i64, locale.replies.not_in_chat)
+        services.relay.send_to_user(nil, info.id.to_i64, services.locale.replies.not_in_chat)
         return message, nil
       end
 

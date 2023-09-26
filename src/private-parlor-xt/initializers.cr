@@ -67,14 +67,21 @@ module PrivateParlorXT
     {{command_responds_to = command.annotation(RespondsTo)}}
 
     if config.{{command_responds_to[:config].id}}[0]
+      commands = [] of String
 
       {% if command_responds_to[:command].is_a?(ArrayLiteral) %}
+        commands = commands + {{command_responds_to[:command]}}
         {{handler = (command_responds_to[:command][0] + "_command").id}} = {{command}}.new(config)
       {% else %}
+        commands << {{command_responds_to[:command]}}
         {{handler = (command_responds_to[:command] + "_command").id}}  = {{command}}.new(config)
       {% end %}
 
-      arr << Tourmaline::CommandHandler.new({{command_responds_to[:command]}}) do |ctx|
+      {% if command == RanksayCommand %}
+        commands = commands + services.access.ranksay_ranks.map {|rank| "#{rank.downcase}say"}
+      {% end %}
+
+      arr << Tourmaline::CommandHandler.new(commands) do |ctx|
         {{handler}}.do(ctx, services)
       end
     else

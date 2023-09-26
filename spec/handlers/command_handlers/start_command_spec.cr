@@ -98,14 +98,18 @@ module PrivateParlorXT\
 
     describe "#new_user" do
       it "rejects user if registration is closed" do
-        closed_registration_handler = StartCommand.new(MockConfig.new(
-          registration_open: false
+        closed_registration_services = create_services(
+          client: client, 
+          config: HandlerConfig.new(
+            MockConfig.new(
+              registration_open: false
+            )
           )
         )
 
-        closed_registration_handler.new_user(9000, nil, "new user", 1_i64, services)
+        handler.new_user(9000, nil, "new user", 1_i64, closed_registration_services)
 
-        services.database.get_user(9000).should(be_nil)
+        closed_registration_services.database.get_user(9000).should(be_nil)
       end
 
       it "adds user to database with max rank" do

@@ -50,6 +50,24 @@ module PrivateParlorXT
       end
     end
 
+    # Return an array of rank names that have a ranksay permission
+    def ranksay_ranks : Array(String)
+      names = [] of String
+
+      ranksay_permissions = Set{
+        CommandPermissions::Ranksay,
+        CommandPermissions::RanksayLower,
+      }
+
+      @ranks.each do |_, rank|
+        if ranksay_permissions.intersects?(rank.command_permissions)
+          names << rank.name
+        end
+      end
+
+      names
+    end
+
     # Finds a rank from a given rank value
     # or iterates through the ranks hash for a rank with a given name
     #

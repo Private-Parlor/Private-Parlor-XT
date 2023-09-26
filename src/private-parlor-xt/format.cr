@@ -315,6 +315,18 @@ module PrivateParlorXT
       return header, entities
     end
 
+    def format_ranksay(rank : String, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      signature = "~~#{rank}"
+
+      signature_size = signature.to_utf16.size
+
+      entities.concat([
+        Tourmaline::MessageEntity.new("bold", arg.to_utf16.size + 1, signature_size)
+      ])
+
+      return "#{arg} #{signature}", entities
+    end
+
     def offset_entities(entities : Array(Tourmaline::MessageEntity), offset : Int32) : Array(Tourmaline::MessageEntity)
       entities.each do |entity|
         entity.offset += offset
