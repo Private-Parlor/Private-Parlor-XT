@@ -298,6 +298,23 @@ module PrivateParlorXT
       return header, entities
     end
 
+    def format_user_sign(name : String, id : UserID, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      signature = "~~#{name}"
+
+      signature_size = signature.to_utf16.size
+
+      entities.concat([
+        Tourmaline::MessageEntity.new(
+          "text_link", 
+          arg.to_utf16.size + 1, 
+          signature_size,
+          url: "tg://user?id=#{id}"
+        )
+      ])
+
+      return "#{arg} #{signature}", entities
+    end
+
     def format_tripcode_sign(name : String, tripcode : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "#{name} #{tripcode}:\n"
 
