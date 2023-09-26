@@ -1,5 +1,5 @@
 require "./config/handler_config.cr"
-require "./locale/locale.cr"
+require "./locale/*"
 require "./database.cr"
 require "./history.cr"
 require "./ranks/authorized_ranks.cr"
@@ -9,9 +9,12 @@ require "./spam/spam_handler.cr"
 
 module PrivateParlorXT
   # Container for all objects needed for handlers
-  class Services
+  struct Services
     getter config : HandlerConfig
     getter locale : Locale
+    getter replies : Replies
+    getter logs : Logs
+    getter command_descriptions : CommandDescriptions
     getter database : Database
     getter history : History
     getter access : AuthorizedRanks
@@ -21,6 +24,9 @@ module PrivateParlorXT
     def initialize(
       @config : HandlerConfig,
       @locale : Locale,
+      @replies : Replies,
+      @logs : Logs,
+      @command_descriptions : CommandDescriptions,
       @database : Database,
       @history : History,
       @access : AuthorizedRanks,

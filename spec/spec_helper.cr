@@ -83,9 +83,14 @@ module PrivateParlorXT
       }
     end
 
+    localization = Localization.parse_locale(Path["#{__DIR__}/../locales/"], "en-US")
+
     Services.new(
       config,
-      Locale.parse_locale(Path["#{__DIR__}/../locales/"], "en-US"),
+      localization.locale,
+      localization.replies,
+      localization.logs,
+      localization.command_descriptions,
       database,
       history,
       AuthorizedRanks.new(ranks),

@@ -26,7 +26,7 @@ module PrivateParlorXT
         end
       end
 
-      response = Format.substitute_message(services.locale.replies.purge_complete, {
+      response = Format.substitute_message(services.replies.purge_complete, {
         "msgs_deleted" => message_count.to_s,
       })
 

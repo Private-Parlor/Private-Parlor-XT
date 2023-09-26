@@ -26,7 +26,7 @@ module PrivateParlorXT
       return unless text = message.text || message.caption
 
       unless arg = Format.get_arg(text)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.missing_args)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.missing_args)
       end
 
       return if spamming?(user, message, arg, services)
@@ -54,7 +54,7 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       if message.text && spam.spammy_text?(user.id, arg)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
         return true
       end
 
@@ -71,7 +71,7 @@ module PrivateParlorXT
       end
 
       unless parsed_rank
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, Format.substitute_message(services.locale.replies.no_rank_found, {
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, Format.substitute_message(services.replies.no_rank_found, {
           "ranks" => services.access.rank_names(limit: user.rank).to_s,
         }))
       end
@@ -79,7 +79,7 @@ module PrivateParlorXT
       parsed_rank_authority = services.access.authorized?(parsed_rank[0], :Ranksay, :RanksayLower)
 
       unless services.access.can_ranksay?(parsed_rank[0], user.rank, authority, parsed_rank_authority)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
       end
 
       parsed_rank[1].name
@@ -89,7 +89,7 @@ module PrivateParlorXT
       if authority = services.access.authorized?(user.rank, *permissions)
         authority
       else
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.command_disabled)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.command_disabled)
       end
     end
 

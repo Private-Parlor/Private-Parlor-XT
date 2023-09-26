@@ -16,27 +16,27 @@ module PrivateParlorXT
       return unless reply = get_reply_message(user, message, services)
 
       if reply.forward_date
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
       end
       unless services.history.get_sender(reply.message_id.to_i64)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.not_in_cache)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.not_in_cache)
       end
 
       unless (from = reply.from) && from.id == services.relay.get_client_user.id
         # Prevent spoiling messages that were not sent from the bot
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
       end
 
       update_user_activity(user, services)
 
       unless input = get_message_input(reply)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
       end
 
       if spoil_messages(reply, user, input, services)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.success)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.success)
       else
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
       end
     end
 
@@ -57,7 +57,7 @@ module PrivateParlorXT
       return unless reply_msids = services.history.get_all_receivers(reply.message_id.to_i64)
 
       if reply.has_media_spoiler?
-        log = Format.substitute_message(services.locale.logs.unspoiled, {
+        log = Format.substitute_message(services.logs.unspoiled, {
           "id"   => user.id.to_s,
           "name" => user.get_formatted_name,
           "msid" => reply.message_id.to_s,
@@ -65,7 +65,7 @@ module PrivateParlorXT
       else
         input.has_spoiler = true
 
-        log = Format.substitute_message(services.locale.logs.spoiled, {
+        log = Format.substitute_message(services.logs.spoiled, {
           "id"   => user.id.to_s,
           "name" => user.get_formatted_name,
           "msid" => reply.message_id.to_s,

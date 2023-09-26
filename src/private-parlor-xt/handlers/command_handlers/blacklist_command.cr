@@ -18,7 +18,7 @@ module PrivateParlorXT
       return unless reply_user = get_reply_user(user, reply, services)
 
       unless reply_user.rank < user.rank
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
       end
 
       update_user_activity(user, services)
@@ -38,23 +38,23 @@ module PrivateParlorXT
         services,
       )
 
-      response = Format.substitute_message(services.locale.replies.blacklisted, {
-        "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.locale),
-        "reason"  => Format.format_reason_reply(reason, services.locale),
+      response = Format.substitute_message(services.replies.blacklisted, {
+        "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
+        "reason"  => Format.format_reason_reply(reason, services.replies),
       })
 
-      log = Format.substitute_message(services.locale.logs.blacklisted, {
+      log = Format.substitute_message(services.logs.blacklisted, {
         "id"      => reply_user.id.to_s,
         "name"    => reply_user.get_formatted_name,
         "invoker" => user.get_formatted_name,
-        "reason"  => Format.format_reason_log(reason, services.locale),
+        "reason"  => Format.format_reason_log(reason, services.logs),
       })
 
       services.relay.send_to_user(original_message, reply_user.id, response)
 
       services.relay.log_output(log)
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.success)
+      services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.success)
     end
   end
 end

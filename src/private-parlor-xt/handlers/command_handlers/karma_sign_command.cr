@@ -20,13 +20,13 @@ module PrivateParlorXT
       end
 
       if user.karma < services.config.karma_levels.first_key
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
       end
 
       return unless text = message.text || message.caption
 
       unless arg = Format.get_arg(text)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.missing_args)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.missing_args)
       end
 
       return if spamming?(user, message, arg, services)
@@ -54,12 +54,12 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       if message.text && spam.spammy_text?(user.id, arg)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
         return true
       end
 
       if spam.spammy_sign?(user.id, services.config.sign_limit_interval)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
         return true
       end
 

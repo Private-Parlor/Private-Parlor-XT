@@ -1,7 +1,7 @@
 require "yaml"
 
 module PrivateParlorXT
-  class Logs
+  struct Logs
     include YAML::Serializable
 
     @[YAML::Field(key: "start")]

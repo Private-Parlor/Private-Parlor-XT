@@ -29,23 +29,23 @@ module PrivateParlorXT
 
       reason = Format.get_arg(message.text)
 
-      response = Format.substitute_message(services.locale.replies.message_removed, {
-        "reason" => Format.format_reason_reply(reason, services.locale),
+      response = Format.substitute_message(services.replies.message_removed, {
+        "reason" => Format.format_reason_reply(reason, services.replies),
       })
 
-      log = Format.substitute_message(services.locale.logs.message_removed, {
+      log = Format.substitute_message(services.logs.message_removed, {
         "id"     => user.id.to_s,
         "name"   => user.get_formatted_name,
         "msid"   => original_message.to_s,
         "oid"    => reply_user.get_obfuscated_id,
-        "reason" => Format.format_reason_log(reason, services.locale),
+        "reason" => Format.format_reason_log(reason, services.logs),
       })
 
       services.relay.send_to_user(original_message, reply_user.id, response)
 
       services.relay.log_output(log)
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.success)
+      services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.success)
     end
   end
 end

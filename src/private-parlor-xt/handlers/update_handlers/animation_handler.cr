@@ -55,7 +55,7 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       if spam.spammy_animation?(user.id)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
         return true
       end
 

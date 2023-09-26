@@ -1,21 +1,21 @@
-# Short specifiers for units of time
-# 5 elements from largest unit to smallest: weeks, days, hours, mintues, seconds
-time_units: ['H', 'j', 'r', 't', 'l']
+locale:
+   # Short specifiers for units of time
+   # 5 elements from largest unit to smallest: weeks, days, hours, mintues, seconds
+   time_units: ['H', 'j', 'r', 't', 'l']
 
-# Format for timestamps
-# Currently in the form "MM-DD-YY" with 24 hour time and showing timzeone/offset name
-time_format: "%m-%d-%y %T %Z"
+   # Format for timestamps
+   # Currently in the form "MM-DD-YY" with 24 hour time and showing timzeone/offset name
+   time_format: "%m-%d-%y %T %Z"
 
-# Term for off and on, respectively
-toggle: ["DaH pat Qotlhta'", "DaH pat chu'taH'"]
+   # Term for off and on, respectively
+   toggle: ["DaH pat Qotlhta'", "DaH pat chu'taH'"]
 
-# Values for the loading bar, from empty, to partially full, to full
-loading_bar: ["▱", "▱", "▰"]
+   # Values for the loading bar, from empty, to partially full, to full
+   loading_bar: ["▱", "▱", "▰"]
 
 # Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
 # Placeholders should not be escaped
 # Special characters in HTML must be escaped
-
 replies:
    joined: "<i>ja'chuqmeH Daq Damuvpu'.</i>"
 

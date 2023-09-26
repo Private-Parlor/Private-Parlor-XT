@@ -8,13 +8,16 @@ module PrivateParlorXT
     client = MockClient.new
     relay = Relay.new("", client)
     access = AuthorizedRanks.new(config.ranks)
-    locale = Locale.parse_locale(Path["#{__DIR__}/../locales/"], "en-US")
+    localization = Localization.parse_locale(Path["#{__DIR__}/../locales/"], "en-US")
     database = SQLiteDatabase.new(DB.open("sqlite3://%3Amemory%3A"))
     history = CachedHistory.new(config.message_lifespan.hours)
 
     services = Services.new(
       HandlerConfig.new(config),
-      locale,
+      localization.locale,
+      localization.replies,
+      localization.logs,
+      localization.command_descriptions,
       database,
       history,
       access,

@@ -16,7 +16,13 @@ module PrivateParlorXT
       services.relay.send_to_user(
         message.message_id.to_i64,
         user.id,
-        Format.format_help(user, services.access.ranks, services.locale))
+        Format.format_help(
+          user, 
+          services.access.ranks, 
+          services.command_descriptions,
+          services.replies,
+        )
+      )
     end
   end
 end

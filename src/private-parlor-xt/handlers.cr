@@ -22,7 +22,7 @@ module PrivateParlorXT
 
     def get_reply_message(user : User, message : Tourmaline::Message, services : Services) : Tourmaline::Message?
       unless message.reply_to_message
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.no_reply)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.no_reply)
         return
       end
 
@@ -35,7 +35,7 @@ module PrivateParlorXT
       reply_user = services.database.get_user(reply_user_id)
 
       unless reply_user
-        services.relay.send_to_user(reply_message.message_id.to_i64, user.id, services.locale.replies.not_in_cache)
+        services.relay.send_to_user(reply_message.message_id.to_i64, user.id, services.replies.not_in_cache)
         return
       end
 
@@ -50,7 +50,7 @@ module PrivateParlorXT
       end
 
       unless user = services.database.get_user(info.id.to_i64)
-        services.relay.send_to_user(nil, info.id.to_i64, services.locale.replies.not_in_chat)
+        services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
         return message, nil
       end
 
@@ -67,9 +67,9 @@ module PrivateParlorXT
     private def deny_user(user : User, services : Services) : Nil
       return unless user.blacklisted?
 
-      response = Format.substitute_message(services.locale.replies.blacklisted, {
-        "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.locale),
-        "reason"  => Format.format_reason_reply(user.blacklist_reason, services.locale),
+      response = Format.substitute_message(services.replies.blacklisted, {
+        "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
+        "reason"  => Format.format_reason_reply(user.blacklist_reason, services.replies),
       })
 
       services.relay.send_to_user(nil, user.id, response)
@@ -77,7 +77,7 @@ module PrivateParlorXT
 
     def authorized?(user : User, message : Tourmaline::Message, permission : CommandPermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, permission)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.command_disabled)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.command_disabled)
         return false
       end
 
@@ -88,7 +88,7 @@ module PrivateParlorXT
       if authority = services.access.authorized?(user.rank, *permissions)
         authority
       else
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.command_disabled)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.command_disabled)
       end
     end
 
@@ -125,7 +125,7 @@ module PrivateParlorXT
       end
 
       unless user = services.database.get_user(info.id.to_i64)
-        services.relay.send_to_user(nil, info.id.to_i64, services.locale.replies.not_in_chat)
+        services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
         return message, nil
       end
 
@@ -141,7 +141,7 @@ module PrivateParlorXT
 
     def authorized?(user : User, message : Tourmaline::Message, authority : MessagePermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, authority)
-        response = Format.substitute_message(services.locale.replies.media_disabled, {"type" => authority.to_s})
+        response = Format.substitute_message(services.replies.media_disabled, {"type" => authority.to_s})
         services.relay.send_to_user(message.message_id.to_i64, user.id, response)
         return false
       end
@@ -158,20 +158,20 @@ module PrivateParlorXT
 
     private def deny_user(user : User, services : Services) : Nil
       if user.blacklisted?
-        response = Format.substitute_message(services.locale.replies.blacklisted, {
-          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.locale),
-          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.locale),
+        response = Format.substitute_message(services.replies.blacklisted, {
+          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
+          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.replies),
         })
       elsif cooldown_until = user.cooldown_until
-        response = Format.substitute_message(services.locale.replies.on_cooldown, {
+        response = Format.substitute_message(services.replies.on_cooldown, {
           "time" => Format.format_time(cooldown_until, services.locale.time_format),
         })
       elsif Time.utc - user.joined < services.config.media_limit_period
-        response = Format.substitute_message(services.locale.replies.media_limit, {
+        response = Format.substitute_message(services.replies.media_limit, {
           "total" => (services.config.media_limit_period - (Time.utc - user.joined)).hours.to_s,
         })
       else
-        response = services.locale.replies.not_in_chat
+        response = services.replies.not_in_chat
       end
 
       services.relay.send_to_user(nil, user.id, response)
@@ -183,7 +183,7 @@ module PrivateParlorXT
       return true if message.preformatted?
 
       unless Format.allow_text?(text)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.rejected_message)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.rejected_message)
         return false
       end
 
@@ -206,7 +206,7 @@ module PrivateParlorXT
       replies = services.history.get_all_receivers(reply.message_id.to_i64)
 
       if replies.empty?
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.not_in_cache)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.not_in_cache)
         return
       end
 
@@ -229,7 +229,7 @@ module PrivateParlorXT
       end
 
       unless user = services.database.get_user(info.id.to_i64)
-        services.relay.send_to_user(nil, info.id.to_i64, services.locale.replies.not_in_chat)
+        services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
         return message, nil
       end
 
@@ -240,12 +240,12 @@ module PrivateParlorXT
 
     private def deny_user(user : User, services : Services) : Nil
       if user.blacklisted?
-        response = Format.substitute_message(services.locale.replies.blacklisted, {
-          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.locale),
-          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.locale),
+        response = Format.substitute_message(services.replies.blacklisted, {
+          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
+          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.replies),
         })
       else
-        response = services.locale.replies.not_in_chat
+        response = services.replies.not_in_chat
       end
 
       services.relay.send_to_user(nil, user.id, response)

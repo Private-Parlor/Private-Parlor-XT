@@ -15,7 +15,7 @@ module PrivateParlorXT
 
       update_user_activity(user, services)
 
-      response = Format.substitute_message(services.locale.replies.toggle_debug, {
+      response = Format.substitute_message(services.replies.toggle_debug, {
         "toggle" => user.debug_enabled ? services.locale.toggle[1] : services.locale.toggle[0],
       })
 

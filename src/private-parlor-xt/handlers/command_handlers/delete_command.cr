@@ -36,18 +36,18 @@ module PrivateParlorXT
 
       cooldown_until = Format.format_time_span(duration, services.locale)
 
-      response = Format.substitute_message(services.locale.replies.message_deleted, {
-        "reason"   => Format.format_reason_reply(reason, services.locale),
+      response = Format.substitute_message(services.replies.message_deleted, {
+        "reason"   => Format.format_reason_reply(reason, services.replies),
         "duration" => cooldown_until,
       })
 
-      log = Format.substitute_message(services.locale.logs.message_deleted, {
+      log = Format.substitute_message(services.logs.message_deleted, {
         "id"       => user.id.to_s,
         "name"     => user.get_formatted_name,
         "msid"     => original_message.to_s,
         "oid"      => reply_user.get_obfuscated_id,
         "duration" => cooldown_until,
-        "reason"   => Format.format_reason_log(reason, services.locale),
+        "reason"   => Format.format_reason_log(reason, services.logs),
       })
 
       services.relay.send_to_user(original_message, reply_user.id, response)
@@ -55,7 +55,7 @@ module PrivateParlorXT
       services.relay.log_output(log)
 
       # TODO: Move this reply to end of queue
-      services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.success)
+      services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.success)
     end
   end
 end

@@ -18,7 +18,7 @@ module PrivateParlorXT
 
         services.database.set_motd(arg)
 
-        log = Format.substitute_message(services.locale.logs.motd_set, {
+        log = Format.substitute_message(services.logs.motd_set, {
           "id"   => user.id.to_s,
           "name" => user.get_formatted_name,
           "text" => arg,
@@ -26,7 +26,7 @@ module PrivateParlorXT
 
         services.relay.log_output(log)
 
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.success)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.success)
       else
         return unless motd = services.database.get_motd
 

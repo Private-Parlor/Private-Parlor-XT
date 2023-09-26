@@ -33,7 +33,7 @@ module PrivateParlorXT
       end
 
       unless user = services.database.get_user(info.id.to_i64)
-        services.relay.send_to_user(nil, info.id.to_i64, services.locale.replies.not_in_chat)
+        services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
         return message, nil
       end
 
@@ -49,7 +49,7 @@ module PrivateParlorXT
 
     def authorized?(user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, authority)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.fail)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
         return false
       end
 
@@ -60,7 +60,7 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       if spam.spammy_upvote?(user.id, services.config.upvote_limit_interval)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
         return true
       end
 
@@ -72,11 +72,11 @@ module PrivateParlorXT
     # to give himself karma
     def upvote_message(user : User, reply_user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services) : Bool
       if user.id == reply_user.id
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.upvoted_own_message)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.upvoted_own_message)
         return false
       end
       if !services.history.add_rating(reply.message_id.to_i64, user.id)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.already_voted)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.already_voted)
         return false
       end
 
@@ -87,13 +87,13 @@ module PrivateParlorXT
     end
 
     def send_replies(user : User, reply_user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services) : Nil
-      services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.gave_upvote)
+      services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.gave_upvote)
 
       unless reply_user.hide_karma
         services.relay.send_to_user(
           services.history.get_receiver_message(reply.message_id.to_i64, reply_user.id),
           reply_user.id,
-          services.locale.replies.got_upvote
+          services.replies.got_upvote
         )
       end
     end

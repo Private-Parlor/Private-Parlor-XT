@@ -16,7 +16,7 @@ module PrivateParlorXT
       return unless reply = get_reply_message(user, message, services)
 
       unless services.history.get_sender(reply.message_id.to_i64)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.not_in_cache)
+        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.not_in_cache)
       end
 
       update_user_activity(user, services)
@@ -25,7 +25,7 @@ module PrivateParlorXT
         services.relay.pin_message(receiver, receiver_message)
       end
 
-      log = Format.substitute_message(services.locale.logs.pinned, {
+      log = Format.substitute_message(services.logs.pinned, {
         "id"   => user.id.to_s,
         "name" => user.get_formatted_name,
         "msid" => reply.message_id.to_s,

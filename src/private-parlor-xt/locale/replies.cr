@@ -1,7 +1,7 @@
 require "yaml"
 
 module PrivateParlorXT
-  class Replies
+  struct Replies
     include YAML::Serializable
 
     @[YAML::Field(key: "joined")]

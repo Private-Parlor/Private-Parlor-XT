@@ -4,8 +4,8 @@ require "tourmaline"
 
 module PrivateParlorXT
   class Relay
+    @client : PrivateParlorXT::Client
     @queue : MessageQueue = MessageQueue.new
-    @client : Tourmaline::Client
     @log_channel : String
 
     def initialize(@log_channel : String, @client : Tourmaline::Client)
@@ -17,6 +17,14 @@ module PrivateParlorXT
 
     def get_client_user : Tourmaline::User
       @client.bot
+    end
+
+    def start_polling
+      @client.poll
+    end
+
+    def stop_polling
+      @client.stop
     end
 
     # Relay a message to a single user. Used for system messages.
@@ -357,7 +365,7 @@ module PrivateParlorXT
     # Receives a `Message` from the `queue`, calls its proc, and adds the returned message id to the History
     #
     # This function should be invoked in a Fiber.
-    def send_messages(database : Database, locale : Locale, history : History) : Bool?
+    def send_messages(services : Services) : Bool?
       msg = @queue.get_message
 
       if msg.nil?
@@ -367,11 +375,11 @@ module PrivateParlorXT
       begin
         success = msg.function.call(msg.receiver, msg.reply_to)
       rescue Tourmaline::Error::BotBlocked | Tourmaline::Error::UserDeactivated
-        if user = database.get_user(msg.receiver)
+        if user = services.database.get_user(msg.receiver)
           user.set_left
-          database.update_user(user)
+          services.database.update_user(user)
 
-          log = Format.substitute_message(locale.logs.force_leave, {"id" => user.id.to_s})
+          log = Format.substitute_message(services.logs.force_leave, {"id" => user.id.to_s})
 
           log_output(log)
         end
@@ -395,12 +403,12 @@ module PrivateParlorXT
 
       case success
       when Tourmaline::Message
-        history.add_to_history(msg.origin_msid.as(MessageID), success.message_id.to_i64, msg.receiver)
+        services.history.add_to_history(msg.origin_msid.as(MessageID), success.message_id.to_i64, msg.receiver)
       when Array(Tourmaline::Message)
         sent_msids = success.map(&.message_id)
 
         sent_msids.zip(msg.origin_msid.as(Array(MessageID))) do |msid, origin_msid|
-          history.add_to_history(origin_msid, msid.to_i64, msg.receiver)
+          services.history.add_to_history(origin_msid, msid.to_i64, msg.receiver)
         end
       end
     end

@@ -4,7 +4,7 @@ require "./services.cr"
 module PrivateParlorXT
   def self.initialize_services : Services
     config = Config.parse_config
-    locale = Locale.parse_locale(Path["./locales"], config.locale)
+    localization = Localization.parse_locale(Path["./locales"], config.locale)
     database = SQLiteDatabase.new(DB.open("sqlite3://#{config.database}"))
 
     if config.spam_interval != 0
@@ -19,23 +19,29 @@ module PrivateParlorXT
       history = CachedHistory.new(config.message_lifespan.hours)
     end
 
-    access = AuthorizedRanks.instance(config.ranks)
+    access = AuthorizedRanks.new(config.ranks)
 
     client = Client.new(config.token)
     client.default_parse_mode = Tourmaline::ParseMode::HTML # TODO: Change to MarkdownV2
 
-    relay = Relay.instance(config.log_channel, client)
+    relay = Relay.new(config.log_channel, client)
 
-    Services.new(
+    services = Services.new(
       HandlerConfig.new(config),
-      locale,
+      localization.locale,
+      localization.replies,
+      localization.logs,
+      localization.command_descriptions,
       database,
       history,
       access,
-      client,
       relay,
       spam,
     )
+
+    initialize_handlers(client, config, services)
+
+    services
   end
 
   def self.initialize_handlers(client : Tourmaline::Client, config : Config, services : Services) : Nil
@@ -159,7 +165,7 @@ module PrivateParlorXT
     return unless message = context.message
     return unless info = message.from
 
-    response = Format.substitute_message(services.locale.replies.media_disabled, {
+    response = Format.substitute_message(services.replies.media_disabled, {
       "type" => type.to_s,
     })
 
@@ -170,6 +176,6 @@ module PrivateParlorXT
     return unless message = context.message
     return unless info = message.from
 
-    services.relay.send_to_user(message.message_id.to_i64, info.id.to_i64, services.locale.replies.command_disabled)
+    services.relay.send_to_user(message.message_id.to_i64, info.id.to_i64, services.replies.command_disabled)
   end
 end

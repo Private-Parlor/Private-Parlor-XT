@@ -18,29 +18,29 @@ module PrivateParlorXT
       end
     end
 
-    def format_cooldown_until(expiration : Time?, locale : Locale) : String
+    def format_cooldown_until(expiration : Time?, locale : Locale, replies : Replies) : String
       if time = format_time(expiration, locale.time_format)
-        "#{locale.replies.cooldown_true} #{time}"
+        "#{replies.cooldown_true} #{time}"
       else
-        locale.replies.cooldown_false
+        replies.cooldown_false
       end
     end
 
-    def format_warn_expiry(expiration : Time?, locale : Locale) : String?
+    def format_warn_expiry(expiration : Time?, locale : Locale, replies : Replies) : String?
       if time = format_time(expiration, locale.time_format)
-        locale.replies.info_warning.gsub("{warn_expiry}", "#{time}")
+        replies.info_warning.gsub("{warn_expiry}", "#{time}")
       end
     end
 
-    def format_reason_reply(reason : String?, locale : Locale) : String?
+    def format_reason_reply(reason : String?, replies : Replies) : String?
       if reason
-        "#{locale.replies.reason_prefix}#{reason}"
+        "#{replies.reason_prefix}#{reason}"
       end
     end
 
-    def format_reason_log(reason : String?, locale : Locale) : String?
+    def format_reason_log(reason : String?, logs : Logs) : String?
       if reason
-        "#{locale.replies.reason_prefix}#{reason}"
+        "#{logs.reason_prefix}#{reason}"
       end
     end
 
@@ -228,8 +228,8 @@ module PrivateParlorXT
     end
 
     # Returns a link to a given user's account, for reveal messages
-    def format_user_reveal(id : UserID, name : String, locale : Locale) : String
-      locale.replies.username_reveal.gsub("{username}", "<a href=\"tg://user?id=#{id}\">#{escape_html(name)}</a>")
+    def format_user_reveal(id : UserID, name : String, replies : Replies) : String
+      replies.username_reveal.gsub("{username}", "<a href=\"tg://user?id=#{id}\">#{escape_html(name)}</a>")
     end
 
     def format_user_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
@@ -373,15 +373,9 @@ module PrivateParlorXT
       entities
     end
 
-    def format_reason_reply(reason : String?, locale : Locale) : String?
-      if reason
-        "#{locale.replies.reason_prefix}#{reason}"
-      end
-    end
-
-    def format_contact_reply(contact : String?, locale : Locale) : String?
+    def format_contact_reply(contact : String?, replies : Replies) : String?
       if contact
-        locale.replies.blacklist_contact.gsub("{contact}", "#{escape_html(contact)}")
+        replies.blacklist_contact.gsub("{contact}", "#{escape_html(contact)}")
       end
     end
 
@@ -440,47 +434,47 @@ module PrivateParlorXT
     end
 
     # Returns a message containing the commands the user can use.
-    def format_help(user : User, ranks : Hash(Int32, Rank), locale : Locale) : String
+    def format_help(user : User, ranks : Hash(Int32, Rank), descriptions : CommandDescriptions, replies : Replies) : String
       ranked = {
-        CommandPermissions::Promote      => "/promote [name/OID/ID] [rank] - #{locale.command_descriptions.promote}",
-        CommandPermissions::PromoteSame  => "/promote [name/OID/ID] [rank] - #{locale.command_descriptions.promote}",
-        CommandPermissions::PromoteLower => "/promote [name/OID/ID] [rank] - #{locale.command_descriptions.promote}",
-        CommandPermissions::Demote       => "/demote [name/OID/ID] [rank] - #{locale.command_descriptions.demote}",
-        CommandPermissions::Ranksay      => "/#{ranks[user.rank].name.downcase}say [text] - #{locale.command_descriptions.ranksay}",
-        CommandPermissions::Sign         => "/sign [text] - #{locale.command_descriptions.sign}",
-        CommandPermissions::TSign        => "/tsign [text] - #{locale.command_descriptions.tsign}",
-        CommandPermissions::Uncooldown   => "/uncooldown [name/OID] - #{locale.command_descriptions.uncooldown}",
-        CommandPermissions::Whitelist    => "/whitelist [ID] - #{locale.command_descriptions.whitelist}",
-        CommandPermissions::Purge        => "/purge - #{locale.command_descriptions.purge}",
-        CommandPermissions::MotdSet      => "/motd - #{locale.command_descriptions.motd_set}",
+        CommandPermissions::Promote      => "/promote [name/OID/ID] [rank] - #{descriptions.promote}",
+        CommandPermissions::PromoteSame  => "/promote [name/OID/ID] [rank] - #{descriptions.promote}",
+        CommandPermissions::PromoteLower => "/promote [name/OID/ID] [rank] - #{descriptions.promote}",
+        CommandPermissions::Demote       => "/demote [name/OID/ID] [rank] - #{descriptions.demote}",
+        CommandPermissions::Ranksay      => "/#{ranks[user.rank].name.downcase}say [text] - #{descriptions.ranksay}",
+        CommandPermissions::Sign         => "/sign [text] - #{descriptions.sign}",
+        CommandPermissions::TSign        => "/tsign [text] - #{descriptions.tsign}",
+        CommandPermissions::Uncooldown   => "/uncooldown [name/OID] - #{descriptions.uncooldown}",
+        CommandPermissions::Whitelist    => "/whitelist [ID] - #{descriptions.whitelist}",
+        CommandPermissions::Purge        => "/purge - #{descriptions.purge}",
+        CommandPermissions::MotdSet      => "/motd - #{descriptions.motd_set}",
       }
 
       reply_required = {
-        CommandPermissions::Upvote     => "+1 - #{locale.command_descriptions.upvote}",
-        CommandPermissions::Downvote   => "-1 - #{locale.command_descriptions.downvote}",
-        CommandPermissions::Warn       => "/warn [reason] - #{locale.command_descriptions.warn}",
-        CommandPermissions::Delete     => "/delete [reason] - #{locale.command_descriptions.delete}",
-        CommandPermissions::Spoiler    => "/spoiler - #{locale.command_descriptions.spoiler}",
-        CommandPermissions::Remove     => "/remove [reason] - #{locale.command_descriptions.remove}",
-        CommandPermissions::Blacklist  => "/blacklist [reason] - #{locale.command_descriptions.blacklist}",
-        CommandPermissions::RankedInfo => "/info - #{locale.command_descriptions.ranked_info}",
-        CommandPermissions::Reveal     => "/reveal - #{locale.command_descriptions.reveal}",
-        CommandPermissions::Pin        => "/pin - #{locale.command_descriptions.pin}",
-        CommandPermissions::Unpin      => "/unpin - #{locale.command_descriptions.unpin}",
+        CommandPermissions::Upvote     => "+1 - #{descriptions.upvote}",
+        CommandPermissions::Downvote   => "-1 - #{descriptions.downvote}",
+        CommandPermissions::Warn       => "/warn [reason] - #{descriptions.warn}",
+        CommandPermissions::Delete     => "/delete [reason] - #{descriptions.delete}",
+        CommandPermissions::Spoiler    => "/spoiler - #{descriptions.spoiler}",
+        CommandPermissions::Remove     => "/remove [reason] - #{descriptions.remove}",
+        CommandPermissions::Blacklist  => "/blacklist [reason] - #{descriptions.blacklist}",
+        CommandPermissions::RankedInfo => "/info - #{descriptions.ranked_info}",
+        CommandPermissions::Reveal     => "/reveal - #{descriptions.reveal}",
+        CommandPermissions::Pin        => "/pin - #{descriptions.pin}",
+        CommandPermissions::Unpin      => "/unpin - #{descriptions.unpin}",
       }
 
       String.build do |str|
-        str << locale.replies.help_header
-        str << escape_html("\n/start - #{locale.command_descriptions.start}")
-        str << escape_html("\n/stop - #{locale.command_descriptions.stop}")
-        str << escape_html("\n/info - #{locale.command_descriptions.info}")
-        str << escape_html("\n/users - #{locale.command_descriptions.users}")
-        str << escape_html("\n/version - #{locale.command_descriptions.version}")
-        str << escape_html("\n/toggle_karma - #{locale.command_descriptions.toggle_karma}")
-        str << escape_html("\n/toggle_debug - #{locale.command_descriptions.toggle_debug}")
-        str << escape_html("\n/tripcode - #{locale.command_descriptions.tripcode}")
-        str << escape_html("\n/motd - #{locale.command_descriptions.motd}")
-        str << escape_html("\n/help - #{locale.command_descriptions.help}")
+        str << replies.help_header
+        str << escape_html("\n/start - #{descriptions.start}")
+        str << escape_html("\n/stop - #{descriptions.stop}")
+        str << escape_html("\n/info - #{descriptions.info}")
+        str << escape_html("\n/users - #{descriptions.users}")
+        str << escape_html("\n/version - #{descriptions.version}")
+        str << escape_html("\n/toggle_karma - #{descriptions.toggle_karma}")
+        str << escape_html("\n/toggle_debug - #{descriptions.toggle_debug}")
+        str << escape_html("\n/tripcode - #{descriptions.tripcode}")
+        str << escape_html("\n/motd - #{descriptions.motd}")
+        str << escape_html("\n/help - #{descriptions.help}")
 
         rank_commands = [] of String
         reply_commands = [] of String
@@ -489,7 +483,7 @@ module PrivateParlorXT
           if rank.command_permissions.includes?(:ranksay_lower)
             ranks.each do |k, v|
               if k <= user.rank && k != -10 && v.command_permissions.includes?(:ranksay)
-                rank_commands << escape_html("/#{v.name.downcase}say [text] - #{locale.command_descriptions.ranksay}")
+                rank_commands << escape_html("/#{v.name.downcase}say [text] - #{descriptions.ranksay}")
               end
             end
           end
@@ -504,12 +498,12 @@ module PrivateParlorXT
 
           unless rank_commands.empty?
             str << "\n\n"
-            str << substitute_message(locale.replies.help_rank_commands, {"rank" => rank.name})
+            str << substitute_message(replies.help_rank_commands, {"rank" => rank.name})
             rank_commands.each { |line| str << escape_html("\n#{line}") }
           end
           unless reply_commands.empty?
             str << "\n\n"
-            str << locale.replies.help_reply_commands
+            str << replies.help_reply_commands
             reply_commands.each { |line| str << escape_html("\n#{line}") }
           end
         end

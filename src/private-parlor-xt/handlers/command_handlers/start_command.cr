@@ -22,9 +22,9 @@ module PrivateParlorXT
 
     def existing_user(user : User, username : String?, fullname : String, message_id : MessageID, services : Services)
       if user.blacklisted?
-        response = Format.substitute_message(services.locale.replies.blacklisted, {
-          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.locale),
-          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.locale),
+        response = Format.substitute_message(services.replies.blacklisted, {
+          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
+          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.replies),
         })
 
         services.relay.send_to_user(nil, user.id, response)
@@ -34,9 +34,9 @@ module PrivateParlorXT
         user.set_active
         services.database.update_user(user)
 
-        services.relay.send_to_user(message_id, user.id, services.locale.replies.rejoined)
+        services.relay.send_to_user(message_id, user.id, services.replies.rejoined)
 
-        log = Format.substitute_message(services.locale.logs.rejoined, {"id" => user.id.to_s, "name" => user.get_formatted_name})
+        log = Format.substitute_message(services.logs.rejoined, {"id" => user.id.to_s, "name" => user.get_formatted_name})
 
         services.relay.log_output(log)
       else
@@ -44,13 +44,13 @@ module PrivateParlorXT
         user.set_active
 
         services.database.update_user(user)
-        services.relay.send_to_user(message_id, user.id, services.locale.replies.already_in_chat)
+        services.relay.send_to_user(message_id, user.id, services.replies.already_in_chat)
       end
     end
 
     def new_user(id : UserID, username : String?, fullname : String, message_id : MessageID, services : Services)
       unless services.config.registration_open
-        return services.relay.send_to_user(nil, id, services.locale.replies.registration_closed)
+        return services.relay.send_to_user(nil, id, services.replies.registration_closed)
       end
 
       if services.database.no_users?
@@ -64,12 +64,12 @@ module PrivateParlorXT
       end
 
       if @pseudonymous
-        services.relay.send_to_user(message_id, id, services.locale.replies.joined_pseudonym)
+        services.relay.send_to_user(message_id, id, services.replies.joined_pseudonym)
       else
-        services.relay.send_to_user(message_id, id, services.locale.replies.joined)
+        services.relay.send_to_user(message_id, id, services.replies.joined)
       end
 
-      log = Format.substitute_message(services.locale.logs.joined, {
+      log = Format.substitute_message(services.logs.joined, {
         "id"   => id.to_s,
         "name" => username || fullname,
       })

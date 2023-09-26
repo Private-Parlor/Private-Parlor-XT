@@ -30,10 +30,10 @@ module PrivateParlorXT
 
       reply_user.remove_cooldown
 
-      response = Format.substitute_message(services.locale.replies.ranked_info, {
+      response = Format.substitute_message(services.replies.ranked_info, {
         "oid"            => reply_user.get_obfuscated_id.to_s,
         "karma"          => reply_user.get_obfuscated_karma.to_s,
-        "cooldown_until" => Format.format_cooldown_until(reply_user.cooldown_until, services.locale),
+        "cooldown_until" => Format.format_cooldown_until(reply_user.cooldown_until, services.locale, services.replies),
       })
 
       services.relay.send_to_user(message.message_id.to_i64, user.id, response)
@@ -65,7 +65,7 @@ module PrivateParlorXT
 
       user.remove_cooldown
 
-      response = Format.substitute_message(services.locale.replies.user_info, {
+      response = Format.substitute_message(services.replies.user_info, {
         "oid"            => user.get_obfuscated_id.to_s,
         "username"       => user.get_formatted_name,
         "rank_val"       => user.rank.to_s,
@@ -73,9 +73,9 @@ module PrivateParlorXT
         "karma"          => user.karma.to_s,
         "karma_level"    => current_level.empty? ? nil : "(#{current_level})",
         "warnings"       => user.warnings.to_s,
-        "warn_expiry"    => Format.format_warn_expiry(user.warn_expiry, services.locale),
+        "warn_expiry"    => Format.format_warn_expiry(user.warn_expiry, services.locale, services.replies),
         "smiley"         => Format.format_smiley(user.warnings, @smileys),
-        "cooldown_until" => Format.format_cooldown_until(user.cooldown_until, services.locale),
+        "cooldown_until" => Format.format_cooldown_until(user.cooldown_until, services.locale, services.replies),
       })
 
       services.relay.send_to_user(message, user.id, response)

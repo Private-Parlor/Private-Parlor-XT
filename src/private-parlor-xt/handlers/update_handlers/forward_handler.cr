@@ -38,7 +38,7 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       if spam.spammy_forward?(user.id)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.spamming)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
         return true
       end
 
@@ -47,7 +47,7 @@ module PrivateParlorXT
 
     def deanonymous_poll(user : User, message : Tourmaline::Message, services : Services) : Bool
       if (poll = message.poll) && (!poll.is_anonymous?)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.locale.replies.deanon_poll)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.deanon_poll)
         return true
       end
 
