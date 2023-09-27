@@ -29,8 +29,6 @@ module PrivateParlorXT
 
       return if spamming?(user, message, arg, services)
 
-      # TODO: Add R9K check and write hooks
-
       entities = update_entities(text, arg, message)
 
       name, tripcode = Format.generate_tripcode(tripcode, services.config.tripcode_salt)

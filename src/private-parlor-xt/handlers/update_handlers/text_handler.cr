@@ -22,7 +22,7 @@ module PrivateParlorXT
         return unless reply_msids = get_reply_receivers(reply, message, user, services)
       end
 
-      # TODO: Add R9K write hook
+      return unless r9k_text(user, message, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 
@@ -69,8 +69,6 @@ module PrivateParlorXT
       unless check_text(text, user, message, services)
         return "", [] of Tourmaline::MessageEntity
       end
-
-      # TODO: Add R9K check hook
 
       text, entities = format_text(text, message.entities, message.preformatted?, services)
 

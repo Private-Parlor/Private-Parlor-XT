@@ -22,15 +22,13 @@ module PrivateParlorXT
       caption, entities = get_caption_and_entities(message, user, services)
       return if message.caption && caption.empty?
 
-      # TODO: Add pseudonymous hook
-
       if reply = message.reply_to_message
         return unless reply_msids = get_reply_receivers(reply, message, user, services)
       end
 
-      new_message = services.history.new_message(user.id, message.message_id.to_i64)
+      return unless r9k_checks(user, message, services)
 
-      # TODO: Add R9K write hook
+      new_message = services.history.new_message(user.id, message.message_id.to_i64)
 
       update_user_activity(user, services)
 

@@ -134,6 +134,12 @@ module PrivateParlorXT
       duration
     end
 
+    def cooldown(time : Time::Span) : Time::Span
+      @cooldown_until = Time.utc + time
+
+      time
+    end
+
     def warn(lifespan : Int32) : Nil
       @warnings += 1
       @warn_expiry = Time.utc + lifespan.hours

@@ -29,8 +29,6 @@ module PrivateParlorXT
 
       return if spamming?(user, message, arg, services)
 
-      # TODO: Add R9K check and write hooks
-
       entities = update_entities(text, arg, message)
 
       text, entities = Format.format_user_sign(user.get_formatted_name, user.id, arg, entities)

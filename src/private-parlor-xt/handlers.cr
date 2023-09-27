@@ -182,9 +182,16 @@ module PrivateParlorXT
 
       return true if message.preformatted?
 
-      unless Format.allow_text?(text)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.rejected_message)
-        return false
+      if r9k = services.robot9000
+        unless r9k.allow_text?(text)
+          services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.rejected_message)
+          return false
+        end
+      else
+        unless Format.allow_text?(text)
+          services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.rejected_message)
+          return false
+        end
       end
 
       true
@@ -252,13 +259,106 @@ module PrivateParlorXT
         return "", [] of Tourmaline::MessageEntity
       end
 
-      # TODO: Add R9K check hook
-
       caption, entities = format_text(caption, message.caption_entities, message.preformatted?, services)
 
       text, entities = prepend_pseudonym(caption, entities, user, message, services)
 
       return text, entities
+    end
+
+    def r9k_checks(user : User, message : Tourmaline::Message, services : Services) : Bool
+      return false unless r9k_text(user, message, services)
+      return false unless r9k_media(user, message, services)
+
+      true
+    end
+
+    def r9k_forward_checks(user : User, message : Tourmaline::Message, services : Services) : Bool
+      return true unless r9k = services.robot9000
+      return true unless r9k.check_forwards?
+
+      return false unless r9k_text(user, message, services)
+      return false unless r9k_media(user, message, services)
+
+      true
+    end
+
+    def r9k_text(user : User, message : Tourmaline::Message, services : Services) : Bool
+      unless (r9k = services.robot9000) && r9k.check_text?
+        return true
+      end
+
+      text = message.text || message.caption || ""
+
+      entities = message.caption_entities.empty? ? message.entities : message.caption_entities
+
+      stripped_text = r9k.strip_text(text, entities)
+
+      if r9k.unoriginal_text?(stripped_text)
+        if r9k.cooldown > 0
+          duration = user.cooldown(r9k.cooldown.seconds)
+          services.database.update_user(user)
+
+          response = Format.substitute_reply(services.replies.r9k_cooldown, {
+            "duration" => Format.format_time_span(duration, services.locale),
+          })
+        elsif r9k.warn_user?
+          duration = user.cooldown(services.config.cooldown_base)
+          user.warn(services.config.warn_lifespan)
+          services.database.update_user(user)
+
+          response = Format.substitute_reply(services.replies.r9k_cooldown, {
+            "duration" => Format.format_time_span(duration, services.locale),
+          })
+        else
+          response = services.replies.unoriginal_message
+        end
+
+        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+
+        return false
+      end
+
+      r9k.add_line(stripped_text)
+
+      true
+    end
+
+    def r9k_media(user : User, message : Tourmaline::Message, services : Services) : Bool
+      unless (r9k = services.robot9000) && r9k.check_media?
+        return true
+      end
+
+      return false unless file_id = r9k.get_media_file_id(message)
+
+      if r9k.unoriginal_media?(file_id)
+        if r9k.cooldown > 0
+          duration = user.cooldown(r9k.cooldown.seconds)
+          services.database.update_user(user)
+
+          response = Format.substitute_reply(services.replies.r9k_cooldown, {
+            "duration" => Format.format_time_span(duration, services.locale),
+          })
+        elsif r9k.warn_user?
+          duration = user.cooldown(services.config.cooldown_base)
+          user.warn(services.config.warn_lifespan)
+          services.database.update_user(user)
+
+          response = Format.substitute_reply(services.replies.r9k_cooldown, {
+            "duration" => Format.format_time_span(duration, services.locale),
+          })
+        else
+          response = services.replies.unoriginal_message
+        end
+
+        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+
+        return false
+      end
+
+      r9k.add_file_id(file_id)
+
+      true
     end
   end
 

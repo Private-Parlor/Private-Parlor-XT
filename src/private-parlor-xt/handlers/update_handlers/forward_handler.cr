@@ -17,8 +17,7 @@ module PrivateParlorXT
 
       return if spamming?(user, message, services)
 
-      # TODO: Add R9K check hook
-      # TODO: Add R9K write hook
+      return unless r9k_forward_checks(user, message, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 

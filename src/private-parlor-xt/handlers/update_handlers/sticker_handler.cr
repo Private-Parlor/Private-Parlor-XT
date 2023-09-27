@@ -19,13 +19,11 @@ module PrivateParlorXT
 
       return unless sticker = message.sticker
 
-      # TODO: Add R9K check hook here
-
       if reply = message.reply_to_message
         return unless reply_msids = get_reply_receivers(reply, message, user, services)
       end
 
-      # TODO: Add R9K write hook here
+      return unless r9k_media(user, message, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 

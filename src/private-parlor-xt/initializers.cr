@@ -5,7 +5,10 @@ module PrivateParlorXT
   def self.initialize_services : Services
     config = Config.parse_config
     localization = Localization.parse_locale(Path["./locales"], config.locale)
-    database = SQLiteDatabase.new(DB.open("sqlite3://#{config.database}"))
+
+    connection = DB.open("sqlite3://#{config.database}")
+
+    database = SQLiteDatabase.new(connection)
 
     if config.spam_interval != 0
       spam = config.spam_handler
@@ -13,8 +16,22 @@ module PrivateParlorXT
       spam = nil
     end
 
+    if config.toggle_r9k_media || config.toggle_r9k_text
+      robot9000 = SQLiteRobot9000.new(
+        connection,
+        config.valid_codepoints,
+        config.toggle_r9k_text,
+        config.toggle_r9k_media,
+        config.toggle_r9k_forwards,
+        config.r9k_warn,
+        config.r9k_cooldown,
+      )
+    else
+      robot9000 = nil
+    end
+
     if config.database_history
-      history = SQLiteHistory.new(config.message_lifespan.hours, DB.open("sqlite3://#{config.database}"))
+      history = SQLiteHistory.new(config.message_lifespan.hours, connection)
     else
       history = CachedHistory.new(config.message_lifespan.hours)
     end
@@ -37,6 +54,7 @@ module PrivateParlorXT
       access,
       relay,
       spam,
+      robot9000,
     )
 
     initialize_handlers(client, config, services)

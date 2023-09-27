@@ -31,8 +31,6 @@ module PrivateParlorXT
 
       return if spamming?(user, message, arg, services)
 
-      # TODO: Add R9K check and write hooks
-
       entities = update_entities(text, arg, message)
 
       current_level = get_karma_level(services.config.karma_levels, user)

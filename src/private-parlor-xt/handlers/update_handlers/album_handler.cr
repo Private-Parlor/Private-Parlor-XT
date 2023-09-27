@@ -33,6 +33,8 @@ module PrivateParlorXT
         return unless reply_msids = get_reply_receivers(reply, message, user, services)
       end
 
+      return unless r9k_checks(user, message, services)
+
       update_user_activity(user, services)
 
       receivers = get_message_receivers(user, services)

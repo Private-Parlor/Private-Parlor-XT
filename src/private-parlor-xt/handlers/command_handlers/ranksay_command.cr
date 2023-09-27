@@ -33,8 +33,6 @@ module PrivateParlorXT
 
       return unless rank_name = get_rank_name(text, user, message, authority, services)
 
-      # TODO: Add R9K check and write hooks
-
       entities = update_entities(text, arg, message)
 
       text, entities = Format.format_ranksay(rank_name, arg, entities)
