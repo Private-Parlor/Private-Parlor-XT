@@ -65,7 +65,7 @@ module PrivateParlorXT
   def self.initialize_handlers(client : Tourmaline::Client, config : Config, services : Services) : Nil
     events = [] of Tourmaline::EventHandler
 
-    events = events.concat(generate_command_handlers(config, services))
+    events = events.concat(generate_command_handlers(config, client, services))
 
     events = events.concat(generate_hears_handlers(config, services))
 
@@ -80,8 +80,9 @@ module PrivateParlorXT
 
   # Intialize all command handlers that inherit from `CommandHandler`
   # and are annotated with `RespondsTo`
-  def self.generate_command_handlers(config : Config, services : Services) : Array(Tourmaline::CommandHandler)
+  def self.generate_command_handlers(config : Config, client : Tourmaline::Client, services : Services) : Array(Tourmaline::CommandHandler)
     arr = [] of Tourmaline::CommandHandler
+    bot_commands = [] of Tourmaline::BotCommand
 
     {% for command in CommandHandler.all_subclasses.select { |sub_class|
                         (responds_to = sub_class.annotation(RespondsTo))
@@ -113,8 +114,21 @@ module PrivateParlorXT
       end
     end
 
-    # TODO: Register command with BotFather
+    if config.{{command_responds_to[:config].id}}[1]
+      bot_commands << Tourmaline::BotCommand.new(
+        {% if command_responds_to[:command].is_a?(ArrayLiteral) %}
+          {{command_responds_to[:command][0]}},
+          services.command_descriptions.{{command_responds_to[:command][0].id}}
+        {% else %}
+          {{command_responds_to[:command]}},
+          services.command_descriptions.{{command_responds_to[:command].id}}
+        {% end %}
+      )
+    end
+    
   {% end %}
+
+    client.set_my_commands(bot_commands)
 
     arr
   end
