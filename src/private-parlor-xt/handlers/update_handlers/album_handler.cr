@@ -26,13 +26,8 @@ module PrivateParlorXT
 
       return unless album = message.media_group_id
 
-      return unless check_text(message.caption, user, message, services)
-
-      # TODO: Add R9K check hook
-
-      caption, entities = format_text(message.caption, message.caption_entities, message.preformatted?, services)
-
-      # TODO: Add pseudonymous hook
+      caption, entities = get_caption_and_entities(message, user, services)
+      return if message.caption && caption.empty?
 
       if reply = message.reply_to_message
         return unless reply_msids = get_reply_receivers(reply, message, user, services)

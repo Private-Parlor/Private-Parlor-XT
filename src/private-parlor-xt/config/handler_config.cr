@@ -18,6 +18,7 @@ module PrivateParlorXT
     getter warn_lifespan : Int32 = 7 * 24
     getter warn_deduction : Int32 = 10
     getter registration_open : Bool? = true
+    getter pseudonymous : Bool? = false
 
     def initialize(config : Config)
       @blacklist_contact = config.blacklist_contact
@@ -35,6 +36,7 @@ module PrivateParlorXT
       @warn_lifespan = config.warn_lifespan
       @warn_deduction = config.warn_deduction
       @registration_open = config.registration_open
+      @pseudonymous = config.pseudonymous
     end
   end
 end

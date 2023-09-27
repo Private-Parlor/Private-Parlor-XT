@@ -19,11 +19,8 @@ module PrivateParlorXT
 
       return unless animation = message.animation
 
-      return unless check_text(message.caption, user, message, services)
-
-      # TODO: Add R9K check hook
-
-      caption, entities = format_text(message.caption, message.caption_entities, message.preformatted?, services)
+      caption, entities = get_caption_and_entities(message, user, services)
+      return if message.caption && caption.empty?
 
       # TODO: Add pseudonymous hook
 

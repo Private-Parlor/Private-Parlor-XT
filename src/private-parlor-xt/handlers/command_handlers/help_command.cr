@@ -17,8 +17,8 @@ module PrivateParlorXT
         message.message_id.to_i64,
         user.id,
         Format.format_help(
-          user, 
-          services.access.ranks, 
+          user,
+          services.access.ranks,
           services.command_descriptions,
           services.replies,
         )

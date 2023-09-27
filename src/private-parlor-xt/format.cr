@@ -509,13 +509,13 @@ module PrivateParlorXT
             str << "\n"
             str << substitute_reply(replies.help_rank_commands, {"rank" => rank.name})
             str << "\n"
-            rank_commands.each { |line| str << "#{line}\n"}
+            rank_commands.each { |line| str << "#{line}\n" }
           end
           unless reply_commands.empty?
             str << "\n"
             str << replies.help_reply_commands
             str << "\n"
-            reply_commands.each { |line| str << "#{line}\n"}
+            reply_commands.each { |line| str << "#{line}\n" }
           end
         end
       end

@@ -22,7 +22,7 @@ module PrivateParlorXT
     access = AuthorizedRanks.new(config.ranks)
 
     client = Client.new(config.token)
-    client.default_parse_mode = Tourmaline::ParseMode::MarkdownV2 
+    client.default_parse_mode = Tourmaline::ParseMode::MarkdownV2
 
     relay = Relay.new(config.log_channel, client)
 

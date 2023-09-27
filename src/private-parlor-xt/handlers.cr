@@ -220,6 +220,46 @@ module PrivateParlorXT
         services.database.get_active_users(user.id)
       end
     end
+
+    def prepend_pseudonym(text : String, entities : Array(Tourmaline::MessageEntity), user : User, message : Tourmaline::Message, services : Services) : Tuple(String, Array(Tourmaline::MessageEntity))
+      unless services.config.pseudonymous
+        return text, entities
+      end
+
+      if message.preformatted?
+        return text, entities
+      end
+
+      unless tripcode = user.tripcode
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.no_tripcode_set)
+        return "", [] of Tourmaline::MessageEntity
+      end
+
+      name, tripcode = Format.generate_tripcode(tripcode, services.config.tripcode_salt)
+      header, entities = Format.format_tripcode_sign(name, tripcode, entities)
+
+      return header + text, entities
+    end
+
+    def get_caption_and_entities(message : Tourmaline::Message, user : User, services : Services) : Tuple(String, Array(Tourmaline::MessageEntity))
+      if (caption = message.caption) && message.preformatted?
+        return caption, message.caption_entities
+      end
+
+      caption = message.caption || ""
+
+      unless check_text(caption, user, message, services)
+        return "", [] of Tourmaline::MessageEntity
+      end
+
+      # TODO: Add R9K check hook
+
+      caption, entities = format_text(caption, message.caption_entities, message.preformatted?, services)
+
+      text, entities = prepend_pseudonym(caption, entities, user, message, services)
+
+      return text, entities
+    end
   end
 
   abstract class HearsHandler < Handler
