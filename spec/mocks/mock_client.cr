@@ -35,5 +35,8 @@ module PrivateParlorXT
         client
       end
     end
+
+    def set_my_commands(commands : Array(Tourmaline::BotCommand), scope : Tourmaline::BotCommandScope? = nil, language_code : String? = nil)
+    end
   end
 end
