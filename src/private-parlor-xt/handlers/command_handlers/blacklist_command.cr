@@ -1,12 +1,9 @@
-require "../../handlers.cr"
+require "../../command_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: ["blacklist", "ban"], config: "enable_blacklist")]
   class BlacklistCommand < CommandHandler
-    def initialize(config : Config)
-    end
-
     def do(context : Tourmaline::Context, services : Services) : Nil
       message, user = get_message_and_user(context, services)
       return unless message && user

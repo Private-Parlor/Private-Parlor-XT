@@ -1,13 +1,10 @@
-require "../../handlers.cr"
+require "../../hears_handler.cr"
 require "../../services.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[Hears(text: /^\-1/, config: "enable_downvote")]
   class DownvoteHandler < HearsHandler
-    def initialize(config : Config)
-    end
-
     def do(context : Tourmaline::Context, services : Services)
       message, user = get_message_and_user(context, services)
       return unless message && user

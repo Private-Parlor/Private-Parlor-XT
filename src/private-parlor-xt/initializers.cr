@@ -1,4 +1,6 @@
-require "./handlers.cr"
+require "./command_handler.cr"
+require "./hears_handler.cr"
+require "./update_handler.cr"
 require "./services.cr"
 
 module PrivateParlorXT

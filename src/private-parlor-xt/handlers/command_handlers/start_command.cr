@@ -1,15 +1,9 @@
-require "../../handlers.cr"
+require "../../command_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "start", config: "enable_start")]
   class StartCommand < CommandHandler
-    @pseudonymous : Bool?
-
-    def initialize(config : Config)
-      @pseudonymous = config.pseudonymous
-    end
-
     def do(context : Tourmaline::Context, services : Services)
       return unless (message = context.message) && (info = message.from)
 
@@ -63,7 +57,7 @@ module PrivateParlorXT
         services.relay.send_to_user(nil, id, motd)
       end
 
-      if @pseudonymous
+      if services.config.pseudonymous
         services.relay.send_to_user(message_id, id, services.replies.joined_pseudonym)
       else
         services.relay.send_to_user(message_id, id, services.replies.joined)

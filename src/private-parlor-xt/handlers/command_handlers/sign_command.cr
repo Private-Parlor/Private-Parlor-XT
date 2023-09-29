@@ -1,4 +1,4 @@
-require "../../handlers.cr"
+require "../../command_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
@@ -6,9 +6,6 @@ module PrivateParlorXT
   # Processes sign messages before the update handler gets them
   # This handler expects the command handlers to be registered before the update handlers
   class SignCommand < CommandHandler
-    def initialize(config : Config)
-    end
-
     def do(context : Tourmaline::Context, services : Services) : Nil
       message, user = get_message_and_user(context, services)
       return unless message && user

@@ -1,12 +1,9 @@
-require "../../handlers.cr"
+require "../../command_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "stop", config: "enable_stop")]
   class StopCommand < CommandHandler
-    def initialize(config : Config)
-    end
-
     def do(context : Tourmaline::Context, services : Services) : Nil
       return unless (message = context.message) && (info = message.from)
 

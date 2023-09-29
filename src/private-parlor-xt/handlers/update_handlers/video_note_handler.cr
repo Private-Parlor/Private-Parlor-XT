@@ -1,12 +1,9 @@
-require "../../handlers.cr"
+require "../../update_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[On(update: :VideoNote, config: "relay_video_note")]
   class VideoNoteHandler < UpdateHandler
-    def initialize(config : Config)
-    end
-
     def do(context : Tourmaline::Context, services : Services)
       message, user = get_message_and_user(context, services)
       return unless message && user

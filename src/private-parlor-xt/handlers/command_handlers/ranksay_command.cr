@@ -1,4 +1,4 @@
-require "../../handlers.cr"
+require "../../command_handler.cr"
 require "../../services.cr"
 require "tourmaline"
 
@@ -7,9 +7,6 @@ module PrivateParlorXT
   # Processes ranksay messages before the update handler gets them
   # This handler expects the command handlers to be registered before the update handlers
   class RanksayCommand < CommandHandler
-    def initialize(config : Config)
-    end
-
     def do(context : Tourmaline::Context, services : Services)
       message, user = get_message_and_user(context, services)
       return unless message && user

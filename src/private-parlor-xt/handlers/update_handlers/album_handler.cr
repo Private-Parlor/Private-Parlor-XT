@@ -1,4 +1,4 @@
-require "../../handlers.cr"
+require "../../update_handler.cr"
 require "../../constants.cr"
 require "../../album_helpers.cr"
 require "tourmaline"
@@ -10,9 +10,6 @@ module PrivateParlorXT
     include AlbumHelpers
 
     property albums : Hash(String, Album) = {} of String => Album
-
-    def initialize(config : Config)
-    end
 
     def do(context : Tourmaline::Context, services : Services)
       message, user = get_message_and_user(context, services)
