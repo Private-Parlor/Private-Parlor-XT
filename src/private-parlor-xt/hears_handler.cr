@@ -21,7 +21,7 @@ module PrivateParlorXT
       return message, user
     end
 
-    private def deny_user(user : User, services : Services) : Nil
+    def deny_user(user : User, services : Services) : Nil
       if user.blacklisted?
         response = Format.substitute_reply(services.replies.blacklisted, {
           "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),

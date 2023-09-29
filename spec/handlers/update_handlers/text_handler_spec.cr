@@ -4,12 +4,22 @@ module PrivateParlorXT
   describe TextHandler do
     client = MockClient.new
 
-    services = create_services(relay: MockRelay.new("", client))
+    ranks = {
+      10 => Rank.new(
+        "Mod",
+        Set(CommandPermissions).new,
+        Set{
+          MessagePermissions::Text,
+        },
+      ),
+    }
+
+    services = create_services(ranks: ranks, relay: MockRelay.new("", client))
 
     handler = TextHandler.new(MockConfig.new)
 
     around_each do |test|
-      services = create_services(relay: MockRelay.new("", client))
+      services = create_services(ranks: ranks, relay: MockRelay.new("", client))
 
       generate_users(services.database)
       generate_history(services.history)

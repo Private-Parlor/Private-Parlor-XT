@@ -127,6 +127,16 @@ module PrivateParlorXT
           entities,
           message.has_media_spoiler?,
         )
+      elsif file = message.audio
+        services.relay.send_audio(
+          cached_message,
+          user,
+          receivers,
+          nil,
+          file.file_id,
+          text,
+          entities,
+        )
       elsif file = message.document
         services.relay.send_document(
           cached_message,

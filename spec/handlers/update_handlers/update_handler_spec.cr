@@ -255,7 +255,7 @@ module PrivateParlorXT
 
         expected = Format.substitute_reply(mock_services.replies.blacklisted, {
           "contact" => "",
-          "reason" => "",
+          "reason"  => "",
         })
 
         messages.size.should(eq(1))
@@ -274,7 +274,7 @@ module PrivateParlorXT
         messages = mock_services.relay.as(MockRelay).empty_queue
 
         expected = Format.substitute_reply(mock_services.replies.on_cooldown, {
-          "time" => Format.format_time(user.cooldown_until, mock_services.locale.time_format)
+          "time" => Format.format_time(user.cooldown_until, mock_services.locale.time_format),
         })
 
         messages.size.should(eq(1))
@@ -299,11 +299,11 @@ module PrivateParlorXT
 
         blacklisted_message = Format.substitute_reply(mock_services.replies.blacklisted, {
           "contact" => "",
-          "reason" => "",
+          "reason"  => "",
         })
 
         cooldown_message = Format.substitute_reply(mock_services.replies.on_cooldown, {
-          "time" => Format.format_time(user.cooldown_until, mock_services.locale.time_format)
+          "time" => Format.format_time(user.cooldown_until, mock_services.locale.time_format),
         })
 
         messages.size.should(eq(1))
@@ -383,8 +383,8 @@ module PrivateParlorXT
       end
 
       it "returns false if text contains codepoints not permitted by Robot9000" do
-        r9k_services = create_services(client: client, r9k: MockRobot9000.new())
-        
+        r9k_services = create_services(client: client, r9k: MockRobot9000.new)
+
         message = create_message(
           6_i64,
           Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
@@ -474,7 +474,7 @@ module PrivateParlorXT
             4,
           ),
         ]
-        
+
         message = create_message(
           6_i64,
           Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
@@ -485,10 +485,10 @@ module PrivateParlorXT
         user = MockUser.new(9000)
 
         text, entities = handler.prepend_pseudonym(
-          message_text, 
-          message_entities, 
-          user, 
-          message, 
+          message_text,
+          message_entities,
+          user,
+          message,
           services
         )
 
@@ -505,7 +505,7 @@ module PrivateParlorXT
             )
           )
         )
-        
+
         message_text = "Example Text"
         message_entities = [
           Tourmaline::MessageEntity.new(
@@ -519,7 +519,7 @@ module PrivateParlorXT
             4,
           ),
         ]
-        
+
         message = create_message(
           6_i64,
           Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
@@ -531,10 +531,10 @@ module PrivateParlorXT
         user = MockUser.new(9000)
 
         text, entities = handler.prepend_pseudonym(
-          message_text, 
-          message_entities, 
-          user, 
-          message, 
+          message_text,
+          message_entities,
+          user,
+          message,
           mock_services
         )
 
@@ -551,7 +551,7 @@ module PrivateParlorXT
             )
           )
         )
-        
+
         message_text = "Example Text"
         message_entities = [
           Tourmaline::MessageEntity.new(
@@ -565,7 +565,7 @@ module PrivateParlorXT
             4,
           ),
         ]
-        
+
         message = create_message(
           6_i64,
           Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
@@ -576,10 +576,10 @@ module PrivateParlorXT
         user = MockUser.new(9000)
 
         text, entities = handler.prepend_pseudonym(
-          message_text, 
-          message_entities, 
-          user, 
-          message, 
+          message_text,
+          message_entities,
+          user,
+          message,
           mock_services
         )
 
@@ -596,7 +596,7 @@ module PrivateParlorXT
             )
           )
         )
-        
+
         message_text = "Example Text"
         message_entities = [
           Tourmaline::MessageEntity.new(
@@ -610,7 +610,7 @@ module PrivateParlorXT
             4,
           ),
         ]
-        
+
         message = create_message(
           6_i64,
           Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
@@ -621,10 +621,10 @@ module PrivateParlorXT
         user = MockUser.new(9000, tripcode: "User#SecurePassword")
 
         text, entities = handler.prepend_pseudonym(
-          message_text, 
-          message_entities, 
-          user, 
-          message, 
+          message_text,
+          message_entities,
+          user,
+          message,
           mock_services
         )
 
@@ -809,7 +809,7 @@ module PrivateParlorXT
 
       it "returns false if message fails r9k text check" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_text: true
           )
@@ -830,7 +830,7 @@ module PrivateParlorXT
 
       it "returns false if message fails r9k media check" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_media: true
           )
@@ -848,7 +848,7 @@ module PrivateParlorXT
               "unique_photo",
               1080,
               1080,
-            )
+            ),
           ]
         )
 
@@ -873,7 +873,7 @@ module PrivateParlorXT
 
       it "returns true if r9k service does not check forwards" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_text: true,
             check_media: true,
@@ -893,7 +893,7 @@ module PrivateParlorXT
 
       it "returns false if message fails r9k text check" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_forwards: true,
             check_text: true,
@@ -915,7 +915,7 @@ module PrivateParlorXT
 
       it "returns false if message fails r9k media check" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_forwards: true,
             check_media: true
@@ -934,7 +934,7 @@ module PrivateParlorXT
               "unique_photo",
               1080,
               1080,
-            )
+            ),
           ]
         )
 
@@ -959,8 +959,8 @@ module PrivateParlorXT
 
       it "returns true if Robot900 does not check text" do
         r9k_services = create_services(
-          client: client, 
-          r9k: MockRobot9000.new()
+          client: client,
+          r9k: MockRobot9000.new
         )
 
         user = MockUser.new(9000)
@@ -976,7 +976,7 @@ module PrivateParlorXT
 
       it "returns false if text is unoriginal" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_text: true,
           )
@@ -997,7 +997,7 @@ module PrivateParlorXT
 
       it "cooldowns user if text is unoriginal" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_text: true,
             cooldown: 10,
@@ -1023,7 +1023,7 @@ module PrivateParlorXT
 
       it "warns user if text is unoriginal" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_text: true,
             warn_user: true,
@@ -1051,7 +1051,7 @@ module PrivateParlorXT
 
       it "stores line of text if text is original" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_text: true,
           )
@@ -1089,7 +1089,7 @@ module PrivateParlorXT
               "unique_photo",
               1080,
               1080,
-            )
+            ),
           ]
         )
 
@@ -1098,8 +1098,8 @@ module PrivateParlorXT
 
       it "returns true if Robot900 does not check media" do
         r9k_services = create_services(
-          client: client, 
-          r9k: MockRobot9000.new()
+          client: client,
+          r9k: MockRobot9000.new
         )
 
         user = MockUser.new(9000)
@@ -1114,7 +1114,7 @@ module PrivateParlorXT
               "unique_photo",
               1080,
               1080,
-            )
+            ),
           ]
         )
 
@@ -1123,7 +1123,7 @@ module PrivateParlorXT
 
       it "returns false if media is unoriginal" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_media: true,
           )
@@ -1141,7 +1141,7 @@ module PrivateParlorXT
               "unique_photo",
               1080,
               1080,
-            )
+            ),
           ]
         )
 
@@ -1152,7 +1152,7 @@ module PrivateParlorXT
 
       it "cooldowns user if media is unoriginal" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_media: true,
             cooldown: 10,
@@ -1171,7 +1171,7 @@ module PrivateParlorXT
               "unique_photo",
               1080,
               1080,
-            )
+            ),
           ]
         )
 
@@ -1186,7 +1186,7 @@ module PrivateParlorXT
 
       it "warns user if media is unoriginal" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_media: true,
             warn_user: true,
@@ -1205,7 +1205,7 @@ module PrivateParlorXT
               "unique_photo",
               1080,
               1080,
-            )
+            ),
           ]
         )
 
@@ -1222,7 +1222,7 @@ module PrivateParlorXT
 
       it "stores file id if media is original" do
         r9k_services = create_services(
-          client: client, 
+          client: client,
           r9k: MockRobot9000.new(
             check_media: true,
           )
@@ -1240,7 +1240,7 @@ module PrivateParlorXT
               "unique_photo",
               1080,
               1080,
-            )
+            ),
           ]
         )
 

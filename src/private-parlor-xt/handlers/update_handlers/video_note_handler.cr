@@ -10,7 +10,7 @@ module PrivateParlorXT
 
       return if message.forward_date
 
-      return unless authorized?(user, message, :Animation, services)
+      return unless authorized?(user, message, :VideoNote, services)
 
       return if spamming?(user, message, services)
 

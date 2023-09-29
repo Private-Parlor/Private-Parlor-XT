@@ -4,12 +4,22 @@ module PrivateParlorXT
   describe AlbumHandler do
     client = MockClient.new
 
-    services = create_services(client: client)
+    ranks = {
+      10 => Rank.new(
+        "Mod",
+        Set(CommandPermissions).new,
+        Set{
+          MessagePermissions::MediaGroup,
+        },
+      ),
+    }
+
+    services = create_services(ranks: ranks, relay: MockRelay.new("", client))
 
     handler = AlbumHandler.new(MockConfig.new)
 
     around_each do |test|
-      services = create_services(client: client)
+      services = create_services(ranks: ranks, relay: MockRelay.new("", client))
 
       generate_users(services.database)
       generate_history(services.history)
@@ -17,6 +27,93 @@ module PrivateParlorXT
       test.run
 
       services.database.close
+    end
+
+    describe "#do" do
+      it "returns early if message is a forward" do
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          video: Tourmaline::Video.new(
+            "video_item_one",
+            "unique_video",
+            1080,
+            1080,
+            60,
+          ),
+          media_group_id: "album_two",
+          forward_date: Time.utc,
+          forward_from: Tourmaline::User.new(123456, false, "other user")
+        )
+
+        ctx = create_context(client, create_update(11, message))
+
+        handler.do(ctx, services)
+
+        handler.albums["album_two"]?.should(be_nil)
+      end
+
+      it "returns early if user is not authorized" do
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          video: Tourmaline::Video.new(
+            "video_item_one",
+            "unique_video",
+            1080,
+            1080,
+            60,
+          ),
+          media_group_id: "album_three",
+        )
+
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        user.set_rank(-5)
+        services.database.update_user(user)
+
+        ctx = create_context(client, create_update(11, message))
+
+        handler.do(ctx, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(1))
+        handler.albums["album_three"]?.should(be_nil)
+      end
+
+      it "returns early if reply message does not exist in message history" do
+        reply_to = create_message(
+          50,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        )
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          video: Tourmaline::Video.new(
+            "video_item_one",
+            "unique_video",
+            1080,
+            1080,
+            60,
+          ),
+          media_group_id: "album_four",
+          reply_to_message: reply_to
+        )
+
+        ctx = create_context(client, create_update(11, message))
+
+        handler.do(ctx, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(1))
+        messages[0].data.should(eq(services.replies.not_in_cache))
+        handler.albums["album_four"]?.should(be_nil)
+      end
     end
 
     describe "#spamming?" do

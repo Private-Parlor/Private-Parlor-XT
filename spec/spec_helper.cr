@@ -11,11 +11,11 @@ module PrivateParlorXT
     config : HandlerConfig? = nil,
     database : Database? = nil,
     history : History? = nil,
-    ranks : Hash(Int32, String)? = nil,
+    ranks : Hash(Int32, Rank)? = nil,
     relay : Relay? = nil,
     client : MockClient? = nil,
     spam : SpamHandler? = nil,
-    r9k : Robot9000? = nil,
+    r9k : Robot9000? = nil
   ) : Services
     unless config
       config = HandlerConfig.new(MockConfig.new)
@@ -180,6 +180,7 @@ module PrivateParlorXT
     audio : Tourmaline::Audio? = nil,
     document : Tourmaline::Document? = nil,
     photo : Array(Tourmaline::PhotoSize) = [] of Tourmaline::PhotoSize,
+    sticker : Tourmaline::Sticker? = nil,
     video : Tourmaline::Video? = nil,
     video_note : Tourmaline::VideoNote? = nil,
     voice : Tourmaline::Voice? = nil,
@@ -211,6 +212,7 @@ module PrivateParlorXT
       audio: audio,
       document: document,
       photo: photo,
+      sticker: sticker,
       video: video,
       video_note: video_note,
       voice: voice,

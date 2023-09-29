@@ -120,6 +120,46 @@ module PrivateParlorXT
       end
     end
 
+    describe "#deny_user" do
+      it "queues blacklisted response when user is blacklisted" do
+        mock_services = create_services(relay: MockRelay.new("", client))
+
+        user = MockUser.new(9000, rank: -10)
+
+        handler.deny_user(user, mock_services)
+
+        messages = mock_services.relay.as(MockRelay).empty_queue
+
+        expected = Format.substitute_reply(mock_services.replies.blacklisted, {
+          "contact" => "",
+          "reason"  => "",
+        })
+
+        messages.size.should(eq(1))
+        messages[0].data.should(eq(expected))
+      end
+
+      it "queues not in chat message when user still can't use command" do
+        mock_services = create_services(
+          relay: MockRelay.new("", client),
+          config: HandlerConfig.new(
+            MockConfig.new(
+              media_limit_period: 0,
+            )
+          )
+        )
+
+        user = MockUser.new(9000, rank: 0)
+
+        handler.deny_user(user, mock_services)
+
+        messages = mock_services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(1))
+        messages[0].data.should(eq(mock_services.replies.not_in_chat))
+      end
+    end
+
     describe "#authorized?" do
       it "returns true if user can upvote" do
         message = create_message(

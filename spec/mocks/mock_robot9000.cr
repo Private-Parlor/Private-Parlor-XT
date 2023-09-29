@@ -3,7 +3,7 @@ require "../spec_helper.cr"
 module PrivateParlorXT
   class MockRobot9000 < Robot9000
     getter lines : Set(String) = Set(String).new
-    getter files : Set(String) = Set(String).new 
+    getter files : Set(String) = Set(String).new
 
     def initialize(
       @valid_codepoints : Array(Range(Int32, Int32)) = [(0x0000..0x007F)],
