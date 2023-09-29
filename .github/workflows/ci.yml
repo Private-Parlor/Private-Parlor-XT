@@ -4,15 +4,15 @@ on:
   push:
     branches: [ "master" ]
     paths:
-      - 'src/*'
+      - 'src/**'
       - 'shard.yml'
-      - 'spec/*'
+      - 'spec/**'
   pull_request:
     branches: [ "master" ]
     paths:
-      - 'src/*'
+      - 'src/**'
       - 'shard.yml'
-      - 'spec/*'
+      - 'spec/**'
 
 jobs:
   build:
