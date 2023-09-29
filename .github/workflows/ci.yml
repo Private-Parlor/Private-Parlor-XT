@@ -16,15 +16,16 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     container:
-      image: crystallang/crystal
+      image: alpine:latest
 
     steps:
     - uses: actions/checkout@v3
     - name: Install dependencies
-      run: shards install
+      run: |
+        apk add --update --upgrade --no-cache --force-overwrite build-base yaml-static sqlite-static sqlite-dev libxml2-dev libxml2-static icu-static zlib-static xz-dev xz-static openssl-dev openssl-libs-static pcre-dev gc-dev libevent-static crystal shards
+        shards install
     - name: Run tests
       run: crystal spec -v -p --order random --error-trace
