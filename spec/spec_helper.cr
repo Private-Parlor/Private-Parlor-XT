@@ -7,7 +7,15 @@ require "./mocks/*"
 HISTORY_LIFESPAN = Time::Span.zero
 
 module PrivateParlorXT
-  def self.create_services(config : HandlerConfig? = nil, database : Database? = nil, history : History? = nil, ranks : Hash(Int32, String)? = nil, client : MockClient? = nil, spam : SpamHandler? = nil) : Services
+  def self.create_services(
+    config : HandlerConfig? = nil,
+    database : Database? = nil,
+    history : History? = nil,
+    ranks : Hash(Int32, String)? = nil,
+    relay : Relay? = nil,
+    client : MockClient? = nil,
+    spam : SpamHandler? = nil
+  ) : Services
     unless config
       config = HandlerConfig.new(MockConfig.new)
     end
@@ -75,12 +83,21 @@ module PrivateParlorXT
             MessagePermissions::Text,
           },
         ),
+        -5 => Rank.new(
+          "Restricted",
+          Set(CommandPermissions).new,
+          Set(MessagePermissions).new,
+        ),
         -10 => Rank.new(
           "Blacklisted",
           Set(CommandPermissions).new,
           Set(MessagePermissions).new,
         ),
       }
+    end
+
+    unless relay
+      relay = Relay.new("", client || MockClient.new)
     end
 
     localization = Localization.parse_locale(Path["#{__DIR__}/../locales/"], "en-US")
@@ -94,7 +111,7 @@ module PrivateParlorXT
       database,
       history,
       AuthorizedRanks.new(ranks),
-      Relay.new("", client || MockClient.new),
+      relay,
       spam,
     )
   end
@@ -173,7 +190,8 @@ module PrivateParlorXT
     forward_from_chat : Tourmaline::Chat? = nil,
     forward_from_message_id : Int64? = nil,
     forward_signature : String? = nil,
-    forward_sender_name : String? = nil
+    forward_sender_name : String? = nil,
+    preformatted : Bool? = nil
   ) : Tourmaline::Message
     message = Tourmaline::Message.new(
       message_id,
@@ -209,6 +227,8 @@ module PrivateParlorXT
     if date = forward_date
       message.forward_date = date
     end
+
+    message.preformatted = preformatted
 
     message
   end

@@ -125,7 +125,6 @@ module PrivateParlorXT
         {% end %}
       )
     end
-    
   {% end %}
 
     client.set_my_commands(bot_commands)

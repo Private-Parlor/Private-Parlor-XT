@@ -4,12 +4,12 @@ module PrivateParlorXT
   describe DownvoteHandler do
     client = MockClient.new
 
-    services = create_services(client: client)
+    services = create_services(relay: MockRelay.new("", client))
 
     handler = DownvoteHandler.new(MockConfig.new)
 
     around_each do |test|
-      services = create_services(client: client)
+      services = create_services(relay: MockRelay.new("", client))
 
       generate_users(services.database)
       generate_history(services.history)
@@ -287,6 +287,86 @@ module PrivateParlorXT
         end
 
         handler.downvote_message(user, reply_user, message, reply_message, services).should(be_false)
+      end
+    end
+
+    describe "#send_replies" do
+      it "sends reply messages to invoker and receiver" do
+        reply_to = create_message(
+          6,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        )
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          text: "-1",
+          reply_to_message: reply_to,
+        )
+
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        unless reply_user = handler.get_reply_user(user, reply_to, services)
+          fail("User 20000 should exist in the database")
+        end
+
+        handler.send_replies(user, reply_user, message, reply_to, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(2))
+
+        messages.each do |msg|
+          msg.origin_msid.should(be_nil)
+          msg.sender.should(be_nil)
+
+          [80300, 20000].should(contain(msg.receiver))
+
+          if msg.receiver == 80300
+            msg.data.should(eq(services.replies.gave_downvote))
+          end
+
+          if msg.receiver == 20000
+            msg.data.should(eq(services.replies.got_downvote))
+          end
+        end
+      end
+
+      it "does not send got downvote message if receiver has disabled notifications" do
+        reply_to = create_message(
+          6,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        )
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          text: "-1",
+          reply_to_message: reply_to,
+        )
+
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        unless reply_user = handler.get_reply_user(user, reply_to, services)
+          fail("User 20000 should exist in the database")
+        end
+
+        reply_user.toggle_karma
+
+        handler.send_replies(user, reply_user, message, reply_to, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(1))
+
+        messages[0].origin_msid.should(be_nil)
+        messages[0].sender.should(be_nil)
+        messages[0].receiver.should(eq(80300))
+        messages[0].data.should(eq(services.replies.gave_downvote))
       end
     end
   end
