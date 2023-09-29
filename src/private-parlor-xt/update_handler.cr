@@ -48,7 +48,7 @@ module PrivateParlorXT
       true
     end
 
-    private def deny_user(user : User, services : Services) : Nil
+    def deny_user(user : User, services : Services) : Nil
       if user.blacklisted?
         response = Format.substitute_reply(services.replies.blacklisted, {
           "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
@@ -153,9 +153,9 @@ module PrivateParlorXT
 
       caption, entities = format_text(caption, message.caption_entities, message.preformatted?, services)
 
-      text, entities = prepend_pseudonym(caption, entities, user, message, services)
+      caption, entities = prepend_pseudonym(caption, entities, user, message, services)
 
-      return text, entities
+      return caption, entities
     end
 
     def r9k_checks(user : User, message : Tourmaline::Message, services : Services) : Bool

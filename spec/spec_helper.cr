@@ -14,7 +14,8 @@ module PrivateParlorXT
     ranks : Hash(Int32, String)? = nil,
     relay : Relay? = nil,
     client : MockClient? = nil,
-    spam : SpamHandler? = nil
+    spam : SpamHandler? = nil,
+    r9k : Robot9000? = nil,
   ) : Services
     unless config
       config = HandlerConfig.new(MockConfig.new)
@@ -113,6 +114,7 @@ module PrivateParlorXT
       AuthorizedRanks.new(ranks),
       relay,
       spam,
+      r9k,
     )
   end
 

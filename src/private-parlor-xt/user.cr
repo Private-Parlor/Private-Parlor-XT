@@ -2,21 +2,21 @@ require "./constants.cr"
 
 module PrivateParlorXT
   abstract class User
-    @id : UserID
-    @username : String? = nil
-    @realname : String = ""
-    @rank : Int32 = 0
-    @joined : Time = Time.utc
-    @left : Time? = nil
-    @last_active : Time = Time.utc
-    @cooldown_until : Time? = nil
-    @blacklist_reason : String? = nil
-    @warnings : Int32 = 0
-    @warn_expiry : Time? = nil
-    @karma : Int32 = 0
-    @hide_karma : Bool? = false
-    @debug_enabled : Bool? = false
-    @tripcode : String? = nil
+    getter id : UserID
+    getter username : String? = nil
+    getter realname : String = ""
+    getter rank : Int32 = 0
+    getter joined : Time = Time.utc
+    getter left : Time? = nil
+    getter last_active : Time = Time.utc
+    getter cooldown_until : Time? = nil
+    getter blacklist_reason : String? = nil
+    getter warnings : Int32 = 0
+    getter warn_expiry : Time? = nil
+    getter karma : Int32 = 0
+    getter hide_karma : Bool? = false
+    getter debug_enabled : Bool? = false
+    getter tripcode : String? = nil
 
     def initialize(
       @id : Int64,
