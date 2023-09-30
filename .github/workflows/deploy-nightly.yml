@@ -81,7 +81,7 @@ jobs:
     - name: Declare some variables
       id: vars
       shell: bash
-      run: echo "name=sha_short::$(git rev-parse --short HEAD)" >>$GITHUB_OUTPUT
+      run: echo "name=sha_short::$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.0
       with:
@@ -92,7 +92,7 @@ jobs:
         name: Private Parlor XT Nightly
         tag_name: v1.X
         body: |
-          Nightly builds for Private Parlor, updated on every commit. Current build based on ${{ $GITHUB_OUTPUT }}
+          Nightly builds for Private Parlor, updated on every commit. Current build based on ${{ env.sha_short }}
           Note, these are not optimized builds; see prior releases for more stable production builds.
         files: |
           ./downloads/private-parlor-xt-x86_64/*
