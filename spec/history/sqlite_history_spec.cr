@@ -150,6 +150,14 @@ module PrivateParlorXT
       db.get_warning(2).should(be_true)
     end
 
+    it "deletes message group" do
+      db.delete_message_group(2)
+      db.delete_message_group(4)
+
+      db.get_origin_message(3).should(be_nil)
+      db.get_origin_message(5).should(be_nil)
+    end
+
     it "deletes old messages" do
       db.expire
 

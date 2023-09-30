@@ -201,8 +201,31 @@ module PrivateParlorXT
       history.get_warning(2).should(be_true)
     end
 
+    it "deletes message group" do
+      history = CachedHistory.new(HISTORY_LIFESPAN)
+
+      # Add some messages with receivers that reference them
+      history.new_message(100, 1)
+      history.add_to_history(1, 2, 101)
+      history.add_to_history(1, 3, 102)
+
+      history.new_message(101, 4)
+      history.add_to_history(4, 5, 100)
+      history.add_to_history(4, 6, 102)
+
+      history.new_message(102, 7)
+      history.add_to_history(7, 8, 101)
+      history.add_to_history(7, 9, 100)
+
+      history.delete_message_group(2)
+      history.delete_message_group(4)
+
+      history.get_origin_message(3).should(be_nil)
+      history.get_origin_message(5).should(be_nil)
+    end
+
     it "deletes old messages" do
-      history = CachedHistory.new(Time::Span.zero)
+      history = CachedHistory.new(HISTORY_LIFESPAN)
 
       # Add some messages with receivers that reference them
       history.new_message(100, 1)

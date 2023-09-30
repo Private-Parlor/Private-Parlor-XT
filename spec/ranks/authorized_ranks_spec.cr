@@ -111,6 +111,14 @@ module PrivateParlorXT
       end
     end
 
+    describe "#ranksay_ranks" do
+      it "returns an array of strings that can use the ranksay command" do
+        expected = ["Mod", "Admin", "Host"].sort
+
+        authorized_ranks.ranksay_ranks.sort.should(eq(expected))
+      end
+    end
+
     describe "#find_rank" do
       it "finds rank from a given name" do
         tuple = authorized_ranks.find_rank("admin")
