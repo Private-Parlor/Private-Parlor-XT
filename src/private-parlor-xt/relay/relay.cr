@@ -317,6 +317,12 @@ module PrivateParlorXT
       end
     end
 
+    def reject_inactive_user_messages(user : UserID)
+      @queue.reject_messages do |msg|
+        msg.receiver == user
+      end
+    end
+
     def delete_message(receiver : UserID, message : MessageID)
       @queue.add_to_queue_priority(
         receiver,

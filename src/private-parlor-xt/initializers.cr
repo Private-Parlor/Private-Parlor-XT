@@ -2,6 +2,7 @@ require "./command_handler.cr"
 require "./hears_handler.cr"
 require "./update_handler.cr"
 require "./services.cr"
+require "tasker"
 
 module PrivateParlorXT
   def self.initialize_services : Services
@@ -59,9 +60,35 @@ module PrivateParlorXT
       robot9000,
     )
 
+    initialize_tasks(config, services)
+
     initialize_handlers(client, config, services)
 
     services
+  end
+
+  def self.initialize_tasks(config : Config, services : Services)
+    Tasker.every(15.minutes) {
+      services.database.expire_warnings(config.warn_lifespan.hours)
+    }
+
+    if config.message_lifespan > 0
+      Tasker.every(config.message_lifespan.hours * (1/4)) {
+        services.history.expire
+      }
+    end
+
+    if spam = services.spam
+      Tasker.every(config.spam_interval.seconds) {
+        spam.expire
+      }
+    end
+
+    if config.inactivity_limit > 0
+      Tasker.every(6.hours) {
+        kick_inactive_users(config.inactivity_limit.days, services)
+      }
+    end
   end
 
   def self.initialize_handlers(client : Tourmaline::Client, config : Config, services : Services) : Nil
@@ -210,5 +237,26 @@ module PrivateParlorXT
     return unless info = message.from
 
     services.relay.send_to_user(message.message_id.to_i64, info.id.to_i64, services.replies.command_disabled)
+  end
+
+  def self.kick_inactive_users(limit : Time::Span, services : Services)
+    services.database.get_inactive_users(limit).each do |user|
+      user.set_left
+      services.database.update_user(user)
+      services.relay.reject_inactive_user_messages(user.id)
+
+      log = Format.substitute_message(services.logs.left, {
+        "id"   => user.id.to_s,
+        "name" => user.get_formatted_name,
+      })
+
+      response = Format.substitute_reply(services.replies.inactive, {
+        "time" => limit.to_s,
+      })
+
+      services.relay.log_output(log)
+
+      services.relay.send_to_user(nil, user.id, response)
+    end
   end
 end
