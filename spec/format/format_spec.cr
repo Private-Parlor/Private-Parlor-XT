@@ -30,6 +30,36 @@ module PrivateParlorXT
       end
     end
 
+    describe "#substitute_reply" do
+      it "globally substitutes placeholders and escapes MarkdownV2" do
+        placeholder_text = "User {id} sent a message [{message_id}] (origin: {message_id}, karma: {karma})"
+
+        parameters = {
+          "id"         => 9000.to_s,
+          "message_id" => 20.to_s,
+          "karma"      => 2.0.to_s,
+        }
+
+        expected = "User 9000 sent a message [20] (origin: 20, karma: 2\\.0)"
+
+        Format.substitute_reply(placeholder_text, parameters).should(eq(expected))
+      end
+
+      it "does not raise KeyError when placeholder is not found in parameters" do
+        placeholder_text = "User {id} sent a {type} message [{message_id}] (origin: {message_id}, karma: {karma})"
+
+        parameters = {
+          "id"         => 9000.to_s,
+          "message_id" => 20.to_s,
+          "karma"      => 2.0.to_s,
+        }
+
+        expected = "User 9000 sent a  message [20] (origin: 20, karma: 2\\.0)"
+
+        Format.substitute_reply(placeholder_text, parameters).should(eq(expected))
+      end
+    end
+
     describe "#remove_entities" do
       it "should remove only the given entity types" do
         strip_types = ["bold", "text_link"]
@@ -136,6 +166,32 @@ module PrivateParlorXT
         entities[1].type.should(eq("text_link"))
         entities[1].length.should(eq(9))
         entities[1].offset.should(eq(29))
+        entities[1].url.should(eq("tg://resolve?domain=fizzchatbot"))
+      end
+
+      it "handles UTF-16 codepoints in text" do
+        text = "Backlinks: >>>/foo/ 🔁 >>>/fizz/"
+
+        entities = Format.format_network_links(text, [] of Tourmaline::MessageEntity, network)
+
+        entities.size.should(eq(2))
+
+        unless entities[0].url
+          fail("Backlink entities should contain a url")
+        end
+
+        unless entities[1].url
+          fail("Backlink entities should contain a url")
+        end
+
+        entities[0].type.should(eq("text_link"))
+        entities[0].length.should(eq(8))
+        entities[0].offset.should(eq(11))
+        entities[0].url.should(eq("tg://resolve?domain=foochatbot"))
+
+        entities[1].type.should(eq("text_link"))
+        entities[1].length.should(eq(9))
+        entities[1].offset.should(eq(23))
         entities[1].url.should(eq("tg://resolve?domain=fizzchatbot"))
       end
     end
@@ -484,7 +540,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "format_private_channel_forward" do
+    describe "#format_private_channel_forward" do
       it "handles UTF-16 code units in given name and updates entities" do
         header, entities = Format.format_private_channel_forward(
           "🦤 Private 🔒 Dodo 📣",
@@ -516,6 +572,101 @@ module PrivateParlorXT
         entities[2].type.should(eq("underline"))
         entities[2].offset.should(eq(38))
         entities[2].length.should(eq(10))
+      end
+    end
+
+    describe "#format_user_sign" do
+      it "returns updated entities and text signed with user name" do
+        arg = "Example🦫Text"
+
+        expected_text = "Example🦫Text ~~🦫Beaver"
+
+        text, entities = Format.format_user_sign(
+          "🦫Beaver",
+          123456,
+          arg,
+          [] of Tourmaline::MessageEntity
+        )
+
+        text.should(eq(expected_text))
+
+        entities.size.should(eq(1))
+
+        entities[0].type.should(eq("text_link"))
+        entities[0].offset.should(eq(14))
+        entities[0].length.should(eq(10))
+      end
+    end
+
+    describe "#format_karma_sign" do
+      it "returns updated entities and text signed with karma level" do
+        arg = "Example🦫Text"
+
+        expected_text = "Example🦫Text t. 🦫-Tier"
+
+        text, entities = Format.format_karma_sign(
+          "🦫-Tier",
+          arg,
+          [] of Tourmaline::MessageEntity
+        )
+
+        text.should(eq(expected_text))
+
+        entities.size.should(eq(2))
+
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(14))
+        entities[0].length.should(eq(10))
+
+        entities[1].type.should(eq("italic"))
+        entities[1].offset.should(eq(14))
+        entities[1].length.should(eq(10))
+      end
+    end
+
+    describe "#format_tripcode_sign" do
+      it "returns updated entities and text signed with tripcode" do
+        expected_header = "🦫Beaver !Tripcode:\n"
+
+        text, entities = Format.format_tripcode_sign(
+          "🦫Beaver",
+          "!Tripcode",
+          [] of Tourmaline::MessageEntity
+        )
+
+        text.should(eq(expected_header))
+
+        entities.size.should(eq(2))
+
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(8))
+
+        entities[1].type.should(eq("code"))
+        entities[1].offset.should(eq(9))
+        entities[1].length.should(eq(9))
+      end
+    end
+
+    describe "#format_ranksay" do
+      it "returns updated entities and text signed with karma level" do
+        arg = "Example🦫Text"
+
+        expected_text = "Example🦫Text ~~🦫Baron"
+
+        text, entities = Format.format_ranksay(
+          "🦫Baron",
+          arg,
+          [] of Tourmaline::MessageEntity
+        )
+
+        text.should(eq(expected_text))
+
+        entities.size.should(eq(1))
+
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(14))
+        entities[0].length.should(eq(9))
       end
     end
 
@@ -551,6 +702,41 @@ module PrivateParlorXT
         updated_entities[1].offset.should(eq(20))
         updated_entities[2].offset.should(eq(20))
         updated_entities[3].offset.should(eq(30))
+      end
+    end
+
+    describe "#reset_entities" do
+      it "subtracts offset from each entity's offset field" do
+        entities = [
+          Tourmaline::MessageEntity.new(
+            "bold",
+            3,
+            4,
+          ),
+          Tourmaline::MessageEntity.new(
+            "bold",
+            10,
+            7,
+          ),
+          Tourmaline::MessageEntity.new(
+            "text_link",
+            10,
+            7,
+            "https://crystal-lang.org",
+          ),
+          Tourmaline::MessageEntity.new(
+            "italic",
+            20,
+            4,
+          ),
+        ]
+
+        updated_entities = Format.reset_entities(entities, 3)
+
+        updated_entities[0].offset.should(eq(0))
+        updated_entities[1].offset.should(eq(7))
+        updated_entities[2].offset.should(eq(7))
+        updated_entities[3].offset.should(eq(17))
       end
     end
 

@@ -165,8 +165,8 @@ module PrivateParlorXT
 
         entities << Tourmaline::MessageEntity.new(
           "text_link",
-          start_index,
-          (end_index - start_index) + 1, # Include the last forward slash in the text highlight
+          text[...start_index].to_utf16.size,
+          text[start_index..end_index].to_utf16.size, # Include the last forward slash in the text highlight
           "tg://resolve?domain=#{chat}"
         )
 

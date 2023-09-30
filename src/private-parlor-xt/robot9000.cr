@@ -11,13 +11,17 @@ module PrivateParlorXT
     getter cooldown : Int32 = 0
 
     def remove_links(text : String, entities : Array(Tourmaline::MessageEntity)) : String
+      string = text.to_utf16.to_a
+
       entities.reverse.each do |entity|
         if entity.type == "url"
-          text = text.delete_at(entity.offset, entity.length)
+          string.delete_at(entity.offset, entity.length)
         end
       end
 
-      text
+      utf = Slice(UInt16).new(string.size) { |i| string[i] }
+
+      String.from_utf16(utf)
     end
 
     def allow_text?(text : String) : Bool
@@ -41,8 +45,6 @@ module PrivateParlorXT
 
       text = text.gsub(/\s@\w+\s/, " ") # Remove usernames; leave a space
 
-      text = text.gsub(/[[:punct:]]|—/, "") # Remove punctuation and em-dash
-
       # Reduce repeating characters, excluding digits
       text = text.gsub(/(?![\d])(\w|\w{1,})\1{2,}/) do |_, match|
         match[1]
@@ -50,6 +52,8 @@ module PrivateParlorXT
 
       # Remove network links
       text = text.gsub(/>>>\/\w+\//, "")
+
+      text = text.gsub(/[[:punct:]]|—/, "") # Remove punctuation and em-dash
 
       # Remove repeating spaces and new lines; leave a space
       text = text.gsub(/\s{2,}|\n/, " ")

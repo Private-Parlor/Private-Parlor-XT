@@ -9,12 +9,12 @@ module PrivateParlorXT
     # Generally this should use the same connection that was used for the database
     def initialize(
       @connection : DB::Database,
-      @valid_codepoints : Array(Range(Int32, Int32)),
-      @check_text : Bool?,
-      @check_media : Bool?,
-      @check_forwards : Bool?,
-      @warn_user : Bool?,
-      @cooldown : Int32
+      @valid_codepoints : Array(Range(Int32, Int32)) = [(0x0000..0x007F)],
+      @check_text : Bool? = nil,
+      @check_media : Bool? = nil,
+      @check_forwards : Bool? = nil,
+      @warn_user : Bool? = nil,
+      @cooldown : Int32 = 0
     )
       ensure_schema()
     end
