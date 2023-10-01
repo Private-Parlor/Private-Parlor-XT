@@ -46,7 +46,7 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
           text: "/whitelist 9000",
         )
-          
+
         ctx = create_context(client, create_update(11, message))
 
         handler.do(ctx, services)
@@ -60,14 +60,14 @@ module PrivateParlorXT
 
       it "returns early if registration is open" do
         open_registration_services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           relay: MockRelay.new("", client),
           config: HandlerConfig.new(
             MockConfig.new(
               registration_open: true,
             ),
-          ), 
-        ) 
+          ),
+        )
 
         generate_users(open_registration_services.database)
 

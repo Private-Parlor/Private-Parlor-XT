@@ -12,7 +12,16 @@ module PrivateParlorXT
       @default_rank = 0,
       @registration_open = true,
       @pseudonymous = false,
-      @linked_network = {} of String => String
+      @linked_network = {} of String => String,
+      @karma_levels = {
+        -10 => "Junk",
+          0 => "Normal",
+         10 => "Common",
+         20 => "Uncommon",
+         30 => "Rare",
+         40 => "Legendary",
+         50 => "Unique",
+      }
     )
     end
   end

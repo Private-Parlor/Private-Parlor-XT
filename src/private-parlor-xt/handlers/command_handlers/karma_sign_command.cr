@@ -64,15 +64,18 @@ module PrivateParlorXT
     def get_karma_level(karma_levels : Hash(Int32, String), user : User) : String
       current_level = ""
 
-      karma_levels.each_cons_pair do |lower, higher|
-        if lower[0] <= user.karma && user.karma < higher[0]
-          current_level = lower[1]
-          break
-        end
+      if user.karma <= karma_levels.first_key
+        return karma_levels.first_value
       end
 
-      if current_level == "" && user.karma >= karma_levels.last_key
-        current_level = karma_levels[karma_levels.last_key]
+      if user.karma >= karma_levels.last_key
+        return karma_levels.last_value
+      end
+
+      karma_levels.each_cons_pair do |lower, higher|
+        if lower[0] <= user.karma && user.karma < higher[0]
+          return current_level = lower[1]
+        end
       end
 
       current_level

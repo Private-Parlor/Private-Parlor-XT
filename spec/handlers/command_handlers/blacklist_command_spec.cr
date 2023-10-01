@@ -47,7 +47,7 @@ module PrivateParlorXT
           text: "/blacklist detailed reason",
           reply_to_message: reply_to,
         )
-          
+
         ctx = create_context(client, create_update(11, message))
 
         handler.do(ctx, services)
@@ -82,7 +82,7 @@ module PrivateParlorXT
           text: "/blacklist detailed reason",
           reply_to_message: reply_to,
         )
-          
+
         ctx = create_context(client, create_update(11, message))
 
         handler.do(ctx, services)

@@ -1,14 +1,14 @@
 require "../../spec_helper.cr"
 
 module PrivateParlorXT
-  describe TripcodeSignCommand do
+  describe SignCommand do
     client = MockClient.new
 
     ranks = {
       0 => Rank.new(
         "User",
         Set{
-          CommandPermissions::TSign,
+          CommandPermissions::Sign,
         },
         Set(MessagePermissions).new,
       ),
@@ -16,7 +16,7 @@ module PrivateParlorXT
 
     services = create_services(ranks: ranks, relay: MockRelay.new("", client))
 
-    handler = TripcodeSignCommand.new(MockConfig.new)
+    handler = SignCommand.new(MockConfig.new)
 
     around_each do |test|
       services = create_services(ranks: ranks, relay: MockRelay.new("", client))
@@ -46,7 +46,7 @@ module PrivateParlorXT
         message = create_message(
           11,
           Tourmaline::User.new(60200, false, "voorbeeld"),
-          text: "/tsign   Example text",
+          text: "/sign   Example text",
           entities: [
             Tourmaline::MessageEntity.new(
               "bot_command",
@@ -55,7 +55,7 @@ module PrivateParlorXT
             ),
             Tourmaline::MessageEntity.new(
               "bold",
-              9,
+              8,
               7
             ),
           ]
@@ -77,8 +77,8 @@ module PrivateParlorXT
 
         message = create_message(
           11,
-          Tourmaline::User.new(60200, false, "voorbeeld"),
-          text: "/tsign   Example text",
+          Tourmaline::User.new(60200, false, "voorbeeld", username: "voorb"),
+          text: "/sign   Example text",
           entities: [
             Tourmaline::MessageEntity.new(
               "bot_command",
@@ -87,7 +87,7 @@ module PrivateParlorXT
             ),
             Tourmaline::MessageEntity.new(
               "bold",
-              9,
+              8,
               7
             ),
           ]
@@ -101,24 +101,20 @@ module PrivateParlorXT
           fail("Message should not be nil")
         end
 
-        expected_text = "Voorb !JMf3r1v1Aw:\nExample text"
+        expected_text = "Example text ~~@voorb"
 
         updated_message.text.should(eq(expected_text))
 
-        updated_message.entities.size.should(eq(3))
+        updated_message.entities.size.should(eq(2))
 
         updated_message.entities[0].type.should_not(eq("bot_command"))
         updated_message.entities[0].type.should(eq("bold"))
         updated_message.entities[0].offset.should(eq(0))
-        updated_message.entities[0].length.should(eq(5))
+        updated_message.entities[0].length.should(eq(7))
 
-        updated_message.entities[1].type.should(eq("code"))
-        updated_message.entities[1].offset.should(eq(6))
-        updated_message.entities[1].length.should(eq(11))
-
-        updated_message.entities[2].type.should(eq("bold"))
-        updated_message.entities[2].offset.should(eq(19))
-        updated_message.entities[2].length.should(eq(7))
+        updated_message.entities[1].type.should(eq("text_link"))
+        updated_message.entities[1].offset.should(eq(13))
+        updated_message.entities[1].length.should(eq(8))
       end
     end
 
@@ -133,7 +129,7 @@ module PrivateParlorXT
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
-          text: "/tsign Example",
+          text: "/sign Example",
         )
 
         spam_services = create_services(client: client, spam: SpamHandler.new)
@@ -161,7 +157,7 @@ module PrivateParlorXT
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
-          text: "/tsign Example",
+          text: "/sign Example",
         )
 
         spam_services = create_services(client: client, spam: SpamHandler.new(
@@ -193,7 +189,7 @@ module PrivateParlorXT
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
-          text: "/tsign Example",
+          text: "/sign Example",
         )
 
         spam_services = create_services(client: client, spam: SpamHandler.new)
@@ -211,7 +207,7 @@ module PrivateParlorXT
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
-          text: "/tsign Example",
+          text: "/sign Example",
         )
 
         spamless_services = create_services(client: client)

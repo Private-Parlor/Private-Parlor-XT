@@ -38,5 +38,9 @@ module PrivateParlorXT
 
     def set_my_commands(commands : Array(Tourmaline::BotCommand), scope : Tourmaline::BotCommandScope? = nil, language_code : String? = nil)
     end
+
+    def get_chat(chat_id : Int32 | Int64 | String)
+      Tourmaline::Chat.new(chat_id, "private")
+    end
   end
 end
