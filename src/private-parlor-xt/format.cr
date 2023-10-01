@@ -383,7 +383,7 @@ module PrivateParlorXT
 
     def format_contact_reply(contact : String?, replies : Replies) : String?
       if contact
-        replies.blacklist_contact.gsub("{contact}", "#{escape_md(contact, version: 2)}")
+        replies.blacklist_contact.gsub("{contact}", contact)
       end
     end
 

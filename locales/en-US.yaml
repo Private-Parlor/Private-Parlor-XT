@@ -142,7 +142,8 @@ replies:
       *cooldown*: {cooldown_until}
 
    # Available placeholders: warn_expiry
-   info_warning: "\\(one warning will expire at {warn_expiry}\\)"
+   # NOTE: This entry should not be escaped
+   info_warning: "(one warning will expire at {warn_expiry})"
 
    # Available placeholders: oid, karma, cooldown_until
    ranked_info: |-
@@ -160,7 +161,7 @@ replies:
    # Available placeholders: joined, left, blacklisted, total
    user_count_full: "*{joined}* _joined,_ *{left}* _left,_ *{blacklisted}* _blacklisted users_ \\(_total_: *{total}*\\)"
 
-   # Available placeholders: eason, duration
+   # Available placeholders: reason, duration
    message_deleted: "_This message has been deleted{reason}\\. You have been given a cooldown of {duration}\\._"
 
    # Available placeholders: reason

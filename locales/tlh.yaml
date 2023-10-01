@@ -142,7 +142,8 @@ replies:
       *bIwegh'a'*: {cooldown_until}
 
    # Available placeholders: warn_expiry
-   info_warning: "\\({warn_expiry} ngugh wa' gruH teqta'\\)"
+   # NOTE: This entry should not be escaped
+   info_warning: "({warn_expiry} ngugh wa' gruH teqta')"
 
    # Available placeholders: oid, karma, cooldown_until
    ranked_info: |-

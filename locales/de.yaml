@@ -143,7 +143,8 @@ replies:
       *Cooldown*: {cooldown_until}
 
    # Available placeholders: warn_expiry
-   info_warning: "\\(Eine Warnung wird {warn_expiry} ablaufen\\)"
+   # NOTE: This entry should not be escaped
+   info_warning: "(Eine Warnung wird {warn_expiry} ablaufen)"
 
    # Available placeholders: oid, karma, cooldown_until
    ranked_info: |-
