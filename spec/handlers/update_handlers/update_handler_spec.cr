@@ -206,7 +206,7 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
         )
 
-        unauthorized_user = SQLiteUser.new(9000, rank: -10)
+        unauthorized_user = MockUser.new(9000, rank: -10)
 
         handler.authorized?(unauthorized_user, message, :Text, services).should(be_false)
       end
@@ -340,7 +340,7 @@ module PrivateParlorXT
           Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         )
 
-        user = SQLiteUser.new(9000, rank: 0)
+        user = MockUser.new(9000, rank: 0)
 
         handler.check_text(nil, user, message, services).should(be_true)
       end
@@ -353,7 +353,7 @@ module PrivateParlorXT
           preformatted: true,
         )
 
-        user = SQLiteUser.new(9000, rank: 0)
+        user = MockUser.new(9000, rank: 0)
 
         handler.check_text("Example Text", user, message, services).should(be_true)
       end
@@ -365,7 +365,7 @@ module PrivateParlorXT
           caption: "Example Text",
         )
 
-        user = SQLiteUser.new(9000, rank: 0)
+        user = MockUser.new(9000, rank: 0)
 
         handler.check_text("Example Text", user, message, services).should(be_true)
       end
@@ -377,7 +377,7 @@ module PrivateParlorXT
           caption: "𝐀𝐁𝐂",
         )
 
-        user = SQLiteUser.new(9000, rank: 0)
+        user = MockUser.new(9000, rank: 0)
 
         handler.check_text("𝐀𝐁𝐂", user, message, services).should(be_false)
       end
@@ -391,7 +391,7 @@ module PrivateParlorXT
           caption: "🐖",
         )
 
-        user = SQLiteUser.new(9000, rank: 0)
+        user = MockUser.new(9000, rank: 0)
 
         handler.check_text("🐖", user, message, r9k_services).should(be_false)
       end
@@ -415,7 +415,7 @@ module PrivateParlorXT
           reply_to_message: reply_to,
         )
 
-        user = SQLiteUser.new(80300, rank: 10)
+        user = MockUser.new(80300, rank: 10)
 
         unless hash = handler.get_reply_receivers(reply_to, message, user, services)
           fail("Handler method should have returned a hash of reply message receivers")
@@ -437,7 +437,7 @@ module PrivateParlorXT
           reply_to_message: reply_to,
         )
 
-        user = SQLiteUser.new(80300, rank: 10)
+        user = MockUser.new(80300, rank: 10)
 
         handler.get_reply_receivers(reply_to, message, user, services).should(be_nil)
       end
@@ -445,13 +445,13 @@ module PrivateParlorXT
 
     describe "#get_message_receivers" do
       it "returns array of user IDs without given user ID" do
-        user = SQLiteUser.new(80300, rank: 10)
+        user = MockUser.new(80300, rank: 10)
 
         handler.get_message_receivers(user, services).should_not(contain(user.id))
       end
 
       it "returns array of user IDs including given user if debug is enabled" do
-        user = SQLiteUser.new(80300, rank: 10)
+        user = MockUser.new(80300, rank: 10)
 
         user.toggle_debug
 

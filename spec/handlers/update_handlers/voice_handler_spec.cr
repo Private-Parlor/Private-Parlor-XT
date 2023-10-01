@@ -12,6 +12,11 @@ module PrivateParlorXT
           MessagePermissions::Voice,
         },
       ),
+      -5 => Rank.new(
+        "Restricted",
+        Set(CommandPermissions).new,
+        Set(MessagePermissions).new,
+      ),
     }
 
     services = create_services(ranks: ranks, relay: MockRelay.new("", client))

@@ -122,7 +122,7 @@ module PrivateParlorXT
 
     describe "#get_user_by_oid" do
       it "returns a user with the given OID" do
-        oid = SQLiteUser.new(20000).get_obfuscated_id
+        oid = MockUser.new(20000).get_obfuscated_id
 
         user = db.get_user_by_oid(oid)
 
@@ -134,7 +134,7 @@ module PrivateParlorXT
       end
 
       it "returns nil if the user does not exist" do
-        oid = SQLiteUser.new(12345).get_obfuscated_id
+        oid = MockUser.new(12345).get_obfuscated_id
 
         user = db.get_user_by_oid(oid)
 
@@ -154,7 +154,7 @@ module PrivateParlorXT
       end
 
       it "returns a user with the oid" do
-        oid = SQLiteUser.new(20000).get_obfuscated_id
+        oid = MockUser.new(20000).get_obfuscated_id
 
         user = db.get_user_by_arg(oid)
 
@@ -205,7 +205,7 @@ module PrivateParlorXT
 
     describe "#update_user" do
       it "updates user with new data" do
-        user = SQLiteUser.new(20000)
+        user = MockUser.new(20000)
         user.update_names("examp", "EXAMP")
 
         db.update_user(user)

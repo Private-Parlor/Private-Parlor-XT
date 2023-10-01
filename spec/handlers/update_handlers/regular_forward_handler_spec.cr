@@ -12,6 +12,11 @@ module PrivateParlorXT
           MessagePermissions::Forward,
         },
       ),
+      -5 => Rank.new(
+        "Restricted",
+        Set(CommandPermissions).new,
+        Set(MessagePermissions).new,
+      ),
     }
 
     services = create_services(ranks: ranks, relay: MockRelay.new("", client))
@@ -575,7 +580,7 @@ module PrivateParlorXT
           )
         )
 
-        user = SQLiteUser.new(9000, rank: 0)
+        user = MockUser.new(9000, rank: 0)
 
         handler.deanonymous_poll(user, message, services).should(be_true)
       end
@@ -595,7 +600,7 @@ module PrivateParlorXT
           )
         )
 
-        user = SQLiteUser.new(9000, rank: 0)
+        user = MockUser.new(9000, rank: 0)
 
         handler.deanonymous_poll(user, message, services).should(be_false)
       end
@@ -606,7 +611,7 @@ module PrivateParlorXT
           Tourmaline::User.new(9000, false, "test"),
         )
 
-        user = SQLiteUser.new(9000, rank: 0)
+        user = MockUser.new(9000, rank: 0)
 
         handler.deanonymous_poll(user, message, services).should(be_false)
       end

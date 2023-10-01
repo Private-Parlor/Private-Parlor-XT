@@ -84,11 +84,6 @@ module PrivateParlorXT
             MessagePermissions::Text,
           },
         ),
-        -5 => Rank.new(
-          "Restricted",
-          Set(CommandPermissions).new,
-          Set(MessagePermissions).new,
-        ),
         -10 => Rank.new(
           "Blacklisted",
           Set(CommandPermissions).new,
@@ -118,27 +113,120 @@ module PrivateParlorXT
     )
   end
 
-  def self.generate_users(database : SQLiteDatabase)
+  def self.generate_users(database : Database)
     database.add_user(20000_i64, nil, "example", 1000)
+    database.update_user(MockUser.new(
+      id: 20000_i64,
+      username: "examp",
+      realname: "example",
+      rank: 1000,
+      joined: Time.utc(2023, 1, 2, 6),
+      left: nil,
+      last_active: Time.utc(2023, 7, 2, 6),
+      cooldown_until: nil,
+      blacklist_reason: nil,
+      warnings: 0,
+      warn_expiry: nil,
+      karma: 0,
+      hide_karma: false,
+      debug_enabled: false,
+      tripcode: nil
+    ))
+
     database.add_user(60200_i64, nil, "voorbeeld", 0)
+    database.update_user(MockUser.new(
+      id: 60200_i64,
+      username: "voorb",
+      realname: "voorbeeld",
+      rank: 0,
+      joined: Time.utc(2023, 1, 2, 6),
+      left: nil,
+      last_active: Time.utc(2023, 1, 2, 6),
+      cooldown_until: nil,
+      blacklist_reason: nil,
+      warnings: 1,
+      warn_expiry: Time.utc(2023, 3, 2, 12),
+      karma: -10,
+      hide_karma: false,
+      debug_enabled: false,
+      tripcode: "Voorb#SecurePassword"
+    ))
+
     database.add_user(80300_i64, nil, "beispiel", 10)
+    database.update_user(MockUser.new(
+      id: 80300_i64,
+      username: nil,
+      realname: "beispiel",
+      rank: 10,
+      joined: Time.utc(2023, 1, 2, 6),
+      left: nil,
+      last_active: Time.utc(2023, 3, 2, 12),
+      cooldown_until: nil,
+      blacklist_reason: nil,
+      warnings: 2,
+      warn_expiry: Time.utc(2023, 4, 2, 12),
+      karma: -20,
+      hide_karma: false,
+      debug_enabled: true,
+      tripcode: nil
+    ))
+
     database.add_user(40000_i64, nil, "esimerkki", 0)
+    database.update_user(MockUser.new(
+      id: 40000_i64,
+      username: nil,
+      realname: "esimerkki",
+      rank: 0,
+      joined: Time.utc(2023, 1, 2, 6),
+      left: Time.utc(2023, 2, 4, 6),
+      last_active: Time.utc(2023, 2, 4, 6),
+      cooldown_until: nil,
+      blacklist_reason: nil,
+      warnings: 0,
+      warn_expiry: nil,
+      karma: 0,
+      hide_karma: false,
+      debug_enabled: false,
+      tripcode: nil
+    ))
+
     database.add_user(70000_i64, nil, "BLACKLISTED", -10)
+    database.update_user(MockUser.new(
+      id: 70000_i64,
+      username: nil,
+      realname: "BLACKLISTED",
+      rank: -10,
+      joined: Time.utc(2023, 1, 2, 6),
+      left: Time.utc(2023, 4, 2, 10),
+      last_active: Time.utc(2023, 1, 2, 6),
+      cooldown_until: nil,
+      blacklist_reason: nil,
+      warnings: 0,
+      warn_expiry: nil,
+      karma: 0,
+      hide_karma: false,
+      debug_enabled: false,
+      tripcode: nil
+    ))
+
     database.add_user(50000_i64, nil, "cooldown", 0)
-
-    user_one = SQLiteUser.new(20000_i64, "examp", "example", 1000, Time.utc(2023, 1, 2, 6), nil, Time.utc(2023, 7, 2, 6), nil, nil, 0, nil, 0, false, false, nil)
-    user_two = SQLiteUser.new(60200_i64, "voorb", "voorbeeld", 0, Time.utc(2023, 1, 2, 6), nil, Time.utc(2023, 1, 2, 6), nil, nil, 1, Time.utc(2023, 3, 2, 12), -10, false, false, "Voorb#SecurePassword")
-    user_three = SQLiteUser.new(80300_i64, nil, "beispiel", 10, Time.utc(2023, 1, 2, 6), nil, Time.utc(2023, 3, 2, 12), nil, nil, 2, Time.utc(2023, 4, 2, 12), -20, false, true, nil)
-    user_four = SQLiteUser.new(40000_i64, nil, "esimerkki", 0, Time.utc(2023, 1, 2, 6), Time.utc(2023, 2, 4, 6), Time.utc(2023, 2, 4, 6), nil, nil, 0, nil, 0, false, false, nil)
-    user_five = SQLiteUser.new(70000_i64, nil, "BLACKLISTED", -10, Time.utc(2023, 1, 2, 6), Time.utc(2023, 4, 2, 10), Time.utc(2023, 1, 2, 6), nil, nil, 0, nil, 0, false, false, nil)
-    user_six = SQLiteUser.new(50000_i64, nil, "cooldown", 0, Time.utc(2023, 1, 2, 6), nil, Time.utc(2023, 2, 4, 6), Time.utc(2033, 2, 4, 6), nil, 0, nil, 0, false, false, nil)
-
-    database.update_user(user_one)
-    database.update_user(user_two)
-    database.update_user(user_three)
-    database.update_user(user_four)
-    database.update_user(user_five)
-    database.update_user(user_six)
+    database.update_user(MockUser.new(
+      id: 50000_i64,
+      username: nil,
+      realname: "cooldown",
+      rank: 0,
+      joined: Time.utc(2023, 1, 2, 6),
+      left: nil,
+      last_active: Time.utc(2023, 2, 4, 6),
+      cooldown_until: Time.utc(2033, 2, 4, 6),
+      blacklist_reason: nil,
+      warnings: 0,
+      warn_expiry: nil,
+      karma: 0,
+      hide_karma: false,
+      debug_enabled: false,
+      tripcode: nil
+    ))
   end
 
   def self.generate_history(history : History)

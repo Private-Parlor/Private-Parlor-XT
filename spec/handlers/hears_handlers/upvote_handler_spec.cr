@@ -182,7 +182,7 @@ module PrivateParlorXT
           text: "+1",
         )
 
-        unauthorized_user = SQLiteUser.new(9000, rank: -10)
+        unauthorized_user = MockUser.new(9000, rank: -10)
 
         handler.authorized?(unauthorized_user, message, :Upvote, services).should(be_false)
       end
