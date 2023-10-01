@@ -90,7 +90,7 @@ jobs:
         name: Private Parlor XT Nightly
         tag_name: v1.X
         body: |
-          Nightly builds for Private Parlor, updated on every commit. Current build based on ${SHA_SHORT}
+          Nightly builds for Private Parlor, updated on every commit. Current build based on ${{ env.SHA_SHORT }}
           Note, these are not optimized builds; see prior releases for more stable production builds.
         files: |
           ./downloads/private-parlor-xt-x86_64/*
