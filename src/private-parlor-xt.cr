@@ -8,8 +8,8 @@ module PrivateParlorXT
   services = initialize_services
 
   # 30 messages every second; going above may result in rate limits
-  sending_routine = Tasker.every(500.milliseconds) do
-    15.times do
+  sending_routine = Tasker.every(1.second) do
+    30.times do
       break if services.relay.send_messages(services)
     end
   end
