@@ -27,8 +27,7 @@ module PrivateParlorXT
         "msgs_deleted" => message_count.to_s,
       })
 
-      # TODO: Move this message to the end of the queue
-      services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+      services.relay.delay_send_to_user(message.message_id.to_i64, user.id, response)
     end
   end
 end

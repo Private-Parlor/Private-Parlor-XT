@@ -38,7 +38,7 @@ module PrivateParlorXT
 
     # Creates a new `QueuedMessage` and pushes it to the back of the queue.
     # Useful for reply messages.
-    def add_to_queue(receiver : Int64, receiver_message : Int64, func : MessageProc) : Nil
+    def add_to_queue(receiver : Int64, receiver_message : Int64 | Nil, func : MessageProc) : Nil
       @queue_mutex.synchronize do
         @queue.push(QueuedMessage.new(nil, nil, receiver, receiver_message, func))
       end

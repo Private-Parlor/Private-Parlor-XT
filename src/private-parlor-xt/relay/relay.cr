@@ -32,7 +32,48 @@ module PrivateParlorXT
       @queue.add_to_queue_priority(
         user,
         reply_message,
-        ->(receiver : UserID, reply : MessageID?) { @client.send_message(receiver, text, disable_web_page_preview: false, reply_to_message_id: reply) }
+        ->(receiver : UserID, reply : MessageID?) {
+          @client.send_message(
+            receiver,
+            text,
+            disable_web_page_preview: false,
+            reply_to_message_id: reply
+          )
+        }
+      )
+    end
+
+    # Relay a message to a single user. Used for system messages that need not be sent immediately
+    def delay_send_to_user(reply_message : MessageID?, user : UserID, text : String)
+      @queue.add_to_queue(
+        user,
+        reply_message,
+        ->(receiver : UserID, reply : MessageID?) {
+          @client.send_message(
+            receiver,
+            text,
+            disable_web_page_preview: false,
+            reply_to_message_id: reply
+          )
+        }
+      )
+    end
+
+    # Relay a message to the log channel.
+    def send_to_channel(reply_message : MessageID?, channel : String, text : String)
+      return unless id = channel.to_i64?
+
+      @queue.add_to_queue(
+        id,
+        nil,
+        ->(receiver : UserID, _reply : MessageID?) {
+          @client.send_message(
+            id,
+            text,
+            parse_mode: nil,
+            disable_web_page_preview: false,
+          )
+        }
       )
     end
 
@@ -345,26 +386,44 @@ module PrivateParlorXT
       )
     end
 
-    def pin_message(receiver : UserID, message : MessageID)
-      @client.pin_chat_message(receiver, message)
+    def pin_message(user : UserID, message : MessageID)
+      @queue.add_to_queue(
+        user,
+        message,
+        ->(receiver : UserID, message_id : MessageID?) {
+          return false unless message_id
+          @client.pin_chat_message(receiver, message_id)
+        }
+      )
     end
 
-    def unpin_message(receiver : UserID, message : MessageID)
-      @client.unpin_chat_message(receiver, message)
+    def unpin_message(user : UserID, message : MessageID? = nil)
+      @queue.add_to_queue(
+        user,
+        message,
+        ->(receiver : UserID, message_id : MessageID?) {
+          @client.unpin_chat_message(receiver, message_id)
+        }
+      )
     end
 
-    def unpin_latest_pin(receiver : UserID)
-      @client.unpin_chat_message(receiver)
-    end
-
-    def edit_message_media(receiver : UserID, media : Tourmaline::InputMedia, message : MessageID)
-      @client.edit_message_media(media, receiver, message)
+    def edit_message_media(user : UserID, media : Tourmaline::InputMedia, message : MessageID)
+      @queue.add_to_queue(
+        user,
+        nil,
+        ->(receiver : UserID, message_id : MessageID?) {
+          @client.edit_message_media(media, receiver, message_id)
+          # We don't care about the result, so return a boolean
+          # to satisfy type requirements
+          true
+        }
+      )
     end
 
     def log_output(text : String) : Nil
       Log.info { text }
       unless @log_channel.empty?
-        @client.send_message(@log_channel, text, parse_mode: nil)
+        send_to_channel(nil, @log_channel, text)
       end
     end
 

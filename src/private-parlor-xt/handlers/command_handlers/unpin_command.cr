@@ -26,7 +26,7 @@ module PrivateParlorXT
         })
       else
         services.database.get_active_users.each do |receiver|
-          services.relay.unpin_latest_pin(receiver)
+          services.relay.unpin_message(receiver)
         end
 
         log = Format.substitute_message(services.logs.unpinned_recent, {
@@ -39,7 +39,7 @@ module PrivateParlorXT
 
       services.relay.log_output(log)
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.success)
+      services.relay.delay_send_to_user(message.message_id.to_i64, user.id, services.replies.success)
     end
   end
 end
