@@ -28,4 +28,4 @@ jobs:
         apk add --update --upgrade --no-cache --force-overwrite build-base yaml-static sqlite-static sqlite-dev libxml2-dev libxml2-static icu-static zlib-static xz-dev xz-static openssl-dev openssl-libs-static pcre-dev gc-dev libevent-static crystal shards
         shards install
     - name: Run tests
-      run: crystal spec -v -p --order random --error-trace
+      run: crystal spec -v --order random --error-trace
