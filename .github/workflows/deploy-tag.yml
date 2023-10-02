@@ -75,9 +75,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Declare some variables
-      id: vars
-      shell: bash
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.0
       with:
@@ -85,7 +83,7 @@ jobs:
     - name: GH Release
       uses: softprops/action-gh-release@v0.1.15
       with:
-        tag_name: ${{ steps.vars.outputs.VERSION }}
+        tag_name: ${{ env.VERSION }}
         files: |
           ./downloads/private-parlor-xt-x86_64/*
           ./downloads/private-parlor-xt-arm64/*
