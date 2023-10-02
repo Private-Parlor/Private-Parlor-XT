@@ -16,14 +16,14 @@ module PrivateParlorXT
 
       return unless photo = message.photo.last
 
-      caption, entities = get_caption_and_entities(message, user, services)
-      return if message.caption && caption.empty?
+      caption, entities = Format.get_text_and_entities(message, user, services)
+      return unless caption
 
       if reply = message.reply_to_message
         return unless reply_msids = get_reply_receivers(reply, message, user, services)
       end
 
-      return false unless r9k_checks(user, message, services)
+      return unless Robot9000.checks(user, message, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 

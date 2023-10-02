@@ -65,8 +65,8 @@ module PrivateParlorXT
         })
       end
 
-      # Messages qeueud from this block may throw a MessageCantBeEdited error
-      # when message is a forward, but will be cought by the message sending routine
+      # Messages qeueued from this block may throw a MessageCantBeEdited error
+      # when message is a forward, but will be caught by the message sending routine
       reply_msids.each do |receiver, receiver_message|
         services.relay.edit_message_media(receiver, input, receiver_message)
       end

@@ -20,7 +20,7 @@ module PrivateParlorXT
         return unless reply_msids = get_reply_receivers(reply, message, user, services)
       end
 
-      return unless r9k_media(user, message, services)
+      return unless Robot9000.media_check(user, message, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 

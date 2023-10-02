@@ -218,6 +218,7 @@ module PrivateParlorXT
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
+          text: "example",
         )
 
         spam_services = create_services(
@@ -236,7 +237,6 @@ module PrivateParlorXT
         handler.spamming?(
           beispiel,
           message,
-          "example",
           spam_services
         )
 
@@ -247,7 +247,6 @@ module PrivateParlorXT
         handler.spamming?(
           beispiel,
           message,
-          "example",
           spam_services,
         ).should(be_true)
       end
@@ -260,6 +259,7 @@ module PrivateParlorXT
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
+          text: "example",
         )
 
         spam_services = create_services(client: client, spam: SpamHandler.new)
@@ -267,7 +267,6 @@ module PrivateParlorXT
         handler.spamming?(
           beispiel,
           message,
-          "example",
           spam_services,
         ).should(be_false)
       end
@@ -280,6 +279,7 @@ module PrivateParlorXT
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
+          text: "example",
         )
 
         spamless_services = create_services(client: client)
@@ -287,7 +287,6 @@ module PrivateParlorXT
         handler.spamming?(
           beispiel,
           message,
-          "example",
           spamless_services
         ).should(be_false)
       end
@@ -300,222 +299,15 @@ module PrivateParlorXT
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
+          text: "example",
           preformatted: true,
         )
 
         handler.spamming?(
           beispiel,
           message,
-          "example",
           services
         ).should(be_false)
-      end
-    end
-
-    describe "#get_text_and_entities" do
-      it "returns unaltered string and entities if message is preformatted" do
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          text: "Preformatted Text ~~Admin",
-          entities: [
-            Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              25,
-            ),
-          ],
-          preformatted: true,
-        )
-
-        unless user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
-
-        text, entities = handler.get_text_and_entities(message, user, services)
-
-        text.should(eq("Preformatted Text ~~Admin"))
-
-        entities.size.should(eq(1))
-
-        entities[0].type.should(eq("bold"))
-        entities[0].offset.should(eq(0))
-        entities[0].length.should(eq(25))
-      end
-
-      it "returns empty text and empty entities when message text is nil" do
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          text: nil,
-        )
-
-        unless user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
-
-        text, entities = handler.get_text_and_entities(message, user, services)
-
-        text.should(be_empty)
-        entities.should(be_empty)
-      end
-
-      it "returns empty text and empty entities when user is spamming" do
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          text: "more text"
-        )
-
-        unless user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
-
-        spam_services = create_services(
-          client: client,
-          spam: SpamHandler.new(
-            spam_limit: 200,
-            score_character: 1,
-            score_line: 100,
-          )
-        )
-
-        unless spam_services.spam
-          fail("Services should contain a spam handler")
-        end
-
-        handler.spamming?(
-          user,
-          message,
-          "example",
-          spam_services
-        )
-
-        text, entities = handler.get_text_and_entities(message, user, spam_services)
-
-        text.should(be_empty)
-        entities.should(be_empty)
-      end
-
-      it "returns empty text and empty entities when user sends invalid text" do
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          text: "𝐀𝐁𝐂"
-        )
-
-        unless user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
-
-        text, entities = handler.get_text_and_entities(message, user, services)
-
-        text.should(be_empty)
-        entities.should(be_empty)
-      end
-
-      it "returns formatted text and updated entities" do
-        config = HandlerConfig.new(
-          MockConfig.new(
-            linked_network: {"foo" => "foochatbot"}
-          )
-        )
-
-        format_services = create_services(client: client, config: config)
-
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          text: "Text with entities and backlinks >>>/foo/",
-          entities: [
-            Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              4,
-            ),
-            Tourmaline::MessageEntity.new(
-              "underline",
-              4,
-              13,
-            ),
-            Tourmaline::MessageEntity.new(
-              "text_link",
-              0,
-              25,
-              "www.google.com"
-            ),
-          ],
-        )
-
-        unless user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
-
-        expected = "Text with entities and backlinks >>>/foo/\n" \
-                   "(www.google.com)"
-
-        text, entities = handler.get_text_and_entities(message, user, format_services)
-
-        text.should(eq(expected))
-        entities.size.should(eq(2))
-
-        entities[0].type.should(eq("underline"))
-        entities[1].type.should(eq("text_link"))
-        entities[1].length.should(eq(8)) # >>>/foo/
-      end
-
-      it "returns formatted text and updated entities with pseudonym" do
-        config = HandlerConfig.new(
-          MockConfig.new(
-            pseudonymous: true,
-            linked_network: {"foo" => "foochatbot"}
-          )
-        )
-
-        format_services = create_services(client: client, config: config)
-
-        message = create_message(
-          11,
-          Tourmaline::User.new(60200, false, "beispiel"),
-          text: "Text with entities and backlinks >>>/foo/",
-          entities: [
-            Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              4,
-            ),
-            Tourmaline::MessageEntity.new(
-              "underline",
-              4,
-              13,
-            ),
-            Tourmaline::MessageEntity.new(
-              "text_link",
-              0,
-              25,
-              "www.google.com"
-            ),
-          ],
-        )
-
-        unless user = services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
-        end
-
-        expected = "Voorb !JMf3r1v1Aw:\n" \
-                   "Text with entities and backlinks >>>/foo/\n" \
-                   "(www.google.com)"
-
-        text, entities = handler.get_text_and_entities(message, user, format_services)
-
-        text.should(eq(expected))
-        entities.size.should(eq(4))
-
-        entities[0].type.should(eq("bold"))
-        entities[1].type.should(eq("code"))
-        entities[2].type.should(eq("underline"))
-        entities[3].type.should(eq("text_link"))
-        entities[3].length.should(eq(8)) # >>>/foo/
       end
     end
   end

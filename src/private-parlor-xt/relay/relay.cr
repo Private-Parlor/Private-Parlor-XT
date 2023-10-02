@@ -68,7 +68,7 @@ module PrivateParlorXT
         nil,
         ->(receiver : UserID, _reply : MessageID?) {
           @client.send_message(
-            id,
+            receiver,
             text,
             parse_mode: nil,
             disable_web_page_preview: false,
@@ -410,7 +410,7 @@ module PrivateParlorXT
     def edit_message_media(user : UserID, media : Tourmaline::InputMedia, message : MessageID)
       @queue.add_to_queue(
         user,
-        nil,
+        message,
         ->(receiver : UserID, message_id : MessageID?) {
           @client.edit_message_media(media, receiver, message_id)
           # We don't care about the result, so return a boolean

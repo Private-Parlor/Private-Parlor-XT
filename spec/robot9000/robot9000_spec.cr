@@ -226,5 +226,460 @@ module PrivateParlorXT
         r9k.get_media_file_id(message).should(eq("unique_sticker"))
       end
     end
+
+    describe "#checks" do
+      it "returns true if there is no Robot9000 service available" do
+        services = create_services()
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+        )
+
+        Robot9000.checks(user, message, services).should(be_true)
+      end
+
+      it "returns false if message fails r9k text check" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new(
+            check_text: true
+          )
+        )
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+        )
+
+        Robot9000.checks(user, message, r9k_services).should(be_true)
+
+        Robot9000.checks(user, message, r9k_services).should(be_false)
+      end
+
+      it "returns false if message fails r9k media check" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new(
+            check_media: true
+          )
+        )
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+          photo: [
+            Tourmaline::PhotoSize.new(
+              "photo_item_one",
+              "unique_photo",
+              1080,
+              1080,
+            ),
+          ]
+        )
+
+        Robot9000.checks(user, message, r9k_services).should(be_true)
+
+        Robot9000.checks(user, message, r9k_services).should(be_false)
+      end
+    end
+
+    describe "#forward_checks" do
+      it "returns true if there is no Robot9000 service available" do
+        services = create_services()
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+        )
+
+        Robot9000.forward_checks(user, message, services).should(be_true)
+      end
+
+      it "returns true if r9k service does not check forwards" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new(
+            check_text: true,
+            check_media: true,
+          )
+        )
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+        )
+
+        Robot9000.forward_checks(user, message, r9k_services).should(be_true)
+      end
+
+      it "returns false if message fails r9k text check" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new(
+            check_forwards: true,
+            check_text: true,
+          )
+        )
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+        )
+
+        Robot9000.forward_checks(user, message, r9k_services).should(be_true)
+
+        Robot9000.forward_checks(user, message, r9k_services).should(be_false)
+      end
+
+      it "returns false if message fails r9k media check" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new(
+            check_forwards: true,
+            check_media: true
+          )
+        )
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+          photo: [
+            Tourmaline::PhotoSize.new(
+              "photo_item_one",
+              "unique_photo",
+              1080,
+              1080,
+            ),
+          ]
+        )
+
+        Robot9000.forward_checks(user, message, r9k_services).should(be_true)
+
+        Robot9000.forward_checks(user, message, r9k_services).should(be_false)
+      end
+    end
+
+    describe "#text_check" do
+      it "returns true if there is no Robot9000 service available" do
+        services = create_services()
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+        )
+
+        Robot9000.text_check(user, message, services).should(be_true)
+      end
+
+      it "returns true if Robot900 does not check text" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new
+        )
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+        )
+
+        Robot9000.text_check(user, message, r9k_services).should(be_true)
+      end
+
+      it "returns false if text is unoriginal" do
+        r9k_services = create_services(
+
+          r9k: MockRobot9000.new(
+            check_text: true,
+          )
+        )
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+        )
+
+        Robot9000.text_check(user, message, r9k_services).should(be_true)
+
+        Robot9000.text_check(user, message, r9k_services).should(be_false)
+      end
+
+      it "cooldowns user if text is unoriginal" do
+        r9k_services = create_services(
+
+          r9k: MockRobot9000.new(
+            check_text: true,
+            cooldown: 10,
+          )
+        )
+
+        user = MockUser.new(9000, cooldown_until: nil)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+        )
+
+        Robot9000.text_check(user, message, r9k_services)
+
+        user.cooldown_until.should(be_nil)
+
+        Robot9000.text_check(user, message, r9k_services)
+
+        user.cooldown_until.should_not(be_nil)
+      end
+
+      it "warns user if text is unoriginal" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new(
+            check_text: true,
+            warn_user: true,
+          )
+        )
+
+        user = MockUser.new(9000, warnings: 0)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+        )
+
+        Robot9000.text_check(user, message, r9k_services)
+
+        user.warnings.should(eq(0))
+        user.cooldown_until.should(be_nil)
+
+        Robot9000.text_check(user, message, r9k_services)
+
+        user.warnings.should(eq(1))
+        user.cooldown_until.should_not(be_nil)
+      end
+
+      it "stores line of text if text is original" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new(
+            check_text: true,
+          )
+        )
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+        )
+
+        Robot9000.text_check(user, message, r9k_services).should(be_true)
+
+        unless r9k = r9k_services.robot9000
+          fail("Services should contain a Robot9000 service")
+        end
+
+        r9k.as(MockRobot9000).lines.should(contain("example text"))
+      end
+    end
+
+    describe "#media_check" do
+      it "returns true if there is no Robot9000 service available" do
+        services = create_services()
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+          photo: [
+            Tourmaline::PhotoSize.new(
+              "photo_item_one",
+              "unique_photo",
+              1080,
+              1080,
+            ),
+          ]
+        )
+
+        Robot9000.media_check(user, message, services).should(be_true)
+      end
+
+      it "returns true if Robot900 does not check media" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new
+        )
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+          photo: [
+            Tourmaline::PhotoSize.new(
+              "photo_item_one",
+              "unique_photo",
+              1080,
+              1080,
+            ),
+          ]
+        )
+
+        Robot9000.media_check(user, message, r9k_services).should(be_true)
+      end
+
+      it "returns false if media is unoriginal" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new(
+            check_media: true,
+          )
+        )
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+          photo: [
+            Tourmaline::PhotoSize.new(
+              "photo_item_one",
+              "unique_photo",
+              1080,
+              1080,
+            ),
+          ]
+        )
+
+        Robot9000.media_check(user, message, r9k_services).should(be_true)
+
+        Robot9000.media_check(user, message, r9k_services).should(be_false)
+      end
+
+      it "cooldowns user if media is unoriginal" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new(
+            check_media: true,
+            cooldown: 10,
+          )
+        )
+
+        user = MockUser.new(9000, cooldown_until: nil)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+          photo: [
+            Tourmaline::PhotoSize.new(
+              "photo_item_one",
+              "unique_photo",
+              1080,
+              1080,
+            ),
+          ]
+        )
+
+        Robot9000.media_check(user, message, r9k_services)
+
+        user.cooldown_until.should(be_nil)
+
+        Robot9000.media_check(user, message, r9k_services)
+
+        user.cooldown_until.should_not(be_nil)
+      end
+
+      it "warns user if media is unoriginal" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new(
+            check_media: true,
+            warn_user: true,
+          )
+        )
+
+        user = MockUser.new(9000, warnings: 0)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+          photo: [
+            Tourmaline::PhotoSize.new(
+              "photo_item_one",
+              "unique_photo",
+              1080,
+              1080,
+            ),
+          ]
+        )
+
+        Robot9000.media_check(user, message, r9k_services)
+
+        user.warnings.should(eq(0))
+        user.cooldown_until.should(be_nil)
+
+        Robot9000.media_check(user, message, r9k_services)
+
+        user.warnings.should(eq(1))
+        user.cooldown_until.should_not(be_nil)
+      end
+
+      it "stores file id if media is original" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new(
+            check_media: true,
+          )
+        )
+
+        user = MockUser.new(9000)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+          photo: [
+            Tourmaline::PhotoSize.new(
+              "photo_item_one",
+              "unique_photo",
+              1080,
+              1080,
+            ),
+          ]
+        )
+
+        Robot9000.media_check(user, message, r9k_services).should(be_true)
+
+        unless r9k = r9k_services.robot9000
+          fail("Services should contain a Robot9000 service")
+        end
+
+        r9k.as(MockRobot9000).files.should(contain("unique_photo"))
+      end
+    end
   end
 end

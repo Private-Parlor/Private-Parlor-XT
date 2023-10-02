@@ -18,7 +18,8 @@ module PrivateParlorXT
 
       return unless authorized?(user, message, :TSign, services)
 
-      return unless text = message.text || message.caption
+      text, entities = Format.valid_text_and_entities(message, user, services)
+      return unless text
 
       unless arg = Format.get_arg(text)
         return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.missing_args)
@@ -26,7 +27,11 @@ module PrivateParlorXT
 
       return if spamming?(user, message, arg, services)
 
-      entities = update_entities(text, arg, message)
+      return unless Robot9000.checks(user, message, services, arg)
+
+      text, entities = Format.format_text(text, entities, false, services)
+
+      entities = update_entities(text, entities, arg, message)
 
       name, tripcode = Format.generate_tripcode(tripcode, services.config.tripcode_salt)
       text, entities = Format.format_tripcode_sign(name, tripcode, entities)
@@ -53,23 +58,11 @@ module PrivateParlorXT
       end
 
       if spam.spammy_sign?(user.id, services.config.sign_limit_interval)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.sign_spam)
         return true
       end
 
       false
-    end
-
-    def update_entities(text : String, arg : String, message : Tourmaline::Message) : Array(Tourmaline::MessageEntity)
-      entities = message.entities.empty? ? message.caption_entities : message.entities
-
-      if command_entity = entities.find { |item| item.type == "bot_command" && item.offset == 0 }
-        entities = entities - [command_entity]
-      end
-
-      # Remove command and all whitespace before the start of arg
-      arg_offset = text[...text.index(arg)].to_utf16.size
-      Format.reset_entities(entities, arg_offset)
     end
   end
 end

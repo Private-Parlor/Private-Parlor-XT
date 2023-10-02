@@ -21,7 +21,7 @@ module PrivateParlorXT
       text = message.text || message.caption || ""
       entities = message.entities.empty? ? message.caption_entities : message.entities
 
-      return unless r9k_forward_checks(user, message, services)
+      return unless Robot9000.forward_checks(user, message, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 

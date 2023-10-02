@@ -105,16 +105,12 @@ module PrivateParlorXT
 
         updated_message.text.should(eq(expected_text))
 
-        updated_message.entities.size.should(eq(2))
+        updated_message.entities.size.should(eq(1))
 
         updated_message.entities[0].type.should_not(eq("bot_command"))
-        updated_message.entities[0].type.should(eq("bold"))
-        updated_message.entities[0].offset.should(eq(0))
-        updated_message.entities[0].length.should(eq(7))
-
-        updated_message.entities[1].type.should(eq("text_link"))
-        updated_message.entities[1].offset.should(eq(13))
-        updated_message.entities[1].length.should(eq(8))
+        updated_message.entities[0].type.should(eq("text_link"))
+        updated_message.entities[0].offset.should(eq(13))
+        updated_message.entities[0].length.should(eq(8))
       end
     end
 

@@ -23,14 +23,14 @@ module PrivateParlorXT
 
       return unless album = message.media_group_id
 
-      caption, entities = get_caption_and_entities(message, user, services)
-      return if message.caption && caption.empty?
+      caption, entities = Format.get_text_and_entities(message, user, services)
+      return unless caption
 
       if reply = message.reply_to_message
         return unless reply_msids = get_reply_receivers(reply, message, user, services)
       end
 
-      return unless r9k_checks(user, message, services)
+      return unless Robot9000.checks(user, message, services)
 
       update_user_activity(user, services)
 

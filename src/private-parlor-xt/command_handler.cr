@@ -73,5 +73,15 @@ module PrivateParlorXT
         services.history.delete_message_group(message)
       end
     end
+
+    def update_entities(text : String, entities : Array(Tourmaline::MessageEntity), arg : String, message : Tourmaline::Message) : Array(Tourmaline::MessageEntity)
+      if command_entity = entities.find { |item| item.type == "bot_command" && item.offset == 0 }
+        entities = entities - [command_entity]
+      end
+
+      # Remove command and all whitespace before the start of arg
+      arg_offset = text[...text.index(arg)].to_utf16.size
+      Format.reset_entities(entities, arg_offset)
+    end
   end
 end

@@ -26,6 +26,82 @@ module PrivateParlorXT
       end
     end
 
+    def check_text(text : String, user : User, message : Tourmaline::Message, services : Services) : Bool
+      return true if message.preformatted?
+
+      if r9k = services.robot9000
+        unless r9k.allow_text?(text)
+          services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.rejected_message)
+          return false
+        end
+      else
+        unless Format.allow_text?(text)
+          services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.rejected_message)
+          return false
+        end
+      end
+
+      true
+    end
+
+    def format_text(text : String, entities : Array(Tourmaline::MessageEntity), preformatted : Bool?, services : Services) : Tuple(String, Array(Tourmaline::MessageEntity))
+      unless preformatted
+        text, entities = Format.strip_format(text, entities, services.config.entity_types, services.config.linked_network)
+      end
+
+      return text, entities
+    end
+
+    def get_text_and_entities(message : Tourmaline::Message, user : User, services : Services) : Tuple(String?, Array(Tourmaline::MessageEntity))
+      text = message.caption || message.text || ""
+      entities = message.entities.empty? ? message.caption_entities : message.entities
+
+      if message.preformatted?
+        return text, entities
+      end
+
+      unless check_text(text, user, message, services)
+        return nil, [] of Tourmaline::MessageEntity
+      end
+
+      text, entities = format_text(text, message.entities, message.preformatted?, services)
+
+      text, entities = prepend_pseudonym(text, entities, user, message, services)
+
+      return text, entities
+    end
+
+    def valid_text_and_entities(message : Tourmaline::Message, user : User, services : Services) : Tuple(String?, Array(Tourmaline::MessageEntity))
+      text = message.caption || message.text || ""
+      entities = message.entities.empty? ? message.caption_entities : message.entities
+
+      unless check_text(text, user, message, services)
+        return nil, [] of Tourmaline::MessageEntity
+      end
+
+      return text, entities
+    end
+
+    def prepend_pseudonym(text : String, entities : Array(Tourmaline::MessageEntity), user : User, message : Tourmaline::Message, services : Services) : Tuple(String?, Array(Tourmaline::MessageEntity))
+      unless services.config.pseudonymous
+        return text, entities
+      end
+
+      if message.preformatted?
+        return text, entities
+      end
+
+      unless tripcode = user.tripcode
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.no_tripcode_set)
+        return nil, [] of Tourmaline::MessageEntity
+      end
+
+      name, tripcode = Format.generate_tripcode(tripcode, services.config.tripcode_salt)
+      header, entities = Format.format_tripcode_sign(name, tripcode, entities)
+
+      return header + text, entities
+    end
+
     def format_cooldown_until(expiration : Time?, locale : Locale, replies : Replies) : String
       if time = format_time(expiration, locale.time_format)
         "#{replies.cooldown_true} #{time}"

@@ -91,5 +91,104 @@ module PrivateParlorXT
 
     # Stores the file id to be referenced later
     abstract def add_file_id(id : String) : Nil
+
+    def self.checks(user : User, message : Tourmaline::Message, services : Services, text : String? = nil) : Bool
+      return true if message.preformatted?
+
+      return false unless text_check(user, message, services, text)
+      return false unless media_check(user, message, services)
+
+      true
+    end
+
+    def self.forward_checks(user : User, message : Tourmaline::Message, services : Services) : Bool
+      return true unless r9k = services.robot9000
+      return true unless r9k.check_forwards?
+
+      return false unless text_check(user, message, services)
+      return false unless media_check(user, message, services)
+
+      true
+    end
+
+    def self.text_check(user : User, message : Tourmaline::Message, services : Services, text : String? = nil) : Bool
+      unless (r9k = services.robot9000) && r9k.check_text?
+        return true
+      end
+
+      unless text
+        text = message.text || message.caption || ""
+      end
+
+      entities = message.caption_entities.empty? ? message.entities : message.caption_entities
+
+      stripped_text = r9k.strip_text(text, entities)
+
+      if r9k.unoriginal_text?(stripped_text)
+        if r9k.cooldown > 0
+          duration = user.cooldown(r9k.cooldown.seconds)
+          services.database.update_user(user)
+
+          response = Format.substitute_reply(services.replies.r9k_cooldown, {
+            "duration" => Format.format_time_span(duration, services.locale),
+          })
+        elsif r9k.warn_user?
+          duration = user.cooldown(services.config.cooldown_base)
+          user.warn(services.config.warn_lifespan)
+          services.database.update_user(user)
+
+          response = Format.substitute_reply(services.replies.r9k_cooldown, {
+            "duration" => Format.format_time_span(duration, services.locale),
+          })
+        else
+          response = services.replies.unoriginal_message
+        end
+
+        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+
+        return false
+      end
+
+      r9k.add_line(stripped_text)
+
+      true
+    end
+
+    def self.media_check(user : User, message : Tourmaline::Message, services : Services) : Bool
+      unless (r9k = services.robot9000) && r9k.check_media?
+        return true
+      end
+
+      return false unless file_id = r9k.get_media_file_id(message)
+
+      if r9k.unoriginal_media?(file_id)
+        if r9k.cooldown > 0
+          duration = user.cooldown(r9k.cooldown.seconds)
+          services.database.update_user(user)
+
+          response = Format.substitute_reply(services.replies.r9k_cooldown, {
+            "duration" => Format.format_time_span(duration, services.locale),
+          })
+        elsif r9k.warn_user?
+          duration = user.cooldown(services.config.cooldown_base)
+          user.warn(services.config.warn_lifespan)
+          services.database.update_user(user)
+
+          response = Format.substitute_reply(services.replies.r9k_cooldown, {
+            "duration" => Format.format_time_span(duration, services.locale),
+          })
+        else
+          response = services.replies.unoriginal_message
+        end
+
+        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+
+        return false
+      end
+
+      r9k.add_file_id(file_id)
+
+      true
+    end
   end
 end

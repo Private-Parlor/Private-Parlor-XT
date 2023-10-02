@@ -57,7 +57,7 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       if spam.spammy_upvote?(user.id, services.config.upvote_limit_interval)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
+        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.upvote_spam)
         return true
       end
 

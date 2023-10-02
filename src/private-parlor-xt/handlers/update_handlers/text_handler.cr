@@ -12,14 +12,16 @@ module PrivateParlorXT
 
       return unless authorized?(user, message, :Text, services)
 
-      text, entities = get_text_and_entities(message, user, services)
-      return if text.empty?
+      return if spamming?(user, message, services)
+
+      text, entities = Format.get_text_and_entities(message, user, services)
+      return unless text
 
       if reply = message.reply_to_message
         return unless reply_msids = get_reply_receivers(reply, message, user, services)
       end
 
-      return unless r9k_text(user, message, services)
+      return unless Robot9000.text_check(user, message, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 
@@ -37,10 +39,12 @@ module PrivateParlorXT
       )
     end
 
-    def spamming?(user : User, message : Tourmaline::Message, text : String, services : Services) : Bool
+    def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
       return false if message.preformatted?
+
+      return true unless text = message.text
 
       if spam.spammy_text?(user.id, text)
         services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
@@ -48,30 +52,6 @@ module PrivateParlorXT
       end
 
       false
-    end
-
-    def get_text_and_entities(message : Tourmaline::Message, user : User, services : Services) : Tuple(String, Array(Tourmaline::MessageEntity))
-      if text = message.text
-        if message.preformatted?
-          return text, message.entities
-        end
-      else
-        return "", [] of Tourmaline::MessageEntity
-      end
-
-      if spamming?(user, message, text, services)
-        return "", [] of Tourmaline::MessageEntity
-      end
-
-      unless check_text(text, user, message, services)
-        return "", [] of Tourmaline::MessageEntity
-      end
-
-      text, entities = format_text(text, message.entities, message.preformatted?, services)
-
-      text, entities = prepend_pseudonym(text, entities, user, message, services)
-
-      return text, entities
     end
   end
 end

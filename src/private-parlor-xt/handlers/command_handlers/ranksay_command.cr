@@ -20,7 +20,8 @@ module PrivateParlorXT
                       :Ranksay, :RanksayLower
                     )
 
-      return unless text = message.text || message.caption
+      text, entities = Format.valid_text_and_entities(message, user, services)
+      return unless text
 
       unless arg = Format.get_arg(text)
         return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.missing_args)
@@ -30,7 +31,11 @@ module PrivateParlorXT
 
       return unless rank_name = get_rank_name(text, user, message, authority, services)
 
-      entities = update_entities(text, arg, message)
+      return unless Robot9000.checks(user, message, services, arg)
+
+      text, entities = Format.format_text(text, entities, false, services)
+
+      entities = update_entities(text, entities, arg, message)
 
       text, entities = Format.format_ranksay(rank_name, arg, entities)
 
@@ -86,18 +91,6 @@ module PrivateParlorXT
       else
         services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.command_disabled)
       end
-    end
-
-    def update_entities(text : String, arg : String, message : Tourmaline::Message) : Array(Tourmaline::MessageEntity)
-      entities = message.entities.empty? ? message.caption_entities : message.entities
-
-      if command_entity = entities.find { |item| item.type == "bot_command" && item.offset == 0 }
-        entities = entities - [command_entity]
-      end
-
-      # Remove command and all whitespace before the start of arg
-      arg_offset = text[...text.index(arg)].to_utf16.size
-      Format.reset_entities(entities, arg_offset)
     end
   end
 end

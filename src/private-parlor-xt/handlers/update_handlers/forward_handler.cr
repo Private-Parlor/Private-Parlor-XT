@@ -14,7 +14,7 @@ module PrivateParlorXT
 
       return if spamming?(user, message, services)
 
-      return unless r9k_forward_checks(user, message, services)
+      return unless Robot9000.forward_checks(user, message, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 

@@ -210,10 +210,20 @@ module PrivateParlorXT
       {% end %}
 
       client.on({{update_on[:update]}}) do |ctx|
+        {% if update == DocumentHandler %}
+          if message = ctx.message
+            next if message.animation
+          end
+        {% end %}
         {{handler}}.do(ctx, services)
       end
     else
       client.on({{update_on[:update]}}) do |ctx|
+        {% if update == DocumentHandler %}
+          if message = ctx.message
+            next if message.animation
+          end
+        {% end %}
         media_disabled(ctx, {{update_on[:update]}}, services)
       end
     end
@@ -251,7 +261,7 @@ module PrivateParlorXT
       })
 
       response = Format.substitute_reply(services.replies.inactive, {
-        "time" => limit.to_s,
+        "time" => limit.days.to_s,
       })
 
       services.relay.log_output(log)

@@ -60,6 +60,471 @@ module PrivateParlorXT
       end
     end
 
+    describe "#check_text" do
+      it "returns true if message is preformatted" do
+        services = create_services()
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+          preformatted: true,
+        )
+
+        user = MockUser.new(9000, rank: 0)
+
+        Format.check_text("Example Text", user, message, services).should(be_true)
+      end
+
+      it "returns true if text passes checks" do
+        services = create_services()
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "Example Text",
+        )
+
+        user = MockUser.new(9000, rank: 0)
+
+        Format.check_text("Example Text", user, message, services).should(be_true)
+      end
+
+      it "returns false if text is not allowed" do
+        services = create_services()
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "𝐀𝐁𝐂",
+        )
+
+        user = MockUser.new(9000, rank: 0)
+
+        Format.check_text("𝐀𝐁𝐂", user, message, services).should(be_false)
+      end
+
+      it "returns false if text contains codepoints not permitted by Robot9000" do
+        r9k_services = create_services(r9k: MockRobot9000.new)
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: "🐖",
+        )
+
+        user = MockUser.new(9000, rank: 0)
+
+        Format.check_text("🐖", user, message, r9k_services).should(be_false)
+      end
+    end
+
+    describe "#format_text" do
+      # TODO: Add tests
+      # Attempting to test this function produces a hard to isolate compiler bug
+    end
+
+    describe "#prepend_pseudonym" do
+      it "returns unaltered text and entities if pseudonymous mode is not enabled" do
+        services = create_services()
+
+        message_text = "Example Text"
+        message_entities = [
+          Tourmaline::MessageEntity.new(
+            "underline",
+            0,
+            7,
+          ),
+          Tourmaline::MessageEntity.new(
+            "strikethrough",
+            7,
+            4,
+          ),
+        ]
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: message_text,
+          entities: message_entities,
+        )
+
+        user = MockUser.new(9000)
+
+        text, entities = Format.prepend_pseudonym(
+          message_text,
+          message_entities,
+          user,
+          message,
+          services
+        )
+
+        text.should(eq(message_text))
+        entities.should(eq(message_entities))
+      end
+
+      it "returns unaltered text and entities if message is preformatted" do
+        mock_services = create_services(
+          config: HandlerConfig.new(
+            MockConfig.new(
+              pseudonymous: true,
+            )
+          )
+        )
+
+        message_text = "Example Text"
+        message_entities = [
+          Tourmaline::MessageEntity.new(
+            "underline",
+            0,
+            7,
+          ),
+          Tourmaline::MessageEntity.new(
+            "strikethrough",
+            7,
+            4,
+          ),
+        ]
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: message_text,
+          entities: message_entities,
+          preformatted: true,
+        )
+
+        user = MockUser.new(9000)
+
+        text, entities = Format.prepend_pseudonym(
+          message_text,
+          message_entities,
+          user,
+          message,
+          mock_services
+        )
+
+        text.should(eq(message_text))
+        entities.should(eq(message_entities))
+      end
+
+      it "returns empty text and entities is user has no tripcode" do
+        mock_services = create_services(
+          config: HandlerConfig.new(
+            MockConfig.new(
+              pseudonymous: true,
+            )
+          )
+        )
+
+        message_text = "Example Text"
+        message_entities = [
+          Tourmaline::MessageEntity.new(
+            "underline",
+            0,
+            7,
+          ),
+          Tourmaline::MessageEntity.new(
+            "strikethrough",
+            7,
+            4,
+          ),
+        ]
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: message_text,
+          entities: message_entities,
+        )
+
+        user = MockUser.new(9000)
+
+        text, entities = Format.prepend_pseudonym(
+          message_text,
+          message_entities,
+          user,
+          message,
+          mock_services
+        )
+
+        text.should(be_nil)
+        entities.should(be_empty)
+      end
+
+      it "returns updated entities and text with tripcode header" do
+        mock_services = create_services(
+          config: HandlerConfig.new(
+            MockConfig.new(
+              pseudonymous: true,
+            )
+          )
+        )
+
+        message_text = "Example Text"
+        message_entities = [
+          Tourmaline::MessageEntity.new(
+            "underline",
+            0,
+            7,
+          ),
+          Tourmaline::MessageEntity.new(
+            "strikethrough",
+            7,
+            4,
+          ),
+        ]
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: message_text,
+          entities: message_entities,
+        )
+
+        user = MockUser.new(9000, tripcode: "User#SecurePassword")
+
+        text, entities = Format.prepend_pseudonym(
+          message_text,
+          message_entities,
+          user,
+          message,
+          mock_services
+        )
+
+        expected = "User !JMf3r1v1Aw:\n" \
+                   "Example Text"
+
+        text.should(eq(expected))
+        entities.size.should(eq(4))
+
+        entities[0].type.should(eq("bold"))
+        entities[1].type.should(eq("code"))
+        entities[2].type.should(eq("underline"))
+        entities[3].type.should(eq("strikethrough"))
+      end
+    end
+
+    describe "#get_text_and_entities" do
+      it "returns unaltered string and entities if message is preformatted" do
+        services = create_services()
+        generate_users(services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          caption: "Preformatted Text ~~Admin",
+          entities: [
+            Tourmaline::MessageEntity.new(
+              "bold",
+              0,
+              25,
+            ),
+          ],
+          preformatted: true,
+        )
+
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        text, entities = Format.get_text_and_entities(message, user, services)
+
+        text.should(eq("Preformatted Text ~~Admin"))
+
+        entities.size.should(eq(1))
+
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(25))
+      end
+
+      it "returns nil and empty entities when user sends invalid text" do
+        services = create_services()
+        generate_users(services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          caption: "𝐀𝐁𝐂"
+        )
+
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        text, entities = Format.get_text_and_entities(message, user, services)
+
+        text.should(be_nil)
+        entities.should(be_empty)
+      end
+
+      it "returns formatted text and updated entities" do
+        services = create_services()
+        generate_users(services.database)
+
+        config = HandlerConfig.new(
+          MockConfig.new(
+            linked_network: {"foo" => "foochatbot"}
+          )
+        )
+
+        format_services = create_services(config: config)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          caption: "Text with entities and backlinks >>>/foo/",
+          entities: [
+            Tourmaline::MessageEntity.new(
+              "bold",
+              0,
+              4,
+            ),
+            Tourmaline::MessageEntity.new(
+              "underline",
+              4,
+              13,
+            ),
+            Tourmaline::MessageEntity.new(
+              "text_link",
+              0,
+              25,
+              "www.google.com"
+            ),
+          ],
+        )
+
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        expected = "Text with entities and backlinks >>>/foo/\n" \
+                   "(www.google.com)"
+
+        text, entities = Format.get_text_and_entities(message, user, format_services)
+
+        text.should(eq(expected))
+        entities.size.should(eq(2))
+
+        entities[0].type.should(eq("underline"))
+        entities[1].type.should(eq("text_link"))
+        entities[1].length.should(eq(8)) # >>>/foo/
+      end
+
+      it "returns formatted text and updated entities with pseudonym" do
+        config = HandlerConfig.new(
+          MockConfig.new(
+            pseudonymous: true,
+            linked_network: {"foo" => "foochatbot"}
+          )
+        )
+
+        format_services = create_services(config: config)
+
+        generate_users(format_services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(60200, false, "beispiel"),
+          caption: "Text with entities and backlinks >>>/foo/",
+          entities: [
+            Tourmaline::MessageEntity.new(
+              "bold",
+              0,
+              4,
+            ),
+            Tourmaline::MessageEntity.new(
+              "underline",
+              4,
+              13,
+            ),
+            Tourmaline::MessageEntity.new(
+              "text_link",
+              0,
+              25,
+              "www.google.com"
+            ),
+          ],
+        )
+
+        unless user = format_services.database.get_user(60200)
+          fail("User 60200 should exist in the database")
+        end
+
+        expected = "Voorb !JMf3r1v1Aw:\n" \
+                   "Text with entities and backlinks >>>/foo/\n" \
+                   "(www.google.com)"
+
+        text, entities = Format.get_text_and_entities(message, user, format_services)
+
+        text.should(eq(expected))
+        entities.size.should(eq(4))
+
+        entities[0].type.should(eq("bold"))
+        entities[1].type.should(eq("code"))
+        entities[2].type.should(eq("underline"))
+        entities[3].type.should(eq("text_link"))
+        entities[3].length.should(eq(8)) # >>>/foo/
+      end
+
+      it "returns formatted text and updated entities with pseudonym" do
+        config = HandlerConfig.new(
+          MockConfig.new(
+            pseudonymous: true,
+            linked_network: {"foo" => "foochatbot"}
+          )
+        )
+
+        format_services = create_services(config: config)
+
+        generate_users(format_services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(60200, false, "beispiel"),
+          text: "Text with entities and backlinks >>>/foo/",
+          entities: [
+            Tourmaline::MessageEntity.new(
+              "bold",
+              0,
+              4,
+            ),
+            Tourmaline::MessageEntity.new(
+              "underline",
+              4,
+              13,
+            ),
+            Tourmaline::MessageEntity.new(
+              "text_link",
+              0,
+              25,
+              "www.google.com"
+            ),
+          ],
+        )
+
+        unless user = format_services.database.get_user(60200)
+          fail("User 60200 should exist in the database")
+        end
+
+        expected = "Voorb !JMf3r1v1Aw:\n" \
+                   "Text with entities and backlinks >>>/foo/\n" \
+                   "(www.google.com)"
+
+        text, entities = Format.get_text_and_entities(message, user, format_services)
+
+        text.should(eq(expected))
+        entities.size.should(eq(4))
+
+        entities[0].type.should(eq("bold"))
+        entities[1].type.should(eq("code"))
+        entities[2].type.should(eq("underline"))
+        entities[3].type.should(eq("text_link"))
+        entities[3].length.should(eq(8)) # >>>/foo/
+      end
+    end
+
     describe "#remove_entities" do
       it "should remove only the given entity types" do
         strip_types = ["bold", "text_link"]

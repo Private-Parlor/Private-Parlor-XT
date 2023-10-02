@@ -50,20 +50,16 @@ module PrivateParlorXT
 
         updated_message.text.should(eq(expected_text))
 
-        updated_message.entities.size.should(eq(3))
+        updated_message.entities.size.should(eq(2))
 
         updated_message.entities[0].type.should_not(eq("bot_command"))
         updated_message.entities[0].type.should(eq("bold"))
-        updated_message.entities[0].offset.should(eq(0))
-        updated_message.entities[0].length.should(eq(7))
+        updated_message.entities[0].offset.should(eq(13))
+        updated_message.entities[0].length.should(eq(9))
 
-        updated_message.entities[1].type.should(eq("bold"))
+        updated_message.entities[1].type.should(eq("italic"))
         updated_message.entities[1].offset.should(eq(13))
         updated_message.entities[1].length.should(eq(9))
-
-        updated_message.entities[2].type.should(eq("italic"))
-        updated_message.entities[2].offset.should(eq(13))
-        updated_message.entities[2].length.should(eq(9))
       end
     end
 

@@ -48,9 +48,9 @@ module PrivateParlorXT
       end
 
       if services.database.no_users?
-        services.database.add_user(id, username, fullname, services.access.max_rank)
+        user = services.database.add_user(id, username, fullname, services.access.max_rank)
       else
-        services.database.add_user(id, username, fullname, services.config.default_rank)
+        user = services.database.add_user(id, username, fullname, services.config.default_rank)
       end
 
       if motd = services.database.get_motd
@@ -65,7 +65,7 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.joined, {
         "id"   => id.to_s,
-        "name" => username || fullname,
+        "name" => user.get_formatted_name,
       })
 
       services.relay.log_output(log)
