@@ -5,7 +5,7 @@
 
 ![GitHub top language](https://img.shields.io/github/languages/top/Private-Parlor/Private-Parlor-XT?style=for-the-badge&logo=crystal&labelColor=%23000000&color=%23000000)
 
-A featureful Telegram bot to make an anonymou, private group chat on Telegram. 
+A featureful Telegram bot to make an anonymous, private group chat on Telegram. 
 
 Inspired by [secretlounge-ng](https://github.com/secretlounge/secretlounge-ng)
 
@@ -16,13 +16,13 @@ Using the [Tourmaline](https://github.com/protoncr/tourmaline) Telegram bot libr
 - Restrict new users from sending media by configuring the media limit period.
 - Define new ranks via the configuration file with permissions to use various commands and media.
 - Make tripcodes harder to crack by adding a salt to the config file.
-- Add a spoiler to media before they're sent; or, add a spoiler after the fact using the `/spoiler` command.
+- Add a spoiler to media before they're sent; or add a spoiler after the fact using the `/spoiler` command.
 - Pin and unpin messages to the chat.
 - Privately reveal your username to another user.
 - Print log messages to a Telegram channel
-- Kick users that have been inactive for a confiurable period of time.
+- Kick users that have been inactive for a configurable period of time.
 - Send forwarded messages as photos, videos, animations, etc. to prevent rate limiting.
-- Pseudonymous mode; have users send every message with a tripcode.
+- Have users automatically send every message with a tripcode using pseudonymous mode.
 - Store message history in the database to reduce RAM usage.
 - Localization in English, German, and Klingon.
 - Persist message history longer or less than 24 hours.
@@ -42,7 +42,7 @@ cd private-parlor-xt
 shards install
 shards build --release
 ~~~
-Alternatively, you can downlod the precompiled binaries from [Releases](https://github.com/Private-Parlor/Private-Parlor-XT/releases)
+Alternatively, you can download the precompiled binaries from [Releases](https://github.com/Private-Parlor/Private-Parlor-XT/releases)
 
 ## BotFather Setup
 1. Start a conversation with [BotFather](https://t.me/botfather)
