@@ -120,8 +120,56 @@ module PrivateParlorXT
     end
 
     describe "#format_text" do
-      # TODO: Add tests
-      # Attempting to test this function produces a hard to isolate compiler bug
+      it "returns unaltered text and entities if preformatted is true" do
+        services = create_services()
+
+        text = "Example text ~~Admin"
+
+        entities = [
+          Tourmaline::MessageEntity.new(
+            "text_link",
+            8,
+            4,
+            url: "www.example.com"
+          ),
+          Tourmaline::MessageEntity.new(
+            "bold",
+            13,
+            7,
+          ),
+        ]
+
+        tuple = Format.format_text(text, entities, true, services)
+
+        tuple[0].should(eq(text))
+        tuple[1].should(eq(entities))
+      end
+
+      it "returns formatted text and entities" do
+        services = create_services()
+
+        text = "Example text ~~Admin"
+
+        entities = [
+          Tourmaline::MessageEntity.new(
+            "text_link",
+            8,
+            4,
+            url: "www.example.com"
+          ),
+          Tourmaline::MessageEntity.new(
+            "bold",
+            13,
+            7,
+          ),
+        ]
+
+        expected_tuple = Format.strip_format(text, entities, services.config.entity_types, services.config.linked_network)
+
+        tuple = Format.format_text(text, entities, false, services)
+
+        tuple.should(eq(expected_tuple))
+      end
     end
 
     describe "#prepend_pseudonym" do
