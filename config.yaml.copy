@@ -580,8 +580,11 @@ relay_contact: false
 # --------------------------------
 
 ## 
-## Interval in seconds for which a user is cooldowned
-## after hitting the spam limit.
+## Reduce each user's spam score once every interval (seconds)
+##
+## When a user hits the spam limit, he will be unable 
+## to send another message until his score has descreased
+## enough to allow another message to be sent.
 ##
 ## Set to 0 to disable spam checking 
 ## NOTE: Disabling will also disable upvote/downvote and sign spam checks
@@ -624,7 +627,13 @@ relay_contact: false
 ##
 ## Spam scores
 ##
-## TODO: Add description
+## Each message type has a spam score; when a user sends a message
+## of that type, the value is added to the user's spam counter.
+##
+## When the counter exceeds the spam limit after adding the
+## the spam score, the user cannot send another message until his
+## counter decays below the spam limit and the next spam score 
+## does not exceed the spam limit again.
 ## 
 ## Accepted values: any 32-bit integer
 ##
