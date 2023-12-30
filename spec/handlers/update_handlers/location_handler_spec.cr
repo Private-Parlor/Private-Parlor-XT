@@ -40,13 +40,16 @@ module PrivateParlorXT
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
           location: Tourmaline::Location.new(0.0, 0.0),
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user")
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          )
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -67,9 +70,9 @@ module PrivateParlorXT
         user.set_rank(-5)
         services.database.update_user(user)
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -90,9 +93,9 @@ module PrivateParlorXT
           reply_to_message: reply_to
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -107,9 +110,9 @@ module PrivateParlorXT
           location: Tourmaline::Location.new(0.0, 0.0),
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -148,9 +151,9 @@ module PrivateParlorXT
           reply_to_message: reply_to
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -167,7 +170,12 @@ module PrivateParlorXT
           msg.origin_msid.should(eq(11))
           msg.sender.should(eq(80300))
           msg.data.should(eq("0.0, 0.0"))
-          msg.reply_to.should(eq(replies[msg.receiver]))
+          
+          if reply_to = msg.reply_to
+            reply_to.message_id.should(eq(replies[msg.receiver]))
+          else
+            msg.receiver.should(eq(50000))
+          end
 
           [
             80300,

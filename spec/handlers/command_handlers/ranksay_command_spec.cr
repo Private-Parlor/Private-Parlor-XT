@@ -61,9 +61,7 @@ module PrivateParlorXT
           ]
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, restricted_user_services)
+        handler.do(message, restricted_user_services)
 
         messages = restricted_user_services.relay.as(MockRelay).empty_queue
 
@@ -93,11 +91,9 @@ module PrivateParlorXT
           ]
         )
 
-        ctx = create_context(client, create_update(11, message))
+        handler.do(message, services)
 
-        handler.do(ctx, services)
-
-        unless updated_message = ctx.message
+        unless updated_message = message
           fail("Message should not be nil")
         end
 

@@ -9,7 +9,7 @@ module PrivateParlorXT
       @origin_msid : MessageID | Array(MessageID) | Nil,
       @sender : UserID?,
       @receiver : UserID,
-      @reply_to : MessageID?,
+      @reply_to : ReplyParameters?,
       @function : MessageProc,
       @data : String,
       @entities : Array(Tourmaline::MessageEntity)

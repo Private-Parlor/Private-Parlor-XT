@@ -46,8 +46,11 @@ module PrivateParlorXT
             1080,
             60,
           ),
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user")
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          )
         )
 
         unless user = services.database.get_user(80300)
@@ -57,9 +60,9 @@ module PrivateParlorXT
         user.set_rank(-5)
         services.database.update_user(user)
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -72,8 +75,11 @@ module PrivateParlorXT
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
           text: "Example Text",
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user"),
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          ),
           entities: [
             Tourmaline::MessageEntity.new(
               "underline",
@@ -83,9 +89,9 @@ module PrivateParlorXT
           ],
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -124,8 +130,11 @@ module PrivateParlorXT
             1080,
             60
           ),
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user"),
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          ),
           entities: [
             Tourmaline::MessageEntity.new(
               "underline",
@@ -135,9 +144,9 @@ module PrivateParlorXT
           ],
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -174,8 +183,11 @@ module PrivateParlorXT
             "unique_audio",
             60,
           ),
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user"),
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          ),
           entities: [
             Tourmaline::MessageEntity.new(
               "underline",
@@ -185,9 +197,9 @@ module PrivateParlorXT
           ],
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -223,8 +235,11 @@ module PrivateParlorXT
             "document_item_one",
             "unique_document",
           ),
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user"),
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          ),
           entities: [
             Tourmaline::MessageEntity.new(
               "underline",
@@ -234,9 +249,9 @@ module PrivateParlorXT
           ],
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -275,8 +290,11 @@ module PrivateParlorXT
             1080,
             60,
           ),
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user"),
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          ),
           entities: [
             Tourmaline::MessageEntity.new(
               "underline",
@@ -286,9 +304,9 @@ module PrivateParlorXT
           ],
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -328,8 +346,11 @@ module PrivateParlorXT
               1080,
             ),
           ],
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user"),
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          ),
           entities: [
             Tourmaline::MessageEntity.new(
               "underline",
@@ -339,9 +360,9 @@ module PrivateParlorXT
           ],
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -382,8 +403,11 @@ module PrivateParlorXT
             false,
             false,
           ),
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user"),
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          ),
           entities: [
             Tourmaline::MessageEntity.new(
               "underline",
@@ -393,9 +417,9 @@ module PrivateParlorXT
           ],
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -432,8 +456,11 @@ module PrivateParlorXT
             1080,
             60,
           ),
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user"),
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          ),
           caption: "Forwarded from other user",
           entities: [
             Tourmaline::MessageEntity.new(
@@ -449,9 +476,9 @@ module PrivateParlorXT
           ],
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 

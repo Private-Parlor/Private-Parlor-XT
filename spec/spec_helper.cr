@@ -258,7 +258,6 @@ module PrivateParlorXT
   def self.create_message(
     message_id : Int64,
     tourmaline_user : Tourmaline::User,
-    forward_date : Time? = nil,
     reply_to_message : Tourmaline::Message? = nil,
     media_group_id : String? = nil,
     text : String? = nil,
@@ -277,11 +276,7 @@ module PrivateParlorXT
     poll : Tourmaline::Poll? = nil,
     venue : Tourmaline::Venue? = nil,
     location : Tourmaline::Location? = nil,
-    forward_from : Tourmaline::User? = nil,
-    forward_from_chat : Tourmaline::Chat? = nil,
-    forward_from_message_id : Int64? = nil,
-    forward_signature : String? = nil,
-    forward_sender_name : String? = nil,
+    forward_origin : Tourmaline::MessageOrigin? = nil,
     preformatted : Bool? = nil
   ) : Tourmaline::Message
     message = Tourmaline::Message.new(
@@ -289,7 +284,6 @@ module PrivateParlorXT
       Time.utc,
       Tourmaline::Chat.new(tourmaline_user.id, "private"),
       from: tourmaline_user,
-      forward_date: nil,
       reply_to_message: reply_to_message,
       media_group_id: media_group_id,
       text: text,
@@ -309,16 +303,8 @@ module PrivateParlorXT
       poll: poll,
       venue: venue,
       location: location,
-      forward_from: forward_from,
-      forward_from_chat: forward_from_chat,
-      forward_from_message_id: forward_from_message_id,
-      forward_signature: forward_signature,
-      forward_sender_name: forward_sender_name,
+      forward_origin: forward_origin,
     )
-
-    if date = forward_date
-      message.forward_date = date
-    end
 
     message.preformatted = preformatted
 

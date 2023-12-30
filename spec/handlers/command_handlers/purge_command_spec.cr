@@ -45,9 +45,7 @@ module PrivateParlorXT
           Tourmaline::User.new(20000, false, "example"),
         )
 
-        ctx = create_context(client, create_update(50, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         services.history.get_origin_message(12).should(be_nil)
         services.history.get_origin_message(13).should(be_nil)

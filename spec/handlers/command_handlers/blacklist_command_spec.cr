@@ -48,9 +48,7 @@ module PrivateParlorXT
           reply_to_message: reply_to,
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -83,9 +81,7 @@ module PrivateParlorXT
           reply_to_message: reply_to,
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -110,9 +106,7 @@ module PrivateParlorXT
           reply_to_message: reply_to,
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         services.history.get_origin_message(9).should(be_nil)
 

@@ -801,11 +801,15 @@ module PrivateParlorXT
         message = create_message(
           100_i64,
           Tourmaline::User.new(80300, false, "beispiel"),
-          forward_from: Tourmaline::User.new(
-            9000,
-            is_bot: false,
-            first_name: "example",
-            last_name: nil,
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(
+              9000,
+              is_bot: false,
+              first_name: "example",
+              last_name: nil,
+            )
           )
         )
 
@@ -832,12 +836,16 @@ module PrivateParlorXT
         message = create_message(
           100_i64,
           Tourmaline::User.new(80300, false, "beispiel"),
-          forward_from: Tourmaline::User.new(
-            9000,
-            is_bot: true,
-            first_name: "ExampleBot",
-            last_name: nil,
-            username: "example_bot"
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(
+              9000,
+              is_bot: true,
+              first_name: "ExampleBot",
+              last_name: nil,
+              username: "example_bot"
+            )
           )
         )
 
@@ -864,12 +872,16 @@ module PrivateParlorXT
         message = create_message(
           100_i64,
           Tourmaline::User.new(80300, false, "beispiel"),
-          forward_from_message_id: 200_i64,
-          forward_from_chat: Tourmaline::Chat.new(
-            9000,
-            type: "channel",
-            title: "Example Channel",
-            username: "ExamplesChannel"
+          forward_origin: Tourmaline::MessageOriginChannel.new(
+            "channel",
+            Time.utc,
+            Tourmaline::Chat.new(
+              9000,
+              type: "channel",
+              title: "Example Channel",
+              username: "ExamplesChannel"
+            ),
+            200_i64,
           )
         )
 
@@ -896,11 +908,15 @@ module PrivateParlorXT
         message = create_message(
           100_i64,
           Tourmaline::User.new(80300, false, "beispiel"),
-          forward_from_message_id: 200_i64,
-          forward_from_chat: Tourmaline::Chat.new(
-            -1009000,
-            type: "private",
-            title: "Private Example Channel",
+          forward_origin: Tourmaline::MessageOriginChannel.new(
+            "channel",
+            Time.utc,
+            Tourmaline::Chat.new(
+              -1009000,
+              type: "private",
+              title: "Private Example Channel",
+            ),
+            200_i64,
           )
         )
 
@@ -927,7 +943,11 @@ module PrivateParlorXT
         message = create_message(
           100_i64,
           Tourmaline::User.new(80300, false, "beispiel"),
-          forward_sender_name: "Private User"
+          forward_origin: Tourmaline::MessageOriginHiddenUser.new(
+            "hidden_user",
+            Time.utc,
+            "Private User"
+          )
         )
 
         header, entities = Format.get_forward_header(message, [] of Tourmaline::MessageEntity)

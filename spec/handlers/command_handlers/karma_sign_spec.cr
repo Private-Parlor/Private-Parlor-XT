@@ -38,11 +38,9 @@ module PrivateParlorXT
           ]
         )
 
-        ctx = create_context(client, create_update(11, message))
+        handler.do(message, services)
 
-        handler.do(ctx, services)
-
-        unless updated_message = ctx.message
+        unless updated_message = message
           fail("Message should not be nil")
         end
 

@@ -47,9 +47,9 @@ module PrivateParlorXT
           text: "/whitelist 9000",
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -77,9 +77,9 @@ module PrivateParlorXT
           text: "/whitelist 9000",
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, open_registration_services)
+        handler.do(message, open_registration_services)
 
         messages = open_registration_services.relay.as(MockRelay).empty_queue
 
@@ -97,9 +97,9 @@ module PrivateParlorXT
           text: "/whitelist 9000",
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         whitelisted_user = services.database.get_user(9000)
 

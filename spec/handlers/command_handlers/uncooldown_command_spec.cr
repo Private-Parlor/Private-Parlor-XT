@@ -41,9 +41,9 @@ module PrivateParlorXT
           text: "/uncooldown user",
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -71,9 +71,9 @@ module PrivateParlorXT
           text: "/uncoodown 60200",
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         unless updated_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
@@ -103,9 +103,9 @@ module PrivateParlorXT
           text: "/uncoodown #{obfuscated_id}",
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         unless updated_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
@@ -134,9 +134,9 @@ module PrivateParlorXT
           text: "/uncoodown voorb",
         )
 
-        ctx = create_context(client, create_update(11, message))
+        
 
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         unless updated_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
