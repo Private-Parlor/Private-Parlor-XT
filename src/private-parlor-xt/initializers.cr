@@ -136,7 +136,7 @@ module PrivateParlorXT
 
       arr << Tourmaline::CommandHandler.new(commands) do |ctx|
         next unless message = ctx.message
-        next if message.date == 0 # Message is inaccessible 
+        next if message.date == 0 # Message is inaccessible
 
         message = message.as(Tourmaline::Message)
 
@@ -145,7 +145,7 @@ module PrivateParlorXT
     else
       arr << Tourmaline::CommandHandler.new({{command_responds_to[:command]}}) do |ctx|
         next unless message = ctx.message
-        next if message.date == 0 # Message is inaccessible 
+        next if message.date == 0 # Message is inaccessible
 
         message = message.as(Tourmaline::Message)
 
@@ -189,7 +189,7 @@ module PrivateParlorXT
 
       arr << Tourmaline::HearsHandler.new({{command_hears[:text]}}) do |ctx|
         next unless message = ctx.message
-        next if message.date == 0 # Message is inaccessible 
+        next if message.date == 0 # Message is inaccessible
 
         message = message.as(Tourmaline::Message)
 
@@ -198,7 +198,7 @@ module PrivateParlorXT
     else
       arr << Tourmaline::HearsHandler.new({{command_hears[:text]}}) do |ctx|
         next unless message = ctx.message
-        next if message.date == 0 # Message is inaccessible 
+        next if message.date == 0 # Message is inaccessible
 
         message = message.as(Tourmaline::Message)
 
@@ -231,7 +231,7 @@ module PrivateParlorXT
 
       client.on({{update_on[:update]}}) do |ctx|
         next unless message = ctx.message
-        next if message.date == 0 # Message is inaccessible 
+        next if message.date == 0 # Message is inaccessible
 
         message = message.as(Tourmaline::Message)
 
@@ -243,7 +243,7 @@ module PrivateParlorXT
     else
       client.on({{update_on[:update]}}) do |ctx|
         next unless message = ctx.message
-        next if message.date == 0 # Message is inaccessible 
+        next if message.date == 0 # Message is inaccessible
 
         message = message.as(Tourmaline::Message)
 

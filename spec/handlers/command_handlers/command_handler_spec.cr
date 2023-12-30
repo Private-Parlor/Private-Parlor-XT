@@ -51,8 +51,6 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel", "spec", "new_username"),
         )
 
-        new_names_context = create_context(client, create_update(11, new_names_message))
-
         tuple = handler.get_message_and_user(new_names_message, services)
 
         unless tuple[0]
@@ -74,8 +72,6 @@ module PrivateParlorXT
           Tourmaline::User.new(9000, false, "no_user"),
         )
 
-        no_user_context = create_context(client, create_update(11, no_user_message))
-
         tuple = handler.get_message_and_user(no_user_message, services)
 
         unless returned_message = tuple[0]
@@ -91,8 +87,6 @@ module PrivateParlorXT
           11,
           Tourmaline::User.new(70000, false, "BLACKLISTED"),
         )
-
-        blacklisted_user_context = create_context(client, create_update(11, blacklisted_user_message))
 
         tuple = handler.get_message_and_user(blacklisted_user_message, services)
 
