@@ -19,15 +19,6 @@ module PrivateParlorXT
     end
 
     # Creates a new `QueuedMessage` and pushes it to the back of the queue.
-    def add_to_queue(cached_msid : Int64 | Array(Int64), sender_id : Int64 | Nil, receiver_ids : Array(Int64), reply_msid : Nil, func : MessageProc) : Nil
-      @queue_mutex.synchronize do
-        receiver_ids.each do |receiver_id|
-          @queue.push(QueuedMessage.new(cached_msid, sender_id, receiver_id, nil, func))
-        end
-      end
-    end
-
-    # Creates a new `QueuedMessage` with a reply and pushes it to the back of the queue.
     def add_to_queue(cached_msid : Int64 | Array(Int64), sender_id : Int64 | Nil, receiver_ids : Array(Int64), reply_msids : Hash(Int64, ReplyParameters), func : MessageProc) : Nil
       @queue_mutex.synchronize do
         receiver_ids.each do |receiver_id|

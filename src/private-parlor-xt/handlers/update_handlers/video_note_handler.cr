@@ -16,9 +16,8 @@ module PrivateParlorXT
 
       return unless video_note = message.video_note
 
-      if reply = message.reply_to_message
-        return unless reply_messages = get_reply_receivers(reply, message, user, services)
-      end
+      reply_messages = get_reply_receivers(message, user, services)
+      return unless reply_exists?(message, reply_messages, user, services)
 
       return unless Robot9000.checks(user, message, services)
 

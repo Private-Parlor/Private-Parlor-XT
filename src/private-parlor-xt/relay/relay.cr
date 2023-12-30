@@ -5,11 +5,12 @@ require "tourmaline"
 module PrivateParlorXT
 
   alias ReplyParameters = Tourmaline::ReplyParameters
+
   class RelayParameters
     getter original_message : MessageID
     getter sender : UserID
     getter receivers : Array(UserID)
-    getter replies : Hash(UserID, ReplyParameters)? = nil
+    getter replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters
     getter text : String = ""
     getter entities : Array(Tourmaline::MessageEntity)? = nil
     getter link_preview_options : Tourmaline::LinkPreviewOptions? = nil
@@ -20,7 +21,7 @@ module PrivateParlorXT
       @original_message : MessageID,
       @sender : UserID,
       @receivers : Array(UserID),
-      @replies : Hash(UserID, ReplyParameters)? = nil,
+      @replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters,
       @text : String = "",
       @entities : Array(Tourmaline::MessageEntity)? = nil,
       @link_preview_options : Tourmaline::LinkPreviewOptions? = nil,
@@ -63,6 +64,7 @@ module PrivateParlorXT
           @client.send_message(
             receiver,
             text,
+            link_preview_options: Tourmaline::LinkPreviewOptions.new(),
             reply_parameters: reply
           )
         }
@@ -258,7 +260,7 @@ module PrivateParlorXT
         params.original_message,
         params.sender,
         params.receivers,
-        nil,
+        params.replies,
         ->(receiver : UserID, _reply : ReplyParameters?) {
           @client.forward_message(
             receiver,

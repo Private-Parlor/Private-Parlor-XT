@@ -77,17 +77,19 @@ module PrivateParlorXT
       services.relay.send_to_user(nil, user.id, response)
     end
 
-    def get_reply_receivers(reply : Tourmaline::Message, message : Tourmaline::Message, user : User, services : Services) : Hash(UserID, ReplyParameters)?
-      replies = services.history.get_all_receivers(reply.message_id.to_i64)
+    def get_reply_receivers(message : Tourmaline::Message, user : User, services : Services) : Hash(UserID, ReplyParameters)
+      return Hash(UserID, ReplyParameters).new unless reply = message.reply_to_message
 
-      if replies.empty?
-        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.not_in_cache)
-        return
-      end
+      replies = services.history.get_all_receivers(reply.message_id.to_i64)
 
       replies.transform_values do |val|
         ReplyParameters.new(val)
       end
+    end
+
+    def reply_exists?(message : Tourmaline::Message, replies : Hash(UserID, ReplyParameters), user : User, services : Services) : Bool?
+      return true unless message.reply_to_message && replies.empty?
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.not_in_cache)
     end
 
     def get_message_receivers(user : User, services : Services) : Array(UserID)

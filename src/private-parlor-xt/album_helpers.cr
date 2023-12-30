@@ -13,14 +13,14 @@ module PrivateParlorXT
       getter sender : UserID
       getter receivers : Array(UserID)
       getter media : Array(AlbumMedia)
-      getter replies : Hash(UserID, ReplyParameters)? = nil
+      getter replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters
 
       def initialize(
         @original_messages : Array(MessageID),
         @sender : UserID,
         @receivers : Array(UserID),
         @media : Array(AlbumMedia),
-        @replies : Hash(UserID, ReplyParameters)? = nil,
+        @replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters,
       )
       end
     end
@@ -58,7 +58,7 @@ module PrivateParlorXT
       end
     end
 
-    def relay_album(albums : Hash(String, Album), album : String, message_id : MessageID, input : AlbumMedia, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, ReplyParameters)?, services : Services)
+    def relay_album(albums : Hash(String, Album), album : String, message_id : MessageID, input : AlbumMedia, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, ReplyParameters), services : Services)
       if albums[album]?
         albums[album].message_ids << message_id
         albums[album].media << input

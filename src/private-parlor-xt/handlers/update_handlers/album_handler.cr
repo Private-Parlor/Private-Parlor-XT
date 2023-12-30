@@ -26,9 +26,8 @@ module PrivateParlorXT
       caption, entities = Format.get_text_and_entities(message, user, services)
       return unless caption
 
-      if reply = message.reply_to_message
-        return unless reply_messages = get_reply_receivers(reply, message, user, services)
-      end
+      reply_messages = get_reply_receivers(message, user, services)
+      return unless reply_exists?(message, reply_messages, user, services)
 
       return unless Robot9000.checks(user, message, services)
 

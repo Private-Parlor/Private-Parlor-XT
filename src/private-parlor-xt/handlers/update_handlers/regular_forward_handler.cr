@@ -115,7 +115,7 @@ module PrivateParlorXT
           input,
           user,
           receivers,
-          nil,
+          {} of UserID => ReplyParameters,
           services
         )
       elsif file = message.animation
