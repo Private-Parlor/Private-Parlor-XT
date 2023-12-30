@@ -25,10 +25,10 @@ module PrivateParlorXT
       receivers = get_message_receivers(user, services)
 
       services.relay.send_forward(RelayParameters.new(
-          original_message: cached_message,
-          sender: user.id,
-          receivers: receivers,
-        ),
+        original_message: cached_message,
+        sender: user.id,
+        receivers: receivers,
+      ),
         poll_copy.message_id.to_i64,
       )
     end

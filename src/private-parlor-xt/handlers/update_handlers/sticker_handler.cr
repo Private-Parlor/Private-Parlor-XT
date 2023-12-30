@@ -28,12 +28,12 @@ module PrivateParlorXT
       receivers = get_message_receivers(user, services)
 
       services.relay.send_sticker(RelayParameters.new(
-          original_message: new_message,
-          sender: user.id,
-          receivers: receivers,
-          replies: reply_messages,
-          media: sticker.file_id,
-        )
+        original_message: new_message,
+        sender: user.id,
+        receivers: receivers,
+        replies: reply_messages,
+        media: sticker.file_id,
+      )
       )
     end
 

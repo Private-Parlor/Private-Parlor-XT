@@ -26,11 +26,11 @@ module PrivateParlorXT
       receivers = get_message_receivers(user, services)
 
       services.relay.send_venue(RelayParameters.new(
-          original_message: new_message,
-          sender: user.id,
-          receivers: receivers,
-          replies: reply_messages,
-        ),
+        original_message: new_message,
+        sender: user.id,
+        receivers: receivers,
+        replies: reply_messages,
+      ),
         venue,
       )
     end

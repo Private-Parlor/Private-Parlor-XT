@@ -55,8 +55,6 @@ module PrivateParlorXT
           )
         )
 
-        
-
         handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -85,8 +83,6 @@ module PrivateParlorXT
 
         user.set_rank(-5)
         services.database.update_user(user)
-
-        
 
         handler.do(message, services)
 
@@ -117,8 +113,6 @@ module PrivateParlorXT
           reply_to_message: reply_to
         )
 
-        
-
         handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -141,8 +135,6 @@ module PrivateParlorXT
             false,
           ),
         )
-
-        
 
         handler.do(message, services)
 
@@ -191,8 +183,6 @@ module PrivateParlorXT
           reply_to_message: reply_to
         )
 
-        
-
         handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -210,7 +200,7 @@ module PrivateParlorXT
           msg.origin_msid.should(eq(11))
           msg.sender.should(eq(80300))
           msg.data.should(eq("sticker_item_one"))
-          
+
           if reply_to = msg.reply_to
             reply_to.message_id.should(eq(replies[msg.receiver]))
           else

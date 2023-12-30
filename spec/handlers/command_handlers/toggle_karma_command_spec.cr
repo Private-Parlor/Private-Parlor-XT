@@ -33,8 +33,6 @@ module PrivateParlorXT
           Tourmaline::User.new(20000, false, "example"),
         )
 
-        
-
         handler.do(message, services)
 
         updated_user = services.database.get_user(20000)

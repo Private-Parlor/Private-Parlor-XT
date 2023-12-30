@@ -54,8 +54,6 @@ module PrivateParlorXT
           )
         )
 
-        
-
         handler.do(message, services)
 
         handler.albums["album_two"]?.should(be_nil)
@@ -81,8 +79,6 @@ module PrivateParlorXT
 
         user.set_rank(-5)
         services.database.update_user(user)
-
-        
 
         handler.do(message, services)
 
@@ -111,8 +107,6 @@ module PrivateParlorXT
           media_group_id: "album_four",
           reply_to_message: reply_to
         )
-
-        
 
         handler.do(message, services)
 

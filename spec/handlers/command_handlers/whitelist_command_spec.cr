@@ -47,8 +47,6 @@ module PrivateParlorXT
           text: "/whitelist 9000",
         )
 
-        
-
         handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -77,8 +75,6 @@ module PrivateParlorXT
           text: "/whitelist 9000",
         )
 
-        
-
         handler.do(message, open_registration_services)
 
         messages = open_registration_services.relay.as(MockRelay).empty_queue
@@ -96,8 +92,6 @@ module PrivateParlorXT
           Tourmaline::User.new(20000, false, "example"),
           text: "/whitelist 9000",
         )
-
-        
 
         handler.do(message, services)
 

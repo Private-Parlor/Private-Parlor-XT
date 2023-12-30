@@ -31,14 +31,14 @@ module PrivateParlorXT
       receivers = get_message_receivers(user, services)
 
       services.relay.send_document(RelayParameters.new(
-          original_message: new_message,
-          sender: user.id,
-          receivers: receivers,
-          replies: reply_messages,
-          media: document.file_id,
-          text: caption,
-          entities: entities,
-        )
+        original_message: new_message,
+        sender: user.id,
+        receivers: receivers,
+        replies: reply_messages,
+        media: document.file_id,
+        text: caption,
+        entities: entities,
+      )
       )
     end
 

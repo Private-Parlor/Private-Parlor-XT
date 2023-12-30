@@ -47,8 +47,6 @@ module PrivateParlorXT
           reply_to_message: reply_to,
         )
 
-        
-
         handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -79,8 +77,6 @@ module PrivateParlorXT
           text: "/warn detailed reason",
           reply_to_message: reply_to,
         )
-
-        
 
         handler.do(message, services)
 

@@ -31,15 +31,15 @@ module PrivateParlorXT
       receivers = get_message_receivers(user, services)
 
       services.relay.send_photo(RelayParameters.new(
-          original_message: new_message,
-          sender: user.id,
-          receivers: receivers,
-          replies: reply_messages,
-          media: photo.file_id,
-          text: caption,
-          entities: entities,
-          spoiler: services.config.allow_spoilers ? message.has_media_spoiler? : false,
-        )
+        original_message: new_message,
+        sender: user.id,
+        receivers: receivers,
+        replies: reply_messages,
+        media: photo.file_id,
+        text: caption,
+        entities: entities,
+        spoiler: services.config.allow_spoilers ? message.has_media_spoiler? : false,
+      )
       )
     end
 

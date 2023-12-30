@@ -3,7 +3,6 @@ require "./queue.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-
   alias ReplyParameters = Tourmaline::ReplyParameters
 
   class RelayParameters
@@ -26,7 +25,7 @@ module PrivateParlorXT
       @entities : Array(Tourmaline::MessageEntity)? = nil,
       @link_preview_options : Tourmaline::LinkPreviewOptions? = nil,
       @media : String = "",
-      @spoiler : Bool? = nil,
+      @spoiler : Bool? = nil
     )
     end
   end
@@ -64,7 +63,7 @@ module PrivateParlorXT
           @client.send_message(
             receiver,
             text,
-            link_preview_options: Tourmaline::LinkPreviewOptions.new(),
+            link_preview_options: Tourmaline::LinkPreviewOptions.new,
             reply_parameters: reply
           )
         }

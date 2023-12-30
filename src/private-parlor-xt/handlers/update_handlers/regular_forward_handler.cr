@@ -32,10 +32,10 @@ module PrivateParlorXT
       # Foward regular forwards, otherwise add header to text and offset entities then send as a captioned type
       if Format.regular_forward?(text, entities)
         return services.relay.send_forward(RelayParameters.new(
-            original_message: new_message,
-            sender: user.id,
-            receivers: receivers,
-          ),
+          original_message: new_message,
+          sender: user.id,
+          receivers: receivers,
+        ),
           message.message_id.to_i64
         )
       end
@@ -44,10 +44,10 @@ module PrivateParlorXT
 
       unless header
         return services.relay.send_forward(RelayParameters.new(
-            original_message: new_message,
-            sender: user.id,
-            receivers: receivers,
-          ),
+          original_message: new_message,
+          sender: user.id,
+          receivers: receivers,
+        ),
           message.message_id.to_i64
         )
       end
@@ -98,12 +98,12 @@ module PrivateParlorXT
     def relay_regular_forward(message : Tourmaline::Message, text : String, entities : Array(Tourmaline::MessageEntity), cached_message : MessageID, user : User, receivers : Array(UserID), services : Services)
       if message.text
         services.relay.send_text(RelayParameters.new(
-            original_message: cached_message,
-            sender: user.id,
-            receivers: receivers,
-            text: text,
-            entities: entities,
-          )
+          original_message: cached_message,
+          sender: user.id,
+          receivers: receivers,
+          text: text,
+          entities: entities,
+        )
         )
       elsif album = message.media_group_id
         return unless input = get_album_input(message, text, entities)
@@ -120,57 +120,57 @@ module PrivateParlorXT
         )
       elsif file = message.animation
         services.relay.send_animation(RelayParameters.new(
-            original_message: cached_message,
-            sender: user.id,
-            receivers: receivers,
-            media: file.file_id,
-            text: text,
-            entities: entities,
-            spoiler: message.has_media_spoiler?,
-          )
+          original_message: cached_message,
+          sender: user.id,
+          receivers: receivers,
+          media: file.file_id,
+          text: text,
+          entities: entities,
+          spoiler: message.has_media_spoiler?,
+        )
         )
       elsif file = message.audio
         services.relay.send_audio(RelayParameters.new(
-            original_message: cached_message,
-            sender: user.id,
-            receivers: receivers,
-            media: file.file_id,
-            text: text,
-            entities: entities,
-          )
+          original_message: cached_message,
+          sender: user.id,
+          receivers: receivers,
+          media: file.file_id,
+          text: text,
+          entities: entities,
+        )
         )
       elsif file = message.document
         services.relay.send_document(RelayParameters.new(
-            original_message: cached_message,
-            sender: user.id,
-            receivers: receivers,
-            media: file.file_id,
-            text: text,
-            entities: entities,
-          )
+          original_message: cached_message,
+          sender: user.id,
+          receivers: receivers,
+          media: file.file_id,
+          text: text,
+          entities: entities,
+        )
         )
       elsif file = message.video
         services.relay.send_video(RelayParameters.new(
-            original_message: cached_message,
-            sender: user.id,
-            receivers: receivers,
-            media: file.file_id,
-            text: text,
-            entities: entities,
-            spoiler: message.has_media_spoiler?,
-          )
+          original_message: cached_message,
+          sender: user.id,
+          receivers: receivers,
+          media: file.file_id,
+          text: text,
+          entities: entities,
+          spoiler: message.has_media_spoiler?,
+        )
         )
       elsif (file = message.photo) && file.last?
         file = file.last
         services.relay.send_photo(RelayParameters.new(
-            original_message: cached_message,
-            sender: user.id,
-            receivers: receivers,
-            media: file.file_id,
-            text: text,
-            entities: entities,
-            spoiler: message.has_media_spoiler?,
-          )
+          original_message: cached_message,
+          sender: user.id,
+          receivers: receivers,
+          media: file.file_id,
+          text: text,
+          entities: entities,
+          spoiler: message.has_media_spoiler?,
+        )
         )
       else
         services.relay.send_forward(RelayParameters.new(
@@ -178,8 +178,8 @@ module PrivateParlorXT
           sender: user.id,
           receivers: receivers,
         ),
-        message.message_id.to_i64
-      )
+          message.message_id.to_i64
+        )
       end
     end
   end

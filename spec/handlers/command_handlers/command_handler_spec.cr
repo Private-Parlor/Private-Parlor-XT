@@ -31,8 +31,6 @@ module PrivateParlorXT
           reply_to_message: reply_to,
         )
 
-        
-
         tuple = handler.get_message_and_user(message, services)
 
         unless returned_message = tuple[0]

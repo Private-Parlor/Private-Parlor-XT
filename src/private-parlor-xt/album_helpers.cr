@@ -20,7 +20,7 @@ module PrivateParlorXT
         @sender : UserID,
         @receivers : Array(UserID),
         @media : Array(AlbumMedia),
-        @replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters,
+        @replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters
       )
       end
     end
@@ -79,12 +79,12 @@ module PrivateParlorXT
         end
 
         services.relay.send_album(AlbumRelayParameters.new(
-            original_messages: cached_messages,
-            sender: user.id,
-            receivers: receivers,
-            replies: reply_msids,
-            media: prepared_album.media,
-          )
+          original_messages: cached_messages,
+          sender: user.id,
+          receivers: receivers,
+          replies: reply_msids,
+          media: prepared_album.media,
+        )
         )
       }
     end

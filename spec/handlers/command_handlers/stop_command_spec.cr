@@ -33,8 +33,6 @@ module PrivateParlorXT
           Tourmaline::User.new(40000, false, "esimerkki"),
         )
 
-        
-
         handler.do(message, services)
 
         left_user = services.database.get_user(40000)
@@ -53,8 +51,6 @@ module PrivateParlorXT
           11,
           Tourmaline::User.new(80300, false, "esimerkki"),
         )
-
-        
 
         handler.do(message, services)
 

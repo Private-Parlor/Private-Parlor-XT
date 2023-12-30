@@ -41,8 +41,6 @@ module PrivateParlorXT
           text: "/uncooldown user",
         )
 
-        
-
         handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -70,8 +68,6 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
           text: "/uncoodown 60200",
         )
-
-        
 
         handler.do(message, services)
 
@@ -103,8 +99,6 @@ module PrivateParlorXT
           text: "/uncoodown #{obfuscated_id}",
         )
 
-        
-
         handler.do(message, services)
 
         unless updated_user = services.database.get_user(60200)
@@ -133,8 +127,6 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel"),
           text: "/uncoodown voorb",
         )
-
-        
 
         handler.do(message, services)
 

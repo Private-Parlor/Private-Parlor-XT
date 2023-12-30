@@ -16,7 +16,7 @@ module PrivateParlorXT
           @client.send_message(
             receiver,
             text,
-            link_preview_options: Tourmaline::LinkPreviewOptions.new(),
+            link_preview_options: Tourmaline::LinkPreviewOptions.new,
             reply_parameters: reply
           )
         }

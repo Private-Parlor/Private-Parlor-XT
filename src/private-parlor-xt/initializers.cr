@@ -265,8 +265,8 @@ module PrivateParlorXT
     })
 
     services.relay.send_to_user(
-      ReplyParameters.new(message.message_id), 
-      info.id.to_i64, 
+      ReplyParameters.new(message.message_id),
+      info.id.to_i64,
       response
     )
   end

@@ -26,8 +26,6 @@ module PrivateParlorXT
           text: "/tripcode name#password"
         )
 
-        
-
         handler.do(message, services)
 
         updated_user = services.database.get_user(20000)

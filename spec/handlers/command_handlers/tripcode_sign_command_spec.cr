@@ -61,8 +61,6 @@ module PrivateParlorXT
           ]
         )
 
-        
-
         handler.do(message, restricted_user_services)
 
         messages = restricted_user_services.relay.as(MockRelay).empty_queue
@@ -92,8 +90,6 @@ module PrivateParlorXT
             ),
           ]
         )
-
-        
 
         handler.do(message, services)
 

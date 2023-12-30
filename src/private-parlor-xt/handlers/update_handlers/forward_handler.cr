@@ -23,10 +23,10 @@ module PrivateParlorXT
       receivers = get_message_receivers(user, services)
 
       services.relay.send_forward(RelayParameters.new(
-          original_message: new_message,
-          sender: user.id,
-          receivers: receivers,
-        ),
+        original_message: new_message,
+        sender: user.id,
+        receivers: receivers,
+      ),
         message.message_id.to_i64
       )
     end

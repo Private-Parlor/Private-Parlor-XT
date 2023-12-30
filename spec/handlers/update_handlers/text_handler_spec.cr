@@ -47,8 +47,6 @@ module PrivateParlorXT
           )
         )
 
-        
-
         handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -69,8 +67,6 @@ module PrivateParlorXT
 
         user.set_rank(-5)
         services.database.update_user(user)
-
-        
 
         handler.do(message, services)
 
@@ -100,8 +96,6 @@ module PrivateParlorXT
           reply_to_message: reply_to
         )
 
-        
-
         handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -123,8 +117,6 @@ module PrivateParlorXT
             ),
           ]
         )
-
-        
 
         handler.do(message, services)
 
@@ -173,8 +165,6 @@ module PrivateParlorXT
           ],
           reply_to_message: reply_to
         )
-
-        
 
         handler.do(message, services)
 
