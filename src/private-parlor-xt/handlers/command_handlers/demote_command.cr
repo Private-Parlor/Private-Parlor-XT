@@ -4,8 +4,8 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "demote", config: "enable_demote")]
   class DemoteCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services)
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       return unless authorized?(user, message, :Demote, services)
@@ -15,7 +15,7 @@ module PrivateParlorXT
         demote_from_reply(arg, user, message.message_id.to_i64, reply, services)
       else
         unless args = Format.get_args(message.text, count: 2)
-          return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.missing_args)
+          return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.missing_args)
         end
 
         demote_from_args(args, user, message.message_id.to_i64, services)
@@ -30,7 +30,7 @@ module PrivateParlorXT
       end
 
       unless tuple
-        return services.relay.send_to_user(message, user.id, Format.substitute_reply(services.replies.no_rank_found, {
+        return services.relay.send_to_user(ReplyParameters.new(message), user.id, Format.substitute_reply(services.replies.no_rank_found, {
           "ranks" => services.access.rank_names(limit: user.rank).to_s,
         }))
       end
@@ -38,7 +38,7 @@ module PrivateParlorXT
       return unless demoted_user = get_reply_user(user, reply, services)
 
       unless services.access.can_demote?(tuple[0], user.rank, demoted_user.rank)
-        return services.relay.send_to_user(message, user.id, services.replies.fail)
+        return services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.fail)
       end
 
       update_user_activity(user, services)
@@ -55,7 +55,7 @@ module PrivateParlorXT
 
       services.relay.log_output(log)
 
-      services.relay.send_to_user(message, user.id, services.replies.success)
+      services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.success)
     end
 
     def demote_from_args(args : Array(String), user : User, message : MessageID, services : Services)
@@ -66,17 +66,17 @@ module PrivateParlorXT
       end
 
       unless tuple
-        return services.relay.send_to_user(message, user.id, Format.substitute_reply(services.replies.no_rank_found, {
+        return services.relay.send_to_user(ReplyParameters.new(message), user.id, Format.substitute_reply(services.replies.no_rank_found, {
           "ranks" => services.access.rank_names(limit: user.rank).to_s,
         }))
       end
 
       unless demoted_user = services.database.get_user_by_arg(args[0])
-        return services.relay.send_to_user(message, user.id, services.replies.no_user_found)
+        return services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.no_user_found)
       end
 
       unless services.access.can_demote?(tuple[0], user.rank, demoted_user.rank)
-        return services.relay.send_to_user(message, user.id, services.replies.fail)
+        return services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.fail)
       end
 
       update_user_activity(user, services)
@@ -93,7 +93,7 @@ module PrivateParlorXT
 
       services.relay.log_output(log)
 
-      services.relay.send_to_user(message, user.id, services.replies.success)
+      services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.success)
     end
   end
 end

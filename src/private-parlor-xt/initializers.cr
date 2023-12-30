@@ -135,11 +135,21 @@ module PrivateParlorXT
       {% end %}
 
       arr << Tourmaline::CommandHandler.new(commands) do |ctx|
-        {{handler}}.do(ctx, services)
+        next unless message = ctx.message
+        next if message.date == 0 # Message is inaccessible 
+
+        message = message.as(Tourmaline::Message)
+
+        {{handler}}.do(message, services)
       end
     else
       arr << Tourmaline::CommandHandler.new({{command_responds_to[:command]}}) do |ctx|
-        command_disabled(ctx, services)
+        next unless message = ctx.message
+        next if message.date == 0 # Message is inaccessible 
+
+        message = message.as(Tourmaline::Message)
+
+        command_disabled(message, services)
       end
     end
 
@@ -178,11 +188,21 @@ module PrivateParlorXT
       {{handler = (command.stringify.split("::").last.underscore).id}}  = {{command}}.new(config)
 
       arr << Tourmaline::HearsHandler.new({{command_hears[:text]}}) do |ctx|
-        {{handler}}.do(ctx, services)
+        next unless message = ctx.message
+        next if message.date == 0 # Message is inaccessible 
+
+        message = message.as(Tourmaline::Message)
+
+        {{handler}}.do(message, services)
       end
     else
       arr << Tourmaline::HearsHandler.new({{command_hears[:text]}}) do |ctx|
-        command_disabled(ctx, services)
+        next unless message = ctx.message
+        next if message.date == 0 # Message is inaccessible 
+
+        message = message.as(Tourmaline::Message)
+
+        command_disabled(message, services)
       end
     end
 
@@ -210,43 +230,51 @@ module PrivateParlorXT
       {% end %}
 
       client.on({{update_on[:update]}}) do |ctx|
+        next unless message = ctx.message
+        next if message.date == 0 # Message is inaccessible 
+
+        message = message.as(Tourmaline::Message)
+
         {% if update == DocumentHandler %}
-          if message = ctx.message
-            next if message.animation
-          end
+          next if message.animation
         {% end %}
-        {{handler}}.do(ctx, services)
+        {{handler}}.do(message, services)
       end
     else
       client.on({{update_on[:update]}}) do |ctx|
+        next unless message = ctx.message
+        next if message.date == 0 # Message is inaccessible 
+
+        message = message.as(Tourmaline::Message)
+
         {% if update == DocumentHandler %}
-          if message = ctx.message
-            next if message.animation
-          end
+          next if message.animation
         {% end %}
-        media_disabled(ctx, {{update_on[:update]}}, services)
+        media_disabled(message, {{update_on[:update]}}, services)
       end
     end
 
     {% end %}
   end
 
-  def self.media_disabled(context : Tourmaline::Context, type : Tourmaline::UpdateAction, services : Services)
-    return unless message = context.message
+  def self.media_disabled(message : Tourmaline::Message, type : Tourmaline::UpdateAction, services : Services)
     return unless info = message.from
 
     response = Format.substitute_reply(services.replies.media_disabled, {
       "type" => type.to_s,
     })
 
-    services.relay.send_to_user(message.message_id.to_i64, info.id.to_i64, response)
+    services.relay.send_to_user(
+      ReplyParameters.new(message.message_id), 
+      info.id.to_i64, 
+      response
+    )
   end
 
-  def self.command_disabled(context : Tourmaline::Context, services : Services)
-    return unless message = context.message
+  def self.command_disabled(message : Tourmaline::Message, services : Services)
     return unless info = message.from
 
-    services.relay.send_to_user(message.message_id.to_i64, info.id.to_i64, services.replies.command_disabled)
+    services.relay.send_to_user(ReplyParameters.new(message.message_id), info.id.to_i64, services.replies.command_disabled)
   end
 
   def self.kick_inactive_users(limit : Time::Span, services : Services)

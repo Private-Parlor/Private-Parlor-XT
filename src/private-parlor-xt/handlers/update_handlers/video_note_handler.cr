@@ -4,11 +4,11 @@ require "tourmaline"
 module PrivateParlorXT
   @[On(update: :VideoNote, config: "relay_video_note")]
   class VideoNoteHandler < UpdateHandler
-    def do(context : Tourmaline::Context, services : Services)
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services)
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
-      return if message.forward_date
+      return if message.forward_origin
 
       return unless authorized?(user, message, :VideoNote, services)
 
@@ -17,7 +17,7 @@ module PrivateParlorXT
       return unless video_note = message.video_note
 
       if reply = message.reply_to_message
-        return unless reply_msids = get_reply_receivers(reply, message, user, services)
+        return unless reply_messages = get_reply_receivers(reply, message, user, services)
       end
 
       return unless Robot9000.checks(user, message, services)
@@ -28,12 +28,13 @@ module PrivateParlorXT
 
       receivers = get_message_receivers(user, services)
 
-      services.relay.send_video_note(
-        new_message,
-        user,
-        receivers,
-        reply_msids,
-        video_note.file_id,
+      services.relay.send_video_note(RelayParameters.new(
+          original_message: new_message,
+          sender: user.id,
+          receivers: receivers,
+          replies: reply_messages,
+          media: video_note.file_id,
+        )
       )
     end
 
@@ -41,7 +42,7 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       if spam.spammy_video_note?(user.id)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.spamming)
         return true
       end
 

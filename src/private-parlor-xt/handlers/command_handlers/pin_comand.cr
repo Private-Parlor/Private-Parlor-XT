@@ -4,8 +4,8 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "pin", config: "enable_pin")]
   class PinCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services)
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       return unless authorized?(user, message, :Pin, services)
@@ -13,7 +13,7 @@ module PrivateParlorXT
       return unless reply = get_reply_message(user, message, services)
 
       unless services.history.get_sender(reply.message_id.to_i64)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.not_in_cache)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.not_in_cache)
       end
 
       update_user_activity(user, services)

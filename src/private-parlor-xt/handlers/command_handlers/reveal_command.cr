@@ -4,14 +4,14 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "reveal", config: "enable_reveal")]
   class RevealCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       return unless authorized?(user, message, :Reveal, services)
 
-      if (chat = context.api.get_chat(user.id)) && chat.has_private_forwards?
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.private_sign)
+      if (chat = message.sender_chat) && chat.has_private_forwards?
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.private_sign)
       end
 
       return unless reply = get_reply_message(user, message, services)
@@ -19,11 +19,11 @@ module PrivateParlorXT
       return unless reply_user = get_reply_user(user, reply, services)
 
       if reply_user.id == user.id
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
 
       if (spam = services.spam) && spam.spammy_sign?(user.id, services.config.sign_limit_interval)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.sign_spam)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.sign_spam)
       end
 
       update_user_activity(user, services)
@@ -31,6 +31,10 @@ module PrivateParlorXT
       receiver_message = services.history.get_receiver_message(reply.message_id.to_i64, reply_user.id)
 
       response = Format.format_user_reveal(user.id, user.get_formatted_name, services.replies)
+
+      if receiver_message
+        receiver_message = ReplyParameters.new(receiver_message)
+      end
 
       services.relay.send_to_user(receiver_message, reply_user.id, response)
 
@@ -44,7 +48,7 @@ module PrivateParlorXT
 
       services.relay.log_output(log)
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.success)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
     end
   end
 end

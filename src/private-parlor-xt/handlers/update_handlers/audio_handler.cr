@@ -4,8 +4,8 @@ require "tourmaline"
 module PrivateParlorXT
   @[On(update: :Audio, config: "relay_audio")]
   class AudioHandler < UpdateHandler
-    def do(context : Tourmaline::Context, services : Services)
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services)
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       return unless meets_requirements?(message)
@@ -20,7 +20,7 @@ module PrivateParlorXT
       return unless caption
 
       if reply = message.reply_to_message
-        return unless reply_msids = get_reply_receivers(reply, message, user, services)
+        return unless reply_messages = get_reply_receivers(reply, message, user, services)
       end
 
       return unless Robot9000.checks(user, message, services)
@@ -31,14 +31,15 @@ module PrivateParlorXT
 
       receivers = get_message_receivers(user, services)
 
-      services.relay.send_audio(
-        new_message,
-        user,
-        receivers,
-        reply_msids,
-        audio.file_id,
-        caption,
-        entities,
+      services.relay.send_audio(RelayParameters.new(
+          original_message: new_message,
+          sender: user.id,
+          receivers: receivers,
+          replies: reply_messages,
+          media: audio.file_id,
+          text: caption,
+          entities: entities,
+        )
       )
     end
 
@@ -46,7 +47,7 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       if spam.spammy_audio?(user.id)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.spamming)
         return true
       end
 

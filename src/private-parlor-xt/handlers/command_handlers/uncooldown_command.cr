@@ -4,22 +4,22 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "uncooldown", config: "enable_uncooldown")]
   class UncooldownCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       return unless authorized?(user, message, :Uncooldown, services)
 
       unless arg = Format.get_arg(message.text)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.missing_args)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.missing_args)
       end
 
       unless uncooldown_user = services.database.get_user_by_arg(arg)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.no_user_found)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.no_user_found)
       end
 
       unless cooldown_until = uncooldown_user.cooldown_until
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.not_in_cooldown)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.not_in_cooldown)
       end
 
       update_user_activity(user, services)
@@ -37,7 +37,7 @@ module PrivateParlorXT
 
       services.relay.log_output(log)
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.success)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
     end
   end
 end

@@ -6,8 +6,9 @@ module PrivateParlorXT
   end
 
   abstract class UpdateHandler < Handler
-    def get_message_and_user(update : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
-      unless (message = update.message) && (info = message.from)
+    # TODO: Simplify this function since we no longer use a Context
+    def get_message_and_user(message : Tourmaline::Message, services : Services) : Tuple(Tourmaline::Message?, User?)
+      unless info = message.from
         return nil, nil
       end
 
@@ -41,7 +42,7 @@ module PrivateParlorXT
     def authorized?(user : User, message : Tourmaline::Message, authority : MessagePermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, authority)
         response = Format.substitute_reply(services.replies.media_disabled, {"type" => authority.to_s})
-        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
         return false
       end
 
@@ -49,7 +50,7 @@ module PrivateParlorXT
     end
 
     def meets_requirements?(message : Tourmaline::Message) : Bool
-      return false if message.forward_date
+      return false if message.forward_origin
       return false if message.media_group_id
 
       true
@@ -76,15 +77,17 @@ module PrivateParlorXT
       services.relay.send_to_user(nil, user.id, response)
     end
 
-    def get_reply_receivers(reply : Tourmaline::Message, message : Tourmaline::Message, user : User, services : Services) : Hash(UserID, MessageID)?
+    def get_reply_receivers(reply : Tourmaline::Message, message : Tourmaline::Message, user : User, services : Services) : Hash(UserID, ReplyParameters)?
       replies = services.history.get_all_receivers(reply.message_id.to_i64)
 
       if replies.empty?
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.not_in_cache)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.not_in_cache)
         return
       end
 
-      replies
+      replies.transform_values do |val|
+        ReplyParameters.new(val)
+      end
     end
 
     def get_message_receivers(user : User, services : Services) : Array(UserID)

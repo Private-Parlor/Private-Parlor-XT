@@ -4,11 +4,11 @@ require "tourmaline"
 module PrivateParlorXT
   @[On(update: :Poll, config: "relay_poll")]
   class PollHandler < UpdateHandler
-    def do(context : Tourmaline::Context, services : Services)
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services)
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
-      return if message.forward_date
+      return if message.forward_origin
 
       return unless authorized?(user, message, :Poll, services)
 
@@ -24,10 +24,11 @@ module PrivateParlorXT
 
       receivers = get_message_receivers(user, services)
 
-      services.relay.send_forward(
-        cached_message,
-        user,
-        receivers,
+      services.relay.send_forward(RelayParameters.new(
+          original_message: cached_message,
+          sender: user.id,
+          receivers: receivers,
+        ),
         poll_copy.message_id.to_i64,
       )
     end
@@ -36,7 +37,7 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       if spam.spammy_poll?(user.id)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.spamming)
         return true
       end
 

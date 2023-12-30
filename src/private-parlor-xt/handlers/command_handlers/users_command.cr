@@ -4,8 +4,8 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "users", config: "enable_users")]
   class UsersCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services)
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       update_user_activity(user, services)
@@ -25,7 +25,7 @@ module PrivateParlorXT
         })
       end
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
     end
   end
 end

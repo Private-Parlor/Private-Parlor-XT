@@ -4,11 +4,11 @@ require "tourmaline"
 module PrivateParlorXT
   @[On(update: :Text, config: "relay_text")]
   class TextHandler < UpdateHandler
-    def do(context : Tourmaline::Context, services : Services)
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services)
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
-      return if message.forward_date
+      return if message.forward_origin
 
       return unless authorized?(user, message, :Text, services)
 
@@ -18,7 +18,7 @@ module PrivateParlorXT
       return unless text
 
       if reply = message.reply_to_message
-        return unless reply_msids = get_reply_receivers(reply, message, user, services)
+        return unless reply_messages = get_reply_receivers(reply, message, user, services)
       end
 
       return unless Robot9000.text_check(user, message, services)
@@ -29,13 +29,14 @@ module PrivateParlorXT
 
       receivers = get_message_receivers(user, services)
 
-      services.relay.send_text(
-        new_message,
-        user,
-        receivers,
-        reply_msids,
-        text,
-        entities,
+      services.relay.send_text(RelayParameters.new(
+          original_message: new_message,
+          sender: user.id,
+          receivers: receivers,
+          replies: reply_messages,
+          text: text,
+          entities: entities,
+        )
       )
     end
 
@@ -47,7 +48,7 @@ module PrivateParlorXT
       return true unless text = message.text
 
       if spam.spammy_text?(user.id, text)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.spamming)
         return true
       end
 

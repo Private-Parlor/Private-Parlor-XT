@@ -6,8 +6,8 @@ module PrivateParlorXT
   end
 
   abstract class CommandHandler < Handler
-    def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
-      unless (message = ctx.message) && (info = message.from)
+    def get_message_and_user(message : Tourmaline::Message, services : Services) : Tuple(Tourmaline::Message?, User?)
+      unless info = message.from
         return nil, nil
       end
 
@@ -39,7 +39,7 @@ module PrivateParlorXT
 
     def authorized?(user : User, message : Tourmaline::Message, permission : CommandPermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, permission)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.command_disabled)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.command_disabled)
         return false
       end
 
@@ -50,7 +50,7 @@ module PrivateParlorXT
       if authority = services.access.authorized?(user.rank, *permissions)
         authority
       else
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.command_disabled)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.command_disabled)
       end
     end
 

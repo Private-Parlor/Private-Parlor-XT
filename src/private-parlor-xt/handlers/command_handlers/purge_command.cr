@@ -4,8 +4,8 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "purge", config: "enable_purge")]
   class PurgeCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       return unless authorized?(user, message, :Purge, services)
@@ -27,7 +27,7 @@ module PrivateParlorXT
         "msgs_deleted" => message_count.to_s,
       })
 
-      services.relay.delay_send_to_user(message.message_id.to_i64, user.id, response)
+      services.relay.delay_send_to_user(ReplyParameters.new(message.message_id), user.id, response)
     end
   end
 end

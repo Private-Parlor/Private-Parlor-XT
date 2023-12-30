@@ -6,11 +6,11 @@ module PrivateParlorXT
   # Processes karma sign messages before the update handler gets them
   # This handler expects the command handlers to be registered before the update handlers
   class KarmaSignCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services)
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
-      return if message.forward_date
+      return if message.forward_origin
 
       if services.config.karma_levels.empty?
         return
@@ -20,7 +20,7 @@ module PrivateParlorXT
       return unless text
 
       unless arg = Format.get_arg(text)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.missing_args)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.missing_args)
       end
 
       return if spamming?(user, message, arg, services)
@@ -50,12 +50,12 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       if message.text && spam.spammy_text?(user.id, arg)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.spamming)
         return true
       end
 
       if spam.spammy_sign?(user.id, services.config.sign_limit_interval)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.sign_spam)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.sign_spam)
         return true
       end
 

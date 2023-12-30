@@ -8,8 +8,8 @@ module PrivateParlorXT
 
     property albums : Hash(String, Album) = {} of String => Album
 
-    def do(context : Tourmaline::Context, services : Services)
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services)
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       return unless authorized?(user, message, :Forward, services)
@@ -31,10 +31,11 @@ module PrivateParlorXT
 
       # Foward regular forwards, otherwise add header to text and offset entities then send as a captioned type
       if Format.regular_forward?(text, entities)
-        return services.relay.send_forward(
-          new_message,
-          user,
-          receivers,
+        return services.relay.send_forward(RelayParameters.new(
+            original_message: new_message,
+            sender: user.id,
+            receivers: receivers,
+          ),
           message.message_id.to_i64
         )
       end
@@ -42,10 +43,11 @@ module PrivateParlorXT
       header, entities = get_header(message, entities)
 
       unless header
-        return services.relay.send_forward(
-          new_message,
-          user,
-          receivers,
+        return services.relay.send_forward(RelayParameters.new(
+            original_message: new_message,
+            sender: user.id,
+            receivers: receivers,
+          ),
           message.message_id.to_i64
         )
       end
@@ -69,7 +71,7 @@ module PrivateParlorXT
       return false if (album = message.media_group_id) && @albums[album]?
 
       if spam.spammy_forward?(user.id)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.spamming)
         return true
       end
 
@@ -78,7 +80,7 @@ module PrivateParlorXT
 
     def deanonymous_poll(user : User, message : Tourmaline::Message, services : Services) : Bool
       if (poll = message.poll) && !poll.is_anonymous?
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.deanon_poll)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.deanon_poll)
         return true
       end
 
@@ -95,13 +97,13 @@ module PrivateParlorXT
 
     def relay_regular_forward(message : Tourmaline::Message, text : String, entities : Array(Tourmaline::MessageEntity), cached_message : MessageID, user : User, receivers : Array(UserID), services : Services)
       if message.text
-        services.relay.send_text(
-          cached_message,
-          user,
-          receivers,
-          nil,
-          text,
-          entities,
+        services.relay.send_text(RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+            text: text,
+            entities: entities,
+          )
         )
       elsif album = message.media_group_id
         return unless input = get_album_input(message, text, entities)
@@ -117,65 +119,67 @@ module PrivateParlorXT
           services
         )
       elsif file = message.animation
-        services.relay.send_animation(
-          cached_message,
-          user,
-          receivers,
-          nil,
-          file.file_id,
-          text,
-          entities,
-          message.has_media_spoiler?,
+        services.relay.send_animation(RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+            media: file.file_id,
+            text: text,
+            entities: entities,
+            spoiler: message.has_media_spoiler?,
+          )
         )
       elsif file = message.audio
-        services.relay.send_audio(
-          cached_message,
-          user,
-          receivers,
-          nil,
-          file.file_id,
-          text,
-          entities,
+        services.relay.send_audio(RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+            media: file.file_id,
+            text: text,
+            entities: entities,
+          )
         )
       elsif file = message.document
-        services.relay.send_document(
-          cached_message,
-          user,
-          receivers,
-          nil,
-          file.file_id,
-          text,
-          entities,
+        services.relay.send_document(RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+            media: file.file_id,
+            text: text,
+            entities: entities,
+          )
         )
       elsif file = message.video
-        services.relay.send_video(
-          cached_message,
-          user,
-          receivers,
-          nil,
-          file.file_id,
-          text,
-          entities,
-          message.has_media_spoiler?,
+        services.relay.send_video(RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+            media: file.file_id,
+            text: text,
+            entities: entities,
+            spoiler: message.has_media_spoiler?,
+          )
         )
       elsif (file = message.photo) && file.last?
-        services.relay.send_photo(
-          cached_message,
-          user,
-          receivers,
-          nil,
-          file.last.file_id,
-          text,
-          entities,
-          message.has_media_spoiler?,
+        file = file.last
+        services.relay.send_photo(RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+            media: file.file_id,
+            text: text,
+            entities: entities,
+            spoiler: message.has_media_spoiler?,
+          )
         )
       else
-        services.relay.send_forward(
-          cached_message,
-          user,
-          receivers,
-          message.message_id.to_i64
-        )
+        services.relay.send_forward(RelayParameters.new(
+          original_message: cached_message,
+          sender: user.id,
+          receivers: receivers,
+        ),
+        message.message_id.to_i64
+      )
       end
     end
   end

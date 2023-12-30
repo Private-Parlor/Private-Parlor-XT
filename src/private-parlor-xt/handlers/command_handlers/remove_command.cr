@@ -4,8 +4,8 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "remove", config: "enable_remove")]
   class RemoveCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       return unless authorized?(user, message, :Remove, services)
@@ -38,11 +38,15 @@ module PrivateParlorXT
         "reason" => Format.format_reason_log(reason, services.logs),
       })
 
+      if original_message
+        original_message = ReplyParameters.new(original_message)
+      end
+
       services.relay.send_to_user(original_message, reply_user.id, response)
 
       services.relay.log_output(log)
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.success)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
     end
   end
 end

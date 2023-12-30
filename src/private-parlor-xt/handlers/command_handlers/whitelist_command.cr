@@ -4,22 +4,22 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "whitelist", config: "enable_whitelist")]
   class WhitelistCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       return unless authorized?(user, message, :Whitelist, services)
 
       if services.config.registration_open
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
 
       unless (arg = Format.get_arg(message.text)) && (arg = arg.to_i64?)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.missing_args)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.missing_args)
       end
 
       if services.database.get_user(arg)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.already_whitelisted)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.already_whitelisted)
       end
 
       update_user_activity(user, services)
@@ -37,7 +37,7 @@ module PrivateParlorXT
 
       services.relay.log_output(log)
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.success)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
     end
   end
 end

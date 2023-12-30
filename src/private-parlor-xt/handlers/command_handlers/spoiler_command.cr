@@ -4,35 +4,35 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "spoiler", config: "enable_spoiler")]
   class SpoilerCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       return unless authorized?(user, message, :Spoiler, services)
 
       return unless reply = get_reply_message(user, message, services)
 
-      if reply.forward_date
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
+      if reply.forward_origin
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
       unless services.history.get_sender(reply.message_id.to_i64)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.not_in_cache)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.not_in_cache)
       end
 
       # Prevent spoiling messages that were not sent from the bot
       unless (from = reply.from) && from.id == services.relay.get_client_user.id
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
 
       update_user_activity(user, services)
 
       unless input = get_message_input(reply)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
 
       spoil_messages(reply, user, input, services)
 
-      services.relay.delay_send_to_user(message.message_id.to_i64, user.id, services.replies.success)
+      services.relay.delay_send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
     end
 
     def get_message_input(message : Tourmaline::Message) : Tourmaline::InputMedia?

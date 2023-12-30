@@ -6,8 +6,8 @@ module PrivateParlorXT
   end
 
   abstract class HearsHandler < Handler
-    def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
-      unless (message = ctx.message) && (info = message.from)
+    def get_message_and_user(message : Tourmaline::Message, services : Services) : Tuple(Tourmaline::Message?, User?)
+      unless info = message.from
         return nil, nil
       end
 

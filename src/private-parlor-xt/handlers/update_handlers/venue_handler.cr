@@ -4,11 +4,11 @@ require "tourmaline"
 module PrivateParlorXT
   @[On(update: :Venue, config: "relay_venue")]
   class VenueHandler < UpdateHandler
-    def do(context : Tourmaline::Context, services : Services)
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services)
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
-      return if message.forward_date
+      return if message.forward_origin
 
       return unless authorized?(user, message, :Venue, services)
 
@@ -17,7 +17,7 @@ module PrivateParlorXT
       return unless venue = message.venue
 
       if reply = message.reply_to_message
-        return unless reply_msids = get_reply_receivers(reply, message, user, services)
+        return unless reply_messages = get_reply_receivers(reply, message, user, services)
       end
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
@@ -26,11 +26,12 @@ module PrivateParlorXT
 
       receivers = get_message_receivers(user, services)
 
-      services.relay.send_venue(
-        new_message,
-        user,
-        receivers,
-        reply_msids,
+      services.relay.send_venue(RelayParameters.new(
+          original_message: new_message,
+          sender: user.id,
+          receivers: receivers,
+          replies: reply_messages,
+        ),
         venue,
       )
     end
@@ -39,7 +40,7 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       if spam.spammy_venue?(user.id)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.spamming)
         return true
       end
 

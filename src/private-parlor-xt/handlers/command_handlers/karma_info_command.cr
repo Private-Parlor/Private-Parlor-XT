@@ -4,8 +4,8 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: ["karma_info", "karmainfo"], config: "enable_karma_info")]
   class KarmaInfoCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services)
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       karma_levels = services.config.karma_levels
@@ -48,7 +48,7 @@ module PrivateParlorXT
         "percentage"    => "#{percentage.format(decimal_places: 1, only_significant: true)}",
       })
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
     end
   end
 end

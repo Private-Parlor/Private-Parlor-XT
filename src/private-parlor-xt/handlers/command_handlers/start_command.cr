@@ -4,8 +4,8 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "start", config: "enable_start")]
   class StartCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services)
-      return unless (message = context.message) && (info = message.from)
+    def do(message : Tourmaline::Message, services : Services)
+      return unless info = message.from
 
       if user = services.database.get_user(info.id.to_i64)
         existing_user(user, info.username, info.full_name, message.message_id.to_i64, services)
@@ -28,7 +28,7 @@ module PrivateParlorXT
         user.set_active
         services.database.update_user(user)
 
-        services.relay.send_to_user(message_id, user.id, services.replies.rejoined)
+        services.relay.send_to_user(ReplyParameters.new(message_id), user.id, services.replies.rejoined)
 
         log = Format.substitute_message(services.logs.rejoined, {"id" => user.id.to_s, "name" => user.get_formatted_name})
 
@@ -38,7 +38,7 @@ module PrivateParlorXT
         user.set_active
 
         services.database.update_user(user)
-        services.relay.send_to_user(message_id, user.id, services.replies.already_in_chat)
+        services.relay.send_to_user(ReplyParameters.new(message_id), user.id, services.replies.already_in_chat)
       end
     end
 
@@ -58,9 +58,9 @@ module PrivateParlorXT
       end
 
       if services.config.pseudonymous
-        services.relay.send_to_user(message_id, id, services.replies.joined_pseudonym)
+        services.relay.send_to_user(ReplyParameters.new(message_id), id, services.replies.joined_pseudonym)
       else
-        services.relay.send_to_user(message_id, id, services.replies.joined)
+        services.relay.send_to_user(ReplyParameters.new(message_id), id, services.replies.joined)
       end
 
       log = Format.substitute_message(services.logs.joined, {

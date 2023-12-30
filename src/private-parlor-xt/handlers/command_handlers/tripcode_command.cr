@@ -4,13 +4,13 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "tripcode", config: "enable_tripcode")]
   class TripcodeCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      message, user = get_message_and_user(message, services)
       return unless message && user
 
       if arg = Format.get_arg(message.text)
         unless valid_tripcode?(arg)
-          return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.invalid_tripcode_format)
+          return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.invalid_tripcode_format)
         end
 
         user.set_tripcode(arg)
@@ -29,7 +29,7 @@ module PrivateParlorXT
 
       update_user_activity(user, services)
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
     end
 
     def valid_tripcode?(arg : String) : Bool

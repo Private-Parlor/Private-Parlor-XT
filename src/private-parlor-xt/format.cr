@@ -31,12 +31,12 @@ module PrivateParlorXT
 
       if r9k = services.robot9000
         unless r9k.allow_text?(text)
-          services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.rejected_message)
+          services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.rejected_message)
           return false
         end
       else
         unless Format.allow_text?(text)
-          services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.rejected_message)
+          services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.rejected_message)
           return false
         end
       end
@@ -92,7 +92,7 @@ module PrivateParlorXT
       end
 
       unless tripcode = user.tripcode
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.no_tripcode_set)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.no_tripcode_set)
         return nil, [] of Tourmaline::MessageEntity
       end
 
@@ -290,22 +290,24 @@ module PrivateParlorXT
     end
 
     def get_forward_header(message : Tourmaline::Message, entities : Array(Tourmaline::MessageEntity)) : Tuple(String?, Array(Tourmaline::MessageEntity))
-      if from = message.forward_from
-        if from.is_bot?
-          Format.format_username_forward(from.full_name, from.username, entities)
-        elsif from.id
-          Format.format_user_forward(from.full_name, from.id, entities)
+      unless origin = message.forward_origin
+        return nil, [] of Tourmaline::MessageEntity
+      end
+
+      if origin.is_a?(Tourmaline::MessageOriginUser)
+        if origin.sender_user.is_bot?
+          Format.format_username_forward(origin.sender_user.full_name, origin.sender_user.username, entities)
         else
-          return nil, [] of Tourmaline::MessageEntity
+          Format.format_user_forward(origin.sender_user.full_name, origin.sender_user.id, entities)
         end
-      elsif (from = message.forward_from_chat) && message.forward_from_message_id
-        if from.username
-          Format.format_username_forward(from.name, from.username, entities, message.forward_from_message_id)
+      elsif origin.is_a?(Tourmaline::MessageOriginChannel)
+        if origin.chat.username
+          Format.format_username_forward(origin.chat.name, origin.chat.username, entities, origin.message_id)
         else
-          Format.format_private_channel_forward(from.name, from.id, entities, message.forward_from_message_id)
+          Format.format_private_channel_forward(origin.chat.name, origin.chat.id, entities, origin.message_id)
         end
-      elsif from = message.forward_sender_name
-        Format.format_private_user_forward(from, entities)
+      elsif origin.is_a?(Tourmaline::MessageOriginHiddenUser)
+        Format.format_private_user_forward(origin.sender_user_name, entities)
       else
         return nil, [] of Tourmaline::MessageEntity
       end
