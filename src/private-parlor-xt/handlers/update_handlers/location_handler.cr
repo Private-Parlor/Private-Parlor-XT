@@ -54,7 +54,7 @@ module PrivateParlorXT
 
       unless user.karma >= karma.karma_location
         # TODO: Add locale entry
-        return 
+        return
       end
 
       if karma.karma_location >= 0

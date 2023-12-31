@@ -35,7 +35,7 @@ module PrivateParlorXT
       @relay : Relay,
       @spam : SpamHandler? = nil,
       @robot9000 : Robot9000? = nil,
-      @karma : KarmaHandler? = nil,
+      @karma : KarmaHandler? = nil
     )
     end
   end

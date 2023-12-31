@@ -62,7 +62,7 @@ module PrivateParlorXT
 
       unless user.karma >= karma.karma_animation
         # TODO: Add locale entry
-        return 
+        return
       end
 
       if karma.karma_animation >= 0

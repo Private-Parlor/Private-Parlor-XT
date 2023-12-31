@@ -8,7 +8,7 @@ module PrivateParlorXT
     getter cutoff_rank : Int32 = 10
 
     @[YAML::Field(key: "karma_text")]
-    getter karma_text  : Int32 = 0
+    getter karma_text : Int32 = 0
 
     @[YAML::Field(key: "karma_animation")]
     getter karma_animation : Int32 = 5

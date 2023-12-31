@@ -72,7 +72,7 @@ module PrivateParlorXT
 
       unless user.karma >= karma.karma_media_group
         # TODO: Add locale entry
-        return 
+        return
       end
 
       if karma.karma_media_group >= 0

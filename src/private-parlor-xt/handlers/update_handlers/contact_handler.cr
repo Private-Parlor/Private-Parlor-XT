@@ -54,7 +54,7 @@ module PrivateParlorXT
 
       unless user.karma >= karma.karma_contact
         # TODO: Add locale entry
-        return 
+        return
       end
 
       if karma.karma_contact >= 0
