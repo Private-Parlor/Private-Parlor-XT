@@ -192,6 +192,17 @@ locale: en-US
 #pseudonymous: false
 
 ##
+## Replace tripcode with flag or emoji signatures
+##
+## This will change tripcode headers from the 'name!code' format to
+## a series of at most 5 flags/emojis 
+##
+## Accepted values: true, false
+## Default: false
+##
+#flag_signatures: false
+
+##
 ## MessageEntity toggles
 ##
 ## Entity types specified here will be stripped from every user message.

@@ -245,6 +245,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "pseudonymous")]
     getter pseudonymous : Bool? = false
 
+    @[YAML::Field(key: "flag_signatures")]
+    getter flag_signatures : Bool? = false
+
     @[YAML::Field(key: "blacklist_contact")]
     getter blacklist_contact : String? = nil
 

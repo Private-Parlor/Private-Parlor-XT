@@ -19,6 +19,7 @@ module PrivateParlorXT
     getter warn_deduction : Int32 = 10
     getter registration_open : Bool? = true
     getter pseudonymous : Bool? = false
+    getter flag_signatures : Bool? = false
 
     def initialize(config : Config)
       @blacklist_contact = config.blacklist_contact
@@ -37,6 +38,7 @@ module PrivateParlorXT
       @warn_deduction = config.warn_deduction
       @registration_open = config.registration_open
       @pseudonymous = config.pseudonymous
+      @flag_signatures = config.flag_signatures
     end
   end
 end

@@ -96,7 +96,7 @@ module PrivateParlorXT
         return nil, [] of Tourmaline::MessageEntity
       end
 
-      name, tripcode = Format.generate_tripcode(tripcode, services.config.tripcode_salt)
+      name, tripcode = Format.generate_tripcode(tripcode, services)
       header, entities = Format.format_tripcode_sign(name, tripcode, entities)
 
       return header + text, entities
@@ -165,15 +165,19 @@ module PrivateParlorXT
     # Copyright (c) Fredrick R. Brennan, 2020
     #
     # github.com/ctrlcctrlv/tripkeys/blob/33dcb519a8c08185aecba15eee9aa80760dddc87/doc/2ch_tripcode_annotated.pl
-    def generate_tripcode(tripkey : String, salt : String?) : Tuple(String, String)
+    def generate_tripcode(tripkey : String, services : Services) : Tuple(String, String)
       split = tripkey.split('#', 2)
       name = split[0]
       pass = split[1]
 
-      if !salt.empty?
+      if services.config.flag_signatures
+        return {name, ""}
+      end
+
+      if !services.config.tripcode_salt.empty?
         # 8chan secure tripcode
         pass = String.new(pass.encode("Shift_JIS"), "Shift_JIS")
-        trip = Digest::SHA1.base64digest(pass + salt)
+        trip = Digest::SHA1.base64digest(pass + services.config.tripcode_salt)
 
         tripcode = "!#{trip[0...10]}"
       else
