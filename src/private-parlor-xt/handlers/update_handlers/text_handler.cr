@@ -34,6 +34,7 @@ module PrivateParlorXT
         replies: reply_messages,
         text: text,
         entities: entities,
+        link_preview_options: message.link_preview_options,
       )
       )
     end
