@@ -280,7 +280,7 @@ module PrivateParlorXT
     end
 
     private def self.check_config(config : Config) : Config
-      message_entities = ["bold", "italic", "underline", "strikethrough", "spoiler", "code", "text_link", "custom_emoji"]
+      message_entities = ["bold", "italic", "underline", "strikethrough", "spoiler", "code", "text_link", "custom_emoji", "blockquote"]
 
       if config.smileys.size != 4
         Log.notice { "Not enough or too many smileys. Should be four, was #{config.smileys}; defaulting to [:), :|, :/, :(]" }

@@ -71,8 +71,30 @@ module PrivateParlorXT
 
       replies = services.history.get_all_receivers(reply.message_id.to_i64)
 
+      # These cases check if the user is trying to quote his own message
+      # The quote must match the text exactly, including formatting, so only quote if: 
+      #   the replied text does NOT contain entities that should be stripped 
+      #   if messsage was NOT edited
+      if (from = reply.from) && from.id == user.id
+        unless (reply.entities.map(&.type) - services.config.entity_types) == reply.entities.map(&.type) && reply.edit_date == nil
+          return replies.transform_values do |val|
+            ReplyParameters.new(val)
+          end
+        end
+      end
+
+      quote = message.quote
       replies.transform_values do |val|
-        ReplyParameters.new(val)
+        if quote
+          ReplyParameters.new(
+            message_id: val,
+            quote: quote.text,
+            quote_entities: quote.entities,
+            quote_position: quote.position,
+          )
+        else
+          ReplyParameters.new(val)
+        end
       end
     end
 
