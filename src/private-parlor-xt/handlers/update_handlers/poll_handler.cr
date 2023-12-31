@@ -13,6 +13,8 @@ module PrivateParlorXT
 
       return if spamming?(user, message, services)
 
+      return unless user = spend_karma(user, services)
+
       return unless poll = message.poll
 
       cached_message = services.history.new_message(user.id, message.message_id.to_i64)
@@ -41,6 +43,23 @@ module PrivateParlorXT
       end
 
       false
+    end
+
+    def spend_karma(user : User, services : Services) : User?
+      return user unless karma = services.karma
+
+      return user if user.rank >= karma.cutoff_rank
+
+      unless user.karma >= karma.karma_poll
+        # TODO: Add locale entry
+        return 
+      end
+
+      if karma.karma_poll >= 0
+        user.decrement_karma(karma.karma_poll)
+      end
+
+      user
     end
   end
 end

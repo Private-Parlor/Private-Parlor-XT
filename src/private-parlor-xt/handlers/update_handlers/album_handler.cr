@@ -30,6 +30,8 @@ module PrivateParlorXT
 
       return unless Robot9000.checks(user, message, services)
 
+      return unless user = spend_karma(user, message, services)
+
       update_user_activity(user, services)
 
       receivers = get_message_receivers(user, services)
@@ -59,6 +61,25 @@ module PrivateParlorXT
       end
 
       false
+    end
+
+    def spend_karma(user : User, message : Tourmaline::Message, services : Services) : User?
+      return user unless karma = services.karma
+
+      return user if user.rank >= karma.cutoff_rank
+
+      return user if (album = message.media_group_id) && @albums[album]?
+
+      unless user.karma >= karma.karma_media_group
+        # TODO: Add locale entry
+        return 
+      end
+
+      if karma.karma_media_group >= 0
+        user.decrement_karma(karma.karma_media_group)
+      end
+
+      user
     end
   end
 end

@@ -33,6 +33,10 @@ module PrivateParlorXT
       robot9000 = nil
     end
 
+    if config.karma_economy != nil
+      karma_economy = config.karma_economy
+    end
+
     if config.database_history
       history = SQLiteHistory.new(config.message_lifespan.hours, connection)
     else
@@ -58,6 +62,7 @@ module PrivateParlorXT
       relay,
       spam,
       robot9000,
+      karma_economy
     )
 
     initialize_tasks(config, services)

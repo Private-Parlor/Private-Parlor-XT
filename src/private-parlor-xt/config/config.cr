@@ -230,6 +230,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "warn_deduction")]
     getter warn_deduction : Int32 = 10
 
+    @[YAML::Field(key: "karma_economy")]
+    getter karma_economy : KarmaHandler
+
     @[YAML::Field(key: "spam_interval")]
     getter spam_interval : Int32 = 10
 

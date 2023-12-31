@@ -22,6 +22,8 @@ module PrivateParlorXT
 
       return unless Robot9000.forward_checks(user, message, services)
 
+      return unless user = spend_karma(user, services)
+
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 
       update_user_activity(user, services)
@@ -84,6 +86,23 @@ module PrivateParlorXT
       end
 
       false
+    end
+
+    def spend_karma(user : User, services : Services) : User?
+      return user unless karma = services.karma
+
+      return user if user.rank >= karma.cutoff_rank
+
+      unless user.karma >= karma.karma_forwarded_message
+        # TODO: Add locale entry
+        return 
+      end
+
+      if karma.karma_forwarded_message >= 0
+        user.decrement_karma(karma.karma_forwarded_message)
+      end
+
+      user
     end
 
     def get_header(message : Tourmaline::Message, entities : Array(Tourmaline::MessageEntity)) : Tuple(String?, Array(Tourmaline::MessageEntity))

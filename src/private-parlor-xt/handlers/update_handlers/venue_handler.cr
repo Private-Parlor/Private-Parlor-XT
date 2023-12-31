@@ -18,6 +18,8 @@ module PrivateParlorXT
       reply_messages = get_reply_receivers(message, user, services)
       return unless reply_exists?(message, reply_messages, user, services)
 
+      return unless user = spend_karma(user, services)
+
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 
       update_user_activity(user, services)
@@ -43,6 +45,23 @@ module PrivateParlorXT
       end
 
       false
+    end
+
+    def spend_karma(user : User, services : Services) : User?
+      return user unless karma = services.karma
+
+      return user if user.rank >= karma.cutoff_rank
+
+      unless user.karma >= karma.karma_venue
+        # TODO: Add locale entry
+        return 
+      end
+
+      if karma.karma_venue >= 0
+        user.decrement_karma(karma.karma_venue)
+      end
+
+      user
     end
   end
 end

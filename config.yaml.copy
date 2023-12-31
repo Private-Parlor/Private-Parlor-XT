@@ -570,7 +570,6 @@ relay_contact: false
 ##
 #cooldown_base: 5
 
-
 ##
 ## Length of time in hours until a warning expires
 ##
@@ -586,6 +585,43 @@ relay_contact: false
 ## Default: 10
 ##
 #warn_deduction: 10
+
+# --------------------------------
+#  Karma Economy
+# --------------------------------
+
+##
+## Users must spend karma in order to post
+##
+## If enabled, every message will deduct the amount of karma configured here
+## from the user's account. When the user lacks the required amount of karma,
+## then their message will not be posted.
+##
+## This can be used to limit spam or the posting of certain message types
+## without outright disabling them.
+##
+## A cutoff rank can be set with the rank's value, making it so that any user
+## of that rank or higher no longer must spend karma.
+##
+## Accepted values: any 32-bit integer
+##
+#karma_economy:
+#  cutoff_rank: 10
+#  karma_text: 0
+#  karma_animation: 5
+#  karma_audio: 2
+#  karma_document: 2
+#  karma_video: 10
+#  karma_video_note: 10
+#  karma_voice: 2
+#  karma_photo: 5
+#  karma_media_group: 10
+#  karma_poll: 20
+#  karma_forwarded_message: 10
+#  karma_sticker: 2
+#  karma_venue: 10
+#  karma_location: 10
+#  karma_contact: 10
 
 # --------------------------------
 #  Spam Prevention

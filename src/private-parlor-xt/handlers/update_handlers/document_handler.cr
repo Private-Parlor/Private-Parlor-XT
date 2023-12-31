@@ -23,6 +23,8 @@ module PrivateParlorXT
 
       return unless Robot9000.checks(user, message, services)
 
+      return unless user = spend_karma(user, services)
+
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 
       update_user_activity(user, services)
@@ -58,6 +60,23 @@ module PrivateParlorXT
       end
 
       false
+    end
+
+    def spend_karma(user : User, services : Services) : User?
+      return user unless karma = services.karma
+
+      return user if user.rank >= karma.cutoff_rank
+
+      unless user.karma >= karma.karma_document
+        # TODO: Add locale entry
+        return 
+      end
+
+      if karma.karma_document >= 0
+        user.decrement_karma(karma.karma_document)
+      end
+
+      user
     end
   end
 end
