@@ -654,6 +654,7 @@ spam_handler:
   decay_amount: 1000
   score_character: 3
   score_linebreak: 100
+  score_text: 3000
   score_animation: 3000
   score_audio: 3000
   score_document: 3000
