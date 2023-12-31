@@ -5,8 +5,7 @@ module PrivateParlorXT
   @[On(update: :Contact, config: "relay_contact")]
   class ContactHandler < UpdateHandler
     def do(message : Tourmaline::Message, services : Services)
-      message, user = get_message_and_user(message, services)
-      return unless message && user
+      return unless user = get_user_from_message(message, services)
 
       return if message.forward_origin
 

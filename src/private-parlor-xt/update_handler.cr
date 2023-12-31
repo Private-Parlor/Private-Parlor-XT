@@ -6,37 +6,26 @@ module PrivateParlorXT
   end
 
   abstract class UpdateHandler < Handler
-    # TODO: Simplify this function since we no longer use a Context
-    def get_message_and_user(message : Tourmaline::Message, services : Services) : Tuple(Tourmaline::Message?, User?)
-      unless info = message.from
-        return nil, nil
-      end
+    def get_user_from_message(message : Tourmaline::Message, services : Services) : User?
+      return unless info = message.from
 
       if text = message.text
-        return nil, nil if text.starts_with?('/')
-        return nil, nil if text.starts_with?(/^[+-]1/)
+        return if text.starts_with?('/') || text.starts_with?(/^[+-]1/)
       end
 
       unless user = services.database.get_user(info.id.to_i64)
-        services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
-        return message, nil
+        return services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
       end
 
       if text
-        unless user.can_chat?
-          deny_user(user, services)
-          return message, nil
-        end
+        return deny_user(user, services) unless user.can_chat?
       else
-        unless user.can_chat?(services.config.media_limit_period)
-          deny_user(user, services)
-          return message, nil
-        end
+        return deny_user(user, services) unless user.can_chat?(services.config.media_limit_period)
       end
 
       user.update_names(info.username, info.full_name)
 
-      return message, user
+      user
     end
 
     def authorized?(user : User, message : Tourmaline::Message, authority : MessagePermissions, services : Services) : Bool

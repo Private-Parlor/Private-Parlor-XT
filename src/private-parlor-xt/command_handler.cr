@@ -6,27 +6,21 @@ module PrivateParlorXT
   end
 
   abstract class CommandHandler < Handler
-    def get_message_and_user(message : Tourmaline::Message, services : Services) : Tuple(Tourmaline::Message?, User?)
-      unless info = message.from
-        return nil, nil
-      end
+    def get_user_from_message(message : Tourmaline::Message, services : Services) : User?
+      return unless info = message.from
 
       unless user = services.database.get_user(info.id.to_i64)
-        services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
-        return message, nil
+        return services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
       end
 
-      unless user.can_use_command?
-        deny_user(user, services)
-        return message, nil
-      end
+      return deny_user(user, services) unless user.can_use_command?
 
       user.update_names(info.username, info.full_name)
 
-      return message, user
+      user
     end
 
-    private def deny_user(user : User, services : Services) : Nil
+    def deny_user(user : User, services : Services) : Nil
       return unless user.blacklisted?
 
       response = Format.substitute_reply(services.replies.blacklisted, {

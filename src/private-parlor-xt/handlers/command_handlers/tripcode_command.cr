@@ -5,8 +5,7 @@ module PrivateParlorXT
   @[RespondsTo(command: "tripcode", config: "enable_tripcode")]
   class TripcodeCommand < CommandHandler
     def do(message : Tourmaline::Message, services : Services) : Nil
-      message, user = get_message_and_user(message, services)
-      return unless message && user
+      return unless user = get_user_from_message(message, services)
 
       if arg = Format.get_arg(message.text)
         unless valid_tripcode?(arg)

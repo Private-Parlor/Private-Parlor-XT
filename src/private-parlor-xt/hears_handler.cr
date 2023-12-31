@@ -22,14 +22,12 @@ module PrivateParlorXT
     end
 
     def deny_user(user : User, services : Services) : Nil
-      if user.blacklisted?
-        response = Format.substitute_reply(services.replies.blacklisted, {
-          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
-          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.replies),
-        })
-      else
-        response = services.replies.not_in_chat
-      end
+      return unless user.blacklisted?
+
+      response = Format.substitute_reply(services.replies.blacklisted, {
+        "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
+        "reason"  => Format.format_reason_reply(user.blacklist_reason, services.replies),
+      })
 
       services.relay.send_to_user(nil, user.id, response)
     end

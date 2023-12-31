@@ -5,8 +5,7 @@ module PrivateParlorXT
   @[RespondsTo(command: "pin", config: "enable_pin")]
   class PinCommand < CommandHandler
     def do(message : Tourmaline::Message, services : Services)
-      message, user = get_message_and_user(message, services)
-      return unless message && user
+      return unless user = get_user_from_message(message, services)
 
       return unless authorized?(user, message, :Pin, services)
 

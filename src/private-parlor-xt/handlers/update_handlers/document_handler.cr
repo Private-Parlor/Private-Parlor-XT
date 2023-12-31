@@ -5,8 +5,7 @@ module PrivateParlorXT
   @[On(update: :Document, config: "relay_document")]
   class DocumentHandler < UpdateHandler
     def do(message : Tourmaline::Message, services : Services)
-      message, user = get_message_and_user(message, services)
-      return unless message && user
+      return unless user = get_user_from_message(message, services)
 
       return unless meets_requirements?(message)
 

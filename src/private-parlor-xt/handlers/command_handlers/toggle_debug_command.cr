@@ -5,8 +5,7 @@ module PrivateParlorXT
   @[RespondsTo(command: ["toggle_debug", "toggledebug"], config: "enable_toggle_debug")]
   class ToggleDebugCommand < CommandHandler
     def do(message : Tourmaline::Message, services : Services) : Nil
-      message, user = get_message_and_user(message, services)
-      return unless message && user
+      return unless user = get_user_from_message(message, services)
 
       user.toggle_debug
 
