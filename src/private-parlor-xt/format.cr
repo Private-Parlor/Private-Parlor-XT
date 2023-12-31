@@ -122,6 +122,21 @@ module PrivateParlorXT
       end
     end
 
+    def format_karma_reason_reply(reason : String?, karma_reply : String, replies : Replies) : String
+      return Format.substitute_reply(karma_reply) unless reason
+
+      reason = reason[0, 250]
+
+      reason = reason.gsub("\n", "")
+
+      reason = escape_md(reason, version: 2)
+
+      karma_reply.gsub(
+        "{karma_reason}",
+        replies.karma_reason.gsub("{reason}", "#{reason}")
+      )
+    end
+
     def format_reason_log(reason : String?, logs : Logs) : String?
       if reason
         "#{logs.reason_prefix}#{reason}"

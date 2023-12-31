@@ -34,6 +34,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "media_spoilers")]
     getter media_spoilers : Bool? = false
 
+    @[YAML::Field(key: "karma_reasons")]
+    getter karma_reasons : Bool? = false
+
     @[YAML::Field(key: "regular_forwards")]
     getter regular_forwards : Bool? = false
 
@@ -231,7 +234,7 @@ module PrivateParlorXT
     getter warn_deduction : Int32 = 10
 
     @[YAML::Field(key: "karma_economy")]
-    getter karma_economy : KarmaHandler
+    getter karma_economy : KarmaHandler?
 
     @[YAML::Field(key: "spam_interval")]
     getter spam_interval : Int32 = 10

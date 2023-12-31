@@ -49,6 +49,12 @@ module PrivateParlorXT
     @[YAML::Field(key: "unspoiled")]
     getter unspoiled : String
 
+    @[YAML::Field(key: "upvoted")]
+    getter upvoted : String
+
+    @[YAML::Field(key: "downvoted")]
+    getter downvoted : String
+
     @[YAML::Field(key: "revealed")]
     getter revealed : String
 

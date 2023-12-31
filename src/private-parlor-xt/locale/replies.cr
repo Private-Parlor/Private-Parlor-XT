@@ -85,6 +85,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "toggle_debug")]
     getter toggle_debug : String
 
+    @[YAML::Field(key: "karma_reason")]
+    getter karma_reason : String
+
     @[YAML::Field(key: "gave_upvote")]
     getter gave_upvote : String
 

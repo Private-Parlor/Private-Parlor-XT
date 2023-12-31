@@ -83,17 +83,36 @@ replies:
    # Available placeholders: toggle
    toggle_debug: "*lo' tI'meH Qagh*: {toggle}"
 
-   gave_upvote: "_QInvam DanaDta'\\!_"
+   # Available placeholders: reason
+   karma_reason: |- 
+      meq:
+      >{reason}
 
-   got_upvote: "_Qapla'\\! naD DaHevta'\\! \\(naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\\)_"
+   # Available placeholders: karma_reason
+   gave_upvote: |- 
+      _QInvam DanaDta'\!_
+      {karma_reason}
+
+   # Available placeholders: karma_reason
+   got_upvote: |- 
+      _Qapla'\! naD DaHevta'\! 
+      {karma_reason}
+      \(naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\)_
 
    upvoted_own_message: "_QInlIj DanaDlaHbe'\\!_"
 
    already_voted: "_QInvam DanaDbej'ta' qoj 'oH DanaDHabej'ta'\\._"
 
-   gave_downvote: "_QInvam DanaDHa'ta'\\._"
+   # Available placeholders: karma_reason
+   gave_downvote: |- 
+      _QInvam DanaDHa'ta'\._
+      {karma_reason}
 
-   got_downvote: "_vay' DunaDHa'ta'\\! \\(naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\\)_"
+   # Available placeholders: karma_reason
+   got_downvote: |- 
+      _vay' DunaDHa'ta'\! 
+      {karma_reason}
+      \(naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\)_
 
    downvoted_own_message: "_QInlIj DanaDHa'laHbe'\\!_"
 
@@ -322,6 +341,12 @@ logs:
 
    # Available placeholders: id, name, msid
    unspoiled: "[{msid}] QInvam So'Ha'ta' {id} meb (pong: {name})"
+
+   # Available placeholders: id, name, oid, reason
+   upvoted: "[{oid}] meb naDta' {id} meb (pong: {name}). meq: {reason}"
+
+   # Available placeholders: id, name, oid, reason
+   downvoted: "[{oid}] meb naDHa'ta' {id} meb (pong: {name}). meq: {reason}"
 
    # Available placeholders: sender_id, sender, receiver_id, receiver, msid
    revealed: "[{msid}] QInvamDaq {receiver_id} mebvaD (pong: receiver) pong So'Ha'ta' {sender_id} meb (pong: {sender})"

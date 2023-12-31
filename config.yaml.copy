@@ -127,6 +127,14 @@ locale: en-US
 #media_spoilers: false
 
 ##
+## Allow users to attach a reason to their upvote/downvote messages
+## 
+## Accepted values: true, false
+## Default: false
+##
+#karma_reasons: false
+
+##
 ## Relay forwarded messages as if they were a regular message
 ##
 ## This will prepend the message text with a "Forwarded From" header 

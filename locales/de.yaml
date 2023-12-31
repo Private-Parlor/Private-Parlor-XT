@@ -83,17 +83,30 @@ replies:
    # Available placeholders: toggle
    toggle_debug: "*Modus für debuggen*: {toggle}"
 
-   gave_upvote: "_Du hast Karma zu dieser Nachricht gegeben\\!_"
+   # Available placeholders: reason
+   karma_reason: |- 
+      \ für:
+      >{reason}
 
-   got_upvote: "_Du hast Karma bekommen\\! \\(Benutzt den /info Befehl zu dein Karma checken, oder /togglekarma diesen Benachrichtigungen abzuschalten\\)_"
+   # Available placeholders: karma_reason
+   gave_upvote: "_Du hast Karma zu dieser Nachricht gegeben{karma_reason}\n_"
+
+   # Available placeholders: karma_reason
+   got_upvote: |- 
+      _Du hast Karma bekommen{karma_reason} 
+      \(Benutzt den /info Befehl zu dein Karma checken, oder /togglekarma diesen Benachrichtigungen abzuschalten\)_
 
    upvoted_own_message: "_Du kannst deine Nachricht Karma nicht geben\\!_"
 
    already_voted: "_Du hast schon dieser Nachricht Karma gegeben oder entfernt_"
 
-   gave_downvote: "_Du hast Karma von dieser Nachricht entfernt\\!_"
+   # Available placeholders: karma_reason
+   gave_downvote: "_Du hast Karma von dieser Nachricht entfernt{karma_reason}\n_"
 
-   got_downvote: "_Du hast Karma verlieren\\! \\(Benutzt den /info Befehl zu dein Karma checken, oder /togglekarma diesen Benachrichtigungen abzuschalten\\)_"
+   # Available placeholders: karma_reason
+   got_downvote: |- 
+      _Du hast Karma verlieren{karma_reason}  
+      \(Benutzt den /info Befehl zu dein Karma checken, oder /togglekarma diesen Benachrichtigungen abzuschalten\)_
 
    downvoted_own_message: "_Du kannst deiner Nachricht Karma nicht entfernen\\!_"
 
@@ -125,7 +138,6 @@ replies:
       `Name\#Passwort`
 
    # Available placeholders: name, tripcode
-   
    tripcode_set: |- 
       _Tripcode gesetzt\. Es wird erscheint als:_
       *{name}* `{tripcode}`:
@@ -316,6 +328,12 @@ logs:
 
    # Available placeholders: id, name, msid
    unspoiled: "Nutzer {id}, alias {name}, hat ein Spoiler aus der Nachricht [{msid}] entfernt"
+
+   # Available placeholders: id, name, oid, reason
+   upvoted: "Nutzer {id}, alias {name}, hat Nutzer [{oid}] Karma gegeben für: {reason}"
+
+   # Available placeholders: id, name, oid, reason
+   downvoted: "Nutzer {id}, alias {name}, hat Nutzer [{oid}] Karma entfernt für: {reason}"
 
    # Available placeholders: sender_id, sender, receiver_id, receiver, msid
    revealed: "Nutzer {sender_id}, alias {sender}, hat sein Nutzername an {receiver_id}, alias {receiver}, privat gezeigt, via die Nachricht [{msid}]"

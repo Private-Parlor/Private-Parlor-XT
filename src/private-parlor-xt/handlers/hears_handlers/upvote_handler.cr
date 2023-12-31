@@ -77,7 +77,20 @@ module PrivateParlorXT
     end
 
     def send_replies(user : User, reply_user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services) : Nil
-      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.gave_upvote)
+      if services.config.karma_reasons
+        reason = Format.get_arg(message.text)
+
+        services.relay.log_output(Format.substitute_message(services.logs.upvoted, {
+          "id"     => user.id.to_s,
+          "name"   => user.get_formatted_name,
+          "oid"    => reply_user.get_obfuscated_id,
+          "reason" => reason,
+        })) unless reason.nil?
+      end
+
+      gave_upvote_reply = Format.format_karma_reason_reply(reason, services.replies.gave_upvote, services.replies)
+
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, gave_upvote_reply)
 
       unless reply_user.hide_karma
         reply_msid = services.history.get_receiver_message(reply.message_id.to_i64, reply_user.id)
@@ -86,10 +99,12 @@ module PrivateParlorXT
           reply_parameters = ReplyParameters.new(reply_msid)
         end
 
+        got_upvote_reply = Format.format_karma_reason_reply(reason, services.replies.got_upvote, services.replies)
+
         services.relay.send_to_user(
           reply_parameters,
           reply_user.id,
-          services.replies.got_upvote
+          got_upvote_reply
         )
       end
     end

@@ -83,17 +83,30 @@ replies:
    # Available placeholders: toggle
    toggle_debug: "*Debug mode*: {toggle}"
 
-   gave_upvote: "_You upvoted this message\\!_"
+   # Available placeholders: reason
+   karma_reason: |- 
+      \ for:
+      >{reason}
 
-   got_upvote: "_You've just been upvoted\\! \\(check /info to see your karma or /togglekarma to turn these notifications off\\)_"
+   # Available placeholders: karma_reason
+   gave_upvote: "_You upvoted this message{karma_reason}\n_"
+
+   # Available placeholders: karma_reason
+   got_upvote: |- 
+      _You've just been upvoted{karma_reason} 
+      \(check /info to see your karma or /togglekarma to turn these notifications off\)_
 
    upvoted_own_message: "_You can't upvote your own message\\!_"
 
    already_voted: "_You have already upvoted or downvoted this message\\._"
 
-   gave_downvote: "_You downvoted this message\\!_"
+   # Available placeholders: karma_reason
+   gave_downvote: "_You downvoted this message{karma_reason}\n_"
 
-   got_downvote: "_You've just been downvoted\\! \\(check /info to see your karma or /togglekarma to turn these notifications off\\)_"
+   # Available placeholders: karma_reason
+   got_downvote: |- 
+      _You've just been downvoted{karma_reason} 
+      \(check /info to see your karma or /togglekarma to turn these notifications off\)_
 
    downvoted_own_message: "_You can't downvote your own message\\!_"
 
@@ -315,6 +328,12 @@ logs:
 
    # Available placeholders: id, name, msid
    unspoiled: "User {id}, aka {name}, removed a spoiler from receiver message [{msid}]"
+
+   # Available placeholders: id, name, oid, reason
+   upvoted: "User {id}, aka {name}, upvoted user [{oid}] for: {reason}"
+
+   # Available placeholders: id, name, oid, reason
+   downvoted: "User {id}, aka {name}, downvoted user [{oid}] for: {reason}"
 
    # Available placeholders: sender_id, sender, receiver_id, receiver, msid
    revealed: "User {sender_id}, aka {sender}, revealed username to user {receiver_id}, aka {receiver}, via receiver message [{msid}]"
