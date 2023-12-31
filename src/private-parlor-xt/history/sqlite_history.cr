@@ -150,6 +150,30 @@ module PrivateParlorXT
       )
     end
 
+    # :inherit
+    def get_purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
+      hash = {} of UserID => Array(MessageID)
+
+      tuples = @connection.query_all(
+        "SELECT receiverID, receiverMSID
+        FROM receivers
+        WHERE receivers.messageGroupID IN (#{messages.join(", ") { "?" }})
+        ORDER BY receiverID",
+        args: messages.to_a,
+        as: {UserID, MessageID}
+      )
+
+      tuples.each do |tuple|
+        if hash[tuple[0]]?
+          hash[tuple[0]] << tuple[1]
+        else
+          hash[tuple[0]] = [tuple[1]]
+        end
+      end
+
+      hash
+    end
+
     def delete_message_group(message : MessageID) : MessageID?
       origin_msid = get_origin_message(message)
 

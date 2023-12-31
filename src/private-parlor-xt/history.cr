@@ -46,6 +46,10 @@ module PrivateParlorXT
     # Returns true if the given message was already warned; false or nil otherwise
     abstract def get_warning(message : MessageID) : Bool?
 
+    # Get a hash containing an arryay of messages to delete associated with the users who received a message in the given set.
+    # Used for the PurgeCommand
+    abstract def get_purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
+
     # Delete a message group from the history
     abstract def delete_message_group(message : MessageID) : MessageID?
 

@@ -411,6 +411,16 @@ module PrivateParlorXT
       )
     end
 
+    def purge_messages(receiver : UserID, messages : Array(MessageID))
+      @queue.add_to_queue_priority(
+        receiver,
+        nil,
+        ->(receiver_id : UserID, _reply : ReplyParameters?) {
+          @client.delete_messages(receiver_id, messages)
+        }
+      )
+    end
+
     def pin_message(user : UserID, message : MessageID)
       @queue.add_to_queue_delayed(
         user,
