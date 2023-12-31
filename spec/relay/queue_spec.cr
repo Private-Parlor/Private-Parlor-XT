@@ -8,9 +8,9 @@ module PrivateParlorXT
       it "deletes messages in queue according to given conditions" do
         message_queue = MessageQueue.new
 
-        message_queue.add_to_queue(100_i64, ReplyParameters.new(1_i64), proc)
-        message_queue.add_to_queue(101_i64, ReplyParameters.new(2_i64), proc)
-        message_queue.add_to_queue(102_i64, ReplyParameters.new(3_i64), proc)
+        message_queue.add_to_queue_delayed(100_i64, ReplyParameters.new(1_i64), proc)
+        message_queue.add_to_queue_delayed(101_i64, ReplyParameters.new(2_i64), proc)
+        message_queue.add_to_queue_delayed(102_i64, ReplyParameters.new(3_i64), proc)
 
         message_queue.queue.size.should(eq(3))
 
@@ -153,7 +153,7 @@ module PrivateParlorXT
 
         message_queue.queue.size.should(eq(3))
 
-        message_queue.add_to_queue(9000, ReplyParameters.new(100), proc)
+        message_queue.add_to_queue_delayed(9000, ReplyParameters.new(100), proc)
 
         message_queue.queue.size.should(eq(4))
 
@@ -211,9 +211,9 @@ module PrivateParlorXT
       it "returns first QueuedMessage in queue" do
         message_queue = MessageQueue.new
 
-        message_queue.add_to_queue(100_i64, ReplyParameters.new(1_i64), proc)
-        message_queue.add_to_queue(101_i64, ReplyParameters.new(2_i64), proc)
-        message_queue.add_to_queue(102_i64, ReplyParameters.new(3_i64), proc)
+        message_queue.add_to_queue_delayed(100_i64, ReplyParameters.new(1_i64), proc)
+        message_queue.add_to_queue_delayed(101_i64, ReplyParameters.new(2_i64), proc)
+        message_queue.add_to_queue_delayed(102_i64, ReplyParameters.new(3_i64), proc)
 
         unless message = message_queue.get_message
           fail("Message should not be nil")

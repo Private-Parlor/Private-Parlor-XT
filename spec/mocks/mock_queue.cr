@@ -39,7 +39,7 @@ module PrivateParlorXT
 
     # Creates a new `QueuedMessage` and pushes it to the back of the queue.
     # Useful for reply messages.
-    def add_to_queue(
+    def add_to_queue_delayed(
       receiver : Int64,
       receiver_message : Tourmaline::ReplyParameters?,
       data : String,
