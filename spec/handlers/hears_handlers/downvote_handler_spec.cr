@@ -299,6 +299,9 @@ module PrivateParlorXT
 
         handler.send_replies(user, reply_user, message, reply_to, services)
 
+        gave_downvote_expected = Format.substitute_reply(services.replies.gave_downvote)
+        got_downvote_expected = Format.substitute_reply(services.replies.got_downvote)
+
         messages = services.relay.as(MockRelay).empty_queue
 
         messages.size.should(eq(2))
@@ -310,11 +313,11 @@ module PrivateParlorXT
           [80300, 20000].should(contain(msg.receiver))
 
           if msg.receiver == 80300
-            msg.data.should(eq(services.replies.gave_downvote))
+            msg.data.should(eq(gave_downvote_expected))
           end
 
           if msg.receiver == 20000
-            msg.data.should(eq(services.replies.got_downvote))
+            msg.data.should(eq(got_downvote_expected))
           end
         end
       end
@@ -344,6 +347,8 @@ module PrivateParlorXT
 
         handler.send_replies(user, reply_user, message, reply_to, services)
 
+        gave_downvote_expected = Format.substitute_reply(services.replies.gave_downvote)
+
         messages = services.relay.as(MockRelay).empty_queue
 
         messages.size.should(eq(1))
@@ -351,7 +356,7 @@ module PrivateParlorXT
         messages[0].origin_msid.should(be_nil)
         messages[0].sender.should(be_nil)
         messages[0].receiver.should(eq(80300))
-        messages[0].data.should(eq(services.replies.gave_downvote))
+        messages[0].data.should(eq(gave_downvote_expected))
       end
     end
   end

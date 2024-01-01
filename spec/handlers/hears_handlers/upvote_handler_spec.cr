@@ -297,7 +297,12 @@ module PrivateParlorXT
           fail("User 20000 should exist in the database")
         end
 
+        reply_user.increment_karma()
+
         handler.send_replies(user, reply_user, message, reply_to, services)
+
+        gave_upvote_expected = Format.substitute_reply(services.replies.gave_upvote)
+        got_upvote_expected = Format.substitute_reply(services.replies.got_upvote)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -310,11 +315,11 @@ module PrivateParlorXT
           [80300, 20000].should(contain(msg.receiver))
 
           if msg.receiver == 80300
-            msg.data.should(eq(services.replies.gave_upvote))
+            msg.data.should(eq(gave_upvote_expected))
           end
 
           if msg.receiver == 20000
-            msg.data.should(eq(services.replies.got_upvote))
+            msg.data.should(eq(got_upvote_expected))
           end
         end
       end
@@ -344,6 +349,8 @@ module PrivateParlorXT
 
         handler.send_replies(user, reply_user, message, reply_to, services)
 
+        gave_upvote_expected = Format.substitute_reply(services.replies.gave_upvote)
+
         messages = services.relay.as(MockRelay).empty_queue
 
         messages.size.should(eq(1))
@@ -351,7 +358,7 @@ module PrivateParlorXT
         messages[0].origin_msid.should(be_nil)
         messages[0].sender.should(be_nil)
         messages[0].receiver.should(eq(80300))
-        messages[0].data.should(eq(services.replies.gave_upvote))
+        messages[0].data.should(eq(gave_upvote_expected))
       end
     end
   end

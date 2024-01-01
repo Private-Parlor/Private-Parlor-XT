@@ -76,6 +76,7 @@ module PrivateParlorXT
       @decay_amount : Int32 = 1000,
       @score_character : Int32 = 3,
       @score_line : Int32 = 100,
+      @score_text : Int32 = 2000,
       @score_animation : Int32 = 3000,
       @score_audio : Int32 = 3000,
       @score_document : Int32 = 3000,

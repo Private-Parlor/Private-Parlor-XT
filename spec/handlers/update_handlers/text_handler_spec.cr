@@ -225,6 +225,7 @@ module PrivateParlorXT
             spam_limit: 200,
             score_character: 1,
             score_line: 100,
+            score_text: 1
           )
         )
 

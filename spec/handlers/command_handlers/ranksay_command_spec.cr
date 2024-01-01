@@ -128,6 +128,7 @@ module PrivateParlorXT
           spam_limit: 10,
           score_character: 1,
           score_line: 0,
+          score_text: 1
         ))
 
         unless spam = spam_services.spam

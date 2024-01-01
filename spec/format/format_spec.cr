@@ -611,22 +611,30 @@ module PrivateParlorXT
 
     describe "#generate_tripcode" do
       it "generates 8chan secure tripcodes" do
-        salt = "ASecureSalt"
-        Format.generate_tripcode("name#password", salt).should(eq({"name", "!tOi2ytmic0"}))
-        Format.generate_tripcode("example#1", salt).should(eq({"example", "!8KD/BUYBBu"}))
-        Format.generate_tripcode("example#pass", salt).should(eq({"example", "!LhfgvU61/K"}))
+        salt_services = create_services(
+          config: HandlerConfig.new(
+            MockConfig.new(
+              salt: "ASecureSalt"
+            )
+          )
+        )
+
+        Format.generate_tripcode("name#password", salt_services).should(eq({"name", "!tOi2ytmic0"}))
+        Format.generate_tripcode("example#1", salt_services).should(eq({"example", "!8KD/BUYBBu"}))
+        Format.generate_tripcode("example#pass", salt_services).should(eq({"example", "!LhfgvU61/K"}))
       end
 
       it "generates 2channel tripcodes" do
-        Format.generate_tripcode("name#password", "").should(eq({"name", "!ozOtJW9BFA"}))
-        Format.generate_tripcode("example#1", "").should(eq({"example", "!tsGpSwX8mo"}))
-        Format.generate_tripcode("example#pass", "").should(eq({"example", "!XksB4AwhxU"}))
+        services = create_services()
+        Format.generate_tripcode("name#password", services).should(eq({"name", "!ozOtJW9BFA"}))
+        Format.generate_tripcode("example#1", services).should(eq({"example", "!tsGpSwX8mo"}))
+        Format.generate_tripcode("example#pass", services).should(eq({"example", "!XksB4AwhxU"}))
 
         Format.generate_tripcode(
-          "example#AnExcessivelyLongTripcodePassword", ""
+          "example#AnExcessivelyLongTripcodePassword", services
         ).should(eq({"example", "!v8ZIGlF0Uc"}))
         Format.generate_tripcode(
-          "example#AnExcess", ""
+          "example#AnExcess", services
         ).should(eq({"example", "!v8ZIGlF0Uc"}))
       end
     end
