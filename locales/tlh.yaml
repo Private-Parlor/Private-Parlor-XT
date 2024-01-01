@@ -394,6 +394,6 @@ logs:
    # Available placeholders: id, name, rank, text
    ranked_message: "patIh tlhej QIn ngeHta' {id} meb (pong: {name}). QIn: {text}"
 
-   # Available placeholders: id
-   force_leave: "{id} meb ngabpu'mo' pe'vIl ghaH teqta'"
+   # Available placeholders: id, name
+   force_leave: "{id} meb (pong: {name}) ngabpu'mo' pe'vIl ghaH teqta'"
 ---

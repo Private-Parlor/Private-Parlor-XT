@@ -381,6 +381,6 @@ logs:
    # Available placeholders: id, name, rank, text
    ranked_message: "Nutzer {id}, alias {name}, hat eine {rank} Rangnachricht geschickt: {text}"
 
-   # Available placeholders: id
-   force_leave: "Entfernt Nutzer {id}, weil der Bot blockiert sind"
+   # Available placeholders: id, name
+   force_leave: "Entfernt Nutzer {id}, alias {name}, weil der Bot blockiert sind"
 ---

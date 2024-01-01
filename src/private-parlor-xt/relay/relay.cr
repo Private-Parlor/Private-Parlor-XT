@@ -490,7 +490,7 @@ module PrivateParlorXT
           user.set_left
           services.database.update_user(user)
 
-          log = Format.substitute_message(services.logs.force_leave, {"id" => user.id.to_s})
+          log = Format.substitute_message(services.logs.force_leave, {"id" => user.id.to_s, "name" => user.get_formatted_name})
 
           log_output(log)
         end

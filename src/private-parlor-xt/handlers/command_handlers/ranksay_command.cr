@@ -47,6 +47,15 @@ module PrivateParlorXT
       end
 
       message.preformatted = true
+
+      services.relay.log_output(
+        Format.substitute_message(services.logs.ranked_message, {
+          "id"   => user.id.to_s,
+          "name" => user.get_formatted_name,
+          "rank" => rank_name,
+          "text" => arg,
+        })
+      )
     end
 
     def spamming?(user : User, message : Tourmaline::Message, arg : String, services : Services) : Bool
