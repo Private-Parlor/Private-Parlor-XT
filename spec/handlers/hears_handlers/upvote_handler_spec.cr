@@ -297,7 +297,7 @@ module PrivateParlorXT
           fail("User 20000 should exist in the database")
         end
 
-        reply_user.increment_karma()
+        reply_user.increment_karma
 
         handler.send_replies(user, reply_user, message, reply_to, services)
 

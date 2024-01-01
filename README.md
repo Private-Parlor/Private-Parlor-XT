@@ -54,13 +54,13 @@ Alternatively, you can download the precompiled binaries from [Releases](https:/
 
 1. Rename `config.yaml.copy` to `config.yaml`
 2. Edit config file
-  - The config file should atleast contain the API Token received from botfather and a path to a SQLite database
+  - The config file should at least contain the API Token received from Botfather and a path to a SQLite database
   - Unless the database already exists, Private Parlor XT will create a new SQLite database at the given path
 3. Run the `private-parlor-xt` binary
 
 ## Development
 
-Development intructions are as follows:
+Development instructions are as follows:
 - Ensure code conforms to the [Crystal API coding style](https://crystal-lang.org/reference/1.9/conventions/coding_style.html)
 - Explicitly define return types and types for variables and parameters
 - Document your code

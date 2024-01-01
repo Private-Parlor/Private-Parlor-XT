@@ -1,5 +1,5 @@
 name: private-parlor-xt
-version: 1.0.1
+version: 1.1
 
 authors:
   - Charybdis
@@ -24,6 +24,6 @@ targets:
   private-parlor-xt:
     main: src/private-parlor-xt.cr
 
-crystal: 1.9.2
+crystal: 1.10.1
 
 license: LGPL-3.0-or-later
