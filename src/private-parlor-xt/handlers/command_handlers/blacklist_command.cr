@@ -4,9 +4,8 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: ["blacklist", "ban"], config: "enable_blacklist")]
   class BlacklistCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
-      return unless message && user
+    def do(message : Tourmaline::Message, services : Services)
+      return unless user = get_user_from_message(message, services)
 
       return unless authorized?(user, message, :Blacklist, services)
 
@@ -15,7 +14,7 @@ module PrivateParlorXT
       return unless reply_user = get_reply_user(user, reply, services)
 
       unless reply_user.rank < user.rank
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
 
       update_user_activity(user, services)
@@ -47,11 +46,15 @@ module PrivateParlorXT
         "reason"  => Format.format_reason_log(reason, services.logs),
       })
 
+      if original_message
+        original_message = ReplyParameters.new(original_message)
+      end
+
       services.relay.send_to_user(original_message, reply_user.id, response)
 
       services.relay.log_output(log)
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.success)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
     end
   end
 end

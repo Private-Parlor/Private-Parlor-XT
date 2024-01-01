@@ -83,17 +83,30 @@ replies:
    # Available placeholders: toggle
    toggle_debug: "*Debug mode*: {toggle}"
 
-   gave_upvote: "_You upvoted this message\\!_"
+   # Available placeholders: reason
+   karma_reason: |- 
+      \ for:
+      >{reason}
 
-   got_upvote: "_You've just been upvoted\\! \\(check /info to see your karma or /togglekarma to turn these notifications off\\)_"
+   # Available placeholders: karma_reason
+   gave_upvote: "_You upvoted this message{karma_reason}\n_"
+
+   # Available placeholders: karma_reason
+   got_upvote: |- 
+      _You've just been upvoted{karma_reason} 
+      \(check /info to see your karma or /togglekarma to turn these notifications off\)_
 
    upvoted_own_message: "_You can't upvote your own message\\!_"
 
    already_voted: "_You have already upvoted or downvoted this message\\._"
 
-   gave_downvote: "_You downvoted this message\\!_"
+   # Available placeholders: karma_reason
+   gave_downvote: "_You downvoted this message{karma_reason}\n_"
 
-   got_downvote: "_You've just been downvoted\\! \\(check /info to see your karma or /togglekarma to turn these notifications off\\)_"
+   # Available placeholders: karma_reason
+   got_downvote: |- 
+      _You've just been downvoted{karma_reason} 
+      \(check /info to see your karma or /togglekarma to turn these notifications off\)_
 
    downvoted_own_message: "_You can't downvote your own message\\!_"
 
@@ -104,6 +117,23 @@ replies:
 
       *Karma*: {karma}/{limit}
       {loading_bar} \({percentage}%\)
+
+   # Available placeholders: level
+   karma_level_up: |- 
+      _Nice work\!
+      You have gained a karma level\. Your level is now:_
+      *{level}*
+      _\(check /karma\_info to see your level or /togglekarma to turn these notifications off\)_
+
+   # Available placeholders: level
+   karma_level_down: |-
+      _Whoops\!
+      You have lost a karma level\. Your level is now:_
+      *{level}*
+      _\(check /karma\_info to see your level or /togglekarma to turn these notifications off\)_
+
+   # Available placeholders: amount, type
+   insufficient_karma: "_You must have {amount} karma available before you can send a `{type}` message\\._" 
 
    already_warned: "_This message has already been warned\\._"
 
@@ -120,14 +150,25 @@ replies:
 
    downvote_spam: "_You can't downvote at this time, avoid downvoting too often\\. Try again later\\._"
 
+   tripcode_format:  "name#pass"
+
+   flag_sign_format: "🏴🏴🏴🏴🏴"
+
+   # Available placeholders: valid_format
    invalid_tripcode_format: |-
       _Invalid tripcode format\. The format is:_
-      `name\#pass`
+      `{valid_format}`
 
    # Available placeholders: name, tripcode
+   tripcode_set_format:  "*{name}* `{tripcode}`:"
+
+   # Available placeholders: name,
+   flag_sign_set_format: "`{name}`:"
+
+   # Available placeholders: set_format
    tripcode_set: |- 
       _Tripcode set\. It will appear as:_
-      *{name}* `{tripcode}`:
+      {set_format}
 
    # Available placeholders: tripcode
    tripcode_info: "*Tripcode*: `{tripcode}`"
@@ -316,6 +357,12 @@ logs:
    # Available placeholders: id, name, msid
    unspoiled: "User {id}, aka {name}, removed a spoiler from receiver message [{msid}]"
 
+   # Available placeholders: id, name, oid, reason
+   upvoted: "User {id}, aka {name}, upvoted user [{oid}] for: {reason}"
+
+   # Available placeholders: id, name, oid, reason
+   downvoted: "User {id}, aka {name}, downvoted user [{oid}] for: {reason}"
+
    # Available placeholders: sender_id, sender, receiver_id, receiver, msid
    revealed: "User {sender_id}, aka {sender}, revealed username to user {receiver_id}, aka {receiver}, via receiver message [{msid}]"
 
@@ -334,6 +381,6 @@ logs:
    # Available placeholders: id, name, rank, text
    ranked_message: "User {id}, aka {name}, sent {rank} message: {text}"
 
-   # Available placeholders: id
-   force_leave: "Force leaving user {id} because bot is blocked."
+   # Available placeholders: id, name
+   force_leave: "Force leaving user {id}, aka {name}, because bot is blocked."
 ---

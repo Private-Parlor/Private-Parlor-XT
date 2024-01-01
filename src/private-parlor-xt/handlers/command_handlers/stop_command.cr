@@ -4,8 +4,12 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "stop", config: "enable_stop")]
   class StopCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      return unless (message = context.message) && (info = message.from)
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      return unless info = message.from
+
+      if text = message.text || message.caption
+        return unless text.starts_with?('/')
+      end
 
       unless user = services.database.get_user(info.id.to_i64)
         return services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
@@ -20,7 +24,7 @@ module PrivateParlorXT
       user.set_left
       services.database.update_user(user)
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.left)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.left)
 
       log = Format.substitute_message(services.logs.left, {
         "id"   => user.id.to_s,

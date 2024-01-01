@@ -85,6 +85,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "toggle_debug")]
     getter toggle_debug : String
 
+    @[YAML::Field(key: "karma_reason")]
+    getter karma_reason : String
+
     @[YAML::Field(key: "gave_upvote")]
     getter gave_upvote : String
 
@@ -109,6 +112,15 @@ module PrivateParlorXT
     @[YAML::Field(key: "karma_info")]
     getter karma_info : String
 
+    @[YAML::Field(key: "karma_level_up")]
+    getter karma_level_up : String
+
+    @[YAML::Field(key: "karma_level_down")]
+    getter karma_level_down : String
+
+    @[YAML::Field(key: "insufficient_karma")]
+    getter insufficient_karma : String
+
     @[YAML::Field(key: "already_warned")]
     getter already_warned : String
 
@@ -130,8 +142,20 @@ module PrivateParlorXT
     @[YAML::Field(key: "downvote_spam")]
     getter downvote_spam : String
 
+    @[YAML::Field(key: "tripcode_format")]
+    getter tripcode_format : String
+
+    @[YAML::Field(key: "flag_sign_format")]
+    getter flag_sign_format : String
+
     @[YAML::Field(key: "invalid_tripcode_format")]
     getter invalid_tripcode_format : String
+
+    @[YAML::Field(key: "tripcode_set_format")]
+    getter tripcode_set_format : String
+
+    @[YAML::Field(key: "flag_sign_set_format")]
+    getter flag_sign_set_format : String
 
     @[YAML::Field(key: "tripcode_set")]
     getter tripcode_set : String

@@ -7,7 +7,7 @@ module PrivateParlorXT
     def initialize(config : Config)
     end
 
-    def do(context : Tourmaline::Context, services : Services)
+    def do(message : Tourmaline::Message, services : Services)
     end
   end
 end

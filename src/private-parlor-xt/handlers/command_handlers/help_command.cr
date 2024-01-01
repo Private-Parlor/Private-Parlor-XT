@@ -4,14 +4,13 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "help", config: "enable_help")]
   class HelpCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
-      return unless message && user
+    def do(message : Tourmaline::Message, services : Services)
+      return unless user = get_user_from_message(message, services)
 
       update_user_activity(user, services)
 
       services.relay.send_to_user(
-        message.message_id.to_i64,
+        ReplyParameters.new(message.message_id),
         user.id,
         Format.format_help(
           user,

@@ -33,9 +33,7 @@ module PrivateParlorXT
           Tourmaline::User.new(40000, false, "esimerkki"),
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         left_user = services.database.get_user(40000)
 
@@ -54,9 +52,7 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "esimerkki"),
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         left_user = services.database.get_user(80300)
 

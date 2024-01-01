@@ -144,7 +144,7 @@ module PrivateParlorXT
           response = services.replies.unoriginal_message
         end
 
-        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
 
         return false
       end
@@ -181,7 +181,7 @@ module PrivateParlorXT
           response = services.replies.unoriginal_message
         end
 
-        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
 
         return false
       end

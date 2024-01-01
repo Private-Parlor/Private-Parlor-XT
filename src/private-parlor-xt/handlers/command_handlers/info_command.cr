@@ -10,9 +10,8 @@ module PrivateParlorXT
       @smileys = config.smileys
     end
 
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
-      return unless message && user
+    def do(message : Tourmaline::Message, services : Services)
+      return unless user = get_user_from_message(message, services)
 
       if reply = message.reply_to_message
         ranked_info(user, message, reply, services)
@@ -36,7 +35,7 @@ module PrivateParlorXT
         "cooldown_until" => Format.format_cooldown_until(reply_user.cooldown_until, services.locale, services.replies),
       })
 
-      services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
     end
 
     def user_info(user : User, message : MessageID, services : Services)
@@ -78,7 +77,7 @@ module PrivateParlorXT
         "cooldown_until" => Format.format_cooldown_until(user.cooldown_until, services.locale, services.replies),
       })
 
-      services.relay.send_to_user(message, user.id, response)
+      services.relay.send_to_user(ReplyParameters.new(message), user.id, response)
     end
   end
 end

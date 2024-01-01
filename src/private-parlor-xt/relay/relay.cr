@@ -3,6 +3,33 @@ require "./queue.cr"
 require "tourmaline"
 
 module PrivateParlorXT
+  alias ReplyParameters = Tourmaline::ReplyParameters
+
+  class RelayParameters
+    getter original_message : MessageID
+    getter sender : UserID
+    getter receivers : Array(UserID)
+    getter replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters
+    getter text : String = ""
+    getter entities : Array(Tourmaline::MessageEntity)? = nil
+    getter link_preview_options : Tourmaline::LinkPreviewOptions? = nil
+    getter media : String = ""
+    getter spoiler : Bool? = nil
+
+    def initialize(
+      @original_message : MessageID,
+      @sender : UserID,
+      @receivers : Array(UserID),
+      @replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters,
+      @text : String = "",
+      @entities : Array(Tourmaline::MessageEntity)? = nil,
+      @link_preview_options : Tourmaline::LinkPreviewOptions? = nil,
+      @media : String = "",
+      @spoiler : Bool? = nil
+    )
+    end
+  end
+
   class Relay
     @client : PrivateParlorXT::Client
     @queue : MessageQueue = MessageQueue.new
@@ -28,32 +55,31 @@ module PrivateParlorXT
     end
 
     # Relay a message to a single user. Used for system messages.
-    def send_to_user(reply_message : MessageID?, user : UserID, text : String)
+    def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String)
       @queue.add_to_queue_priority(
         user,
         reply_message,
-        ->(receiver : UserID, reply : MessageID?) {
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_message(
             receiver,
             text,
-            disable_web_page_preview: false,
-            reply_to_message_id: reply
+            link_preview_options: Tourmaline::LinkPreviewOptions.new,
+            reply_parameters: reply
           )
         }
       )
     end
 
     # Relay a message to a single user. Used for system messages that need not be sent immediately
-    def delay_send_to_user(reply_message : MessageID?, user : UserID, text : String)
-      @queue.add_to_queue(
+    def delay_send_to_user(reply_message : ReplyParameters?, user : UserID, text : String)
+      @queue.add_to_queue_delayed(
         user,
         reply_message,
-        ->(receiver : UserID, reply : MessageID?) {
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_message(
             receiver,
             text,
-            disable_web_page_preview: false,
-            reply_to_message_id: reply
+            reply_parameters: reply
           )
         }
       )
@@ -63,157 +89,156 @@ module PrivateParlorXT
     def send_to_channel(reply_message : MessageID?, channel : String, text : String)
       return unless id = channel.to_i64?
 
-      @queue.add_to_queue(
+      @queue.add_to_queue_delayed(
         id,
         nil,
-        ->(receiver : UserID, _reply : MessageID?) {
+        ->(receiver : UserID, _reply : ReplyParameters?) {
           @client.send_message(
             receiver,
             text,
-            parse_mode: nil,
-            disable_web_page_preview: false,
+            parse_mode: nil
           )
         }
       )
     end
 
-    def send_text(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, text : String, entities : Array(Tourmaline::MessageEntity))
+    def send_text(params : RelayParameters)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_message(
             receiver,
-            text,
+            params.text,
             parse_mode: nil,
-            entities: entities,
-            disable_web_page_preview: false,
-            reply_to_message_id: reply,
+            entities: params.entities,
+            link_preview_options: params.link_preview_options,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_photo(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, photo : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
+    def send_photo(params : RelayParameters)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_photo(
             receiver,
-            photo,
-            caption: caption,
+            params.media,
+            caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
-            caption_entities: entities,
-            has_spoiler: spoiler,
-            reply_to_message_id: reply,
+            caption_entities: params.entities,
+            has_spoiler: params.spoiler,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_animation(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, animation : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
+    def send_animation(params : RelayParameters)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_animation(
             receiver,
-            animation,
-            caption: caption,
+            params.media,
+            caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
-            caption_entities: entities,
-            has_spoiler: spoiler,
-            reply_to_message_id: reply,
+            caption_entities: params.entities,
+            has_spoiler: params.spoiler,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_video(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, video : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
+    def send_video(params : RelayParameters)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_video(
             receiver,
-            video,
-            caption: caption,
+            params.media,
+            caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
-            caption_entities: entities,
-            has_spoiler: spoiler,
-            reply_to_message_id: reply,
+            caption_entities: params.entities,
+            has_spoiler: params.spoiler,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_audio(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, audio : String, caption : String, entities : Array(Tourmaline::MessageEntity))
+    def send_audio(params : RelayParameters)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_audio(
             receiver,
-            audio,
-            caption: caption,
+            params.media,
+            caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
-            caption_entities: entities,
-            reply_to_message_id: reply,
+            caption_entities: params.entities,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_voice(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, voice : String, caption : String, entities : Array(Tourmaline::MessageEntity))
+    def send_voice(params : RelayParameters)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
-          @client.send_audio(
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          @client.send_voice(
             receiver,
-            voice,
-            caption: caption,
+            params.media,
+            caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
-            caption_entities: entities,
-            reply_to_message_id: reply,
+            caption_entities: params.entities,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_document(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, document : String, caption : String, entities : Array(Tourmaline::MessageEntity))
+    def send_document(params : RelayParameters)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_document(
             receiver,
-            document,
-            caption: caption,
+            params.media,
+            caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
-            caption_entities: entities,
-            reply_to_message_id: reply,
+            caption_entities: params.entities,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_poll_copy(reply : MessageID?, user : User, poll : Tourmaline::Poll)
+    def send_poll_copy(reply : MessageID, user : User, poll : Tourmaline::Poll)
       @client.send_poll(
         user.id,
         question: poll.question,
@@ -225,81 +250,81 @@ module PrivateParlorXT
         explanation: poll.explanation,
         explanation_entities: poll.explanation_entities,
         open_period: poll.open_period,
-        reply_to_message_id: reply,
+        reply_parameters: ReplyParameters.new(reply),
       )
     end
 
-    def send_forward(origin : MessageID, user : User, receivers : Array(UserID), message : MessageID)
+    def send_forward(params : RelayParameters, message : MessageID)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        nil,
-        ->(receiver : UserID, _reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, _reply : ReplyParameters?) {
           @client.forward_message(
             receiver,
-            user.id,
+            params.sender,
             message,
           )
         }
       )
     end
 
-    def send_video_note(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, video_note : String)
+    def send_video_note(params : RelayParameters)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_video_note(
             receiver,
-            video_note,
-            reply_to_message_id: reply,
+            params.media,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_sticker(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, sticker_file : String)
+    def send_sticker(params : RelayParameters)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_sticker(
             receiver,
-            sticker_file,
-            reply_to_message_id: reply,
+            params.media,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_album(origins : Array(MessageID), user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, media : Array(Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo | Tourmaline::InputMediaAudio | Tourmaline::InputMediaDocument))
+    def send_album(params : AlbumHelpers::AlbumRelayParameters)
       @queue.add_to_queue(
-        origins,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_messages,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_media_group(
             receiver,
-            media,
-            reply_to_message_id: reply,
+            params.media,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_venue(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, venue : Tourmaline::Venue)
+    def send_venue(params : RelayParameters, venue : Tourmaline::Venue)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_venue(
             receiver,
             latitude: venue.location.latitude,
@@ -310,43 +335,43 @@ module PrivateParlorXT
             foursquare_type: venue.foursquare_type,
             google_place_id: venue.google_place_id,
             google_place_type: venue.google_place_type,
-            reply_to_message_id: reply,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_location(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, location : Tourmaline::Location)
+    def send_location(params : RelayParameters, location : Tourmaline::Location)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_location(
             receiver,
             latitude: location.latitude,
             longitude: location.longitude,
-            reply_to_message_id: reply,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_contact(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, contact : Tourmaline::Contact)
+    def send_contact(params : RelayParameters, contact : Tourmaline::Contact)
       @queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_contact(
             receiver,
             phone_number: contact.phone_number,
             first_name: contact.first_name,
             last_name: contact.last_name,
             vcard: contact.vcard,
-            reply_to_message_id: reply,
+            reply_parameters: reply,
           )
         }
       )
@@ -367,52 +392,73 @@ module PrivateParlorXT
     def delete_message(receiver : UserID, message : MessageID)
       @queue.add_to_queue_priority(
         receiver,
-        message,
-        ->(receiver_id : UserID, message_id : MessageID?) {
-          return false unless message_id
-          @client.delete_message(receiver_id, message_id)
+        ReplyParameters.new(message),
+        ->(receiver_id : UserID, reply : ReplyParameters?) {
+          return false unless reply
+          @client.delete_message(receiver_id, reply.message_id)
         }
       )
     end
 
     def remove_message(receiver : UserID, message : MessageID)
-      @queue.add_to_queue(
+      @queue.add_to_queue_delayed(
         receiver,
-        message,
-        ->(receiver_id : UserID, message_id : MessageID?) {
-          return false unless message_id
-          @client.delete_message(receiver_id, message_id)
+        ReplyParameters.new(message),
+        ->(receiver_id : UserID, reply : ReplyParameters?) {
+          return false unless reply
+          @client.delete_message(receiver_id, reply.message_id)
+        }
+      )
+    end
+
+    def purge_messages(receiver : UserID, messages : Array(MessageID))
+      @queue.add_to_queue_priority(
+        receiver,
+        nil,
+        ->(receiver_id : UserID, _reply : ReplyParameters?) {
+          @client.delete_messages(receiver_id, messages)
         }
       )
     end
 
     def pin_message(user : UserID, message : MessageID)
-      @queue.add_to_queue(
+      @queue.add_to_queue_delayed(
         user,
-        message,
-        ->(receiver : UserID, message_id : MessageID?) {
-          return false unless message_id
-          @client.pin_chat_message(receiver, message_id)
+        ReplyParameters.new(message),
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          return false unless reply
+          @client.pin_chat_message(receiver, reply.message_id)
         }
       )
     end
 
     def unpin_message(user : UserID, message : MessageID? = nil)
-      @queue.add_to_queue(
+      if message
+        message = ReplyParameters.new(message)
+      else
+        message = nil
+      end
+
+      @queue.add_to_queue_delayed(
         user,
         message,
-        ->(receiver : UserID, message_id : MessageID?) {
-          @client.unpin_chat_message(receiver, message_id)
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          if reply
+            @client.unpin_chat_message(receiver, reply.message_id)
+          else
+            @client.unpin_chat_message(receiver, nil)
+          end
         }
       )
     end
 
     def edit_message_media(user : UserID, media : Tourmaline::InputMedia, message : MessageID)
-      @queue.add_to_queue(
+      @queue.add_to_queue_delayed(
         user,
-        message,
-        ->(receiver : UserID, message_id : MessageID?) {
-          @client.edit_message_media(media, receiver, message_id)
+        ReplyParameters.new(message),
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          return false unless reply
+          @client.edit_message_media(media, receiver, reply.message_id)
           # We don't care about the result, so return a boolean
           # to satisfy type requirements
           true
@@ -444,7 +490,7 @@ module PrivateParlorXT
           user.set_left
           services.database.update_user(user)
 
-          log = Format.substitute_message(services.logs.force_leave, {"id" => user.id.to_s})
+          log = Format.substitute_message(services.logs.force_leave, {"id" => user.id.to_s, "name" => user.get_formatted_name})
 
           log_output(log)
         end

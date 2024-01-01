@@ -4,7 +4,7 @@ module PrivateParlorXT
   class MockRelay < Relay
     @queue : MessageQueue = MockMessageQueue.new
 
-    def send_to_user(reply_message : MessageID?, user : UserID, text : String)
+    def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue_priority(
@@ -12,175 +12,176 @@ module PrivateParlorXT
         reply_message,
         text,
         Array(Tourmaline::MessageEntity).new,
-        ->(receiver : UserID, reply : MessageID?) {
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_message(
             receiver,
             text,
-            disable_web_page_preview: false,
-            reply_to_message_id: reply)
-        }
-      )
-    end
-
-    def send_text(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, text : String, entities : Array(Tourmaline::MessageEntity))
-      return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
-
-      queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        text,
-        entities,
-        ->(receiver : UserID, reply : MessageID?) {
-          @client.send_message(
-            receiver,
-            text,
-            parse_mode: nil,
-            entities: entities,
-            disable_web_page_preview: false,
-            reply_to_message_id: reply,
+            link_preview_options: Tourmaline::LinkPreviewOptions.new,
+            reply_parameters: reply
           )
         }
       )
     end
 
-    def send_photo(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, photo : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
+    def send_text(params : PrivateParlorXT::RelayParameters)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        photo,
-        entities,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        params.text,
+        params.entities,
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          @client.send_message(
+            receiver,
+            params.text,
+            parse_mode: nil,
+            entities: params.entities,
+            link_preview_options: params.link_preview_options,
+            reply_parameters: reply
+          )
+        }
+      )
+    end
+
+    def send_photo(params : RelayParameters)
+      return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
+
+      queue.add_to_queue(
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        params.media,
+        params.entities,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_photo(
             receiver,
-            photo,
-            caption: caption,
+            params.media,
+            caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
-            caption_entities: entities,
-            has_spoiler: spoiler,
-            reply_to_message_id: reply,
+            caption_entities: params.entities,
+            has_spoiler: params.spoiler,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_animation(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, animation : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
+    def send_animation(params : RelayParameters)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        animation,
-        entities,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        params.media,
+        params.entities,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_animation(
             receiver,
-            animation,
-            caption: caption,
+            params.media,
+            caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
-            caption_entities: entities,
-            has_spoiler: spoiler,
-            reply_to_message_id: reply,
+            caption_entities: params.entities,
+            has_spoiler: params.spoiler,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_video(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, video : String, caption : String, entities : Array(Tourmaline::MessageEntity), spoiler : Bool?)
+    def send_video(params : RelayParameters)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        video,
-        entities,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        params.media,
+        params.entities,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_video(
             receiver,
-            video,
-            caption: caption,
+            params.media,
+            caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
-            caption_entities: entities,
-            has_spoiler: spoiler,
-            reply_to_message_id: reply,
+            caption_entities: params.entities,
+            has_spoiler: params.spoiler,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_audio(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, audio : String, caption : String, entities : Array(Tourmaline::MessageEntity))
+    def send_audio(params : RelayParameters)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        audio,
-        entities,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        params.media,
+        params.entities,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_audio(
             receiver,
-            audio,
-            caption: caption,
+            params.media,
+            caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
-            caption_entities: entities,
-            reply_to_message_id: reply,
+            caption_entities: params.entities,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_voice(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, voice : String, caption : String, entities : Array(Tourmaline::MessageEntity))
+    def send_voice(params : RelayParameters)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        voice,
-        entities,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        params.media,
+        params.entities,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_audio(
             receiver,
-            voice,
-            caption: caption,
+            params.media,
+            caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
-            caption_entities: entities,
-            reply_to_message_id: reply,
+            caption_entities: params.entities,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_document(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, document : String, caption : String, entities : Array(Tourmaline::MessageEntity))
+    def send_document(params : RelayParameters)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        document,
-        entities,
-        ->(receiver : UserID, reply : MessageID?) {
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        params.media,
+        params.entities,
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_document(
             receiver,
-            document,
-            caption: caption,
+            params.media,
+            caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
-            caption_entities: entities,
-            reply_to_message_id: reply,
+            caption_entities: params.entities,
+            reply_parameters: reply,
           )
         }
       )
@@ -194,97 +195,97 @@ module PrivateParlorXT
       )
     end
 
-    def send_forward(origin : MessageID, user : User, receivers : Array(UserID), message : MessageID)
+    def send_forward(params : RelayParameters, message : MessageID)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        nil,
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
         message.to_s,
         Array(Tourmaline::MessageEntity).new,
-        ->(receiver : UserID, _reply : MessageID?) {
+        ->(receiver : UserID, _reply : ReplyParameters?) {
           @client.forward_message(
             receiver,
-            user.id,
+            params.sender,
             message,
           )
         }
       )
     end
 
-    def send_video_note(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, video_note : String)
+    def send_video_note(params : RelayParameters)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        video_note,
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        params.media,
         Array(Tourmaline::MessageEntity).new,
-        ->(receiver : UserID, reply : MessageID?) {
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_video_note(
             receiver,
-            video_note,
-            reply_to_message_id: reply,
+            params.media,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_sticker(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, sticker_file : String)
+    def send_sticker(params : RelayParameters)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
-        sticker_file,
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
+        params.media,
         Array(Tourmaline::MessageEntity).new,
-        ->(receiver : UserID, reply : MessageID?) {
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_sticker(
             receiver,
-            sticker_file,
-            reply_to_message_id: reply,
+            params.media,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_album(origins : Array(MessageID), user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, media : Array(Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo | Tourmaline::InputMediaAudio | Tourmaline::InputMediaDocument))
+    def send_album(params : AlbumHelpers::AlbumRelayParameters)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origins,
-        user.id,
-        receivers,
-        reply_msids,
-        media.first.media,
+        params.original_messages,
+        params.sender,
+        params.receivers,
+        params.replies,
+        params.media.first.media,
         Array(Tourmaline::MessageEntity).new,
-        ->(receiver : UserID, reply : MessageID?) {
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_media_group(
             receiver,
-            media,
-            reply_to_message_id: reply,
+            params.media,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_venue(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, venue : Tourmaline::Venue)
+    def send_venue(params : RelayParameters, venue : Tourmaline::Venue)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
         venue.address,
         Array(Tourmaline::MessageEntity).new,
-        ->(receiver : UserID, reply : MessageID?) {
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_venue(
             receiver,
             latitude: venue.location.latitude,
@@ -295,51 +296,51 @@ module PrivateParlorXT
             foursquare_type: venue.foursquare_type,
             google_place_id: venue.google_place_id,
             google_place_type: venue.google_place_type,
-            reply_to_message_id: reply,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_location(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, location : Tourmaline::Location)
+    def send_location(params : RelayParameters, location : Tourmaline::Location)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
         "#{location.latitude}, #{location.longitude}",
         Array(Tourmaline::MessageEntity).new,
-        ->(receiver : UserID, reply : MessageID?) {
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_location(
             receiver,
             latitude: location.latitude,
             longitude: location.longitude,
-            reply_to_message_id: reply,
+            reply_parameters: reply,
           )
         }
       )
     end
 
-    def send_contact(origin : MessageID, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, contact : Tourmaline::Contact)
+    def send_contact(params : RelayParameters, contact : Tourmaline::Contact)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
-        origin,
-        user.id,
-        receivers,
-        reply_msids,
+        params.original_message,
+        params.sender,
+        params.receivers,
+        params.replies,
         contact.phone_number,
         Array(Tourmaline::MessageEntity).new,
-        ->(receiver : UserID, reply : MessageID?) {
+        ->(receiver : UserID, reply : ReplyParameters?) {
           @client.send_contact(
             receiver,
             phone_number: contact.phone_number,
             first_name: contact.first_name,
             last_name: contact.last_name,
             vcard: contact.vcard,
-            reply_to_message_id: reply,
+            reply_parameters: reply,
           )
         }
       )

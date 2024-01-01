@@ -18,8 +18,8 @@ module PrivateParlorXT
       services.database.close
     end
 
-    describe "#get_message_and_user" do
-      it "returns message and user" do
+    describe "#get_user_from_message" do
+      it "returns user" do
         reply_to = create_message(
           6,
           Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
@@ -31,18 +31,9 @@ module PrivateParlorXT
           reply_to_message: reply_to,
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        tuple = handler.get_message_and_user(ctx, services)
-
-        unless returned_message = tuple[0]
-          fail("Did not get a message from method")
-        end
-        unless returned_user = tuple[1]
+        unless returned_user = handler.get_user_from_message(message, services)
           fail("Did not get a user from method")
         end
-
-        returned_message.should(eq(message))
 
         returned_user.id.should(eq(80300))
       end
@@ -53,14 +44,7 @@ module PrivateParlorXT
           Tourmaline::User.new(80300, false, "beispiel", "spec", "new_username"),
         )
 
-        new_names_context = create_context(client, create_update(11, new_names_message))
-
-        tuple = handler.get_message_and_user(new_names_context, services)
-
-        unless tuple[0]
-          fail("Did not get a message from method")
-        end
-        unless returned_user = tuple[1]
+        unless returned_user = handler.get_user_from_message(new_names_message, services)
           fail("Did not get a user from method")
         end
 
@@ -70,48 +54,51 @@ module PrivateParlorXT
         returned_user.realname.should(eq("beispiel spec"))
       end
 
-      it "returns message if user does not exist" do
-        no_user_message = create_message(
+      it "returns nil if user does not exist" do
+        message = create_message(
           11,
-          Tourmaline::User.new(9000, false, "no_user"),
+          Tourmaline::User.new(12345678, false, "beispiel", "spec", "new_username"),
         )
 
-        no_user_context = create_context(client, create_update(11, no_user_message))
+        user = handler.get_user_from_message(message, services)
 
-        tuple = handler.get_message_and_user(no_user_context, services)
-
-        unless returned_message = tuple[0]
-          fail("Did not get a message from method")
-        end
-
-        tuple[1].should(be_nil)
-        returned_message.should(eq(no_user_message))
+        user.should(be_nil)
       end
 
-      it "returns message if user can't use a command (blacklisted)" do
-        blacklisted_user_message = create_message(
+      it "queues not in chat message if user does not exist" do
+        mock_services = create_services(relay: MockRelay.new("", client))
+
+        message = create_message(
           11,
-          Tourmaline::User.new(70000, false, "BLACKLISTED"),
+          Tourmaline::User.new(12345678, false, "beispiel", "spec", "new_username"),
         )
 
-        blacklisted_user_context = create_context(client, create_update(11, blacklisted_user_message))
+        handler.get_user_from_message(message, mock_services)
 
-        tuple = handler.get_message_and_user(blacklisted_user_context, services)
+        messages = mock_services.relay.as(MockRelay).empty_queue
 
-        unless returned_message = tuple[0]
-          fail("Did not get a message from method")
-        end
-
-        tuple[1].should(be_nil)
-        returned_message.should(eq(blacklisted_user_message))
+        messages.size.should(eq(1))
+        messages[0].data.should(eq(mock_services.replies.not_in_chat))
       end
+    end
 
-      it "returns nil if message does not exist" do
-        empty_context = create_context(client, create_update(11))
+    describe "#deny_user" do
+      it "queues blacklisted response when user is blacklisted" do
+        mock_services = create_services(relay: MockRelay.new("", client))
 
-        tuple = handler.get_message_and_user(empty_context, services)
+        user = MockUser.new(9000, rank: -10)
 
-        tuple.should(eq({nil, nil}))
+        handler.deny_user(user, mock_services)
+
+        messages = mock_services.relay.as(MockRelay).empty_queue
+
+        expected = Format.substitute_reply(mock_services.replies.blacklisted, {
+          "contact" => "",
+          "reason"  => "",
+        })
+
+        messages.size.should(eq(1))
+        messages[0].data.should(eq(expected))
       end
     end
 

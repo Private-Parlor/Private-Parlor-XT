@@ -34,6 +34,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "media_spoilers")]
     getter media_spoilers : Bool? = false
 
+    @[YAML::Field(key: "karma_reasons")]
+    getter karma_reasons : Bool? = false
+
     @[YAML::Field(key: "regular_forwards")]
     getter regular_forwards : Bool? = false
 
@@ -230,6 +233,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "warn_deduction")]
     getter warn_deduction : Int32 = 10
 
+    @[YAML::Field(key: "karma_economy")]
+    getter karma_economy : KarmaHandler?
+
     @[YAML::Field(key: "spam_interval")]
     getter spam_interval : Int32 = 10
 
@@ -244,6 +250,9 @@ module PrivateParlorXT
 
     @[YAML::Field(key: "pseudonymous")]
     getter pseudonymous : Bool? = false
+
+    @[YAML::Field(key: "flag_signatures")]
+    getter flag_signatures : Bool? = false
 
     @[YAML::Field(key: "blacklist_contact")]
     getter blacklist_contact : String? = nil
@@ -280,7 +289,7 @@ module PrivateParlorXT
     end
 
     private def self.check_config(config : Config) : Config
-      message_entities = ["bold", "italic", "underline", "strikethrough", "spoiler", "code", "text_link", "custom_emoji"]
+      message_entities = ["bold", "italic", "underline", "strikethrough", "spoiler", "code", "text_link", "custom_emoji", "blockquote"]
 
       if config.smileys.size != 4
         Log.notice { "Not enough or too many smileys. Should be four, was #{config.smileys}; defaulting to [:), :|, :/, :(]" }

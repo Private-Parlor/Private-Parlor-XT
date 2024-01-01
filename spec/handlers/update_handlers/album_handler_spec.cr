@@ -47,13 +47,14 @@ module PrivateParlorXT
             60,
           ),
           media_group_id: "album_two",
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user")
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          )
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         handler.albums["album_two"]?.should(be_nil)
       end
@@ -79,9 +80,7 @@ module PrivateParlorXT
         user.set_rank(-5)
         services.database.update_user(user)
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -109,9 +108,7 @@ module PrivateParlorXT
           reply_to_message: reply_to
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 

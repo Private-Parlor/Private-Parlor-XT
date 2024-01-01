@@ -6,14 +6,13 @@ module PrivateParlorXT
   # Processes tripcode sign messages before the update handler gets them
   # This handler expects the command handlers to be registered before the update handlers
   class TripcodeSignCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
-      return unless message && user
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      return unless user = get_user_from_message(message, services)
 
-      return if message.forward_date
+      return if message.forward_origin
 
       unless tripcode = user.tripcode
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.no_tripcode_set)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.no_tripcode_set)
       end
 
       return unless authorized?(user, message, :TSign, services)
@@ -22,7 +21,7 @@ module PrivateParlorXT
       return unless text
 
       unless arg = Format.get_arg(text)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.missing_args)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.missing_args)
       end
 
       return if spamming?(user, message, arg, services)
@@ -33,8 +32,13 @@ module PrivateParlorXT
 
       entities = update_entities(text, entities, arg, message)
 
-      name, tripcode = Format.generate_tripcode(tripcode, services.config.tripcode_salt)
-      text, entities = Format.format_tripcode_sign(name, tripcode, entities)
+      name, tripcode = Format.generate_tripcode(tripcode, services)
+
+      if services.config.flag_signatures
+        text, entities = Format.format_flag_sign(name, entities)
+      else
+        text, entities = Format.format_tripcode_sign(name, tripcode, entities)
+      end
 
       text = text + arg
 
@@ -53,12 +57,12 @@ module PrivateParlorXT
       return false unless spam = services.spam
 
       if message.text && spam.spammy_text?(user.id, arg)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.spamming)
         return true
       end
 
       if spam.spammy_sign?(user.id, services.config.sign_limit_interval)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.sign_spam)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.sign_spam)
         return true
       end
 

@@ -2,15 +2,15 @@ require "../constants.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-  alias MessageProc = Proc(UserID, MessageID?, Tourmaline::Message) |
-                      Proc(UserID, MessageID?, Array(Tourmaline::Message)) |
-                      Proc(UserID, MessageID?, Bool)
+  alias MessageProc = Proc(UserID, ReplyParameters?, Tourmaline::Message) |
+                      Proc(UserID, ReplyParameters?, Array(Tourmaline::Message)) |
+                      Proc(UserID, ReplyParameters?, Bool)
 
   class QueuedMessage
     getter origin_msid : MessageID | Array(MessageID) | Nil
     getter sender : UserID?
     getter receiver : UserID
-    getter reply_to : MessageID?
+    getter reply_to : ReplyParameters?
     getter function : MessageProc
 
     # Creates an instance of `QueuedMessage`.
@@ -35,7 +35,7 @@ module PrivateParlorXT
       @origin_msid : MessageID | Array(MessageID) | Nil,
       @sender : UserID?,
       @receiver : UserID,
-      @reply_to : MessageID?,
+      @reply_to : ReplyParameters?,
       @function : MessageProc
     )
     end

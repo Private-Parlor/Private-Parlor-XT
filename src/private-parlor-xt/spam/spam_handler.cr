@@ -22,6 +22,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "score_line")]
     getter score_line : Int32 = 100
 
+    @[YAML::Field(key: "score_text")]
+    getter score_text : Int32 = 2000
+
     @[YAML::Field(key: "score_animation")]
     getter score_animation : Int32 = 3000
 
@@ -73,6 +76,7 @@ module PrivateParlorXT
       @decay_amount : Int32 = 1000,
       @score_character : Int32 = 3,
       @score_line : Int32 = 100,
+      @score_text : Int32 = 2000,
       @score_animation : Int32 = 3000,
       @score_audio : Int32 = 3000,
       @score_document : Int32 = 3000,
@@ -163,7 +167,7 @@ module PrivateParlorXT
     end
 
     def spammy_text?(user : UserID, text : String) : Bool
-      spammy?(user, (text.size * score_character) + (text.lines.size * score_line))
+      spammy?(user, score_text + (text.size * score_character) + (text.lines.size * score_line))
     end
 
     def spammy_photo?(user : UserID) : Bool

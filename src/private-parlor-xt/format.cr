@@ -31,12 +31,12 @@ module PrivateParlorXT
 
       if r9k = services.robot9000
         unless r9k.allow_text?(text)
-          services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.rejected_message)
+          services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.rejected_message)
           return false
         end
       else
         unless Format.allow_text?(text)
-          services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.rejected_message)
+          services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.rejected_message)
           return false
         end
       end
@@ -92,12 +92,17 @@ module PrivateParlorXT
       end
 
       unless tripcode = user.tripcode
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.no_tripcode_set)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.no_tripcode_set)
         return nil, [] of Tourmaline::MessageEntity
       end
 
-      name, tripcode = Format.generate_tripcode(tripcode, services.config.tripcode_salt)
-      header, entities = Format.format_tripcode_sign(name, tripcode, entities)
+      name, tripcode = Format.generate_tripcode(tripcode, services)
+
+      if services.config.flag_signatures
+        header, entities = Format.format_flag_sign(name, entities)
+      else
+        header, entities = Format.format_tripcode_sign(name, tripcode, entities)
+      end
 
       return header + text, entities
     end
@@ -116,10 +121,33 @@ module PrivateParlorXT
       end
     end
 
+    def format_tripcode_set_reply(set_format : String, name : String, tripcode : String, replies : Replies) : String
+      set_format = set_format.gsub("{name}", escape_md(name, version: 2))
+
+      set_format = set_format.gsub("{tripcode}", escape_md(tripcode, version: 2))
+
+      replies.tripcode_set.gsub("{set_format}", set_format)
+    end
+
     def format_reason_reply(reason : String?, replies : Replies) : String?
       if reason
         "#{replies.reason_prefix}#{reason}"
       end
+    end
+
+    def format_karma_reason_reply(reason : String?, karma_reply : String, replies : Replies) : String
+      return Format.substitute_reply(karma_reply) unless reason
+
+      reason = reason[0, 250]
+
+      reason = reason.gsub("\n", "")
+
+      reason = escape_md(reason, version: 2)
+
+      karma_reply.gsub(
+        "{karma_reason}",
+        replies.karma_reason.gsub("{reason}", "#{reason}")
+      )
     end
 
     def format_reason_log(reason : String?, logs : Logs) : String?
@@ -165,15 +193,19 @@ module PrivateParlorXT
     # Copyright (c) Fredrick R. Brennan, 2020
     #
     # github.com/ctrlcctrlv/tripkeys/blob/33dcb519a8c08185aecba15eee9aa80760dddc87/doc/2ch_tripcode_annotated.pl
-    def generate_tripcode(tripkey : String, salt : String?) : Tuple(String, String)
+    def generate_tripcode(tripkey : String, services : Services) : Tuple(String, String)
       split = tripkey.split('#', 2)
       name = split[0]
       pass = split[1]
 
-      if !salt.empty?
+      if services.config.flag_signatures
+        return {name, ""}
+      end
+
+      if !services.config.tripcode_salt.empty?
         # 8chan secure tripcode
         pass = String.new(pass.encode("Shift_JIS"), "Shift_JIS")
-        trip = Digest::SHA1.base64digest(pass + salt)
+        trip = Digest::SHA1.base64digest(pass + services.config.tripcode_salt)
 
         tripcode = "!#{trip[0...10]}"
       else
@@ -290,22 +322,24 @@ module PrivateParlorXT
     end
 
     def get_forward_header(message : Tourmaline::Message, entities : Array(Tourmaline::MessageEntity)) : Tuple(String?, Array(Tourmaline::MessageEntity))
-      if from = message.forward_from
-        if from.is_bot?
-          Format.format_username_forward(from.full_name, from.username, entities)
-        elsif from.id
-          Format.format_user_forward(from.full_name, from.id, entities)
+      unless origin = message.forward_origin
+        return nil, [] of Tourmaline::MessageEntity
+      end
+
+      if origin.is_a?(Tourmaline::MessageOriginUser)
+        if origin.sender_user.is_bot?
+          Format.format_username_forward(origin.sender_user.full_name, origin.sender_user.username, entities)
         else
-          return nil, [] of Tourmaline::MessageEntity
+          Format.format_user_forward(origin.sender_user.full_name, origin.sender_user.id, entities)
         end
-      elsif (from = message.forward_from_chat) && message.forward_from_message_id
-        if from.username
-          Format.format_username_forward(from.name, from.username, entities, message.forward_from_message_id)
+      elsif origin.is_a?(Tourmaline::MessageOriginChannel)
+        if origin.chat.username
+          Format.format_username_forward(origin.chat.name, origin.chat.username, entities, origin.message_id)
         else
-          Format.format_private_channel_forward(from.name, from.id, entities, message.forward_from_message_id)
+          Format.format_private_channel_forward(origin.chat.name, origin.chat.id, entities, origin.message_id)
         end
-      elsif from = message.forward_sender_name
-        Format.format_private_user_forward(from, entities)
+      elsif origin.is_a?(Tourmaline::MessageOriginHiddenUser)
+        Format.format_private_user_forward(origin.sender_user_name, entities)
       else
         return nil, [] of Tourmaline::MessageEntity
       end
@@ -424,6 +458,21 @@ module PrivateParlorXT
       entities = [
         Tourmaline::MessageEntity.new("bold", 0, name_size),
         Tourmaline::MessageEntity.new("code", name_size + 1, tripcode_size),
+      ].concat(entities)
+
+      return header, entities
+    end
+
+    def format_flag_sign(name : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      header = "#{name}:\n"
+
+      header_size = header[..-3].to_utf16.size
+      name_size = name.to_utf16.size
+
+      entities = offset_entities(entities, header_size + 2)
+
+      entities = [
+        Tourmaline::MessageEntity.new("code", 0, name_size),
       ].concat(entities)
 
       return header, entities

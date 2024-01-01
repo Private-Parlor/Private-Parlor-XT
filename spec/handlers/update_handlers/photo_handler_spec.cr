@@ -47,13 +47,14 @@ module PrivateParlorXT
               1080,
             ),
           ],
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user")
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          )
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -81,9 +82,7 @@ module PrivateParlorXT
         user.set_rank(-5)
         services.database.update_user(user)
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -111,9 +110,7 @@ module PrivateParlorXT
           reply_to_message: reply_to
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -142,9 +139,7 @@ module PrivateParlorXT
           ],
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -199,9 +194,7 @@ module PrivateParlorXT
           reply_to_message: reply_to
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -220,7 +213,12 @@ module PrivateParlorXT
           msg.data.should(eq("photo_item_one"))
           msg.entities.size.should(eq(1))
           msg.entities[0].type.should(eq("underline"))
-          msg.reply_to.should(eq(replies[msg.receiver]))
+
+          if reply_to = msg.reply_to
+            reply_to.message_id.should(eq(replies[msg.receiver]))
+          else
+            msg.receiver.should(eq(50000))
+          end
 
           [
             80300,

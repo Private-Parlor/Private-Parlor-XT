@@ -150,6 +150,16 @@ module PrivateParlorXT
       db.get_warning(2).should(be_true)
     end
 
+    it "returns messages to purge" do
+      purge_receivers = {
+        20000 => [5],
+        80300 => [6],
+        60200 => [7],
+      }
+
+      db.get_purge_receivers(Set{4_i64}).should(eq(purge_receivers))
+    end
+
     it "deletes message group" do
       db.delete_message_group(2)
       db.delete_message_group(4)

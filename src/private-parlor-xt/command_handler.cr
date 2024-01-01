@@ -6,27 +6,25 @@ module PrivateParlorXT
   end
 
   abstract class CommandHandler < Handler
-    def get_message_and_user(ctx : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
-      unless (message = ctx.message) && (info = message.from)
-        return nil, nil
+    def get_user_from_message(message : Tourmaline::Message, services : Services) : User?
+      return unless info = message.from
+
+      if text = message.text || message.caption
+        return unless text.starts_with?('/')
       end
 
       unless user = services.database.get_user(info.id.to_i64)
-        services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
-        return message, nil
+        return services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
       end
 
-      unless user.can_use_command?
-        deny_user(user, services)
-        return message, nil
-      end
+      return deny_user(user, services) unless user.can_use_command?
 
       user.update_names(info.username, info.full_name)
 
-      return message, user
+      user
     end
 
-    private def deny_user(user : User, services : Services) : Nil
+    def deny_user(user : User, services : Services) : Nil
       return unless user.blacklisted?
 
       response = Format.substitute_reply(services.replies.blacklisted, {
@@ -39,7 +37,7 @@ module PrivateParlorXT
 
     def authorized?(user : User, message : Tourmaline::Message, permission : CommandPermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, permission)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.command_disabled)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.command_disabled)
         return false
       end
 
@@ -50,7 +48,7 @@ module PrivateParlorXT
       if authority = services.access.authorized?(user.rank, *permissions)
         authority
       else
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.command_disabled)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.command_disabled)
       end
     end
 

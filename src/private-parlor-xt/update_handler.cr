@@ -6,42 +6,32 @@ module PrivateParlorXT
   end
 
   abstract class UpdateHandler < Handler
-    def get_message_and_user(update : Tourmaline::Context, services : Services) : Tuple(Tourmaline::Message?, User?)
-      unless (message = update.message) && (info = message.from)
-        return nil, nil
-      end
+    def get_user_from_message(message : Tourmaline::Message, services : Services) : User?
+      return unless info = message.from
 
       if text = message.text
-        return nil, nil if text.starts_with?('/')
-        return nil, nil if text.starts_with?(/^[+-]1/)
+        return if text.starts_with?('/') || text.starts_with?(/^[+-]1/)
       end
 
       unless user = services.database.get_user(info.id.to_i64)
-        services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
-        return message, nil
+        return services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
       end
 
       if text
-        unless user.can_chat?
-          deny_user(user, services)
-          return message, nil
-        end
+        return deny_user(user, services) unless user.can_chat?
       else
-        unless user.can_chat?(services.config.media_limit_period)
-          deny_user(user, services)
-          return message, nil
-        end
+        return deny_user(user, services) unless user.can_chat?(services.config.media_limit_period)
       end
 
       user.update_names(info.username, info.full_name)
 
-      return message, user
+      user
     end
 
     def authorized?(user : User, message : Tourmaline::Message, authority : MessagePermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, authority)
         response = Format.substitute_reply(services.replies.media_disabled, {"type" => authority.to_s})
-        services.relay.send_to_user(message.message_id.to_i64, user.id, response)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
         return false
       end
 
@@ -49,7 +39,7 @@ module PrivateParlorXT
     end
 
     def meets_requirements?(message : Tourmaline::Message) : Bool
-      return false if message.forward_date
+      return false if message.forward_origin
       return false if message.media_group_id
 
       true
@@ -76,15 +66,41 @@ module PrivateParlorXT
       services.relay.send_to_user(nil, user.id, response)
     end
 
-    def get_reply_receivers(reply : Tourmaline::Message, message : Tourmaline::Message, user : User, services : Services) : Hash(UserID, MessageID)?
+    def get_reply_receivers(message : Tourmaline::Message, user : User, services : Services) : Hash(UserID, ReplyParameters)
+      return Hash(UserID, ReplyParameters).new unless reply = message.reply_to_message
+
       replies = services.history.get_all_receivers(reply.message_id.to_i64)
 
-      if replies.empty?
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.not_in_cache)
-        return
+      # These cases check if the user is trying to quote his own message
+      # The quote must match the text exactly, including formatting, so only quote if:
+      #   the replied text does NOT contain entities that should be stripped
+      #   if messsage was NOT edited
+      if (from = reply.from) && from.id == user.id
+        unless (reply.entities.map(&.type) - services.config.entity_types) == reply.entities.map(&.type) && reply.edit_date == nil
+          return replies.transform_values do |val|
+            ReplyParameters.new(val)
+          end
+        end
       end
 
-      replies
+      quote = message.quote
+      replies.transform_values do |val|
+        if quote
+          ReplyParameters.new(
+            message_id: val,
+            quote: quote.text,
+            quote_entities: quote.entities,
+            quote_position: quote.position,
+          )
+        else
+          ReplyParameters.new(val)
+        end
+      end
+    end
+
+    def reply_exists?(message : Tourmaline::Message, replies : Hash(UserID, ReplyParameters), user : User, services : Services) : Bool?
+      return true unless message.reply_to_message && replies.empty?
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.not_in_cache)
     end
 
     def get_message_receivers(user : User, services : Services) : Array(UserID)

@@ -4,15 +4,14 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "unpin", config: "enable_unpin")]
   class UnpinCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services) : Nil
-      message, user = get_message_and_user(context, services)
-      return unless message && user
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      return unless user = get_user_from_message(message, services)
 
       return unless authorized?(user, message, :Unpin, services)
 
       if reply = message.reply_to_message
         unless services.history.get_sender(reply.message_id.to_i64)
-          return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.not_in_cache)
+          return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.not_in_cache)
         end
 
         services.history.get_all_receivers(reply.message_id.to_i64).each do |receiver, receiver_message|
@@ -39,7 +38,7 @@ module PrivateParlorXT
 
       services.relay.log_output(log)
 
-      services.relay.delay_send_to_user(message.message_id.to_i64, user.id, services.replies.success)
+      services.relay.delay_send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
     end
   end
 end

@@ -83,34 +83,70 @@ replies:
    # Available placeholders: toggle
    toggle_debug: "*lo' tI'meH Qagh*: {toggle}"
 
-   gave_upvote: "_QInvam DanaDta'\\!_"
+   # Available placeholders: reason
+   karma_reason: |- 
+      meq:
+      >{reason}
 
-   got_upvote: "_Qapla'\\! naD DaHevta'\\! \\(naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\\)_"
+   # Available placeholders: karma_reason
+   gave_upvote: |- 
+      _QInvam DanaDta'\!_
+      {karma_reason}
+
+   # Available placeholders: karma_reason
+   got_upvote: |- 
+      _Qapla'\! naD DaHevta'\! 
+      {karma_reason}
+      \(naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\)_
 
    upvoted_own_message: "_QInlIj DanaDlaHbe'\\!_"
 
    already_voted: "_QInvam DanaDbej'ta' qoj 'oH DanaDHabej'ta'\\._"
 
-   gave_downvote: "_QInvam DanaDHa'ta'\\._"
+   # Available placeholders: karma_reason
+   gave_downvote: |- 
+      _QInvam DanaDHa'ta'\._
+      {karma_reason}
 
-   got_downvote: "_vay' DunaDHa'ta'\\! \\(naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\\)_"
+   # Available placeholders: karma_reason
+   got_downvote: |- 
+      _vay' DunaDHa'ta'\! 
+      {karma_reason}
+      \(naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\)_
 
    downvoted_own_message: "_QInlIj DanaDHa'laHbe'\\!_"
 
    # Available placeholders: current_level, next_level, karma, limit, loading_bar, percentage
    karma_info: |-
-      *pathllIj*: _{current_level}_
-      *pathl veb*: _{next_level}_
+      *patlhlIj*: _{current_level}_
+      *patlh veb*: _{next_level}_
 
       *naDmeylIj*: {karma}/{limit}
       {loading_bar} \({percentage}%\)
 
+   # Available placeholders: level
+   karma_level_up: |- 
+      _majQa'\!
+      patlh DaSuqta'\. DaH patlhlIj:_
+      *{level}*
+      _\(patlhlIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\)_
+
+   # Available placeholders: level
+   karma_level_down: |-
+      _baQa'\!
+      patlh DaweSta'\. DaH patlhlIj:_
+      *{level}*
+      _\(patlhlIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\)_
+
+   # Available placeholders: amount, type
+   insufficient_karma: "_`{type}` QIn DangeHlaHpa' {amount} naDmeylIj DapoQ\\._"
+   
    already_warned: "_QInvam ghuHmoHta' vay'\\._"
 
    private_sign: "_QIn DaqI'pa' \"Everybody\" chu' mablIj QIn mung pegh_"
 
    # Available placeholders: username
-   username_reveal: "_QIn jangmeH DuneqjungmeH SoH Duthlobta' {username} _"
+   username_reveal: "_QIn jangmeH DuneqjungmeH SoH Dutlhobta' {username} _"
 
    spamming: "_ngeHbe'pu' QInlIj\\. nom QInmey vIngeHQo'\\._"
 
@@ -119,15 +155,26 @@ replies:
    upvote_spam: "_DaH DanaDlaHbe'\\. pIj vInaDQo'\\._"
 
    downvote_spam: "_DaH DanaDHa'laHbe'\\. pIj vInaDHa'Qo'\\._"
-   
+
+   tripcode_format:  "pong#pegh ngoq"
+
+   flag_sign_format: "🏴🏴🏴🏴🏴"
+
+   # Available placeholders: valid_format
    invalid_tripcode_format: |-
       _pongqoq Qur waS\. Qur lugh:_
-      `pong\#pegh ngoq`
+      `{valid_format}`
 
    # Available placeholders: name, tripcode
+   tripcode_set_format:  "*{name}* `{tripcode}`:"
+
+   # Available placeholders: name,
+   flag_sign_set_format: "`{name}`:"
+
+   # Available placeholders: set_format
    tripcode_set: |- 
       _chenmoHta' pongqoqlIj\. 'oH DaleghlaH:_
-      *{name}* `{tripcode}`:
+      {set_format}
 
    # Available placeholders: tripcode
    tripcode_info: "*pongqoqlIj*: `{tripcode}`"
@@ -136,7 +183,7 @@ replies:
 
    # Available placeholders: oid, username, rank, rank_val, karma, karma_level warnings, smiley, warn_expiry, cooldown_until
    user_info: |-
-      *ID*: {oid}, *pong*: {username}, *pathl*: {rank_val} \({rank}\)
+      *ID*: {oid}, *pong*: {username}, *patlh*: {rank_val} \({rank}\)
       *naDmeylIj*: {karma} {karma_level}
       *ghuHmey*: {warnings} {smiley} {warn_expiry}
       *bIwegh'a'*: {cooldown_until}
@@ -147,7 +194,7 @@ replies:
 
    # Available placeholders: oid, karma, cooldown_until
    ranked_info: |-
-      *ID*: {oid}, *pong*: anonymous, *pathl*: n/a
+      *ID*: {oid}, *pong*: anonymous, *patlh*: n/a
       *naDmeylIj*: {karma}
       *bIwegh'a'*: {cooldown_until}
 
@@ -323,6 +370,12 @@ logs:
    # Available placeholders: id, name, msid
    unspoiled: "[{msid}] QInvam So'Ha'ta' {id} meb (pong: {name})"
 
+   # Available placeholders: id, name, oid, reason
+   upvoted: "[{oid}] meb naDta' {id} meb (pong: {name}). meq: {reason}"
+
+   # Available placeholders: id, name, oid, reason
+   downvoted: "[{oid}] meb naDHa'ta' {id} meb (pong: {name}). meq: {reason}"
+
    # Available placeholders: sender_id, sender, receiver_id, receiver, msid
    revealed: "[{msid}] QInvamDaq {receiver_id} mebvaD (pong: receiver) pong So'Ha'ta' {sender_id} meb (pong: {sender})"
 
@@ -341,6 +394,6 @@ logs:
    # Available placeholders: id, name, rank, text
    ranked_message: "patIh tlhej QIn ngeHta' {id} meb (pong: {name}). QIn: {text}"
 
-   # Available placeholders: id
-   force_leave: "{id} meb ngabpu'mo' pe'vIl ghaH teqta'"
+   # Available placeholders: id, name
+   force_leave: "{id} meb (pong: {name}) ngabpu'mo' pe'vIl ghaH teqta'"
 ---

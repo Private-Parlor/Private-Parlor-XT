@@ -8,6 +8,23 @@ module PrivateParlorXT
 
     alias AlbumMedia = Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo | Tourmaline::InputMediaAudio | Tourmaline::InputMediaDocument
 
+    class AlbumRelayParameters
+      getter original_messages : Array(MessageID)
+      getter sender : UserID
+      getter receivers : Array(UserID)
+      getter media : Array(AlbumMedia)
+      getter replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters
+
+      def initialize(
+        @original_messages : Array(MessageID),
+        @sender : UserID,
+        @receivers : Array(UserID),
+        @media : Array(AlbumMedia),
+        @replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters
+      )
+      end
+    end
+
     class Album
       property message_ids : Array(MessageID) = [] of MessageID
       property media : Array(AlbumMedia) = [] of AlbumMedia
@@ -41,7 +58,7 @@ module PrivateParlorXT
       end
     end
 
-    def relay_album(albums : Hash(String, Album), album : String, message_id : MessageID, input : AlbumMedia, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, MessageID)?, services : Services)
+    def relay_album(albums : Hash(String, Album), album : String, message_id : MessageID, input : AlbumMedia, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, ReplyParameters), services : Services)
       if albums[album]?
         albums[album].message_ids << message_id
         albums[album].media << input
@@ -61,12 +78,13 @@ module PrivateParlorXT
           cached_messages << services.history.new_message(user.id, msid)
         end
 
-        services.relay.send_album(
-          cached_messages,
-          user,
-          receivers,
-          reply_msids,
-          prepared_album.media,
+        services.relay.send_album(AlbumRelayParameters.new(
+          original_messages: cached_messages,
+          sender: user.id,
+          receivers: receivers,
+          replies: reply_msids,
+          media: prepared_album.media,
+        )
         )
       }
     end

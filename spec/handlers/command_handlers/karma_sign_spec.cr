@@ -38,11 +38,9 @@ module PrivateParlorXT
           ]
         )
 
-        ctx = create_context(client, create_update(11, message))
+        handler.do(message, services)
 
-        handler.do(ctx, services)
-
-        unless updated_message = ctx.message
+        unless updated_message = message
           fail("Message should not be nil")
         end
 
@@ -109,6 +107,7 @@ module PrivateParlorXT
           spam_limit: 10,
           score_character: 1,
           score_line: 0,
+          score_text: 1
         ))
 
         unless spam = spam_services.spam

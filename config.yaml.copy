@@ -88,7 +88,9 @@ locale: en-US
 ## Modify lifespan of a message, in hours
 ## 
 ## Setting this to 0 will disable message expiration
-## NOTE: This will increase RAM usage if database history is not enabled
+## This will increase RAM usage if database history is not enabled
+##
+## WARNING: It is NOT possible to delete messages older than 48 hours
 ##
 ## Accepted values: an integer between 0 and 4294967295
 ## Default: 24
@@ -125,6 +127,14 @@ locale: en-US
 ## Default: false
 ##
 #media_spoilers: false
+
+##
+## Allow users to attach a reason to their upvote/downvote messages
+## 
+## Accepted values: true, false
+## Default: false
+##
+#karma_reasons: false
 
 ##
 ## Relay forwarded messages as if they were a regular message
@@ -192,6 +202,17 @@ locale: en-US
 #pseudonymous: false
 
 ##
+## Replace tripcode with flag or emoji signatures
+##
+## This will change tripcode headers from the 'name!code' format to
+## a series of at most 5 flags/emojis 
+##
+## Accepted values: true, false
+## Default: false
+##
+#flag_signatures: false
+
+##
 ## MessageEntity toggles
 ##
 ## Entity types specified here will be stripped from every user message.
@@ -210,6 +231,7 @@ locale: en-US
 ##    code 
 ##    text_link 
 ##    custom_emoji
+##    blockquote
 ##
 ## Default: ["bold", "italic", "text_link"]
 ##
@@ -558,7 +580,6 @@ relay_contact: false
 ##
 #cooldown_base: 5
 
-
 ##
 ## Length of time in hours until a warning expires
 ##
@@ -574,6 +595,43 @@ relay_contact: false
 ## Default: 10
 ##
 #warn_deduction: 10
+
+# --------------------------------
+#  Karma Economy
+# --------------------------------
+
+##
+## Users must spend karma in order to post
+##
+## If enabled, every message will deduct the amount of karma configured here
+## from the user's account. When the user lacks the required amount of karma,
+## then their message will not be posted.
+##
+## This can be used to limit spam or the posting of certain message types
+## without outright disabling them.
+##
+## A cutoff rank can be set with the rank's value, making it so that any user
+## of that rank or higher no longer must spend karma.
+##
+## Accepted values: any 32-bit integer
+##
+#karma_economy:
+#  cutoff_rank: 10
+#  karma_text: 0
+#  karma_animation: 5
+#  karma_audio: 2
+#  karma_document: 2
+#  karma_video: 10
+#  karma_video_note: 10
+#  karma_voice: 2
+#  karma_photo: 5
+#  karma_media_group: 10
+#  karma_poll: 20
+#  karma_forwarded_message: 10
+#  karma_sticker: 2
+#  karma_venue: 10
+#  karma_location: 10
+#  karma_contact: 10
 
 # --------------------------------
 #  Spam Prevention
@@ -642,6 +700,7 @@ spam_handler:
   decay_amount: 1000
   score_character: 3
   score_linebreak: 100
+  score_text: 3000
   score_animation: 3000
   score_audio: 3000
   score_document: 3000

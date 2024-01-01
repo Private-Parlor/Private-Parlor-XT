@@ -103,6 +103,23 @@ module PrivateParlorXT
       end
     end
 
+    # :inherit:
+    def get_purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
+      hash = {} of UserID => Array(MessageID)
+
+      messages.each do |msid|
+        @message_map[msid].receivers.each do |receiver, receiver_msid|
+          if hash[receiver]?
+            hash[receiver] << receiver_msid
+          else
+            hash[receiver] = [receiver_msid]
+          end
+        end
+      end
+
+      hash
+    end
+
     # Deletes a `MessageGroup` from the `message_map`
     def delete_message_group(message : MessageID) : MessageID?
       message = @message_map[message]

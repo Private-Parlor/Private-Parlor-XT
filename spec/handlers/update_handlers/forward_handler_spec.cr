@@ -46,8 +46,11 @@ module PrivateParlorXT
             1080,
             60,
           ),
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user")
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          )
         )
 
         unless user = services.database.get_user(80300)
@@ -57,9 +60,7 @@ module PrivateParlorXT
         user.set_rank(-5)
         services.database.update_user(user)
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -78,13 +79,14 @@ module PrivateParlorXT
             1080,
             60,
           ),
-          forward_date: Time.utc,
-          forward_from: Tourmaline::User.new(123456, false, "other user"),
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          )
         )
 
-        ctx = create_context(client, create_update(11, message))
-
-        handler.do(ctx, services)
+        handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 

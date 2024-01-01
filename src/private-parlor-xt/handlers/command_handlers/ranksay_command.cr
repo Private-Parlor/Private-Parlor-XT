@@ -7,11 +7,10 @@ module PrivateParlorXT
   # Processes ranksay messages before the update handler gets them
   # This handler expects the command handlers to be registered before the update handlers
   class RanksayCommand < CommandHandler
-    def do(context : Tourmaline::Context, services : Services)
-      message, user = get_message_and_user(context, services)
-      return unless message && user
+    def do(message : Tourmaline::Message, services : Services)
+      return unless user = get_user_from_message(message, services)
 
-      return if message.forward_date
+      return if message.forward_origin
 
       return unless authority = authorized?(
                       user,
@@ -24,7 +23,7 @@ module PrivateParlorXT
       return unless text
 
       unless arg = Format.get_arg(text)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.missing_args)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.missing_args)
       end
 
       return if spamming?(user, message, arg, services)
@@ -48,13 +47,22 @@ module PrivateParlorXT
       end
 
       message.preformatted = true
+
+      services.relay.log_output(
+        Format.substitute_message(services.logs.ranked_message, {
+          "id"   => user.id.to_s,
+          "name" => user.get_formatted_name,
+          "rank" => rank_name,
+          "text" => arg,
+        })
+      )
     end
 
     def spamming?(user : User, message : Tourmaline::Message, arg : String, services : Services) : Bool
       return false unless spam = services.spam
 
       if message.text && spam.spammy_text?(user.id, arg)
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.spamming)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.spamming)
         return true
       end
 
@@ -71,7 +79,7 @@ module PrivateParlorXT
       end
 
       unless parsed_rank
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, Format.substitute_reply(services.replies.no_rank_found, {
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, Format.substitute_reply(services.replies.no_rank_found, {
           "ranks" => services.access.rank_names(limit: user.rank).to_s,
         }))
       end
@@ -79,7 +87,7 @@ module PrivateParlorXT
       parsed_rank_authority = services.access.authorized?(parsed_rank[0], :Ranksay, :RanksayLower)
 
       unless services.access.can_ranksay?(parsed_rank[0], user.rank, authority, parsed_rank_authority)
-        return services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.fail)
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
 
       parsed_rank[1].name
@@ -89,7 +97,7 @@ module PrivateParlorXT
       if authority = services.access.authorized?(user.rank, *permissions)
         authority
       else
-        services.relay.send_to_user(message.message_id.to_i64, user.id, services.replies.command_disabled)
+        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.command_disabled)
       end
     end
   end
