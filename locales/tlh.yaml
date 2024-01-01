@@ -138,6 +138,9 @@ replies:
       *{level}*
       _\(patlhlIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\)_
 
+   # Available placeholders: amount, type
+   insufficient_karma: "_`{type}` QIn DangeHlaHpa' {amount} naDmeylIj DapoQ\\._"
+   
    already_warned: "_QInvam ghuHmoHta' vay'\\._"
 
    private_sign: "_QIn DaqI'pa' \"Everybody\" chu' mablIj QIn mung pegh_"

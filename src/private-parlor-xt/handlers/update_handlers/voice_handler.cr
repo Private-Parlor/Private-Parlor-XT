@@ -11,6 +11,8 @@ module PrivateParlorXT
 
       return unless authorized?(user, message, :Voice, services)
 
+      return unless has_sufficient_karma?(user, message, services)
+
       return if spamming?(user, message, services)
 
       return unless voice = message.voice
@@ -23,7 +25,7 @@ module PrivateParlorXT
 
       return unless Robot9000.checks(user, message, services)
 
-      return unless user = spend_karma(user, services)
+      user = spend_karma(user, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 
@@ -54,19 +56,35 @@ module PrivateParlorXT
       false
     end
 
-    def spend_karma(user : User, services : Services) : User?
+    def has_sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
+      return true unless karma = services.karma
+
+      return true unless karma.karma_voice >= 0
+
+      return true if user.rank >= karma.cutoff_rank
+
+      unless user.karma >= karma.karma_voice
+        return services.relay.send_to_user(
+          ReplyParameters.new(message.message_id),
+          user.id,
+          Format.substitute_reply(services.replies.insufficient_karma, {
+            "amount" => karma.karma_voice.to_s,
+            "type"   => "voice",
+          })
+        )
+      end
+
+      true
+    end
+
+    def spend_karma(user : User, services : Services) : User
       return user unless karma = services.karma
+
+      return user unless karma.karma_voice >= 0
 
       return user if user.rank >= karma.cutoff_rank
 
-      unless user.karma >= karma.karma_voice
-        # TODO: Add locale entry
-        return
-      end
-
-      if karma.karma_voice >= 0
-        user.decrement_karma(karma.karma_voice)
-      end
+      user.decrement_karma(karma.karma_voice)
 
       user
     end

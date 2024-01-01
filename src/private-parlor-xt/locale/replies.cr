@@ -118,6 +118,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "karma_level_down")]
     getter karma_level_down : String
 
+    @[YAML::Field(key: "insufficient_karma")]
+    getter insufficient_karma : String
+
     @[YAML::Field(key: "already_warned")]
     getter already_warned : String
 

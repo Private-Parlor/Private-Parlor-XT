@@ -132,6 +132,9 @@ replies:
       *{level}*
       _\(Benutzt den /karma\_info Befehl zu dein Niveau checken, oder /togglekarma diesen Benachrichtigungen abzuschalten\)_
 
+   # Available placeholders: amount, type
+   insufficient_karma: "_Du musst {amount} Karma haben, bevor du kannst eine {type} Nachrict schicken\\._"
+
    already_warned: "_Diese Nachricht war schon gewarnt_"
 
    private_sign: "_Die Weiterleitungen Einstellung deines Kontos muss zu \"Jeder\" gesetzt werden, bevor du eine Nachricht mit deinem Namen unterschreiben kannst\\._"

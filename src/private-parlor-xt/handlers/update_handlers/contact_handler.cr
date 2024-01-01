@@ -11,6 +11,8 @@ module PrivateParlorXT
 
       return unless authorized?(user, message, :Contact, services)
 
+      return unless has_sufficient_karma?(user, message, services)
+
       return if spamming?(user, message, services)
 
       return unless contact = message.contact
@@ -18,7 +20,7 @@ module PrivateParlorXT
       reply_messages = get_reply_receivers(message, user, services)
       return unless reply_exists?(message, reply_messages, user, services)
 
-      return unless user = spend_karma(user, services)
+      user = spend_karma(user, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
 
@@ -47,19 +49,35 @@ module PrivateParlorXT
       false
     end
 
-    def spend_karma(user : User, services : Services) : User?
+    def has_sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
+      return true unless karma = services.karma
+
+      return true unless karma.karma_contact >= 0
+
+      return true if user.rank >= karma.cutoff_rank
+
+      unless user.karma >= karma.karma_contact
+        return services.relay.send_to_user(
+          ReplyParameters.new(message.message_id),
+          user.id,
+          Format.substitute_reply(services.replies.insufficient_karma, {
+            "amount" => karma.karma_contact.to_s,
+            "type"   => "contact",
+          })
+        )
+      end
+
+      true
+    end
+
+    def spend_karma(user : User, services : Services) : User
       return user unless karma = services.karma
+
+      return user unless karma.karma_contact >= 0
 
       return user if user.rank >= karma.cutoff_rank
 
-      unless user.karma >= karma.karma_contact
-        # TODO: Add locale entry
-        return
-      end
-
-      if karma.karma_contact >= 0
-        user.decrement_karma(karma.karma_contact)
-      end
+      user.decrement_karma(karma.karma_contact)
 
       user
     end

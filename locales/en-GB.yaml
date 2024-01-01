@@ -132,6 +132,9 @@ replies:
       *{level}*
       _\(check /karma\_info to see your level or /togglekarma to turn these notifications off\)_
 
+   # Available placeholders: amount, type
+   insufficient_karma: "_You must have {amount} karma available before you can send a `{type}` message\\._" 
+
    already_warned: "_This message has already been warned\\._"
 
    private_sign: "_Your account's forward privacy must be set to \"Everybody\" to sign with your username\\._"
