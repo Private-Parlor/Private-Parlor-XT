@@ -118,6 +118,20 @@ replies:
       *Karma*: {karma}/{limit}
       {loading_bar} \({percentage}%\)
 
+   # Available placeholders: level
+   karma_level_up: |- 
+      _Gut gemacht\!
+      Du hast ein Niveau erlangt\. Jetzt dein Niveau ist:_
+      *{level}*
+      _\(Benutzt den /karma\_info Befehl zu dein Niveau checken, oder /togglekarma diesen Benachrichtigungen abzuschalten\)_
+
+   # Available placeholders: level
+   karma_level_down: |-
+      _Ach nein\!
+      Du hast ein Niveau verloren\. Jetzt dein Niveau ist:_
+      *{level}*
+      _\(Benutzt den /karma\_info Befehl zu dein Niveau checken, oder /togglekarma diesen Benachrichtigungen abzuschalten\)_
+
    already_warned: "_Diese Nachricht war schon gewarnt_"
 
    private_sign: "_Die Weiterleitungen Einstellung deines Kontos muss zu \"Jeder\" gesetzt werden, bevor du eine Nachricht mit deinem Namen unterschreiben kannst\\._"

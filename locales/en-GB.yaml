@@ -118,6 +118,20 @@ replies:
       *Karma*: {karma}/{limit}
       {loading_bar} \({percentage}%\)
 
+   # Available placeholders: level
+   karma_level_up: |- 
+      _Nice work\!
+      You have gained a karma level\. Your level is now:_
+      *{level}*
+      _\(check /karma\_info to see your level or /togglekarma to turn these notifications off\)_
+
+   # Available placeholders: level
+   karma_level_down: |-
+      _Whoops\!
+      You have lost a karma level\. Your level is now:_
+      *{level}*
+      _\(check /karma\_info to see your level or /togglekarma to turn these notifications off\)_
+
    already_warned: "_This message has already been warned\\._"
 
    private_sign: "_Your account's forward privacy must be set to \"Everybody\" to sign with your username\\._"

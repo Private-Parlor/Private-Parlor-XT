@@ -99,6 +99,8 @@ module PrivateParlorXT
           reply_parameters = ReplyParameters.new(reply_msid)
         end
 
+        karma_level_up(reply_user, reply_parameters, services)
+
         got_upvote_reply = Format.format_karma_reason_reply(reason, services.replies.got_upvote, services.replies)
 
         services.relay.send_to_user(
@@ -107,6 +109,20 @@ module PrivateParlorXT
           got_upvote_reply
         )
       end
+    end
+
+    def karma_level_up(reply_user : User, reply_parameters : ReplyParameters?, services : Services)
+      return if services.config.karma_levels.empty?
+
+      return unless karma_level = services.config.karma_levels[reply_user.karma]?
+
+      services.relay.send_to_user(
+        reply_parameters,
+        reply_user.id,
+        Format.substitute_message(services.replies.karma_level_up, {
+          "level" => karma_level,
+        })
+      )
     end
   end
 end

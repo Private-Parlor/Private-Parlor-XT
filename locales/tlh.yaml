@@ -118,18 +118,32 @@ replies:
 
    # Available placeholders: current_level, next_level, karma, limit, loading_bar, percentage
    karma_info: |-
-      *pathllIj*: _{current_level}_
-      *pathl veb*: _{next_level}_
+      *patlhlIj*: _{current_level}_
+      *patlh veb*: _{next_level}_
 
       *naDmeylIj*: {karma}/{limit}
       {loading_bar} \({percentage}%\)
+
+   # Available placeholders: level
+   karma_level_up: |- 
+      _majQa'\!
+      patlh DaSuqta'\. DaH patlhlIj:_
+      *{level}*
+      _\(patlhlIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\)_
+
+   # Available placeholders: level
+   karma_level_down: |-
+      _baQa'\!
+      patlh DaweSta'\. DaH patlhlIj:_
+      *{level}*
+      _\(patlhlIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\)_
 
    already_warned: "_QInvam ghuHmoHta' vay'\\._"
 
    private_sign: "_QIn DaqI'pa' \"Everybody\" chu' mablIj QIn mung pegh_"
 
    # Available placeholders: username
-   username_reveal: "_QIn jangmeH DuneqjungmeH SoH Duthlobta' {username} _"
+   username_reveal: "_QIn jangmeH DuneqjungmeH SoH Dutlhobta' {username} _"
 
    spamming: "_ngeHbe'pu' QInlIj\\. nom QInmey vIngeHQo'\\._"
 
@@ -155,7 +169,7 @@ replies:
 
    # Available placeholders: oid, username, rank, rank_val, karma, karma_level warnings, smiley, warn_expiry, cooldown_until
    user_info: |-
-      *ID*: {oid}, *pong*: {username}, *pathl*: {rank_val} \({rank}\)
+      *ID*: {oid}, *pong*: {username}, *patlh*: {rank_val} \({rank}\)
       *naDmeylIj*: {karma} {karma_level}
       *ghuHmey*: {warnings} {smiley} {warn_expiry}
       *bIwegh'a'*: {cooldown_until}
@@ -166,7 +180,7 @@ replies:
 
    # Available placeholders: oid, karma, cooldown_until
    ranked_info: |-
-      *ID*: {oid}, *pong*: anonymous, *pathl*: n/a
+      *ID*: {oid}, *pong*: anonymous, *patlh*: n/a
       *naDmeylIj*: {karma}
       *bIwegh'a'*: {cooldown_until}
 
