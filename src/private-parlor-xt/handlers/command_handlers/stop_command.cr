@@ -7,6 +7,10 @@ module PrivateParlorXT
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless info = message.from
 
+      if text = message.text || message.caption
+        return unless text.starts_with?('/')
+      end
+
       unless user = services.database.get_user(info.id.to_i64)
         return services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
       end

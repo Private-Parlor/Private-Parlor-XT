@@ -7,6 +7,10 @@ module PrivateParlorXT
     def do(message : Tourmaline::Message, services : Services)
       return unless info = message.from
 
+      if text = message.text || message.caption
+        return unless text.starts_with?('/')
+      end
+
       if user = services.database.get_user(info.id.to_i64)
         existing_user(user, info.username, info.full_name, message.message_id.to_i64, services)
       else
