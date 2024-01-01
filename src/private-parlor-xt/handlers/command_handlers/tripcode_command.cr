@@ -10,27 +10,44 @@ module PrivateParlorXT
       if arg = Format.get_arg(message.text)
         if services.config.flag_signatures
           unless valid_signature?(arg)
-            # TODO: Update locales
-            return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.invalid_tripcode_format)
+            invalid_format = Format.substitute_reply(services.replies.invalid_tripcode_format, {
+              "valid_format" => services.replies.flag_sign_format,
+            })
+            return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, invalid_format)
           end
 
           # Append with a pound sign and the user's obfuscated ID to make
           # the flag signature still compatible with tripcode generations
-          user.set_tripcode(arg + '#' + user.get_obfuscated_id)
+          tripcode = arg + '#' + user.get_obfuscated_id
+          user.set_tripcode(tripcode)
+
+          name, _ = Format.generate_tripcode(tripcode, services)
+
+          response = Format.format_tripcode_set_reply(
+            services.replies.flag_sign_set_format,
+            name,
+            "",
+            services.replies
+          )
         else
           unless valid_tripcode?(arg)
-            return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.invalid_tripcode_format)
+            invalid_format = Format.substitute_reply(services.replies.invalid_tripcode_format, {
+              "valid_format" => services.replies.tripcode_format,
+            })
+            return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, invalid_format)
           end
 
           user.set_tripcode(arg)
+
+          name, tripcode = Format.generate_tripcode(arg, services)
+
+          response = Format.format_tripcode_set_reply(
+            services.replies.tripcode_set_format,
+            name,
+            tripcode,
+            services.replies
+          )
         end
-
-        name, tripcode = Format.generate_tripcode(arg, services)
-
-        response = Format.substitute_reply(services.replies.tripcode_set, {
-          "name"     => name,
-          "tripcode" => tripcode,
-        })
       else
         response = Format.substitute_reply(services.replies.tripcode_info, {
           "tripcode" => user.tripcode ? user.tripcode : services.replies.tripcode_unset,

@@ -97,7 +97,12 @@ module PrivateParlorXT
       end
 
       name, tripcode = Format.generate_tripcode(tripcode, services)
-      header, entities = Format.format_tripcode_sign(name, tripcode, entities)
+
+      if services.config.flag_signatures
+        header, entities = Format.format_flag_sign(name, entities)
+      else
+        header, entities = Format.format_tripcode_sign(name, tripcode, entities)
+      end
 
       return header + text, entities
     end
@@ -114,6 +119,14 @@ module PrivateParlorXT
       if time = format_time(expiration, locale.time_format)
         replies.info_warning.gsub("{warn_expiry}", "#{time}")
       end
+    end
+
+    def format_tripcode_set_reply(set_format : String, name : String, tripcode : String, replies : Replies) : String
+      set_format = set_format.gsub("{name}", escape_md(name, version: 2))
+
+      set_format = set_format.gsub("{tripcode}", escape_md(tripcode, version: 2))
+
+      replies.tripcode_set.gsub("{set_format}", set_format)
     end
 
     def format_reason_reply(reason : String?, replies : Replies) : String?
@@ -445,6 +458,21 @@ module PrivateParlorXT
       entities = [
         Tourmaline::MessageEntity.new("bold", 0, name_size),
         Tourmaline::MessageEntity.new("code", name_size + 1, tripcode_size),
+      ].concat(entities)
+
+      return header, entities
+    end
+
+    def format_flag_sign(name : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      header = "#{name}:\n"
+
+      header_size = header[..-3].to_utf16.size
+      name_size = name.to_utf16.size
+
+      entities = offset_entities(entities, header_size + 2)
+
+      entities = [
+        Tourmaline::MessageEntity.new("code", 0, name_size),
       ].concat(entities)
 
       return header, entities

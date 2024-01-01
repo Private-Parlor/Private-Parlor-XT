@@ -147,14 +147,25 @@ replies:
 
    downvote_spam: "_Du kannst jetzt Karma nicht entfernen, unterlass du Karma zu oft entfernen\\._"
 
+   tripcode_format:  "Name#Passwort"
+
+   flag_sign_format: "🏴🏴🏴🏴🏴"
+
+   # Available placeholders: valid_format
    invalid_tripcode_format: |-
       _Ungültige Format des Tripcode\. Das Format ist:_
-      `Name\#Passwort`
+      `{valid_format}`
 
    # Available placeholders: name, tripcode
+   tripcode_set_format:  "*{name}* `{tripcode}`:"
+
+   # Available placeholders: name,
+   flag_sign_set_format: "`{name}`:"
+
+   # Available placeholders: set_format
    tripcode_set: |- 
       _Tripcode gesetzt\. Es wird erscheint als:_
-      *{name}* `{tripcode}`:
+      {set_format}
 
    # Available placeholders: tripcode
    tripcode_info: "*Tripcode*: `{tripcode}`"

@@ -139,8 +139,20 @@ module PrivateParlorXT
     @[YAML::Field(key: "downvote_spam")]
     getter downvote_spam : String
 
+    @[YAML::Field(key: "tripcode_format")]
+    getter tripcode_format : String
+
+    @[YAML::Field(key: "flag_sign_format")]
+    getter flag_sign_format : String
+
     @[YAML::Field(key: "invalid_tripcode_format")]
     getter invalid_tripcode_format : String
+
+    @[YAML::Field(key: "tripcode_set_format")]
+    getter tripcode_set_format : String
+
+    @[YAML::Field(key: "flag_sign_set_format")]
+    getter flag_sign_set_format : String
 
     @[YAML::Field(key: "tripcode_set")]
     getter tripcode_set : String

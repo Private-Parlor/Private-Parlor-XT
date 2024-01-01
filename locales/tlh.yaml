@@ -152,15 +152,26 @@ replies:
    upvote_spam: "_DaH DanaDlaHbe'\\. pIj vInaDQo'\\._"
 
    downvote_spam: "_DaH DanaDHa'laHbe'\\. pIj vInaDHa'Qo'\\._"
-   
+
+   tripcode_format:  "pong#pegh ngoq"
+
+   flag_sign_format: "🏴🏴🏴🏴🏴"
+
+   # Available placeholders: valid_format
    invalid_tripcode_format: |-
       _pongqoq Qur waS\. Qur lugh:_
-      `pong\#pegh ngoq`
+      `{valid_format}`
 
    # Available placeholders: name, tripcode
+   tripcode_set_format:  "*{name}* `{tripcode}`:"
+
+   # Available placeholders: name,
+   flag_sign_set_format: "`{name}`:"
+
+   # Available placeholders: set_format
    tripcode_set: |- 
       _chenmoHta' pongqoqlIj\. 'oH DaleghlaH:_
-      *{name}* `{tripcode}`:
+      {set_format}
 
    # Available placeholders: tripcode
    tripcode_info: "*pongqoqlIj*: `{tripcode}`"

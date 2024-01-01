@@ -33,7 +33,12 @@ module PrivateParlorXT
       entities = update_entities(text, entities, arg, message)
 
       name, tripcode = Format.generate_tripcode(tripcode, services)
-      text, entities = Format.format_tripcode_sign(name, tripcode, entities)
+
+      if services.config.flag_signatures
+        text, entities = Format.format_flag_sign(name, entities)
+      else
+        text, entities = Format.format_tripcode_sign(name, tripcode, entities)
+      end
 
       text = text + arg
 
