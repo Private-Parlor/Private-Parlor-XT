@@ -88,7 +88,9 @@ locale: en-US
 ## Modify lifespan of a message, in hours
 ## 
 ## Setting this to 0 will disable message expiration
-## NOTE: This will increase RAM usage if database history is not enabled
+## This will increase RAM usage if database history is not enabled
+##
+## WARNING: It is NOT possible to delete messages older than 48 hours
 ##
 ## Accepted values: an integer between 0 and 4294967295
 ## Default: 24
