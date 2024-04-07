@@ -473,53 +473,66 @@ module PrivateParlorXT
       end
     end
 
-    # Receives a `Message` from the `queue`, calls its proc, and adds the returned message id to the History
-    #
-    # This function should be invoked in a Fiber.
-    def send_messages(services : Services) : Bool?
-      msg = @queue.get_message
 
-      if msg.nil?
-        return true
+    # Takes a message from the queue and sends it.
+    # 
+    # Returns true if queue is empty
+    def send_message(services : Services) : Bool?
+      return true unless msg = @queue.get_message
+      
+      return unless success = relay_message(msg, services)
+
+      cache_message(success, msg, services)
+    end
+
+    # Calls the proc associated with the given message.
+    # 
+    # Returns a `Tourmaline::Message` when sending messages that are not albums
+    # Returns an array of `Tourmaline::Message` for sent albums
+    # Returns nil on sending a system message, Telegram giving us a boolean,
+    # or encountering an error
+    def relay_message(message : QueuedMessage, services : Services) : Tourmaline::Message | Array(Tourmaline::Message) | Nil 
+      success = message.function.call(message.receiver, message.reply_to)
+
+      return unless message.origin_msid # System messages have this set to nil
+      return if success.is_a?(Bool)
+
+      return success
+    rescue Tourmaline::Error::BotBlocked | Tourmaline::Error::UserDeactivated
+      if user = services.database.get_user(message.receiver)
+        user.set_left
+        services.database.update_user(user)
+
+        log = Format.substitute_message(services.logs.force_leave, {"id" => user.id.to_s, "name" => user.get_formatted_name})
+
+        log_output(log)
       end
 
-      begin
-        success = msg.function.call(msg.receiver, msg.reply_to)
-      rescue Tourmaline::Error::BotBlocked | Tourmaline::Error::UserDeactivated
-        if user = services.database.get_user(msg.receiver)
-          user.set_left
-          services.database.update_user(user)
-
-          log = Format.substitute_message(services.logs.force_leave, {"id" => user.id.to_s, "name" => user.get_formatted_name})
-
-          log_output(log)
-        end
-
-        @queue.reject_messages do |queued_message|
-          queued_message.receiver == msg.receiver
-        end
-        return
-      rescue ex : Tourmaline::Error::ChatNotFound
-        if msg.origin_msid
-          Log.error(exception: ex) { "Error occured when relaying message." }
-        end
-        return
-      rescue ex
-        return Log.error(exception: ex) { "Error occured when relaying message." }
+      reject_inactive_user_messages(message.receiver)
+    rescue ex : Tourmaline::Error::ChatNotFound
+      if message.origin_msid
+        Log.error(exception: ex) { "Error occured when relaying message." }
       end
+    rescue ex : Tourmaline::Error::RetryAfter
+      Log.error(exception: ex) { "Error occured when relaying message." }
 
-      unless msg.origin_msid
-        return
-      end
+      sleep(ex.seconds.seconds)
 
+      return relay_message(message, services)
+    rescue ex
+      Log.error(exception: ex) { "Error occured when relaying message." }
+    end
+
+    # Caches data from the message returned from Telegram in the message `History`
+    def cache_message(success : Tourmaline::Message | Array(Tourmaline::Message), message : QueuedMessage, services : Services) : Nil
       case success
       when Tourmaline::Message
-        services.history.add_to_history(msg.origin_msid.as(MessageID), success.message_id.to_i64, msg.receiver)
+        services.history.add_to_history(message.origin_msid.as(MessageID), success.message_id.to_i64, message.receiver)
       when Array(Tourmaline::Message)
         sent_msids = success.map(&.message_id)
 
-        sent_msids.zip(msg.origin_msid.as(Array(MessageID))) do |msid, origin_msid|
-          services.history.add_to_history(origin_msid, msid.to_i64, msg.receiver)
+        sent_msids.zip(message.origin_msid.as(Array(MessageID))) do |msid, origin_msid|
+          services.history.add_to_history(origin_msid, msid.to_i64, message.receiver)
         end
       end
     end
