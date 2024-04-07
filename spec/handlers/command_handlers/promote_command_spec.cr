@@ -99,6 +99,26 @@ module PrivateParlorXT
 
         promoted_user.rank.should(eq(10))
       end
+
+      it "promotes banned users (unbans)" do
+        unless user = services.database.get_user(20000)
+          fail("User 20000 should exist in the database")
+        end
+
+        handler.promote_from_args(
+          ["70000", "user"],
+          :Promote,
+          user,
+          11,
+          services
+        )
+
+        unless promoted_user = services.database.get_user(70000)
+          fail("User 70000 should exist in the database")
+        end
+
+        promoted_user.rank.should(eq(0))
+      end
     end
   end
 end
