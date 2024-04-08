@@ -135,17 +135,21 @@ module PrivateParlorXT
       end
     end
 
+    def truncate_karma_reason(reason : String?) : String?
+      return unless reason 
+
+      reason[0, 500]
+    end
+
     def format_karma_reason_reply(reason : String?, karma_reply : String, replies : Replies) : String
       return Format.substitute_reply(karma_reply) unless reason
 
       # Remove trailing punctuation after placeholder in karma_reply
       karma_reply = karma_reply.gsub(/{karma_reason}([[:punct:]]+(?=\n|\\n))/, "{karma_reason}")
 
-      reason = reason[0, 250]
-
-      reason = reason.gsub("\n", "")
-
       reason = escape_md(reason, version: 2)
+
+      reason = reason.gsub("\n", "\n>")
 
       karma_reply.gsub(
         "{karma_reason}",
