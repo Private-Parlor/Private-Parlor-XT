@@ -144,6 +144,10 @@ module PrivateParlorXT
     def format_karma_reason_reply(reason : String?, karma_reply : String, replies : Replies) : String
       return Format.substitute_reply(karma_reply) unless reason
 
+      reason = reason.gsub(/\\+$/, "")
+
+      return Format.substitute_reply(karma_reply) if reason.empty?
+
       # Remove trailing punctuation after placeholder in karma_reply
       karma_reply = karma_reply.gsub(/{karma_reason}([[:punct:]]+(?=\n|\\n))/, "{karma_reason}")
 
