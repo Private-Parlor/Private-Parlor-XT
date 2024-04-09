@@ -385,17 +385,6 @@ module PrivateParlorXT
       )
     end
 
-    def remove_message(receiver : UserID, message : MessageID)
-      @queue.add_to_queue_priority(
-        receiver,
-        ReplyParameters.new(message),
-        ->(receiver_id : UserID, reply : ReplyParameters?) {
-          return false unless reply
-          @client.delete_message(receiver_id, reply.message_id)
-        }
-      )
-    end
-
     def purge_messages(receiver : UserID, messages : Array(MessageID))
       @queue.add_to_queue_priority(
         receiver,

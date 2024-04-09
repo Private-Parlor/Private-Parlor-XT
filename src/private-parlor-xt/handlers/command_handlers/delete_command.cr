@@ -19,7 +19,6 @@ module PrivateParlorXT
         reply.message_id.to_i64,
         reply_user.id,
         reply_user.debug_enabled,
-        true,
         services,
       )
 
