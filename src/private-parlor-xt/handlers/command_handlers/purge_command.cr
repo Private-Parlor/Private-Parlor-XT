@@ -37,7 +37,7 @@ module PrivateParlorXT
         "msgs_deleted" => message_count.to_s,
       })
 
-      services.relay.delay_send_to_user(ReplyParameters.new(message.message_id), user.id, response)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
     end
   end
 end

@@ -70,26 +70,11 @@ module PrivateParlorXT
       )
     end
 
-    # Relay a message to a single user. Used for system messages that need not be sent immediately
-    def delay_send_to_user(reply_message : ReplyParameters?, user : UserID, text : String)
-      @queue.add_to_queue_delayed(
-        user,
-        reply_message,
-        ->(receiver : UserID, reply : ReplyParameters?) {
-          @client.send_message(
-            receiver,
-            text,
-            reply_parameters: reply
-          )
-        }
-      )
-    end
-
     # Relay a message to the log channel.
     def send_to_channel(reply_message : MessageID?, channel : String, text : String)
       return unless id = channel.to_i64?
 
-      @queue.add_to_queue_delayed(
+      @queue.add_to_queue_priority(
         id,
         nil,
         ->(receiver : UserID, _reply : ReplyParameters?) {
@@ -401,7 +386,7 @@ module PrivateParlorXT
     end
 
     def remove_message(receiver : UserID, message : MessageID)
-      @queue.add_to_queue_delayed(
+      @queue.add_to_queue_priority(
         receiver,
         ReplyParameters.new(message),
         ->(receiver_id : UserID, reply : ReplyParameters?) {
@@ -422,7 +407,7 @@ module PrivateParlorXT
     end
 
     def pin_message(user : UserID, message : MessageID)
-      @queue.add_to_queue_delayed(
+      @queue.add_to_queue_priority(
         user,
         ReplyParameters.new(message),
         ->(receiver : UserID, reply : ReplyParameters?) {
@@ -439,7 +424,7 @@ module PrivateParlorXT
         message = nil
       end
 
-      @queue.add_to_queue_delayed(
+      @queue.add_to_queue_priority(
         user,
         message,
         ->(receiver : UserID, reply : ReplyParameters?) {
@@ -453,7 +438,7 @@ module PrivateParlorXT
     end
 
     def edit_message_media(user : UserID, media : Tourmaline::InputMedia, message : MessageID)
-      @queue.add_to_queue_delayed(
+      @queue.add_to_queue_priority(
         user,
         ReplyParameters.new(message),
         ->(receiver : UserID, reply : ReplyParameters?) {

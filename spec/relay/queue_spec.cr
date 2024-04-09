@@ -8,9 +8,9 @@ module PrivateParlorXT
       it "deletes messages in queue according to given conditions" do
         message_queue = MessageQueue.new
 
-        message_queue.add_to_queue_delayed(100_i64, ReplyParameters.new(1_i64), proc)
-        message_queue.add_to_queue_delayed(101_i64, ReplyParameters.new(2_i64), proc)
-        message_queue.add_to_queue_delayed(102_i64, ReplyParameters.new(3_i64), proc)
+        message_queue.add_to_queue_priority(100_i64, ReplyParameters.new(1_i64), proc)
+        message_queue.add_to_queue_priority(101_i64, ReplyParameters.new(2_i64), proc)
+        message_queue.add_to_queue_priority(102_i64, ReplyParameters.new(3_i64), proc)
 
         message_queue.queue.size.should(eq(3))
 
@@ -139,40 +139,6 @@ module PrivateParlorXT
         message_three.receiver.should(eq(1900))
         message_three.reply_to.should(be_nil)
       end
-
-      it "adds system message to the end of the queue" do
-        message_queue = MessageQueue.new
-
-        message_queue.add_to_queue(
-          100_i64,
-          9000_i64,
-          [1500_i64, 1700_i64, 1900_i64],
-          Hash(UserID, ReplyParameters).new,
-          proc,
-        )
-
-        message_queue.queue.size.should(eq(3))
-
-        message_queue.add_to_queue_delayed(9000, ReplyParameters.new(100), proc)
-
-        message_queue.queue.size.should(eq(4))
-
-        message_queue.get_message
-        message_queue.get_message
-        message_queue.get_message
-
-        unless message = message_queue.get_message
-          fail("Message should not be nil")
-        end
-
-        message.origin_msid.should(be_nil)
-        message.sender.should(be_nil)
-        message.receiver.should(eq(9000))
-        unless reply_to = message.reply_to
-          fail("Message reply_to should not be nil")
-        end
-        reply_to.message_id.should(eq(100))
-      end
     end
 
     describe "#add_to_queue_priority" do
@@ -211,9 +177,29 @@ module PrivateParlorXT
       it "returns first QueuedMessage in queue" do
         message_queue = MessageQueue.new
 
-        message_queue.add_to_queue_delayed(100_i64, ReplyParameters.new(1_i64), proc)
-        message_queue.add_to_queue_delayed(101_i64, ReplyParameters.new(2_i64), proc)
-        message_queue.add_to_queue_delayed(102_i64, ReplyParameters.new(3_i64), proc)
+        message_queue.add_to_queue(
+          200_i64, 
+          nil, 
+          [100_i64], 
+          {100_i64 => ReplyParameters.new(1_i64)}, 
+          proc
+        )
+
+        message_queue.add_to_queue(
+          201_i64,
+          nil, 
+          [101_i64], 
+          {101_i64 => ReplyParameters.new(2_i64)}, 
+          proc
+        )
+
+        message_queue.add_to_queue(
+          202_i64,
+          nil, 
+          [102_i64], 
+          {102_i64 => ReplyParameters.new(3_i64)},
+          proc
+        )
 
         unless message = message_queue.get_message
           fail("Message should not be nil")
