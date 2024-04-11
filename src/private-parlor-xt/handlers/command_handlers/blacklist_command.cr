@@ -13,7 +13,7 @@ module PrivateParlorXT
         arg = Format.get_arg(message.text)
         blacklist_from_reply(arg, user, message.message_id.to_i64, reply, services)
       else
-        unless args = Format.get_args(message.text, count: 2)
+        unless (args = Format.get_args(message.text, count: 2)) && args.size == 2
           return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.missing_args)
         end
 
