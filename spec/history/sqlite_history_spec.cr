@@ -131,11 +131,15 @@ module PrivateParlorXT
       end
     end
 
-    it "gets all message IDs sent by a given user" do
+    it "gets all recent message IDs sent by a given user" do
       db.new_message(80300, 11)
+      db.new_message(80300, 15)
+      db.new_message(80300, 19)
 
-      expected = [1, 11].to_set
+      old_included = [1, 11, 15, 19].to_set
+      expected = [11, 15, 19].to_set
 
+      db.get_messages_from_user(80300).should_not(eq(old_included))
       db.get_messages_from_user(80300).should(eq(expected))
     end
 
@@ -150,14 +154,30 @@ module PrivateParlorXT
       db.get_warning(2).should(be_true)
     end
 
-    it "returns messages to purge" do
-      purge_receivers = {
-        20000 => [5],
-        80300 => [6],
-        60200 => [7],
-      }
+    it "returns messages to purge in descending order" do
+      db.new_message(20000, 11)
+      db.new_message(20000, 15)
+      db.new_message(20000, 19)
 
-      db.get_purge_receivers(Set{4_i64}).should(eq(purge_receivers))
+      db.add_to_history(11, 12, 20000)
+      db.add_to_history(11, 13, 80300)
+      db.add_to_history(11, 14, 60200)
+
+      db.add_to_history(15, 16, 20000)
+      db.add_to_history(15, 17, 80300)
+      db.add_to_history(15, 18, 60200)
+
+      db.add_to_history(19, 20, 20000)
+      db.add_to_history(19, 21, 80300)
+      db.add_to_history(19, 22, 60200)
+
+      purge_receivers = {
+        20000 => [20, 16, 12],
+        80300 => [21, 17, 13],
+        60200 => [22, 18, 14],
+      }
+      
+      db.get_purge_receivers(Set{11_i64, 15_i64, 19_i64}).should(eq(purge_receivers))
     end
 
     it "deletes message group" do

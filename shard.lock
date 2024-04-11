@@ -18,7 +18,7 @@ shards:
 
   http_proxy:
     git: https://github.com/mamantoha/http_proxy.git
-    version: 0.10.1+git.commit.98ed90f82c02f2870e326b63974cb582f99ceddd
+    version: 0.10.3+git.commit.ea17189f3bd05a2a89a18abdf73cae534b57faa6
 
   sqlite3:
     git: https://github.com/crystal-lang/crystal-sqlite3.git
@@ -26,7 +26,7 @@ shards:
 
   tasker:
     git: https://github.com/spider-gazelle/tasker.git
-    version: 2.1.4+git.commit.d64995112631c391f7924ab87e144210f5c565bf
+    version: 2.1.4+git.commit.f8d1822a1eb1e54b2279a1537f6a3bea1271ffd2
 
   tourmaline:
     git: https://github.com/charibdys/tourmaline.git

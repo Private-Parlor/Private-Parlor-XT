@@ -108,8 +108,8 @@ module PrivateParlorXT
       @connection.query_all(
         "SELECT messageGroupID
         FROM message_groups
-        WHERE senderID = ?",
-        user,
+        WHERE senderID = ? AND sentTime > ?",
+        args: [user, (Time.utc - 48.hours)],
         as: MessageID
       ).to_set
     end
@@ -157,8 +157,12 @@ module PrivateParlorXT
       tuples = @connection.query_all(
         "SELECT receiverID, receiverMSID
         FROM receivers
-        WHERE receivers.messageGroupID IN (#{messages.join(", ") { "?" }})
-        ORDER BY receiverID",
+        WHERE receivers.messageGroupID IN (
+          SELECT messageGroupID
+          FROM message_groups
+          WHERE messageGroupID in (#{messages.join(", ") { "?" }})
+        )
+        ORDER BY receiverMSID DESC",
         args: messages.to_a,
         as: {UserID, MessageID}
       )
