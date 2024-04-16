@@ -55,7 +55,7 @@ module PrivateParlorXT
     end
 
     # Relay a message to a single user. Used for system messages.
-    def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String)
+    def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String, reply_markup : Tourmaline::InlineKeyboardMarkup? = nil)
       @queue.add_to_queue_priority(
         user,
         reply_message,
@@ -64,7 +64,8 @@ module PrivateParlorXT
             receiver,
             text,
             link_preview_options: Tourmaline::LinkPreviewOptions.new,
-            reply_parameters: reply
+            reply_parameters: reply,
+            reply_markup: reply_markup
           )
         }
       )
@@ -435,6 +436,18 @@ module PrivateParlorXT
           @client.edit_message_media(media, receiver, reply.message_id)
           # We don't care about the result, so return a boolean
           # to satisfy type requirements
+          true
+        }
+      )
+    end
+
+    def edit_message_text(user : UserID, text : String, markup : Tourmaline::InlineKeyboardMarkup?, message : MessageID)
+      @queue.add_to_queue_priority(
+        user,
+        ReplyParameters.new(message),
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          return false unless reply
+          @client.edit_message_text(text, receiver, reply.message_id, reply_markup: markup)
           true
         }
       )

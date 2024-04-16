@@ -20,6 +20,8 @@ module PrivateParlorXT
 
       return unless downvote_message(user, reply_user, message, reply, services)
 
+      record_message_statistics(services)
+
       send_replies(user, reply_user, message, reply, services)
     end
 
@@ -74,6 +76,12 @@ module PrivateParlorXT
       services.database.update_user(reply_user)
 
       true
+    end
+
+    def record_message_statistics(services : Services)
+      return unless stats = services.stats
+        
+      stats.increment_downvote_count
     end
 
     def send_replies(user : User, reply_user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services) : Nil

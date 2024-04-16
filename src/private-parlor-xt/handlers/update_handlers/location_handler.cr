@@ -20,6 +20,8 @@ module PrivateParlorXT
       reply_messages = get_reply_receivers(message, user, services)
       return unless reply_exists?(message, reply_messages, user, services)
 
+      record_message_statistics(Statistics::MessageCounts::Locations, services)
+
       user = spend_karma(user, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)

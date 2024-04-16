@@ -23,6 +23,8 @@ module PrivateParlorXT
       poll_copy = services.relay.send_poll_copy(cached_message, user, poll)
       services.history.add_to_history(cached_message, poll_copy.message_id.to_i64, user.id)
 
+      record_message_statistics(Statistics::MessageCounts::Polls, services)
+
       update_user_activity(user, services)
 
       receivers = get_message_receivers(user, services)

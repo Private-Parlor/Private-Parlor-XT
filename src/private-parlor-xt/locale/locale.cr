@@ -18,5 +18,8 @@ module PrivateParlorXT
 
     @[YAML::Field(key: "loading_bar")]
     getter loading_bar : Array(String)
+
+    @[YAML::Field(key: "change")]
+    getter change : Array(String)
   end
 end

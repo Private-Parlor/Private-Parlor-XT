@@ -110,5 +110,11 @@ module PrivateParlorXT
         services.database.get_active_users(user.id)
       end
     end
+
+    def record_message_statistics(type : Statistics::MessageCounts, services : Services)
+      return unless stats = services.stats
+        
+      stats.increment_message_count(type)
+    end
   end
 end

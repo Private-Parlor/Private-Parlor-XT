@@ -40,6 +40,8 @@ module PrivateParlorXT
 
       return unless input = get_album_input(message, caption, entities, services.config.allow_spoilers)
 
+      record_message_statistics(Statistics::MessageCounts::Albums, services)
+
       relay_album(
         @albums,
         album,

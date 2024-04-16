@@ -23,6 +23,8 @@ module PrivateParlorXT
 
       return unless Robot9000.text_check(user, message, services)
 
+      record_message_statistics(Statistics::MessageCounts::Text, services)
+
       user = spend_karma(user, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)
@@ -38,8 +40,7 @@ module PrivateParlorXT
         replies: reply_messages,
         text: text,
         entities: entities,
-        link_preview_options: message.link_preview_options,
-      )
+        link_preview_options: message.link_preview_options)
       )
     end
 

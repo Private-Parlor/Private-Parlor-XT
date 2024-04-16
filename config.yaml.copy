@@ -113,6 +113,14 @@ locale: en-US
 # --------------------------------
 
 ##
+## Maintain statistics about the bot and allow them to be displayed to users.
+##
+## Accepted values: true, false
+## Default: false
+##
+#statistics: false
+
+##
 ## Contact shown to blacklisted users
 ##
 ## Accepted values: A link or a username
@@ -527,6 +535,7 @@ enable_spoiler: [false, false]
 enable_karma_info: [false, false]
 enable_pin: [false, false]
 enable_unpin: [false, false]
+enable_stats: [false, false]
 
 # --------------------------------
 #  Relay Toggles

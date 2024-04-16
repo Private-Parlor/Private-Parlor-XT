@@ -82,6 +82,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "unpin")]
     getter unpin : String
 
+    @[YAML::Field(key: "stats")]
+    getter stats : String
+
     @[YAML::Field(key: "blacklist")]
     getter blacklist : String
 

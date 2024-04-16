@@ -32,6 +32,8 @@ module PrivateParlorXT
 
       receivers = get_message_receivers(user, services)
 
+      record_message_statistics(Statistics::MessageCounts::Forwards, services)
+
       # Foward regular forwards, otherwise add header to text and offset entities then send as a captioned type
       if Format.regular_forward?(text, entities)
         return services.relay.send_forward(RelayParameters.new(
