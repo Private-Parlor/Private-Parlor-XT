@@ -37,6 +37,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "blacklisted")]
     getter blacklisted : String
 
+    @[YAML::Field(key: "unblacklisted")]
+    getter unblacklisted : String
+
     @[YAML::Field(key: "whitelisted")]
     getter whitelisted : String
 

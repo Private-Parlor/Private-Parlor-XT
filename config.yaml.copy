@@ -421,6 +421,7 @@ locale: en-US
 ##    Remove
 ##    Purge
 ##    Blacklist
+##    Unblacklist
 ##    Whitelist
 ##    MotdSet
 ##    RankedInfo
@@ -474,7 +475,7 @@ ranks:
     name: "Host"
     command_permissions: [Upvote, Downvote, Sign, TSign, RankedInfo, Users, 
       PromoteLower, Demote, Warn, Delete, Uncooldown, Remove, Purge, 
-      Blacklist, MotdSet, RanksayLower]
+      Blacklist, MotdSet, RanksayLower, Unblacklist]
     message_permissions: [Text, Animation, Audio, Document, Video, VideoNote, 
       Voice, Photo, MediaGroup, Poll, Forward, Sticker, Venue, Location, Contact]
 
@@ -529,6 +530,7 @@ enable_delete: [true, false]
 enable_uncooldown: [true, false]
 enable_remove: [true, false]
 enable_purge: [true, false]
+enable_blacklist: [true, false]
 enable_blacklist: [true, false]
 enable_whitelist: [false, false]
 enable_spoiler: [false, false]

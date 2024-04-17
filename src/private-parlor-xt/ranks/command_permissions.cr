@@ -24,5 +24,6 @@ module PrivateParlorXT
     Whitelist
     MotdSet
     RankedInfo
+    Unblacklist
   end
 end

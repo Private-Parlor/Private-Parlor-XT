@@ -217,6 +217,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "blacklist_contact")]
     getter blacklist_contact : String
 
+    @[YAML::Field(key: "unblacklisted")]
+    getter unblacklisted : String
+
     @[YAML::Field(key: "purge_complete")]
     getter purge_complete : String
 

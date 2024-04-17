@@ -237,6 +237,8 @@ replies:
    # Available placeholders: contact
    blacklist_contact: "Contact: {contact}"
 
+   unblacklisted: "_You have been unbanned\\!_"
+
    # Available placeholders: msgs_deleted
    purge_complete: "_{msgs_deleted} messages were matched and deleted\\._"
 
@@ -392,6 +394,8 @@ command_descriptions:
 
    blacklist: Ban a user from the chat
 
+   unblacklist: Unban a user
+
    whitelist: Allow a user to join the chat
 
    motd: Show the rules of this chat
@@ -436,6 +440,9 @@ logs:
 
    # Available placeholders: id, name, invoker, reason
    blacklisted: "User {id}, aka {name}, has been blacklisted by {invoker} {reason}"
+
+   # Available placeholders: id, name, invoker
+   unblacklisted: "User {id}, aka {name}, has been unbanned by {invoker}"
 
    # Available placeholders: id, invoker
    whitelisted: "User {id} has been whitelisted by {invoker}"
