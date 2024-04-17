@@ -85,7 +85,7 @@ module PrivateParlorXT
 
     # Returns true if the user to be promoted (receiver) can be promoted with the given rank.
     def can_promote?(rank : Int32, invoker : Int32, receiver : Int32, permission : CommandPermissions) : Bool
-      if rank <= receiver || rank > invoker
+      if rank <= receiver || rank > invoker || receiver == -10
         return false
       end
 

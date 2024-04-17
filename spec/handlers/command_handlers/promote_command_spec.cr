@@ -100,7 +100,7 @@ module PrivateParlorXT
         promoted_user.rank.should(eq(10))
       end
 
-      it "promotes banned users (unbans)" do
+      it "does not promote banned users (unbans)" do
         unless user = services.database.get_user(20000)
           fail("User 20000 should exist in the database")
         end
@@ -117,7 +117,7 @@ module PrivateParlorXT
           fail("User 70000 should exist in the database")
         end
 
-        promoted_user.rank.should(eq(0))
+        promoted_user.rank.should(eq(-10))
       end
     end
   end
