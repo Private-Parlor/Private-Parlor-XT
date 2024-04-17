@@ -161,7 +161,7 @@ module PrivateParlorXT
       end
     end
 
-    it "gets all message IDs sent by a given user" do
+    it "gets all recent message IDs sent by a given user" do
       history = CachedHistory.new(HISTORY_LIFESPAN)
 
       history.new_message(100, 1)
@@ -201,17 +201,33 @@ module PrivateParlorXT
       history.get_warning(2).should(be_true)
     end
 
-    it "returns messages to purge" do
+    it "returns messages to purge in descending order" do
       history = CachedHistory.new(HISTORY_LIFESPAN)
       generate_history(history)
 
+      history.new_message(20000, 11)
+      history.new_message(20000, 15)
+      history.new_message(20000, 19)
+
+      history.add_to_history(11, 12, 20000)
+      history.add_to_history(11, 13, 80300)
+      history.add_to_history(11, 14, 60200)
+
+      history.add_to_history(15, 16, 20000)
+      history.add_to_history(15, 17, 80300)
+      history.add_to_history(15, 18, 60200)
+
+      history.add_to_history(19, 20, 20000)
+      history.add_to_history(19, 21, 80300)
+      history.add_to_history(19, 22, 60200)
+
       purge_receivers = {
-        20000 => [5],
-        80300 => [6],
-        60200 => [7],
+        20000 => [20, 16, 12],
+        80300 => [21, 17, 13],
+        60200 => [22, 18, 14],
       }
 
-      history.get_purge_receivers(Set{4_i64}).should(eq(purge_receivers))
+      history.get_purge_receivers(Set{11_i64, 15_i64, 19_i64}).should(eq(purge_receivers))
     end
 
     it "deletes message group" do

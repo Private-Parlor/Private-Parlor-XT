@@ -19,7 +19,6 @@ module PrivateParlorXT
         reply.message_id.to_i64,
         reply_user.id,
         reply_user.debug_enabled,
-        true,
         services,
       )
 
@@ -54,7 +53,7 @@ module PrivateParlorXT
 
       services.relay.log_output(log)
 
-      services.relay.delay_send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
     end
   end
 end

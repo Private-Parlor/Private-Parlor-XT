@@ -3,14 +3,13 @@ require "tourmaline"
 require "tasker"
 
 module PrivateParlorXT
-  VERSION = "1.1.0"
+  VERSION = "1.2.0"
 
   services = initialize_services
 
-  # 30 messages every second; going above may result in rate limits
   sending_routine = Tasker.every(1.second) do
-    30.times do
-      break if services.relay.send_messages(services)
+    loop do
+      break if services.relay.send_message(services)
     end
   end
 
@@ -43,7 +42,7 @@ module PrivateParlorXT
 
     # Send last messages in queue
     loop do
-      break if services.relay.send_messages(services) == true
+      break if services.relay.send_message(services)
     end
 
     # Bot stopped polling from SIGINT/SIGTERM, shut down

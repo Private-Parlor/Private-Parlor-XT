@@ -55,7 +55,7 @@ module PrivateParlorXT
     end
 
     # Relay a message to a single user. Used for system messages.
-    def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String)
+    def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String, reply_markup : Tourmaline::InlineKeyboardMarkup? = nil)
       @queue.add_to_queue_priority(
         user,
         reply_message,
@@ -64,22 +64,8 @@ module PrivateParlorXT
             receiver,
             text,
             link_preview_options: Tourmaline::LinkPreviewOptions.new,
-            reply_parameters: reply
-          )
-        }
-      )
-    end
-
-    # Relay a message to a single user. Used for system messages that need not be sent immediately
-    def delay_send_to_user(reply_message : ReplyParameters?, user : UserID, text : String)
-      @queue.add_to_queue_delayed(
-        user,
-        reply_message,
-        ->(receiver : UserID, reply : ReplyParameters?) {
-          @client.send_message(
-            receiver,
-            text,
-            reply_parameters: reply
+            reply_parameters: reply,
+            reply_markup: reply_markup
           )
         }
       )
@@ -89,7 +75,7 @@ module PrivateParlorXT
     def send_to_channel(reply_message : MessageID?, channel : String, text : String)
       return unless id = channel.to_i64?
 
-      @queue.add_to_queue_delayed(
+      @queue.add_to_queue_priority(
         id,
         nil,
         ->(receiver : UserID, _reply : ReplyParameters?) {
@@ -400,17 +386,6 @@ module PrivateParlorXT
       )
     end
 
-    def remove_message(receiver : UserID, message : MessageID)
-      @queue.add_to_queue_delayed(
-        receiver,
-        ReplyParameters.new(message),
-        ->(receiver_id : UserID, reply : ReplyParameters?) {
-          return false unless reply
-          @client.delete_message(receiver_id, reply.message_id)
-        }
-      )
-    end
-
     def purge_messages(receiver : UserID, messages : Array(MessageID))
       @queue.add_to_queue_priority(
         receiver,
@@ -422,7 +397,7 @@ module PrivateParlorXT
     end
 
     def pin_message(user : UserID, message : MessageID)
-      @queue.add_to_queue_delayed(
+      @queue.add_to_queue_priority(
         user,
         ReplyParameters.new(message),
         ->(receiver : UserID, reply : ReplyParameters?) {
@@ -439,7 +414,7 @@ module PrivateParlorXT
         message = nil
       end
 
-      @queue.add_to_queue_delayed(
+      @queue.add_to_queue_priority(
         user,
         message,
         ->(receiver : UserID, reply : ReplyParameters?) {
@@ -453,7 +428,7 @@ module PrivateParlorXT
     end
 
     def edit_message_media(user : UserID, media : Tourmaline::InputMedia, message : MessageID)
-      @queue.add_to_queue_delayed(
+      @queue.add_to_queue_priority(
         user,
         ReplyParameters.new(message),
         ->(receiver : UserID, reply : ReplyParameters?) {
@@ -466,6 +441,18 @@ module PrivateParlorXT
       )
     end
 
+    def edit_message_text(user : UserID, text : String, markup : Tourmaline::InlineKeyboardMarkup?, message : MessageID)
+      @queue.add_to_queue_priority(
+        user,
+        ReplyParameters.new(message),
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          return false unless reply
+          @client.edit_message_text(text, receiver, reply.message_id, reply_markup: markup)
+          true
+        }
+      )
+    end
+
     def log_output(text : String) : Nil
       Log.info { text }
       unless @log_channel.empty?
@@ -473,53 +460,65 @@ module PrivateParlorXT
       end
     end
 
-    # Receives a `Message` from the `queue`, calls its proc, and adds the returned message id to the History
+    # Takes a message from the queue and sends it.
     #
-    # This function should be invoked in a Fiber.
-    def send_messages(services : Services) : Bool?
-      msg = @queue.get_message
+    # Returns true if queue is empty
+    def send_message(services : Services) : Bool?
+      return true unless msg = @queue.get_message
 
-      if msg.nil?
-        return true
+      return unless success = relay_message(msg, services)
+
+      cache_message(success, msg, services)
+    end
+
+    # Calls the proc associated with the given message.
+    #
+    # Returns a `Tourmaline::Message` when sending messages that are not albums
+    # Returns an array of `Tourmaline::Message` for sent albums
+    # Returns nil on sending a system message, Telegram giving us a boolean,
+    # or encountering an error
+    def relay_message(message : QueuedMessage, services : Services) : Tourmaline::Message | Array(Tourmaline::Message) | Nil
+      success = message.function.call(message.receiver, message.reply_to)
+
+      return unless message.origin_msid # System messages have this set to nil
+      return if success.is_a?(Bool)
+
+      success
+    rescue Tourmaline::Error::BotBlocked | Tourmaline::Error::UserDeactivated
+      if user = services.database.get_user(message.receiver)
+        user.set_left
+        services.database.update_user(user)
+
+        log = Format.substitute_message(services.logs.force_leave, {"id" => user.id.to_s, "name" => user.get_formatted_name})
+
+        log_output(log)
       end
 
-      begin
-        success = msg.function.call(msg.receiver, msg.reply_to)
-      rescue Tourmaline::Error::BotBlocked | Tourmaline::Error::UserDeactivated
-        if user = services.database.get_user(msg.receiver)
-          user.set_left
-          services.database.update_user(user)
-
-          log = Format.substitute_message(services.logs.force_leave, {"id" => user.id.to_s, "name" => user.get_formatted_name})
-
-          log_output(log)
-        end
-
-        @queue.reject_messages do |queued_message|
-          queued_message.receiver == msg.receiver
-        end
-        return
-      rescue ex : Tourmaline::Error::ChatNotFound
-        if msg.origin_msid
-          Log.error(exception: ex) { "Error occured when relaying message." }
-        end
-        return
-      rescue ex
-        return Log.error(exception: ex) { "Error occured when relaying message." }
+      reject_inactive_user_messages(message.receiver)
+    rescue ex : Tourmaline::Error::ChatNotFound
+      if message.origin_msid
+        Log.error(exception: ex) { "Error occured when relaying message." }
       end
+    rescue ex : Tourmaline::Error::RetryAfter
+      Log.error(exception: ex) { "Error occured when relaying message." }
 
-      unless msg.origin_msid
-        return
-      end
+      sleep(ex.seconds.seconds)
 
+      relay_message(message, services)
+    rescue ex
+      Log.error(exception: ex) { "Error occured when relaying message." }
+    end
+
+    # Caches data from the message returned from Telegram in the message `History`
+    def cache_message(success : Tourmaline::Message | Array(Tourmaline::Message), message : QueuedMessage, services : Services) : Nil
       case success
       when Tourmaline::Message
-        services.history.add_to_history(msg.origin_msid.as(MessageID), success.message_id.to_i64, msg.receiver)
+        services.history.add_to_history(message.origin_msid.as(MessageID), success.message_id.to_i64, message.receiver)
       when Array(Tourmaline::Message)
         sent_msids = success.map(&.message_id)
 
-        sent_msids.zip(msg.origin_msid.as(Array(MessageID))) do |msid, origin_msid|
-          services.history.add_to_history(origin_msid, msid.to_i64, msg.receiver)
+        sent_msids.zip(message.origin_msid.as(Array(MessageID))) do |msid, origin_msid|
+          services.history.add_to_history(origin_msid, msid.to_i64, message.receiver)
         end
       end
     end

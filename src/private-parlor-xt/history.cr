@@ -32,7 +32,7 @@ module PrivateParlorXT
     # Get the sender of the original message referenced by the given message ID
     abstract def get_sender(message : MessageID) : UserID?
 
-    # Get all message IDs sent by a given user
+    # Get all message IDs sent by a given user for purging messages
     abstract def get_messages_from_user(user : UserID) : Set(MessageID)
 
     # Adds a rating entry to the database with the given data
@@ -46,8 +46,9 @@ module PrivateParlorXT
     # Returns true if the given message was already warned; false or nil otherwise
     abstract def get_warning(message : MessageID) : Bool?
 
-    # Get a hash containing an arryay of messages to delete associated with the users who received a message in the given set.
+    # Get a hash containing an array of message IDs to delete associated with the users who received a message in the given set.
     # Used for the PurgeCommand
+    # NOTE: The returned array of message IDs should be sorted in descending order (most recent messages first)
     abstract def get_purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
 
     # Delete a message group from the history

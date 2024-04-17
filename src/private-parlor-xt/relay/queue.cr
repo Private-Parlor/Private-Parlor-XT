@@ -27,14 +27,6 @@ module PrivateParlorXT
       end
     end
 
-    # Creates a new `QueuedMessage` and pushes it to the back of the queue.
-    # Useful for reply messages that need not be sent immediately
-    def add_to_queue_delayed(receiver : Int64, receiver_message : ReplyParameters?, func : MessageProc) : Nil
-      @queue_mutex.synchronize do
-        @queue.push(QueuedMessage.new(nil, nil, receiver, receiver_message, func))
-      end
-    end
-
     # Creates a new `QueuedMessage` and pushes it to the front of the queue.
     # Useful for reply messages.
     def add_to_queue_priority(receiver_id : Int64, reply : ReplyParameters?, func : MessageProc) : Nil

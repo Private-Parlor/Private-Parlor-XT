@@ -217,11 +217,32 @@ module PrivateParlorXT
     @[YAML::Field(key: "blacklist_contact")]
     getter blacklist_contact : String
 
+    @[YAML::Field(key: "unblacklisted")]
+    getter unblacklisted : String
+
     @[YAML::Field(key: "purge_complete")]
     getter purge_complete : String
 
     @[YAML::Field(key: "inactive")]
     getter inactive : String
+
+    @[YAML::Field(key: "config_stats")]
+    getter config_stats : String
+
+    @[YAML::Field(key: "message_stats")]
+    getter message_stats : String
+
+    @[YAML::Field(key: "user_stats")]
+    getter user_stats : String
+
+    @[YAML::Field(key: "karma_stats")]
+    getter karma_stats : String
+
+    @[YAML::Field(key: "karma_level_stats")]
+    getter karma_level_stats : String
+
+    @[YAML::Field(key: "robot9000_stats")]
+    getter robot9000_stats : String
 
     @[YAML::Field(key: "success")]
     getter success : String

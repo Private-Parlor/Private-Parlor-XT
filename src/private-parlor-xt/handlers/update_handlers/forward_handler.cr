@@ -17,6 +17,8 @@ module PrivateParlorXT
 
       return unless Robot9000.forward_checks(user, message, services)
 
+      record_message_statistics(Statistics::MessageCounts::Forwards, services)
+
       user = spend_karma(user, services)
 
       new_message = services.history.new_message(user.id, message.message_id.to_i64)

@@ -38,7 +38,7 @@ module PrivateParlorXT
 
       services.relay.log_output(log)
 
-      services.relay.delay_send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
     end
   end
 end

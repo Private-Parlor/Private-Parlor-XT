@@ -144,6 +144,10 @@ module PrivateParlorXT
           response = services.replies.unoriginal_message
         end
 
+        if stats = services.stats
+          stats.increment_unoriginal_text_count
+        end
+
         services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
 
         return false
@@ -179,6 +183,10 @@ module PrivateParlorXT
           })
         else
           response = services.replies.unoriginal_message
+        end
+
+        if stats = services.stats
+          stats.increment_unoriginal_media_count
         end
 
         services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)

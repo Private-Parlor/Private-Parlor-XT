@@ -74,9 +74,9 @@ module PrivateParlorXT
     def get_messages_from_user(user : UserID) : Set(MessageID)
       user_msgs = Set(MessageID).new
       @message_map.each_value do |msg|
-        if msg.sender != user
-          next
-        end
+        next unless msg.sender == user
+
+        next if msg.sent <= Time.utc - 48.hours
 
         user_msgs.add(msg.origin)
       end
@@ -106,6 +106,8 @@ module PrivateParlorXT
     # :inherit:
     def get_purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
       hash = {} of UserID => Array(MessageID)
+
+      messages = messages.to_a.sort { |a, b| b <=> a }
 
       messages.each do |msid|
         @message_map[msid].receivers.each do |receiver, receiver_msid|

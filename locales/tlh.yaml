@@ -85,18 +85,15 @@ replies:
 
    # Available placeholders: reason
    karma_reason: |- 
-      meq:
+      \. meq:
       >{reason}
 
    # Available placeholders: karma_reason
-   gave_upvote: |- 
-      _QInvam DanaDta'\!_
-      {karma_reason}
+   gave_upvote: "_QInvam DanaDta'{karma_reason}\\!\n_"
 
    # Available placeholders: karma_reason
    got_upvote: |- 
-      _Qapla'\! naD DaHevta'\! 
-      {karma_reason}
+      _Qapla'\! naD DaHevta'{karma_reason}\!
       \(naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\)_
 
    upvoted_own_message: "_QInlIj DanaDlaHbe'\\!_"
@@ -104,14 +101,11 @@ replies:
    already_voted: "_QInvam DanaDbej'ta' qoj 'oH DanaDHabej'ta'\\._"
 
    # Available placeholders: karma_reason
-   gave_downvote: |- 
-      _QInvam DanaDHa'ta'\._
-      {karma_reason}
+   gave_downvote: "_QInvam DanaDHa'ta'{karma_reason}\\.\n_"
 
    # Available placeholders: karma_reason
    got_downvote: |- 
-      _vay' DunaDHa'ta'\! 
-      {karma_reason}
+      _vay' DunaDHa'ta'{karma_reason}\!
       \(naDmeylIj DaleghmeH /info Datur qoj vepmey QotlhmeH /togglekarma Datur\)_
 
    downvoted_own_message: "_QInlIj DanaDHa'laHbe'\\!_"

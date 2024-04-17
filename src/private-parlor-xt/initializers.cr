@@ -37,6 +37,10 @@ module PrivateParlorXT
       karma_economy = config.karma_economy
     end
 
+    if config.statistics != nil
+      stats = SQLiteStatistics.new(connection)
+    end
+
     if config.database_history
       history = SQLiteHistory.new(config.message_lifespan.hours, connection)
     else
@@ -62,7 +66,8 @@ module PrivateParlorXT
       relay,
       spam,
       robot9000,
-      karma_economy
+      karma_economy,
+      stats
     )
 
     initialize_tasks(config, services)
@@ -102,6 +107,8 @@ module PrivateParlorXT
     events = events.concat(generate_command_handlers(config, client, services))
 
     events = events.concat(generate_hears_handlers(config, services))
+
+    events = events.concat(generate_callback_query_handlers(config, services))
 
     # TODO: Add Inline Queries
 
@@ -212,6 +219,24 @@ module PrivateParlorXT
     end
 
   {% end %}
+
+    arr
+  end
+
+  def self.generate_callback_query_handlers(config : Config, services : Services) : Array(Tourmaline::CallbackQueryHandler)
+    arr = [] of Tourmaline::CallbackQueryHandler
+
+    return arr unless config.statistics
+
+    handler = StatisticsQueryHandler.new(config)
+
+    arr << Tourmaline::CallbackQueryHandler.new(/statistics-next/) do |ctx|
+      next unless query = ctx.callback_query
+      next unless message = ctx.message
+      next if message.date == 0 # Message is inaccessible
+
+      handler.do(query, services)
+    end
 
     arr
   end

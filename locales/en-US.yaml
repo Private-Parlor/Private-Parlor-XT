@@ -13,6 +13,9 @@ locale:
    # Values for the loading bar, from empty, to partially full, to full
    loading_bar: ["○", "◐", "●"]
 
+   # Symbols for increasing and decreasing change
+   change : ["📉", "📈"]
+
 # Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
 # Placeholders should not be escaped
 # Special characters in MarkdownV2 must be escaped
@@ -89,11 +92,11 @@ replies:
       >{reason}
 
    # Available placeholders: karma_reason
-   gave_upvote: "_You upvoted this message{karma_reason}\n_"
+   gave_upvote: "_You upvoted this message{karma_reason}\\!\n_"
 
    # Available placeholders: karma_reason
    got_upvote: |- 
-      _You've just been upvoted{karma_reason} 
+      _You've just been upvoted{karma_reason}\!
       \(check /info to see your karma or /togglekarma to turn these notifications off\)_
 
    upvoted_own_message: "_You can't upvote your own message\\!_"
@@ -101,11 +104,11 @@ replies:
    already_voted: "_You have already upvoted or downvoted this message\\._"
 
    # Available placeholders: karma_reason
-   gave_downvote: "_You downvoted this message{karma_reason}\n_"
+   gave_downvote: "_You downvoted this message{karma_reason}\\!\n_"
 
    # Available placeholders: karma_reason
    got_downvote: |- 
-      _You've just been downvoted{karma_reason} 
+      _You've just been downvoted{karma_reason}\!
       \(check /info to see your karma or /togglekarma to turn these notifications off\)_
 
    downvoted_own_message: "_You can't downvote your own message\\!_"
@@ -234,6 +237,8 @@ replies:
    # Available placeholders: contact
    blacklist_contact: "Contact: {contact}"
 
+   unblacklisted: "_You have been unbanned\\!_"
+
    # Available placeholders: msgs_deleted
    purge_complete: "_{msgs_deleted} messages were matched and deleted\\._"
 
@@ -241,6 +246,92 @@ replies:
    inactive: |- 
       _You have been kicked due to inactivity \(AFK for {time} days\)\.
       Type /start to receive messages again\!_"
+
+   # Available placeholder: ???
+   config_stats: |-
+      *Relaying since {start_date}*
+      *Current uptime: {uptime}*
+
+      Registration: {registration_toggle}
+      Media Limit Period: {media_limit_period}
+      Pseudonymous Mode: {pseudonymous_toggle}
+      Media Spoilers: {spoilers_toggle}
+      Karma Reasons: {karma_reasons_toggle}
+      Robot9000: {robot9000_toggle}
+      Karma Economy: {karma_economy_toggle}
+
+   # Available placeholders: ???
+   message_stats: |-
+      *Total Messages: {total}*
+
+      Albums: {album_total}
+      Animations: {animation_total}
+      Audio: {audio_total}
+      Contacts: {contact_total}
+      Documents: {document_total}
+      Forwards: {forward_total}
+      Locations: {location_total}
+      Photos: {photo_total}
+      Polls: {poll_total}
+      Stickers: {sticker_total}
+      Text: {text_total}
+      Venues: {venue_total}
+      Videos: {video_total}
+      Video Notes: {video_note_total}
+      Voice: {voice_total}
+
+      Messages today: {daily_total} \({daily_change}% {change_today} from yesterday\)
+      Messages this week: {weekly_total} \({weekly_change}% {change_this_week} from last week\)
+      Messages this month: {monthly_total} \({monthly_change}% {change_this_month} from last month\)
+
+   # Available placeholders: ???
+   user_stats: |-
+      *Total Users: {total_users}*
+
+      Joined: {joined_users}
+      Left: {left_users}
+      Blacklisted: {blacklisted_users}
+
+      Joined today: {joined_daily_total} \({joined_daily_change}% {joined_change_today} from yesterday\)
+      Joined this week: {joined_weekly_total} \({joined_weekly_change}% {joined_change_this_week} from last week\)
+      Joined this month: {joined_monthly_total} \({joined_monthly_change}% {joined_change_this_month} from last month\)
+
+      Left today: {left_daily_total} \({left_daily_change}% {left_change_today} from yesterday\)
+      Left this week: {left_weekly_total} \({left_weekly_change}% {left_change_this_week} from last week\)
+      Left this month: {left_monthly_total} \({left_monthly_change}% {left_change_this_month} from last month\)
+
+      Net change today: {net_daily} users
+      Net change this week: {net_weekly} users
+      Net change this month: {net_monthly} users
+
+
+   karma_stats: |-
+      *Total Upvotes: {upvotes}*
+      *Total Downvotes: {downvotes}*
+
+      Upvotes today: {upvote_daily_total} \({upvote_daily_change}% {upvote_change_today} from yesterday\)
+      Upvotes this week: {upvote_weekly_total} \({upvote_weekly_change}% {upvote_change_this_week} from last week\)
+      Upvotes this month: {upvote_monthly_total} \({upvote_monthly_change}% {upvote_change_this_month} from last month\)
+
+      Downvotes today: {downvote_daily_total} \({downvote_daily_change}% {downvote_change_today} from yesterday\)
+      Downvotes this week: {downvote_weekly_total} \({downvote_weekly_change}% {downvote_change_this_week} from last week\)
+      Downvotes this month: {downvote_monthly_total} \({downvote_monthly_change}% {downvote_change_this_month} from last month\)
+
+   karma_level_stats: |-
+      *Karma Level Users*
+
+      {karma_levels}
+
+   robot9000_stats: |-
+      *Total Unique Messages: {total_unique}*
+
+      Unique Texts: {unique_text}
+      Unique Media: {unique_media}
+      
+      *Total Unoriginal Messages: {total_unoriginal}*
+
+      Unoriginal Texts: {unoriginal_text}
+      Unoriginal Media: {unoriginal_media}
 
    success: "✅" 
 
@@ -299,7 +390,11 @@ command_descriptions:
 
    unpin: Unpin the most recent pinned message
 
+   stats: Get statistics about the bot
+
    blacklist: Ban a user from the chat
+
+   unblacklist: Unban a user
 
    whitelist: Allow a user to join the chat
 
@@ -345,6 +440,9 @@ logs:
 
    # Available placeholders: id, name, invoker, reason
    blacklisted: "User {id}, aka {name}, has been blacklisted by {invoker} {reason}"
+
+   # Available placeholders: id, name, invoker
+   unblacklisted: "User {id}, aka {name}, has been unbanned by {invoker}"
 
    # Available placeholders: id, invoker
    whitelisted: "User {id} has been whitelisted by {invoker}"

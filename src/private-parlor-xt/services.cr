@@ -22,6 +22,7 @@ module PrivateParlorXT
     getter spam : SpamHandler?
     getter robot9000 : Robot9000?
     getter karma : KarmaHandler?
+    getter stats : Statistics?
 
     def initialize(
       @config : HandlerConfig,
@@ -35,7 +36,8 @@ module PrivateParlorXT
       @relay : Relay,
       @spam : SpamHandler? = nil,
       @robot9000 : Robot9000? = nil,
-      @karma : KarmaHandler? = nil
+      @karma : KarmaHandler? = nil,
+      @stats : Statistics? = nil
     )
     end
   end

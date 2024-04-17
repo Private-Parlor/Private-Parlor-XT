@@ -31,7 +31,7 @@ module PrivateParlorXT
 
       spoil_messages(reply, user, input, services)
 
-      services.relay.delay_send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
     end
 
     def get_message_input(message : Tourmaline::Message) : Tourmaline::InputMedia?

@@ -162,6 +162,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "enable_blacklist")]
     getter enable_blacklist : Array(Bool) = [true, false]
 
+    @[YAML::Field(key: "enable_unblacklist")]
+    getter enable_unblacklist : Array(Bool) = [true, false]
+
     @[YAML::Field(key: "enable_whitelist")]
     getter enable_whitelist : Array(Bool) = [false, false]
 
@@ -176,6 +179,9 @@ module PrivateParlorXT
 
     @[YAML::Field(key: "enable_unpin")]
     getter enable_unpin : Array(Bool) = [false, false]
+
+    @[YAML::Field(key: "enable_stats")]
+    getter enable_stats : Array(Bool) = [false, false]
 
     # Relay Toggles
 
@@ -253,6 +259,9 @@ module PrivateParlorXT
 
     @[YAML::Field(key: "flag_signatures")]
     getter flag_signatures : Bool? = false
+
+    @[YAML::Field(key: "statistics")]
+    getter statistics : Bool? = false
 
     @[YAML::Field(key: "blacklist_contact")]
     getter blacklist_contact : String? = nil

@@ -20,6 +20,8 @@ module PrivateParlorXT
 
       return unless downvote_message(user, reply_user, message, reply, services)
 
+      record_message_statistics(services)
+
       send_replies(user, reply_user, message, reply, services)
     end
 
@@ -76,16 +78,25 @@ module PrivateParlorXT
       true
     end
 
+    def record_message_statistics(services : Services)
+      return unless stats = services.stats
+
+      stats.increment_downvote_count
+    end
+
     def send_replies(user : User, reply_user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services) : Nil
       if services.config.karma_reasons
         reason = Format.get_arg(message.text)
 
-        services.relay.log_output(Format.substitute_message(services.logs.downvoted, {
-          "id"     => user.id.to_s,
-          "name"   => user.get_formatted_name,
-          "oid"    => reply_user.get_obfuscated_id,
-          "reason" => reason,
-        })) unless reason.nil?
+        if reason
+          reason = Format.truncate_karma_reason(reason)
+          services.relay.log_output(Format.substitute_message(services.logs.downvoted, {
+            "id"     => user.id.to_s,
+            "name"   => user.get_formatted_name,
+            "oid"    => reply_user.get_obfuscated_id,
+            "reason" => reason,
+          }))
+        end
       end
 
       gave_downvote_reply = Format.format_karma_reason_reply(reason, services.replies.gave_downvote, services.replies)

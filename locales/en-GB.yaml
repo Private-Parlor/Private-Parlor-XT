@@ -89,11 +89,11 @@ replies:
       >{reason}
 
    # Available placeholders: karma_reason
-   gave_upvote: "_You upvoted this message{karma_reason}\n_"
+   gave_upvote: "_You upvoted this message{karma_reason}\\!\n_"
 
    # Available placeholders: karma_reason
    got_upvote: |- 
-      _You've just been upvoted{karma_reason} 
+      _You've just been upvoted{karma_reason}\!
       \(check /info to see your karma or /togglekarma to turn these notifications off\)_
 
    upvoted_own_message: "_You can't upvote your own message\\!_"
@@ -101,11 +101,11 @@ replies:
    already_voted: "_You have already upvoted or downvoted this message\\._"
 
    # Available placeholders: karma_reason
-   gave_downvote: "_You downvoted this message{karma_reason}\n_"
+   gave_downvote: "_You downvoted this message{karma_reason}\\!\n_"
 
    # Available placeholders: karma_reason
    got_downvote: |- 
-      _You've just been downvoted{karma_reason} 
+      _You've just been downvoted{karma_reason}\!
       \(check /info to see your karma or /togglekarma to turn these notifications off\)_
 
    downvoted_own_message: "_You can't downvote your own message\\!_"

@@ -52,20 +52,14 @@ module PrivateParlorXT
       end
     end
 
-    def delete_messages(message : MessageID, user : UserID, debug_enabled : Bool?, priority : Bool, services : Services) : MessageID?
+    def delete_messages(message : MessageID, user : UserID, debug_enabled : Bool?, services : Services) : MessageID?
       if reply_msids = services.history.get_all_receivers(message)
         unless debug_enabled
           reply_msids.delete(user)
         end
 
-        if priority
-          reply_msids.each do |receiver, receiver_message|
-            services.relay.delete_message(receiver, receiver_message)
-          end
-        else
-          reply_msids.each do |receiver, receiver_message|
-            services.relay.remove_message(receiver, receiver_message)
-          end
+        reply_msids.each do |receiver, receiver_message|
+          services.relay.delete_message(receiver, receiver_message)
         end
 
         services.history.delete_message_group(message)
