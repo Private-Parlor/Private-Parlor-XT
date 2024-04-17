@@ -460,31 +460,30 @@ module PrivateParlorXT
       end
     end
 
-
     # Takes a message from the queue and sends it.
-    # 
+    #
     # Returns true if queue is empty
     def send_message(services : Services) : Bool?
       return true unless msg = @queue.get_message
-      
+
       return unless success = relay_message(msg, services)
 
       cache_message(success, msg, services)
     end
 
     # Calls the proc associated with the given message.
-    # 
+    #
     # Returns a `Tourmaline::Message` when sending messages that are not albums
     # Returns an array of `Tourmaline::Message` for sent albums
     # Returns nil on sending a system message, Telegram giving us a boolean,
     # or encountering an error
-    def relay_message(message : QueuedMessage, services : Services) : Tourmaline::Message | Array(Tourmaline::Message) | Nil 
+    def relay_message(message : QueuedMessage, services : Services) : Tourmaline::Message | Array(Tourmaline::Message) | Nil
       success = message.function.call(message.receiver, message.reply_to)
 
       return unless message.origin_msid # System messages have this set to nil
       return if success.is_a?(Bool)
 
-      return success
+      success
     rescue Tourmaline::Error::BotBlocked | Tourmaline::Error::UserDeactivated
       if user = services.database.get_user(message.receiver)
         user.set_left
@@ -505,7 +504,7 @@ module PrivateParlorXT
 
       sleep(ex.seconds.seconds)
 
-      return relay_message(message, services)
+      relay_message(message, services)
     rescue ex
       Log.error(exception: ex) { "Error occured when relaying message." }
     end

@@ -108,7 +108,7 @@ module PrivateParlorXT
 
     events = events.concat(generate_hears_handlers(config, services))
 
-    events = events.concat(generate_callback_query_handlers(config, services)) 
+    events = events.concat(generate_callback_query_handlers(config, services))
 
     # TODO: Add Inline Queries
 

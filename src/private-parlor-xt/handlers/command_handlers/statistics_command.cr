@@ -4,7 +4,7 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: ["stats", "statistics"], config: "enable_stats")]
   class StatsCommand < CommandHandler
-    def do (message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services)
       return unless user = get_user_from_message(message, services)
 
       unless stats = services.stats

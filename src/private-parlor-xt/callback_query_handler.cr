@@ -19,7 +19,7 @@ module PrivateParlorXT
       end
 
       unless user.can_chat?
-        return deny_user(user, services) 
+        return deny_user(user, services)
       end
 
       user.update_names(info.username, info.full_name)

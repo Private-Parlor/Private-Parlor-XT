@@ -143,7 +143,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.fail))
       end
 
-      it "blacklists the given user" do 
+      it "blacklists the given user" do
         generate_users(services.database)
 
         unless high_ranked_user = services.database.get_user(60200)
@@ -160,7 +160,7 @@ module PrivateParlorXT
 
         result = handler.blacklist_user(low_ranked_user, high_ranked_user, 1, "detailed reason", services)
 
-        result.should(be_true) 
+        result.should(be_true)
 
         unless updated_user = services.database.get_user(40000)
           fail("User 60200 should exist in the database")
@@ -208,7 +208,7 @@ module PrivateParlorXT
         end
       end
 
-      it "sends blacklist messages with reason" do 
+      it "sends blacklist messages with reason" do
         generate_users(services.database)
 
         unless banned_user = services.database.get_user(70000)

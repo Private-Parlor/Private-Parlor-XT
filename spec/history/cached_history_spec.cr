@@ -226,7 +226,7 @@ module PrivateParlorXT
         80300 => [21, 17, 13],
         60200 => [22, 18, 14],
       }
-      
+
       history.get_purge_receivers(Set{11_i64, 15_i64, 19_i64}).should(eq(purge_receivers))
     end
 

@@ -178,25 +178,25 @@ module PrivateParlorXT
         message_queue = MessageQueue.new
 
         message_queue.add_to_queue(
-          200_i64, 
-          nil, 
-          [100_i64], 
-          {100_i64 => ReplyParameters.new(1_i64)}, 
+          200_i64,
+          nil,
+          [100_i64],
+          {100_i64 => ReplyParameters.new(1_i64)},
           proc
         )
 
         message_queue.add_to_queue(
           201_i64,
-          nil, 
-          [101_i64], 
-          {101_i64 => ReplyParameters.new(2_i64)}, 
+          nil,
+          [101_i64],
+          {101_i64 => ReplyParameters.new(2_i64)},
           proc
         )
 
         message_queue.add_to_queue(
           202_i64,
-          nil, 
-          [102_i64], 
+          nil,
+          [102_i64],
           {102_i64 => ReplyParameters.new(3_i64)},
           proc
         )

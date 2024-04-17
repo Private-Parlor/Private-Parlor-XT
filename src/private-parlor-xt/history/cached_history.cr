@@ -107,7 +107,7 @@ module PrivateParlorXT
     def get_purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
       hash = {} of UserID => Array(MessageID)
 
-      messages = messages.to_a.sort{|a, b| b <=> a}
+      messages = messages.to_a.sort { |a, b| b <=> a }
 
       messages.each do |msid|
         @message_map[msid].receivers.each do |receiver, receiver_msid|

@@ -80,7 +80,7 @@ module PrivateParlorXT
 
     def record_message_statistics(services : Services)
       return unless stats = services.stats
-        
+
       stats.increment_upvote_count
     end
 

@@ -85,7 +85,7 @@ module PrivateParlorXT
       totals = @connection.query_one("
         SELECT
           coalesce(sum(total_messages), 0) as total_messages,
-          coalesce(sum(albums), 0) as albums, 
+          coalesce(sum(albums), 0) as albums,
           coalesce(sum(animations), 0) as animations,
           coalesce(sum(audio), 0) as audio,
           coalesce(sum(contacts), 0) as contacts,
@@ -108,13 +108,13 @@ module PrivateParlorXT
           (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date < date('now','-1 month') AND date > date('now','-2 months')) as messages_yestermonth
         FROM message_stats",
         as: {
-          Int32, Int32, Int32, Int32, Int32, 
-          Int32, Int32, Int32, Int32, Int32, 
-          Int32, Int32, Int32, Int32, Int32, 
-          Int32, Int32, Int32, Int32, Int32, 
-          Int32, Int32
+          Int32, Int32, Int32, Int32, Int32,
+          Int32, Int32, Int32, Int32, Int32,
+          Int32, Int32, Int32, Int32, Int32,
+          Int32, Int32, Int32, Int32, Int32,
+          Int32, Int32,
         }
-      ) 
+      )
 
       Hash.zip(MessageCounts.values, totals.to_a)
     end
@@ -140,10 +140,10 @@ module PrivateParlorXT
           (select count(id) FROM users WHERE date(left) < date('now','-1 month') AND date(left) > date('now','-2 months')) as left_yestermonth
         FROM users",
         as: {
-          Int32, Int32, Int32, Int32, Int32, 
-          Int32, Int32, Int32, Int32, Int32, 
-          Int32, Int32, Int32, Int32, Int32, 
-          Int32, 
+          Int32, Int32, Int32, Int32, Int32,
+          Int32, Int32, Int32, Int32, Int32,
+          Int32, Int32, Int32, Int32, Int32,
+          Int32,
         }
       )
 
@@ -169,8 +169,8 @@ module PrivateParlorXT
           (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date < date('now','-1 month') AND date > date('now','-2 months')) as downvotes_yestermonth
         FROM message_stats",
         as: {
-          Int32, Int32, Int32, Int32, Int32, 
-          Int32, Int32, Int32, Int32, Int32, 
+          Int32, Int32, Int32, Int32, Int32,
+          Int32, Int32, Int32, Int32, Int32,
           Int32, Int32, Int32, Int32,
         }
       )
@@ -190,7 +190,7 @@ module PrivateParlorXT
 
     def get_robot9000_counts : Hash(Robot9000Counts, Int32)
       totals = @connection.query_one("
-        SELECT 
+        SELECT
           (SELECT count(id) FROM (SELECT * FROM file_id UNION SELECT * FROM text)) as total_unique,
           (SELECT count(line) FROM text) as unique_text,
           (SELECT count(id) FROM file_id) as unique_media,
@@ -198,8 +198,8 @@ module PrivateParlorXT
           (SELECT coalesce(sum(unoriginal_text), 0) FROM message_stats) as unoriginal_text,
           (SELECT coalesce(sum(unoriginal_media), 0) FROM message_stats) as unoriginal_media",
         as: {
-          Int32, Int32, Int32, 
-          Int32, Int32, Int32, 
+          Int32, Int32, Int32,
+          Int32, Int32, Int32,
         }
       )
 
@@ -207,7 +207,7 @@ module PrivateParlorXT
     end
 
     def ensure_schema : Nil
-      write do 
+      write do
         @connection.exec("CREATE TABLE IF NOT EXISTS message_stats (
           date TIMESTAMP NOT NULL,
           albums INTEGER NOT NULL DEFAULT 0,

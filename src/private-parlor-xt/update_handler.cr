@@ -113,7 +113,7 @@ module PrivateParlorXT
 
     def record_message_statistics(type : Statistics::MessageCounts, services : Services)
       return unless stats = services.stats
-        
+
       stats.increment_message_count(type)
     end
   end

@@ -62,7 +62,7 @@ module PrivateParlorXT
 
       services.relay.reject_blacklisted_messages(blacklisted_user.id)
 
-      return true
+      true
     end
 
     def send_messages(reason : String?, blacklisted_user : User, invoker : User, deleted_message : ReplyParameters?, invoker_message : MessageID, services : Services) : Nil

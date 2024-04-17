@@ -1,5 +1,4 @@
 module PrivateParlorXT
-
   # Statistics module used for calculating and recording data
   abstract class Statistics
     enum BotInfo
@@ -115,11 +114,11 @@ module PrivateParlorXT
     def get_configuration_details(services : Services) : Hash(BotInfo, String)
       {
         BotInfo::RegistrationToggle => services.config.registration_open ? services.locale.toggle[1] : services.locale.toggle[0],
-        BotInfo::MediaLimitPeriod => services.config.media_limit_period.to_s,
+        BotInfo::MediaLimitPeriod   => services.config.media_limit_period.to_s,
         BotInfo::PseudonymousToggle => services.config.pseudonymous ? services.locale.toggle[1] : services.locale.toggle[0],
-        BotInfo::SpoilerToggle => services.config.allow_spoilers ? services.locale.toggle[1] : services.locale.toggle[0],
+        BotInfo::SpoilerToggle      => services.config.allow_spoilers ? services.locale.toggle[1] : services.locale.toggle[0],
         BotInfo::KarmaReasonsToggle => services.config.karma_reasons ? services.locale.toggle[1] : services.locale.toggle[0],
-        BotInfo::Robot9000Toggle => services.robot9000.nil? ? services.locale.toggle[0] : services.locale.toggle[1],
+        BotInfo::Robot9000Toggle    => services.robot9000.nil? ? services.locale.toggle[0] : services.locale.toggle[1],
         BotInfo::KarmaEconomyToggle => services.karma.nil? ? services.locale.toggle[0] : services.locale.toggle[1],
       }
     end
@@ -136,13 +135,13 @@ module PrivateParlorXT
 
     def get_statistic_screen(next_screen : StatScreens, services : Services) : String
       case next_screen
-      when StatScreens::General then format_config_data(services)
-      when StatScreens::Messages then format_message_data(services)
-      when StatScreens::Users then format_user_counts(services)
-      when StatScreens::Karma then format_karma_counts(services)
+      when StatScreens::General     then format_config_data(services)
+      when StatScreens::Messages    then format_message_data(services)
+      when StatScreens::Users       then format_user_counts(services)
+      when StatScreens::Karma       then format_karma_counts(services)
       when StatScreens::KarmaLevels then format_karma_level_counts(services)
-      when StatScreens::Robot9000 then format_robot9000_counts(services)
-      else ""
+      when StatScreens::Robot9000   then format_robot9000_counts(services)
+      else                               ""
       end
     end
 
@@ -155,10 +154,10 @@ module PrivateParlorXT
     # TODO: Rewrite this so that localized texts can be used
     def keyboard_markup(next_screen : StatScreens, services : Services) : Tourmaline::InlineKeyboardMarkup
       options = {
-        StatScreens::General => "General",
+        StatScreens::General  => "General",
         StatScreens::Messages => "Messages",
-        StatScreens::Users => "Users",
-        StatScreens::Karma => "Karma",
+        StatScreens::Users    => "Users",
+        StatScreens::Karma    => "Karma",
       }
 
       unless services.config.karma_levels.empty?
@@ -174,7 +173,7 @@ module PrivateParlorXT
       buttons = [] of Tourmaline::InlineKeyboardButton
 
       options.each do |screen, text|
-        buttons << Tourmaline::InlineKeyboardButton.new(text, callback_data: "statistics-next=#{screen.to_s}")
+        buttons << Tourmaline::InlineKeyboardButton.new(text, callback_data: "statistics-next=#{screen}")
       end
 
       # Split buttons into rows of 3 at most
@@ -193,15 +192,15 @@ module PrivateParlorXT
       configuration = get_configuration_details(services)
 
       Format.substitute_reply(services.replies.config_stats, {
-        "start_date" => start_date.to_s,
-        "uptime"    => uptime.to_s,
-        "registration_toggle"         => configuration[BotInfo::RegistrationToggle],
-        "media_limit_period"         => configuration[BotInfo::MediaLimitPeriod],
-        "pseudonymous_toggle" => configuration[BotInfo::PseudonymousToggle],
-        "spoilers_toggle" => configuration[BotInfo::SpoilerToggle],
+        "start_date"           => start_date.to_s,
+        "uptime"               => uptime.to_s,
+        "registration_toggle"  => configuration[BotInfo::RegistrationToggle],
+        "media_limit_period"   => configuration[BotInfo::MediaLimitPeriod],
+        "pseudonymous_toggle"  => configuration[BotInfo::PseudonymousToggle],
+        "spoilers_toggle"      => configuration[BotInfo::SpoilerToggle],
         "karma_reasons_toggle" => configuration[BotInfo::KarmaReasonsToggle],
-        "robot9000_toggle" => configuration[BotInfo::Robot9000Toggle],
-        "karma_economy_toggle" => configuration[BotInfo::KarmaEconomyToggle]
+        "robot9000_toggle"     => configuration[BotInfo::Robot9000Toggle],
+        "karma_economy_toggle" => configuration[BotInfo::KarmaEconomyToggle],
       })
     end
 
@@ -209,45 +208,45 @@ module PrivateParlorXT
       totals = get_total_messages
 
       daily_change = get_percent_change(
-        totals[MessageCounts::MessagesYesterday], 
+        totals[MessageCounts::MessagesYesterday],
         totals[MessageCounts::MessagesDaily]
       )
-      
+
       weekly_change = get_percent_change(
-        totals[MessageCounts::MessagesYesterweek], 
+        totals[MessageCounts::MessagesYesterweek],
         totals[MessageCounts::MessagesWeekly]
       )
 
       monthly_change = get_percent_change(
-        totals[MessageCounts::MessagesYestermonth], 
+        totals[MessageCounts::MessagesYestermonth],
         totals[MessageCounts::MessagesMonthly]
       )
 
       Format.substitute_reply(services.replies.message_stats, {
-        "total" => totals[MessageCounts::TotalMessages].to_s,
-        "album_total" => totals[MessageCounts::Albums].to_s,
-        "animation_total" => totals[MessageCounts::Animations].to_s,
-        "audio_total" => totals[MessageCounts::Audio].to_s,
-        "contact_total" => totals[MessageCounts::Contacts].to_s,
-        "document_total" => totals[MessageCounts::Documents].to_s,
-        "forward_total" => totals[MessageCounts::Forwards].to_s,
-        "location_total" => totals[MessageCounts::Locations].to_s,
-        "photo_total" => totals[MessageCounts::Photos].to_s,
-        "poll_total" => totals[MessageCounts::Polls].to_s,
-        "sticker_total" => totals[MessageCounts::Stickers].to_s,
-        "text_total" => totals[MessageCounts::Text].to_s,
-        "venue_total" => totals[MessageCounts::Venues].to_s,
-        "video_total" => totals[MessageCounts::Videos].to_s,
-        "video_note_total" => totals[MessageCounts::VideoNotes].to_s,
-        "voice_total" => totals[MessageCounts::Voice].to_s,
-        "daily_total" => totals[MessageCounts::MessagesDaily].to_s,
-        "weekly_total" => totals[MessageCounts::MessagesWeekly].to_s,
-        "monthly_total" => totals[MessageCounts::MessagesMonthly].to_s,
-        "daily_change" => daily_change.format(decimal_places: 1, only_significant: true),
-        "weekly_change" => weekly_change.format(decimal_places: 1, only_significant: true),
-        "monthly_change" => monthly_change.format(decimal_places: 1, only_significant: true),
-        "change_today" => daily_change.positive? ? services.locale.change[1] : services.locale.change[0],
-        "change_this_week" => weekly_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "total"             => totals[MessageCounts::TotalMessages].to_s,
+        "album_total"       => totals[MessageCounts::Albums].to_s,
+        "animation_total"   => totals[MessageCounts::Animations].to_s,
+        "audio_total"       => totals[MessageCounts::Audio].to_s,
+        "contact_total"     => totals[MessageCounts::Contacts].to_s,
+        "document_total"    => totals[MessageCounts::Documents].to_s,
+        "forward_total"     => totals[MessageCounts::Forwards].to_s,
+        "location_total"    => totals[MessageCounts::Locations].to_s,
+        "photo_total"       => totals[MessageCounts::Photos].to_s,
+        "poll_total"        => totals[MessageCounts::Polls].to_s,
+        "sticker_total"     => totals[MessageCounts::Stickers].to_s,
+        "text_total"        => totals[MessageCounts::Text].to_s,
+        "venue_total"       => totals[MessageCounts::Venues].to_s,
+        "video_total"       => totals[MessageCounts::Videos].to_s,
+        "video_note_total"  => totals[MessageCounts::VideoNotes].to_s,
+        "voice_total"       => totals[MessageCounts::Voice].to_s,
+        "daily_total"       => totals[MessageCounts::MessagesDaily].to_s,
+        "weekly_total"      => totals[MessageCounts::MessagesWeekly].to_s,
+        "monthly_total"     => totals[MessageCounts::MessagesMonthly].to_s,
+        "daily_change"      => daily_change.format(decimal_places: 1, only_significant: true),
+        "weekly_change"     => weekly_change.format(decimal_places: 1, only_significant: true),
+        "monthly_change"    => monthly_change.format(decimal_places: 1, only_significant: true),
+        "change_today"      => daily_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "change_this_week"  => weekly_change.positive? ? services.locale.change[1] : services.locale.change[0],
         "change_this_month" => monthly_change.positive? ? services.locale.change[1] : services.locale.change[0],
       })
     end
@@ -290,31 +289,31 @@ module PrivateParlorXT
       net_monthly = totals[UserCounts::JoinedMonthly] - totals[UserCounts::LeftMonthly]
 
       Format.substitute_reply(services.replies.user_stats, {
-        "total_users" => totals[UserCounts::TotalUsers].to_s,
-        "joined_users" => totals[UserCounts::TotalJoined].to_s,
-        "left_users" => totals[UserCounts::TotalLeft].to_s,
-        "blacklisted_users" => totals[UserCounts::TotalBlacklisted].to_s,
-        "joined_daily_total" => totals[UserCounts::JoinedDaily].to_s,
-        "joined_weekly_total" => totals[UserCounts::JoinedWeekly].to_s,
-        "joined_monthly_total" => totals[UserCounts::JoinedMonthly].to_s,
-        "joined_daily_change" => joined_daily_change.format(decimal_places: 1, only_significant: true),
-        "joined_weekly_change" => joined_weekly_change.format(decimal_places: 1, only_significant: true),
-        "joined_monthly_change" => joined_monthly_change.format(decimal_places: 1, only_significant: true),
-        "joined_change_today" => joined_daily_change.positive? ? services.locale.change[1] : services.locale.change[0],
-        "joined_change_this_week" => joined_weekly_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "total_users"              => totals[UserCounts::TotalUsers].to_s,
+        "joined_users"             => totals[UserCounts::TotalJoined].to_s,
+        "left_users"               => totals[UserCounts::TotalLeft].to_s,
+        "blacklisted_users"        => totals[UserCounts::TotalBlacklisted].to_s,
+        "joined_daily_total"       => totals[UserCounts::JoinedDaily].to_s,
+        "joined_weekly_total"      => totals[UserCounts::JoinedWeekly].to_s,
+        "joined_monthly_total"     => totals[UserCounts::JoinedMonthly].to_s,
+        "joined_daily_change"      => joined_daily_change.format(decimal_places: 1, only_significant: true),
+        "joined_weekly_change"     => joined_weekly_change.format(decimal_places: 1, only_significant: true),
+        "joined_monthly_change"    => joined_monthly_change.format(decimal_places: 1, only_significant: true),
+        "joined_change_today"      => joined_daily_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "joined_change_this_week"  => joined_weekly_change.positive? ? services.locale.change[1] : services.locale.change[0],
         "joined_change_this_month" => joined_monthly_change.positive? ? services.locale.change[1] : services.locale.change[0],
-        "left_daily_total" => totals[UserCounts::LeftDaily].to_s,
-        "left_weekly_total" => totals[UserCounts::LeftWeekly].to_s,
-        "left_monthly_total" => totals[UserCounts::LeftMonthly].to_s,
-        "left_daily_change" => left_daily_change.format(decimal_places: 1, only_significant: true),
-        "left_weekly_change" => left_weekly_change.format(decimal_places: 1, only_significant: true),
-        "left_monthly_change" => left_monthly_change.format(decimal_places: 1, only_significant: true),
-        "left_change_today" => left_daily_change.positive? ? services.locale.change[1] : services.locale.change[0],
-        "left_change_this_week" => left_weekly_change.positive? ? services.locale.change[1] : services.locale.change[0],
-        "left_change_this_month" => left_monthly_change.positive? ? services.locale.change[1] : services.locale.change[0],
-        "net_daily" => net_daily.to_s,
-        "net_weekly" => net_weekly.to_s,
-        "net_monthly" => net_monthly.to_s,
+        "left_daily_total"         => totals[UserCounts::LeftDaily].to_s,
+        "left_weekly_total"        => totals[UserCounts::LeftWeekly].to_s,
+        "left_monthly_total"       => totals[UserCounts::LeftMonthly].to_s,
+        "left_daily_change"        => left_daily_change.format(decimal_places: 1, only_significant: true),
+        "left_weekly_change"       => left_weekly_change.format(decimal_places: 1, only_significant: true),
+        "left_monthly_change"      => left_monthly_change.format(decimal_places: 1, only_significant: true),
+        "left_change_today"        => left_daily_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "left_change_this_week"    => left_weekly_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "left_change_this_month"   => left_monthly_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "net_daily"                => net_daily.to_s,
+        "net_weekly"               => net_weekly.to_s,
+        "net_monthly"              => net_monthly.to_s,
       })
     end
 
@@ -352,25 +351,25 @@ module PrivateParlorXT
       )
 
       Format.substitute_reply(services.replies.karma_stats, {
-        "upvotes" => totals[KarmaCounts::TotalUpvotes].to_s,
-        "downvotes" => totals[KarmaCounts::TotalDownvotes].to_s,
-        "upvote_daily_total" => totals[KarmaCounts::UpvotesDaily].to_s,
-        "upvote_weekly_total" => totals[KarmaCounts::UpvotesWeekly].to_s,
-        "upvote_monthly_total" => totals[KarmaCounts::UpvotesMonthly].to_s,
-        "upvote_daily_change" => upvotes_daily_change.format(decimal_places: 1, only_significant: true),
-        "upvote_weekly_change" => upvotes_weekly_change.format(decimal_places: 1, only_significant: true),
-        "upvote_monthly_change" => upvotes_monthly_change.format(decimal_places: 1, only_significant: true),
-        "upvote_change_today" => upvotes_daily_change.positive? ? services.locale.change[1] : services.locale.change[0],
-        "upvote_change_this_week" => upvotes_weekly_change.positive? ? services.locale.change[1] : services.locale.change[0],
-        "upvote_change_this_month" => upvotes_monthly_change.positive? ? services.locale.change[1] : services.locale.change[0],
-        "downvote_daily_total" => totals[KarmaCounts::DownvotesDaily].to_s,
-        "downvote_weekly_total" => totals[KarmaCounts::DownvotesWeekly].to_s,
-        "downvote_monthly_total" => totals[KarmaCounts::DownvotesMonthly].to_s,
-        "downvote_daily_change" => downvotes_daily_change.format(decimal_places: 1, only_significant: true),
-        "downvote_weekly_change" => downvotes_weekly_change.format(decimal_places: 1, only_significant: true),
-        "downvote_monthly_change" => downvotes_monthly_change.format(decimal_places: 1, only_significant: true),
-        "downvote_change_today" => downvotes_daily_change.positive? ? services.locale.change[1] : services.locale.change[0],
-        "downvote_change_this_week" => downvotes_weekly_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "upvotes"                    => totals[KarmaCounts::TotalUpvotes].to_s,
+        "downvotes"                  => totals[KarmaCounts::TotalDownvotes].to_s,
+        "upvote_daily_total"         => totals[KarmaCounts::UpvotesDaily].to_s,
+        "upvote_weekly_total"        => totals[KarmaCounts::UpvotesWeekly].to_s,
+        "upvote_monthly_total"       => totals[KarmaCounts::UpvotesMonthly].to_s,
+        "upvote_daily_change"        => upvotes_daily_change.format(decimal_places: 1, only_significant: true),
+        "upvote_weekly_change"       => upvotes_weekly_change.format(decimal_places: 1, only_significant: true),
+        "upvote_monthly_change"      => upvotes_monthly_change.format(decimal_places: 1, only_significant: true),
+        "upvote_change_today"        => upvotes_daily_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "upvote_change_this_week"    => upvotes_weekly_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "upvote_change_this_month"   => upvotes_monthly_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "downvote_daily_total"       => totals[KarmaCounts::DownvotesDaily].to_s,
+        "downvote_weekly_total"      => totals[KarmaCounts::DownvotesWeekly].to_s,
+        "downvote_monthly_total"     => totals[KarmaCounts::DownvotesMonthly].to_s,
+        "downvote_daily_change"      => downvotes_daily_change.format(decimal_places: 1, only_significant: true),
+        "downvote_weekly_change"     => downvotes_weekly_change.format(decimal_places: 1, only_significant: true),
+        "downvote_monthly_change"    => downvotes_monthly_change.format(decimal_places: 1, only_significant: true),
+        "downvote_change_today"      => downvotes_daily_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "downvote_change_this_week"  => downvotes_weekly_change.positive? ? services.locale.change[1] : services.locale.change[0],
         "downvote_change_this_month" => downvotes_monthly_change.positive? ? services.locale.change[1] : services.locale.change[0],
       })
     end
@@ -396,11 +395,11 @@ module PrivateParlorXT
       totals = get_robot9000_counts
 
       Format.substitute_reply(services.replies.robot9000_stats, {
-        "total_unique" => totals[Robot9000Counts::TotalUnique].to_s,
-        "unique_text" => totals[Robot9000Counts::UniqueText].to_s,
-        "unique_media" => totals[Robot9000Counts::UniqueMedia].to_s,
+        "total_unique"     => totals[Robot9000Counts::TotalUnique].to_s,
+        "unique_text"      => totals[Robot9000Counts::UniqueText].to_s,
+        "unique_media"     => totals[Robot9000Counts::UniqueMedia].to_s,
         "total_unoriginal" => totals[Robot9000Counts::TotalUnoriginal].to_s,
-        "unoriginal_text" => totals[Robot9000Counts::UnoriginalText].to_s,
+        "unoriginal_text"  => totals[Robot9000Counts::UnoriginalText].to_s,
         "unoriginal_media" => totals[Robot9000Counts::UnoriginalMedia].to_s,
       })
     end

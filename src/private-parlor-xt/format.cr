@@ -136,7 +136,7 @@ module PrivateParlorXT
     end
 
     def truncate_karma_reason(reason : String?) : String?
-      return unless reason 
+      return unless reason
 
       reason[0, 500]
     end

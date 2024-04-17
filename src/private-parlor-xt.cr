@@ -8,7 +8,7 @@ module PrivateParlorXT
   services = initialize_services
 
   sending_routine = Tasker.every(1.second) do
-    loop do 
+    loop do
       break if services.relay.send_message(services)
     end
   end
