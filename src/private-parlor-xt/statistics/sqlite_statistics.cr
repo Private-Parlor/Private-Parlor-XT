@@ -103,9 +103,9 @@ module PrivateParlorXT
           (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date = date('now')) as messages_daily,
           (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date = date('now','-1 day')) as messages_yesterday,
           (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date > date('now','-7 days')) as messages_weekly,
-          (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date < date('now','-7 days') AND date > date('now','-14 days')) as messages_yesterweek,
+          (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date <= date('now','-7 days') AND date > date('now','-14 days')) as messages_yesterweek,
           (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date > date('now','-1 month')) as messages_monthly,
-          (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date < date('now','-1 month') AND date > date('now','-2 months')) as messages_yestermonth
+          (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date <= date('now','-1 month') AND date > date('now','-2 months')) as messages_yestermonth
         FROM message_stats",
         as: {
           Int32, Int32, Int32, Int32, Int32,
@@ -135,9 +135,9 @@ module PrivateParlorXT
           (SELECT count(id) FROM users WHERE date(left) = date('now')) as left_daily,
           (SELECT count(id) FROM users WHERE date(left) = date('now','-1 day')) as left_yesterday,
           (select count(id) FROM users WHERE date(left) > date('now','-7 days')) as left_weekly,
-          (select count(id) FROM users WHERE date(left) < date('now','-7 days') AND date(left) > date('now','-14 days')) as left_yesterweek,
+          (select count(id) FROM users WHERE date(left) <= date('now','-7 days') AND date(left) > date('now','-14 days')) as left_yesterweek,
           (select count(id) FROM users WHERE date(left) > date('now','-1 month')) as left_monthly,
-          (select count(id) FROM users WHERE date(left) < date('now','-1 month') AND date(left) > date('now','-2 months')) as left_yestermonth
+          (select count(id) FROM users WHERE date(left) <= date('now','-1 month') AND date(left) > date('now','-2 months')) as left_yestermonth
         FROM users",
         as: {
           Int32, Int32, Int32, Int32, Int32,
@@ -164,9 +164,9 @@ module PrivateParlorXT
           (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date = date('now')) as downvotes_daily,
           (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date = date('now','-1 day')) as downvotes_yesterday,
           (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date > date('now','-7 days')) as downvotes_weekly,
-          (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date < date('now','-7 days') AND date > date('now','-14 days')) as downvotes_yesterweek,
+          (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date <= date('now','-7 days') AND date > date('now','-14 days')) as downvotes_yesterweek,
           (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date > date('now','-1 month')) as downvotes_monthly,
-          (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date < date('now','-1 month') AND date > date('now','-2 months')) as downvotes_yestermonth
+          (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date <= date('now','-1 month') AND date > date('now','-2 months')) as downvotes_yestermonth
         FROM message_stats",
         as: {
           Int32, Int32, Int32, Int32, Int32,
