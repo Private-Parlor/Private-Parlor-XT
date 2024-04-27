@@ -51,5 +51,8 @@ module PrivateParlorXT
 
     @[YAML::Field(key: "karma_contact")]
     getter karma_contact : Int32 = 10
+
+    def initialize()
+    end
   end
 end

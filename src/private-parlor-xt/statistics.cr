@@ -101,15 +101,15 @@ module PrivateParlorXT
 
     abstract def get_start_date : String
 
-    abstract def increment_message_count(type : MessageCounts)
+    abstract def increment_message_count(type : MessageCounts) : Nil
 
-    abstract def increment_upvote_count
+    abstract def increment_upvote_count : Nil
 
-    abstract def increment_downvote_count
+    abstract def increment_downvote_count : Nil
 
-    abstract def increment_unoriginal_text_count
+    abstract def increment_unoriginal_text_count : Nil
 
-    abstract def increment_unoriginal_media_count
+    abstract def increment_unoriginal_media_count : Nil
 
     def get_configuration_details(services : Services) : Hash(BotInfo, String)
       {
@@ -375,9 +375,11 @@ module PrivateParlorXT
     end
 
     def format_karma_level_counts(services : Services) : String
-      unless levels = services.config.karma_levels
+      if services.config.karma_levels.empty?
         return "No stats available" # TODO: Localize this
       end
+
+      levels = services.config.karma_levels
 
       karma_records = ""
 
@@ -386,12 +388,19 @@ module PrivateParlorXT
         karma_records += "#{levels[low]}: #{count}\n"
       end
 
+      count = get_karma_level_count(levels.keys.last, Int32::MAX)
+      karma_records += "#{levels[levels.keys.last]}: #{count}\n"
+
       Format.substitute_reply(services.replies.karma_level_stats, {
         "karma_levels" => karma_records,
       })
     end
 
     def format_robot9000_counts(services : Services) : String
+      unless services.robot9000
+        return "No stats available" # TODO: Localize this
+      end
+
       totals = get_robot9000_counts
 
       Format.substitute_reply(services.replies.robot9000_stats, {

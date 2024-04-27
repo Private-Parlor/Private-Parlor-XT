@@ -15,7 +15,8 @@ module PrivateParlorXT
     relay : Relay? = nil,
     client : MockClient? = nil,
     spam : SpamHandler? = nil,
-    r9k : Robot9000? = nil
+    r9k : Robot9000? = nil,
+    karma_economy : KarmaHandler? = nil,
   ) : Services
     unless config
       config = HandlerConfig.new(MockConfig.new)
@@ -110,6 +111,7 @@ module PrivateParlorXT
       relay,
       spam,
       r9k,
+      karma_economy,
     )
   end
 

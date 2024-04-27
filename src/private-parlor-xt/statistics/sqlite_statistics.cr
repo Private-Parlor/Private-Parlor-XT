@@ -41,7 +41,7 @@ module PrivateParlorXT
       end
     end
 
-    def increment_upvote_count
+    def increment_upvote_count : Nil
       write do
         @connection.exec("
           INSERT INTO message_stats (date, upvotes)
@@ -51,7 +51,7 @@ module PrivateParlorXT
       end
     end
 
-    def increment_downvote_count
+    def increment_downvote_count : Nil
       write do
         @connection.exec("
           INSERT INTO message_stats (date, downvotes)
@@ -61,7 +61,7 @@ module PrivateParlorXT
       end
     end
 
-    def increment_unoriginal_text_count
+    def increment_unoriginal_text_count : Nil
       write do
         @connection.exec("
           INSERT INTO message_stats (date, unoriginal_text)
@@ -71,7 +71,7 @@ module PrivateParlorXT
       end
     end
 
-    def increment_unoriginal_media_count
+    def increment_unoriginal_media_count : Nil
       write do
         @connection.exec("
           INSERT INTO message_stats (date, unoriginal_media)

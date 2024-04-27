@@ -12,8 +12,11 @@ module PrivateParlorXT
       @default_rank = 0,
       @registration_open = true,
       @pseudonymous = false,
+      @media_spoilers = false,
+      @karma_reasons = false,
       @salt = "",
       @linked_network = {} of String => String,
+      @karma_economy = nil,
       @karma_levels = {
         -10 => "Junk",
           0 => "Normal",
