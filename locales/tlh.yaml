@@ -230,7 +230,7 @@ replies:
       {duration} poH bIweghta'\._
 
    # Available placeholders: total
-   media_limit: "_DaH QInmey DangeHbe'laH\\. {total} repmey ngugh bInIDqa'laH\\._"
+   media_limit: "_DaH QInmey DangeHbe'laH\\. {total} ngugh bInIDqa'laH\\._"
 
    # Available placeholders: reason
    blacklisted: |-

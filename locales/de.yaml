@@ -224,7 +224,7 @@ replies:
       Du wurdest bis {duration} einen Cooldown gegeben\._
 
    # Available placeholders: total
-   media_limit: "_Du kannst jetzt keine Medien oder weitergeleitete Nachrichten schicken\\. Du kannst in {total} Stunden wieder versuchen\\._"
+   media_limit: "_Du kannst jetzt keine Medien oder weitergeleitete Nachrichten schicken\\. Du kannst in {total} wieder versuchen\\._"
 
    # Available placeholders: reason
    blacklisted: |-

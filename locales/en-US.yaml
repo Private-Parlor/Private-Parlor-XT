@@ -227,7 +227,7 @@ replies:
       You have been muted for {duration}\._
 
    # Available placeholders: total
-   media_limit: "_You cannot send media or forward messages at this time, try again in {total} hours\\._"
+   media_limit: "_You cannot send media or forward messages at this time, try again in {total}\\._"
 
    # Available placeholders: reason
    blacklisted: |-
