@@ -3,7 +3,7 @@ require "../../services.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-  @[Hears(text: /^\-1/, config: "enable_downvote", command: true)]
+  @[Hears(pattern: /^\-1/, config: "enable_downvote", command: true)]
   class DownvoteHandler < HearsHandler
     def do(message : Tourmaline::Message, services : Services)
       return unless user = get_user_from_message(message, services)

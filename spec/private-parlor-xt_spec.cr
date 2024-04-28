@@ -15,7 +15,7 @@ module PrivateParlorXT
     end
   end
 
-  @[Hears(text: /^test/, command: true)]
+  @[Hears(pattern: /^test/, command: true)]
   class HardCodedHearsHandler < HearsHandler
     def do(message : Tourmaline::Message, services : Services)
     end

@@ -212,7 +212,7 @@ module PrivateParlorXT
           append_hears_handler({{hears_handler}}, {{hears}})
         else
         {% if hears[:command]%}
-          arr << Tourmaline::HearsHandler.new({{hears[:text]}}) do |ctx|
+          arr << Tourmaline::HearsHandler.new({{hears[:pattern]}}) do |ctx|
             next unless message = ctx.message
             next if message.date == 0 # Message is inaccessible
     
@@ -223,7 +223,7 @@ module PrivateParlorXT
         {% end %}
         end
       {% end %}
-      
+
     {% end %}
   end
 
@@ -231,7 +231,7 @@ module PrivateParlorXT
     # Handler name is command's name but snake cased
     {{handler = (hears_handler.stringify.split("::").last.underscore).id}}  = {{hears_handler}}.new(config)
 
-    arr << Tourmaline::HearsHandler.new({{hears[:text]}}) do |ctx|
+    arr << Tourmaline::HearsHandler.new({{hears[:pattern]}}) do |ctx|
       next unless message = ctx.message
       next if message.date == 0 # Message is inaccessible
 
