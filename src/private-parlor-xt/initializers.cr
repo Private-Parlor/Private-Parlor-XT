@@ -128,10 +128,10 @@ module PrivateParlorXT
 
       {% if responds_to[:config].nil? %}
         {{warning %(Command #{command} should have a configuration toggle and command description.)}}
-        register_command_handler({{command}}, {{responds_to[:command]}})
+        append_command_handler({{command}}, {{responds_to[:command]}})
       {% else %}
         if config.{{responds_to[:config].id}}[0]
-          register_command_handler({{command}}, {{responds_to[:command]}})
+          append_command_handler({{command}}, {{responds_to[:command]}})
         else
           arr << Tourmaline::CommandHandler.new({{responds_to[:command]}}) do |ctx|
             next unless message = ctx.message
@@ -159,7 +159,7 @@ module PrivateParlorXT
     {% end %}
   end
 
-  macro register_command_handler(command, call)
+  macro append_command_handler(command, call)
     commands = [] of String
 
     {% if call.is_a?(ArrayLiteral) %}
@@ -197,42 +197,56 @@ module PrivateParlorXT
     arr
   end
 
+  macro create_hears_handlers
+    {% for hears_handler in HearsHandler.all_subclasses.select { |sub_class|
+                        (hears = sub_class.annotation(Hears))
+                      } %}
+
+      {{hears = hears_handler.annotation(Hears)}}
+
+      {% if hears[:config].nil? %}
+        {{warning %(Hears handler #{hears_handler} should have a configuration toggle.)}}
+        append_hears_handler({{hears_handler}}, {{hears}})
+      {% else %}
+        if config.{{hears[:config].id}}[0]
+          append_hears_handler({{hears_handler}}, {{hears}})
+        else
+        {% if hears[:command]%}
+          arr << Tourmaline::HearsHandler.new({{hears[:text]}}) do |ctx|
+            next unless message = ctx.message
+            next if message.date == 0 # Message is inaccessible
+    
+            message = message.as(Tourmaline::Message)
+    
+            command_disabled(message, services)
+          end
+        {% end %}
+        end
+      {% end %}
+      
+    {% end %}
+  end
+
+  macro append_hears_handler(hears_handler, hears)
+    # Handler name is command's name but snake cased
+    {{handler = (hears_handler.stringify.split("::").last.underscore).id}}  = {{hears_handler}}.new(config)
+
+    arr << Tourmaline::HearsHandler.new({{hears[:text]}}) do |ctx|
+      next unless message = ctx.message
+      next if message.date == 0 # Message is inaccessible
+
+      message = message.as(Tourmaline::Message)
+
+      {{handler}}.do(message, services)
+    end
+  end
+
   # Intialize all "hears" handlers that inherit from `HearsHandler`
   # and are annotated with `Hears`
   def self.generate_hears_handlers(config : Config, services : Services) : Array(Tourmaline::HearsHandler)
     arr = [] of Tourmaline::HearsHandler
 
-    {% for command in HearsHandler.all_subclasses.select { |sub_class|
-                        (hears = sub_class.annotation(Hears))
-                      } %}
-
-    {{command_hears = command.annotation(Hears)}}
-
-    if config.{{command_hears[:config].id}}[0]
-
-      # Handler name is command's name but snake cased
-      {{handler = (command.stringify.split("::").last.underscore).id}}  = {{command}}.new(config)
-
-      arr << Tourmaline::HearsHandler.new({{command_hears[:text]}}) do |ctx|
-        next unless message = ctx.message
-        next if message.date == 0 # Message is inaccessible
-
-        message = message.as(Tourmaline::Message)
-
-        {{handler}}.do(message, services)
-      end
-    else
-      arr << Tourmaline::HearsHandler.new({{command_hears[:text]}}) do |ctx|
-        next unless message = ctx.message
-        next if message.date == 0 # Message is inaccessible
-
-        message = message.as(Tourmaline::Message)
-
-        command_disabled(message, services)
-      end
-    end
-
-  {% end %}
+    create_hears_handlers
 
     arr
   end

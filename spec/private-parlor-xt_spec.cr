@@ -15,6 +15,12 @@ module PrivateParlorXT
     end
   end
 
+  @[Hears(text: /^test/, command: true)]
+  class HardCodedHearsHandler < HearsHandler
+    def do(message : Tourmaline::Message, services : Services)
+    end
+  end
+
   describe PrivateParlorXT do
     config = MockConfig.new
     client = MockClient.new
@@ -64,7 +70,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#generate_update_handlers"do
+    describe "#generate_update_handlers" do
       it "generates update handlers" do
         client = PrivateParlorXT::MockClient.new
         PrivateParlorXT.generate_update_handlers(config, client, services)
@@ -81,6 +87,34 @@ module PrivateParlorXT
         registered_actions = client.dispatcher.event_handlers.keys
 
         registered_actions.should(contain(Tourmaline::UpdateAction::SupergroupChatCreated))
+      end
+    end
+
+    describe "#generate_hears_handlers" do
+      it "generates hears handlers" do
+        arr = PrivateParlorXT.generate_hears_handlers(config, services)
+
+        contains_mock = false
+        arr.each do |handler|
+          if handler.pattern == /mockpattern/
+            contains_mock = true
+          end
+        end
+
+        contains_mock.should(eq(true))
+      end
+
+      it "generates hears handlers for handlers without a config toggle" do
+        arr = PrivateParlorXT.generate_hears_handlers(config, services)
+
+        contains_mock = false
+        arr.each do |handler|
+          if handler.pattern == /^test/
+            contains_mock = true
+          end
+        end
+
+        contains_mock.should(eq(true))
       end
     end
 
