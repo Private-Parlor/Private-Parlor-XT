@@ -119,64 +119,78 @@ module PrivateParlorXT
     generate_update_handlers(config, client, services)
   end
 
+  macro create_command_handlers
+    {% for command in CommandHandler.all_subclasses.select { |sub_class|
+                        (responds_to = sub_class.annotation(RespondsTo))
+                      } %}
+
+      {{responds_to = command.annotation(RespondsTo)}}
+
+      {% if responds_to[:config].nil? %}
+        {{warning %(Command #{command} should have a configuration toggle and command description.)}}
+        register_command_handler({{command}}, {{responds_to[:command]}})
+      {% else %}
+        if config.{{responds_to[:config].id}}[0]
+          register_command_handler({{command}}, {{responds_to[:command]}})
+        else
+          arr << Tourmaline::CommandHandler.new({{responds_to[:command]}}) do |ctx|
+            next unless message = ctx.message
+            next if message.date == 0 # Message is inaccessible
+    
+            message = message.as(Tourmaline::Message)
+    
+            command_disabled(message, services)
+          end
+        end
+    
+        if config.{{responds_to[:config].id}}[1]
+          bot_commands << Tourmaline::BotCommand.new(
+            {% if responds_to[:command].is_a?(ArrayLiteral) %}
+              {{responds_to[:command][0]}},
+              services.command_descriptions.{{responds_to[:command][0].id}}
+            {% else %}
+              {{responds_to[:command]}},
+              services.command_descriptions.{{responds_to[:command].id}}
+            {% end %}
+          )
+        end
+      {% end %}
+
+    {% end %}
+  end
+
+  macro register_command_handler(command, call)
+    commands = [] of String
+
+    {% if call.is_a?(ArrayLiteral) %}
+      commands = commands + {{call}}
+      {{handler = (call[0] + "_command").id}} = {{command}}.new(config)
+    {% else %}
+      commands << {{call}}
+      {{handler = (call + "_command").id}}  = {{command}}.new(config)
+    {% end %}
+
+    {% if command == RanksayCommand %}
+      commands = commands + services.access.ranksay_ranks.map {|rank| "#{rank.downcase}say"}
+    {% end %}
+
+    arr << Tourmaline::CommandHandler.new(commands) do |ctx|
+      next unless message = ctx.message
+      next if message.date == 0 # Message is inaccessible
+
+      message = message.as(Tourmaline::Message)
+
+      {{handler}}.do(message, services)
+    end
+  end
+
   # Intialize all command handlers that inherit from `CommandHandler`
   # and are annotated with `RespondsTo`
   def self.generate_command_handlers(config : Config, client : Tourmaline::Client, services : Services) : Array(Tourmaline::CommandHandler)
     arr = [] of Tourmaline::CommandHandler
     bot_commands = [] of Tourmaline::BotCommand
 
-    {% for command in CommandHandler.all_subclasses.select { |sub_class|
-                        (responds_to = sub_class.annotation(RespondsTo))
-                      } %}
-
-    {{command_responds_to = command.annotation(RespondsTo)}}
-
-    if config.{{command_responds_to[:config].id}}[0]
-      commands = [] of String
-
-      {% if command_responds_to[:command].is_a?(ArrayLiteral) %}
-        commands = commands + {{command_responds_to[:command]}}
-        {{handler = (command_responds_to[:command][0] + "_command").id}} = {{command}}.new(config)
-      {% else %}
-        commands << {{command_responds_to[:command]}}
-        {{handler = (command_responds_to[:command] + "_command").id}}  = {{command}}.new(config)
-      {% end %}
-
-      {% if command == RanksayCommand %}
-        commands = commands + services.access.ranksay_ranks.map {|rank| "#{rank.downcase}say"}
-      {% end %}
-
-      arr << Tourmaline::CommandHandler.new(commands) do |ctx|
-        next unless message = ctx.message
-        next if message.date == 0 # Message is inaccessible
-
-        message = message.as(Tourmaline::Message)
-
-        {{handler}}.do(message, services)
-      end
-    else
-      arr << Tourmaline::CommandHandler.new({{command_responds_to[:command]}}) do |ctx|
-        next unless message = ctx.message
-        next if message.date == 0 # Message is inaccessible
-
-        message = message.as(Tourmaline::Message)
-
-        command_disabled(message, services)
-      end
-    end
-
-    if config.{{command_responds_to[:config].id}}[1]
-      bot_commands << Tourmaline::BotCommand.new(
-        {% if command_responds_to[:command].is_a?(ArrayLiteral) %}
-          {{command_responds_to[:command][0]}},
-          services.command_descriptions.{{command_responds_to[:command][0].id}}
-        {% else %}
-          {{command_responds_to[:command]}},
-          services.command_descriptions.{{command_responds_to[:command].id}}
-        {% end %}
-      )
-    end
-  {% end %}
+    create_command_handlers
 
     client.set_my_commands(bot_commands)
 
@@ -241,50 +255,63 @@ module PrivateParlorXT
     arr
   end
 
-  def self.generate_update_handlers(config : Config, client : Client, services : Services) : Nil
+  macro create_update_handlers
     {% for update in UpdateHandler.all_subclasses.select { |sub_class|
                        (on = sub_class.annotation(On))
                      } %}
 
-    {{update_on = update.annotation(On)}}
+      {{update_on = update.annotation(On)}}
 
-    if config.{{update_on[:config].id}}
-      {% if update == ForwardHandler %}
-        if config.regular_forwards
-          {{handler = (update_on[:update].id + "_update").id.downcase}} = RegularForwardHandler.new(config)
-        else
-          {{handler = (update_on[:update].id + "_update").id.downcase}} = ForwardHandler.new(config)
-        end
+      {% if update_on[:config].nil? %}
+        {{warning %(Update type #{update} should have a configuration toggle.)}}
+        register_update_handler({{update}}, {{update_on[:update]}})
       {% else %}
-        {{handler = (update_on[:update].id + "_update").id.downcase}}  = {{update}}.new(config)
+        if config.{{update_on[:config].id}}
+          register_update_handler({{update}}, {{update_on[:update]}})
+        else
+          client.on({{update_on[:update]}}) do |ctx|
+            next unless message = ctx.message
+            next if message.date == 0 # Message is inaccessible
+    
+            message = message.as(Tourmaline::Message)
+    
+            {% if update == DocumentHandler %}
+              next if message.animation
+            {% end %}
+            media_disabled(message, {{update_on[:update]}}, services)
+          end
+        end
       {% end %}
 
-      client.on({{update_on[:update]}}) do |ctx|
-        next unless message = ctx.message
-        next if message.date == 0 # Message is inaccessible
-
-        message = message.as(Tourmaline::Message)
-
-        {% if update == DocumentHandler %}
-          next if message.animation
-        {% end %}
-        {{handler}}.do(message, services)
-      end
-    else
-      client.on({{update_on[:update]}}) do |ctx|
-        next unless message = ctx.message
-        next if message.date == 0 # Message is inaccessible
-
-        message = message.as(Tourmaline::Message)
-
-        {% if update == DocumentHandler %}
-          next if message.animation
-        {% end %}
-        media_disabled(message, {{update_on[:update]}}, services)
-      end
-    end
-
     {% end %}
+  end
+
+  macro register_update_handler(update, on)
+    {% if update == ForwardHandler %}
+      if config.regular_forwards
+        {{handler = (on.id + "_update").id.downcase}} = RegularForwardHandler.new(config)
+      else
+        {{handler = (on.id + "_update").id.downcase}} = ForwardHandler.new(config)
+      end
+    {% else %}
+      {{handler = (on.id + "_update").id.downcase}}  = {{update}}.new(config)
+    {% end %}
+
+    client.on({{on}}) do |ctx|
+      next unless message = ctx.message
+      next if message.date == 0 # Message is inaccessible
+
+      message = message.as(Tourmaline::Message)
+
+      {% if update == DocumentHandler %}
+        next if message.animation
+      {% end %}
+      {{handler}}.do(message, services)
+    end
+  end
+
+  def self.generate_update_handlers(config : Config, client : Client, services : Services) : Nil
+    create_update_handlers
   end
 
   def self.media_disabled(message : Tourmaline::Message, type : Tourmaline::UpdateAction, services : Services)

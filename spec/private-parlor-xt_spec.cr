@@ -3,6 +3,18 @@ require "./spec_helper"
 module PrivateParlorXT
   VERSION = "spec"
 
+  @[RespondsTo(command: "hardcode")]
+  class HardCodedCommand < CommandHandler
+    def do(message : Tourmaline::Message, services : Services)
+    end
+  end
+
+  @[On(update: :SupergroupChatCreated)]
+  class HardCodedUpdate < UpdateHandler
+    def do(message : Tourmaline::Message, services : Services)
+    end
+  end
+
   describe PrivateParlorXT do
     config = MockConfig.new
     client = MockClient.new
@@ -24,26 +36,52 @@ module PrivateParlorXT
       relay,
     )
 
-    it "generates command handlers" do
-      arr = PrivateParlorXT.generate_command_handlers(config, client, services)
+    describe "#generate_command_handlers" do
+      it "generates command handlers" do
+        arr = PrivateParlorXT.generate_command_handlers(config, client, services)
 
-      contains_mock = false
-      arr.each do |command|
-        if command.commands.includes?("mock_test")
-          contains_mock = true
+        contains_mock = false
+        arr.each do |command|
+          if command.commands.includes?("mock_test")
+            contains_mock = true
+          end
         end
+
+        contains_mock.should(eq(true))
       end
 
-      contains_mock.should(eq(true))
+      it "generates command handlers for commands without a config toggle" do
+        arr = PrivateParlorXT.generate_command_handlers(config, client, services)
+
+        contains_mock = false
+        arr.each do |command|
+          if command.commands.includes?("hardcode")
+            contains_mock = true
+          end
+        end
+
+        contains_mock.should(eq(true))
+      end
     end
 
-    it "generates update handlers" do
-      client = PrivateParlorXT::MockClient.new
-      PrivateParlorXT.generate_update_handlers(config, client, services)
+    describe "#generate_update_handlers"do
+      it "generates update handlers" do
+        client = PrivateParlorXT::MockClient.new
+        PrivateParlorXT.generate_update_handlers(config, client, services)
 
-      registered_actions = client.dispatcher.event_handlers.keys
+        registered_actions = client.dispatcher.event_handlers.keys
 
-      registered_actions.should(contain(Tourmaline::UpdateAction::NewChatMembers))
+        registered_actions.should(contain(Tourmaline::UpdateAction::NewChatMembers))
+      end
+
+      it "generates update handlers for updates without a config toggle" do
+        client = PrivateParlorXT::MockClient.new
+        PrivateParlorXT.generate_update_handlers(config, client, services)
+
+        registered_actions = client.dispatcher.event_handlers.keys
+
+        registered_actions.should(contain(Tourmaline::UpdateAction::SupergroupChatCreated))
+      end
     end
 
     it "kicks inative users" do
