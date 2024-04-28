@@ -94,7 +94,6 @@ module PrivateParlorXT
 
     getter start_time : Time = Time.utc
 
-    # TODO: Make time span display more readable (remove nanosecond counter)
     def get_uptime : Time::Span
       Time.utc - @start_time
     end
@@ -193,7 +192,10 @@ module PrivateParlorXT
 
       Format.substitute_reply(services.replies.config_stats, {
         "start_date"           => start_date.to_s,
-        "uptime"               => uptime.to_s,
+        "days" => uptime.days.to_s,
+        "hours" => uptime.hours.to_s,
+        "minutes" => uptime.minutes.to_s,
+        "seconds" => uptime.seconds.to_s,
         "registration_toggle"  => configuration[BotInfo::RegistrationToggle],
         "media_limit_period"   => configuration[BotInfo::MediaLimitPeriod],
         "pseudonymous_toggle"  => configuration[BotInfo::PseudonymousToggle],

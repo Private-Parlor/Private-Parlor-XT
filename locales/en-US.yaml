@@ -250,7 +250,7 @@ replies:
    # Available placeholder: ???
    config_stats: |-
       *Relaying since {start_date}*
-      *Current uptime: {uptime}*
+      *Current uptime: {days} days, {hours} hours, {minutes} minutes, {seconds} seconds*
 
       Registration: {registration_toggle}
       Media Limit Period: {media_limit_period}

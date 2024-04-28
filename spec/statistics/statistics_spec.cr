@@ -174,13 +174,22 @@ module PrivateParlorXT
         uptime = Time.utc - start_time
 
         # Replace uptime data with something we know
-        result = result.gsub(/[0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}.+\.[0-9]+/, 
-          Format.substitute_reply("{uptime}", {"uptime" => uptime.to_s})
+        result = result.gsub(/Current uptime: .+ seconds/,
+          Format.substitute_reply("Current uptime: {days} days, {hours} hours, {minutes} minutes, {seconds} seconds",
+          {
+            "days" => uptime.days.to_s,
+            "hours" => uptime.hours.to_s,
+            "minutes" => uptime.minutes.to_s,
+            "seconds" => uptime.seconds.to_s,
+          })
         )
 
         expected = Format.substitute_reply(services.replies.config_stats, {
           "start_date"           => "MOCKED!",
-          "uptime"               => uptime.to_s,
+          "days" => uptime.days.to_s,
+          "hours" => uptime.hours.to_s,
+          "minutes" => uptime.minutes.to_s,
+          "seconds" => uptime.seconds.to_s,
           "registration_toggle"  => services.locale.toggle[1],
           "media_limit_period"   => Time::Span.new(hours: 38).to_s,
           "pseudonymous_toggle"  => services.locale.toggle[0],
@@ -508,13 +517,22 @@ module PrivateParlorXT
         uptime = Time.utc - start_time
 
         # Replace uptime data with something we know
-        result = result.gsub(/[0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}.+\.[0-9]+/, 
-          Format.substitute_reply("{uptime}", {"uptime" => uptime.to_s})
+        result = result.gsub(/Current uptime: .+ seconds/,
+          Format.substitute_reply("Current uptime: {days} days, {hours} hours, {minutes} minutes, {seconds} seconds",
+          {
+            "days" => uptime.days.to_s,
+            "hours" => uptime.hours.to_s,
+            "minutes" => uptime.minutes.to_s,
+            "seconds" => uptime.seconds.to_s,
+          })
         )
 
         expected = Format.substitute_reply(services.replies.config_stats, {
           "start_date"           => "MOCKED!",
-          "uptime"               => uptime.to_s,
+          "days" => uptime.days.to_s,
+          "hours" => uptime.hours.to_s,
+          "minutes" => uptime.minutes.to_s,
+          "seconds" => uptime.seconds.to_s,
           "registration_toggle"  => services.locale.toggle[1],
           "media_limit_period"   => Time::Span.new(hours: 38).to_s,
           "pseudonymous_toggle"  => services.locale.toggle[0],
