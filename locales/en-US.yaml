@@ -254,6 +254,7 @@ replies:
 
       Registration: {registration_toggle}
       Media Limit Period: {media_limit_period}
+      Message Lifespan: {message_lifespan}
       Pseudonymous Mode: {pseudonymous_toggle}
       Media Spoilers: {spoilers_toggle}
       Karma Reasons: {karma_reasons_toggle}

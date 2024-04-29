@@ -132,16 +132,18 @@ module PrivateParlorXT
             karma_reasons: false,
           )
         )
+        history = CachedHistory.new(14.hours)
         r9k = SQLiteRobot9000.new(connection, check_text: true, check_media: true)
 
-        services = create_services(config: config, r9k: r9k)
+        services = create_services(config: config, history: history, r9k: r9k)
 
         stats = MockStatistics.new()
 
         hash = stats.get_configuration_details(services)
 
         hash[Statistics::BotInfo::RegistrationToggle].should(eq(services.locale.toggle[0]))
-        hash[Statistics::BotInfo::MediaLimitPeriod].should(eq(Time::Span.new(hours: 24).to_s))
+        hash[Statistics::BotInfo::MediaLimitPeriod].should(eq(Format.format_time_span(Time::Span.new(hours: 24), services.locale)))
+        hash[Statistics::BotInfo::MessageLifespan].should(eq(Format.format_time_span(Time::Span.new(hours: 14), services.locale)))
         hash[Statistics::BotInfo::PseudonymousToggle].should(eq(services.locale.toggle[1]))
         hash[Statistics::BotInfo::SpoilerToggle].should(eq(services.locale.toggle[1]))
         hash[Statistics::BotInfo::KarmaReasonsToggle].should(eq(services.locale.toggle[0]))
@@ -191,7 +193,8 @@ module PrivateParlorXT
           "minutes" => uptime.minutes.to_s,
           "seconds" => uptime.seconds.to_s,
           "registration_toggle"  => services.locale.toggle[1],
-          "media_limit_period"   => Time::Span.new(hours: 38).to_s,
+          "media_limit_period"   => Format.format_time_span(Time::Span.new(hours: 38), services.locale),
+          "message_lifespan"     => services.locale.toggle[0],
           "pseudonymous_toggle"  => services.locale.toggle[0],
           "spoilers_toggle"      => services.locale.toggle[1],
           "karma_reasons_toggle" => services.locale.toggle[1],
@@ -534,7 +537,8 @@ module PrivateParlorXT
           "minutes" => uptime.minutes.to_s,
           "seconds" => uptime.seconds.to_s,
           "registration_toggle"  => services.locale.toggle[1],
-          "media_limit_period"   => Time::Span.new(hours: 38).to_s,
+          "media_limit_period"   => Format.format_time_span(Time::Span.new(hours: 38), services.locale),
+          "message_lifespan"     => services.locale.toggle[0],
           "pseudonymous_toggle"  => services.locale.toggle[0],
           "spoilers_toggle"      => services.locale.toggle[1],
           "karma_reasons_toggle" => services.locale.toggle[1],

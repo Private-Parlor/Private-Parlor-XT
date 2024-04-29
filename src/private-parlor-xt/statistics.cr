@@ -6,6 +6,7 @@ module PrivateParlorXT
       Uptime
       RegistrationToggle
       MediaLimitPeriod
+      MessageLifespan
       PseudonymousToggle
       SpoilerToggle
       KarmaReasonsToggle
@@ -113,7 +114,8 @@ module PrivateParlorXT
     def get_configuration_details(services : Services) : Hash(BotInfo, String)
       {
         BotInfo::RegistrationToggle => services.config.registration_open ? services.locale.toggle[1] : services.locale.toggle[0],
-        BotInfo::MediaLimitPeriod   => services.config.media_limit_period.to_s,
+        BotInfo::MediaLimitPeriod   => Format.format_time_span(services.config.media_limit_period, services.locale),
+        BotInfo::MessageLifespan    => services.history.lifespan.zero? ? services.locale.toggle[0] : Format.format_time_span(services.history.lifespan, services.locale),
         BotInfo::PseudonymousToggle => services.config.pseudonymous ? services.locale.toggle[1] : services.locale.toggle[0],
         BotInfo::SpoilerToggle      => services.config.allow_spoilers ? services.locale.toggle[1] : services.locale.toggle[0],
         BotInfo::KarmaReasonsToggle => services.config.karma_reasons ? services.locale.toggle[1] : services.locale.toggle[0],
@@ -198,6 +200,7 @@ module PrivateParlorXT
         "seconds" => uptime.seconds.to_s,
         "registration_toggle"  => configuration[BotInfo::RegistrationToggle],
         "media_limit_period"   => configuration[BotInfo::MediaLimitPeriod],
+        "message_lifespan"     => configuration[BotInfo::MessageLifespan],
         "pseudonymous_toggle"  => configuration[BotInfo::PseudonymousToggle],
         "spoilers_toggle"      => configuration[BotInfo::SpoilerToggle],
         "karma_reasons_toggle" => configuration[BotInfo::KarmaReasonsToggle],

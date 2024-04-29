@@ -2,7 +2,7 @@ require "./constants.cr"
 
 module PrivateParlorXT
   abstract class History
-    @lifespan : Time::Span = 24.hours
+    getter lifespan : Time::Span = 24.hours
 
     # Initialize a message history where messages older than `lifespan` are considered expired
     def initialize(@lifespan : Time::Span)
