@@ -170,7 +170,7 @@ module PrivateParlorXT
       {{handler = (call + "_command").id}}  = {{command}}.new(config)
     {% end %}
 
-    {% if command == RanksayCommand %}
+    {% if @top_level.has_constant?("RanksayCommand") && command == RanksayCommand %}
       commands = commands + services.access.ranksay_ranks.map {|rank| "#{rank.downcase}say"}
     {% end %}
 
@@ -254,17 +254,19 @@ module PrivateParlorXT
   def self.generate_callback_query_handlers(config : Config, services : Services) : Array(Tourmaline::CallbackQueryHandler)
     arr = [] of Tourmaline::CallbackQueryHandler
 
-    return arr unless config.statistics
+    {% if @top_level.has_constant?("StatisticsQueryHandler") %}
+      return arr unless config.statistics
 
-    handler = StatisticsQueryHandler.new(config)
+      handler = StatisticsQueryHandler.new(config)
 
-    arr << Tourmaline::CallbackQueryHandler.new(/statistics-next/) do |ctx|
-      next unless query = ctx.callback_query
-      next unless message = ctx.message
-      next if message.date == 0 # Message is inaccessible
+      arr << Tourmaline::CallbackQueryHandler.new(/statistics-next/) do |ctx|
+        next unless query = ctx.callback_query
+        next unless message = ctx.message
+        next if message.date == 0 # Message is inaccessible
 
-      handler.do(query, services)
-    end
+        handler.do(query, services)
+      end
+    {% end %}
 
     arr
   end
@@ -289,7 +291,7 @@ module PrivateParlorXT
     
             message = message.as(Tourmaline::Message)
     
-            {% if update == DocumentHandler %}
+            {% if @top_level.has_constant?("DocumentHandler") && update == DocumentHandler %}
               next if message.animation
             {% end %}
             media_disabled(message, {{update_on[:update]}}, services)
@@ -301,7 +303,7 @@ module PrivateParlorXT
   end
 
   macro register_update_handler(update, on)
-    {% if update == ForwardHandler %}
+    {% if @top_level.has_constant?("ForwardHandler") && @top_level.has_constant?("RegularForwardHandler") && update == ForwardHandler %}
       if config.regular_forwards
         {{handler = (on.id + "_update").id.downcase}} = RegularForwardHandler.new(config)
       else
@@ -317,7 +319,7 @@ module PrivateParlorXT
 
       message = message.as(Tourmaline::Message)
 
-      {% if update == DocumentHandler %}
+      {% if @top_level.has_constant?("DocumentHandler") && update == DocumentHandler %}
         next if message.animation
       {% end %}
       {{handler}}.do(message, services)
