@@ -18,8 +18,8 @@ module PrivateParlorXT
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.not_in_cache)
       end
 
-      # Prevent spoiling messages that were not sent from the bot
-      unless (from = reply.from) && from.id == services.relay.get_client_user.id
+      # Prevent spoiling messages that were not sent by the bot
+      if (from = reply.from) && from.id == user.id
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
 

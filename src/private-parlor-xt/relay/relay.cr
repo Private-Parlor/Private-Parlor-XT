@@ -42,10 +42,6 @@ module PrivateParlorXT
       @log_channel = channel_id
     end
 
-    def get_client_user : Tourmaline::User
-      @client.bot
-    end
-
     def start_polling
       @client.poll
     end

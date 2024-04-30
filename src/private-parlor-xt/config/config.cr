@@ -409,8 +409,6 @@ module PrivateParlorXT
         config.karma_levels = levels
       end
 
-      puts config.karma_levels
-
       config
     end
 
