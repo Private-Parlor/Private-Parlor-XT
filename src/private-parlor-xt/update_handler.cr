@@ -10,7 +10,7 @@ module PrivateParlorXT
       return unless info = message.from
 
       if text = message.text
-        return if text.starts_with?('/') || text.starts_with?(/^[+-]1/)
+        return_on_command(text)
       end
 
       unless user = services.database.get_user(info.id.to_i64)
@@ -115,6 +115,22 @@ module PrivateParlorXT
       return unless stats = services.stats
 
       stats.increment_message_count(type)
+    end
+
+    macro return_on_command(text)
+      return if text.starts_with?('/')
+
+      {% for hears_handler in HearsHandler.all_subclasses.select { |sub_class|
+                        (hears = sub_class.annotation(Hears))
+                      } %}
+
+        {{hears = hears_handler.annotation(Hears)}}
+
+        {% if hears[:command] %}
+          return if text.matches?({{hears[:pattern]}})
+        {% end %}
+      
+      {% end %}
     end
   end
 end
