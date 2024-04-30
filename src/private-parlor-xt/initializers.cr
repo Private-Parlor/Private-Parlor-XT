@@ -254,7 +254,7 @@ module PrivateParlorXT
   def self.generate_callback_query_handlers(config : Config, services : Services) : Array(Tourmaline::CallbackQueryHandler)
     arr = [] of Tourmaline::CallbackQueryHandler
 
-    {% if @top_level.has_constant?("StatisticsQueryHandler") %}
+    {% if @type.has_constant?("StatisticsQueryHandler") %}
       return arr unless config.statistics
 
       handler = StatisticsQueryHandler.new(config)

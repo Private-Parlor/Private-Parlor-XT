@@ -1,5 +1,4 @@
 require "../../callback_query_handler.cr"
-require "../../services.cr"
 require "tourmaline"
 
 module PrivateParlorXT
