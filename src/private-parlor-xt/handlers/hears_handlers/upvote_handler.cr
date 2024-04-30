@@ -125,13 +125,15 @@ module PrivateParlorXT
     def karma_level_up(reply_user : User, reply_parameters : ReplyParameters?, services : Services)
       return if services.config.karma_levels.empty?
 
-      return unless karma_level = services.config.karma_levels[reply_user.karma]?
+      next_level = services.config.karma_levels.find(nil) {|range, level| range.begin == reply_user.karma}
+
+      return unless next_level
 
       services.relay.send_to_user(
         reply_parameters,
         reply_user.id,
         Format.substitute_message(services.replies.karma_level_up, {
-          "level" => karma_level,
+          "level" => next_level[1],
         })
       )
     end

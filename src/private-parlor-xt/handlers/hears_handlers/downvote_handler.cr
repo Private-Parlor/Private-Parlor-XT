@@ -125,20 +125,16 @@ module PrivateParlorXT
     def karma_level_down(reply_user : User, reply_parameters : ReplyParameters?, services : Services)
       return if services.config.karma_levels.empty?
 
-      return unless services.config.karma_levels[reply_user.karma + 1]?
+      last_level = services.config.karma_levels.find({(..), ""}) {|range, level| range === reply_user.karma + 1}[1]
+      current_level = services.config.karma_levels.find({(..), ""}) {|range, level| range === reply_user.karma}[1]
 
-      karma_level_key = services.config.karma_levels.keys.max_of do |val|
-        if val < reply_user.karma
-          next val
-        end
-        Int32::MIN
-      end
+      return if last_level == current_level
 
       services.relay.send_to_user(
         reply_parameters,
         reply_user.id,
         Format.substitute_message(services.replies.karma_level_down, {
-          "level" => services.config.karma_levels[karma_level_key]?,
+          "level" => current_level,
         })
       )
     end

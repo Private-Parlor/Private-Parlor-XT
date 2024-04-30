@@ -272,7 +272,9 @@ locale: en-US
 ##
 ## Users can view their karma level and sign as their karma level if enabled
 ##
-## Levels can be renamed, removed, or added; but values must be in ascending order
+## Levels can be renamed, removed, or added
+## The level with the lowest value will range from negative infinity to the start of the next largest level
+## The level with the highest value will range from it to positive infinity
 ##
 ## Accepted values: An integer -> string mapping
 ## Default: <none>

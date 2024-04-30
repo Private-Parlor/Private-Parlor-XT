@@ -46,20 +46,7 @@ module PrivateParlorXT
       if karma_levels.empty?
         current_level = ""
       else
-        current_level = ""
-
-        karma_levels.each_cons_pair do |lower, higher|
-          if lower[0] <= user.karma && user.karma < higher[0]
-            current_level = lower[1]
-            break
-          end
-        end
-
-        if current_level == "" && user.karma >= karma_levels.last_key
-          current_level = karma_levels[karma_levels.last_key]
-        elsif user.karma < karma_levels.first_key
-          current_level = "???"
-        end
+        current_level = karma_levels.find({(..), ""}) {|range, level| range === user.karma}[1]
       end
 
       user.remove_cooldown

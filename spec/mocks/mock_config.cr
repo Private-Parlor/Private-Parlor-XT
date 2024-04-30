@@ -19,13 +19,13 @@ module PrivateParlorXT
       @linked_network = {} of String => String,
       @karma_economy = nil,
       @karma_levels = {
-        -10 => "Junk",
-          0 => "Normal",
-         10 => "Common",
-         20 => "Uncommon",
-         30 => "Rare",
-         40 => "Legendary",
-         50 => "Unique",
+        (Int32::MIN...0) => "Junk",
+        (0...10) => "Normal",
+        (10...20) => "Common",
+        (20...30) => "Uncommon",
+        (30...40) => "Rare",
+        (40...50) => "Legendary",
+        (50..Int32::MAX) => "Unique",
       }
     )
     end

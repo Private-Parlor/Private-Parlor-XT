@@ -11,9 +11,9 @@ module PrivateParlorXT
 
       return if message.forward_origin
 
-      if services.config.karma_levels.empty?
-        return
-      end
+      karma_levels = services.config.karma_levels
+
+      return if karma_levels.empty?
 
       text, entities = Format.valid_text_and_entities(message, user, services)
       return unless text
@@ -30,7 +30,7 @@ module PrivateParlorXT
 
       entities = update_entities(text, entities, arg, message)
 
-      current_level = get_karma_level(services.config.karma_levels, user)
+      current_level = get_karma_level(karma_levels, user)
 
       text, entities = Format.format_karma_sign(current_level, arg, entities)
 
@@ -61,24 +61,8 @@ module PrivateParlorXT
       false
     end
 
-    def get_karma_level(karma_levels : Hash(Int32, String), user : User) : String
-      current_level = ""
-
-      if user.karma <= karma_levels.first_key
-        return karma_levels.first_value
-      end
-
-      if user.karma >= karma_levels.last_key
-        return karma_levels.last_value
-      end
-
-      karma_levels.each_cons_pair do |lower, higher|
-        if lower[0] <= user.karma && user.karma < higher[0]
-          return current_level = lower[1]
-        end
-      end
-
-      current_level
+    def get_karma_level(karma_levels : Hash(Range(Int32, Int32), String), user : User) : String
+      current_level = karma_levels.find({(..), ""}) {|range, level| range === user.karma}[1]
     end
   end
 end

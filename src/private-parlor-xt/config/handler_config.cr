@@ -11,7 +11,7 @@ module PrivateParlorXT
     getter linked_network : Hash(String, String) = {} of String => String
     getter allow_spoilers : Bool? = false
     getter media_limit_period : Time::Span = 0.hours
-    getter karma_levels : Hash(Int32, String) = {} of Int32 => String
+    getter karma_levels : Hash(Range(Int32, Int32), String) = {} of Range(Int32, Int32) => String
     getter default_rank : Int32 = 0
     getter tripcode_salt : String = ""
     getter cooldown_base : Int32 = 5

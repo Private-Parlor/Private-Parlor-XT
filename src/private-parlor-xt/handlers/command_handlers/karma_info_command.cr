@@ -13,38 +13,37 @@ module PrivateParlorXT
 
       update_user_activity(user, services)
 
-      current_level = next_level = {0, ""}
+      current_level = next_level = ""
       percentage = 0.0_f32
+      limit = 0
 
-      karma_levels.each_cons_pair do |lower, higher|
-        if lower[0] <= user.karma && user.karma < higher[0]
-          current_level = lower
-          next_level = higher
+      level_keys = karma_levels.keys
 
-          percentage = ((user.karma - lower[0]) * 100) / (higher[0] - lower[0]).to_f32
-          break
-        end
-      end
+      level_keys.each_with_index do |range, index|
+        next unless range === user.karma
 
-      # Karma lies outside of bounds
-      if current_level == next_level
-        if (lowest = karma_levels.first?) && user.karma < lowest[0]
-          current_level = {user.karma, "???"}
-          next_level = lowest
-        elsif (highest = {karma_levels.last_key, karma_levels.last_value}) && user.karma >= highest[0]
-          current_level = {user.karma, highest[1]}
-          next_level = {highest[0], "???"}
+        current_level = karma_levels[range]
+
+        if range == karma_levels.last_key
+          next_level = "???"
+          limit = "???"
           percentage = 100.0_f32
+        else
+          next_range = level_keys[index + 1]
+          next_level = karma_levels[next_range]
+          limit = next_range.begin
+
+          percentage = ((user.karma - range.begin) * 100) / (next_range.begin - range.begin).to_f32
         end
       end
 
       response = Format.substitute_reply(services.replies.karma_info, {
-        "current_level" => current_level[1],
-        "next_level"    => next_level[1],
+        "current_level" => current_level,
+        "next_level"    => next_level,
         "karma"         => user.karma.to_s,
-        "limit"         => next_level[0].to_s,
+        "limit"         => limit.to_s,
         "loading_bar"   => Format.format_karma_loading_bar(percentage, services.locale),
-        "percentage"    => "#{percentage.format(decimal_places: 1, only_significant: true)}",
+        "percentage"    => percentage.format(decimal_places: 1, only_significant: true),
       })
 
       services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)

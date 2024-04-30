@@ -388,13 +388,10 @@ module PrivateParlorXT
 
       karma_records = ""
 
-      levels.keys.each_cons_pair do |low, high|
-        count = get_karma_level_count(low, high)
-        karma_records += "#{levels[low]}: #{count}\n"
+      levels.each do |range, level|
+        count = get_karma_level_count(range.begin, range.end)
+        karma_records += "#{level}: #{count}\n"
       end
-
-      count = get_karma_level_count(levels.keys.last, Int32::MAX)
-      karma_records += "#{levels[levels.keys.last]}: #{count}\n"
 
       Format.substitute_reply(services.replies.karma_level_stats, {
         "karma_levels" => karma_records,

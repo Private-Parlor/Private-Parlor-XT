@@ -62,7 +62,10 @@ module PrivateParlorXT
     property default_rank : Int32 = 0
 
     @[YAML::Field(key: "karma_levels")]
-    property karma_levels : Hash(Int32, String) = {} of Int32 => String
+    getter intermediate_karma_levels : Hash(Int32, String) = {} of Int32 => String
+
+    @[YAML::Field(ignore: true)]
+    property karma_levels : Hash(Range(Int32, Int32), String) = {} of Range(Int32, Int32) => String
 
     @[YAML::Field(key: "toggle_r9k_text")]
     getter toggle_r9k_text : Bool? = false
@@ -310,13 +313,9 @@ module PrivateParlorXT
         config.entities = ["bold", "italic", "text_link"]
       end
 
-      unless config.karma_levels.empty? || (config.karma_levels.keys.sort! == config.karma_levels.keys)
-        Log.notice { "Karma level keys were not in ascending order; defaulting to no karma levels." }
-        config.karma_levels = {} of Int32 => String
-      end
-
       set_log(config)
       config = check_and_init_ranks(config)
+      config = init_karma_levels(config)
       config = init_valid_codepoints(config)
       config = check_and_init_linked_network(config)
     end
@@ -372,6 +371,45 @@ module PrivateParlorXT
 
         config.ranks[key] = Rank.new(rank.name, permissions, rank.message_permissions)
       end
+
+      config
+    end
+
+    private def self.init_karma_levels(config : Config) : Config
+      return config if config.intermediate_karma_levels.empty?
+
+      case config.intermediate_karma_levels.size
+      when 1
+        keys = config.intermediate_karma_levels.keys
+
+        config.karma_levels = {(Int32::MIN..Int32::MAX) => config.intermediate_karma_levels[keys[0]]}
+      when 2
+        keys = config.intermediate_karma_levels.keys.sort!
+
+        config.karma_levels = {
+          (Int32::MIN...keys[1]) => config.intermediate_karma_levels[keys[0]],
+          (keys[1]..Int32::MAX) => config.intermediate_karma_levels[keys[1]]
+        }
+      else
+        keys = config.intermediate_karma_levels.keys.sort!
+
+        levels = {} of Range(Int32, Int32) => String
+
+        keys.each_cons_pair do |low, high|
+          if low == keys[0]
+            levels[(Int32::MIN...high)] = config.intermediate_karma_levels[low]
+          elsif high == keys[-1]
+            levels[(low...high)] = config.intermediate_karma_levels[low]
+            levels[(high..Int32::MAX)] = config.intermediate_karma_levels[high]
+          else
+            levels[(low...high)] = config.intermediate_karma_levels[low]
+          end
+        end
+
+        config.karma_levels = levels
+      end
+
+      puts config.karma_levels
 
       config
     end

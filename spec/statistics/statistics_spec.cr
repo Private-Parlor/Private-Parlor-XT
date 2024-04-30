@@ -330,7 +330,7 @@ module PrivateParlorXT
         result = stats.get_statistic_screen(:KarmaLevels, services)
 
         karma_level_counts = \
-          "Junk: 0\n" \
+          "Junk: 3\n" \
           "Normal: 2\n" \
           "Common: 3\n" \
           "Uncommon: 1\n" \
@@ -382,7 +382,7 @@ module PrivateParlorXT
 
     describe "#keyboard_markup" do
       it "returns keyboard markup with 3 buttons in rows of three" do 
-        config = HandlerConfig.new(MockConfig.new(karma_levels: {} of Int32 => String))
+        config = HandlerConfig.new(MockConfig.new(karma_levels: {} of Range(Int32, Int32) => String))
 
         services = create_services(config: config)
 
@@ -436,7 +436,7 @@ module PrivateParlorXT
         end
 
         connection = DB.open("sqlite3://%3Amemory%3A")
-        config = HandlerConfig.new(MockConfig.new(karma_levels: {} of Int32 => String))
+        config = HandlerConfig.new(MockConfig.new(karma_levels: {} of Range(Int32, Int32) => String))
         r9k = SQLiteRobot9000.new(connection, check_text: true, check_media: true)
 
         services = create_services(config: config, r9k: r9k)
@@ -682,7 +682,7 @@ module PrivateParlorXT
         result = stats.format_karma_level_counts(services)
 
         karma_level_counts = \
-          "Junk: 0\n" \
+          "Junk: 3\n" \
           "Normal: 2\n" \
           "Common: 3\n" \
           "Uncommon: 1\n" \
@@ -698,7 +698,7 @@ module PrivateParlorXT
       end
 
       it "return no stats available message when karma levels are empty" do
-        config = HandlerConfig.new(MockConfig.new(karma_levels: {} of Int32 => String))
+        config = HandlerConfig.new(MockConfig.new(karma_levels: {} of Range(Int32, Int32) => String))
 
         services = create_services(config: config)
 
