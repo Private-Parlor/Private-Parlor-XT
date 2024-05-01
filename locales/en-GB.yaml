@@ -13,6 +13,9 @@ locale:
    # Values for the loading bar, from empty, to partially full, to full
    loading_bar: ["○", "◐", "●"]
 
+   # Symbols for increasing and decreasing change
+   change : ["📉", "📈"]
+
 # Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
 # Placeholders should not be escaped
 # Special characters in MarkdownV2 must be escaped
@@ -234,6 +237,8 @@ replies:
    # Available placeholders: contact
    blacklist_contact: "Contact: {contact}"
 
+   unblacklisted: "_You have been unbanned\\! Type /start to rejoin\\._"
+
    # Available placeholders: msgs_deleted
    purge_complete: "_{msgs_deleted} messages were matched and deleted\\._"
 
@@ -241,6 +246,117 @@ replies:
    inactive: |- 
       _You have been kicked due to inactivity \(AFK for {time} days\)\.
       Type /start to receive messages again\!_"
+
+   # Available placeholders: start_date, days, hours, minutes, seconds, registration_toggle, 
+   #                         media_limit_period, message_lifespan, pseudonymous_toggle,
+   #                         spoilers_toggle, karma_reasons_toggle, robot9000_toggle, 
+   #                         karma_economy_toggle
+   config_stats: |-
+      *Relaying since {start_date}*
+      *Current uptime: {days} days, {hours} hours, {minutes} minutes, {seconds} seconds*
+
+      Registration: {registration_toggle}
+      Media Limit Period: {media_limit_period}
+      Message Lifespan: {message_lifespan}
+      Pseudonymous Mode: {pseudonymous_toggle}
+      Media Spoilers: {spoilers_toggle}
+      Karma Reasons: {karma_reasons_toggle}
+      Robot9000: {robot9000_toggle}
+      Karma Economy: {karma_economy_toggle}
+
+   # Available placeholders: total, album_total, animation_total, audio_total,
+   #                         contact_total, document_total, forward_total, location_total,
+   #                         photo_total, poll_total, sticker_total, text_total, 
+   #                         venue_total, video_total, video_note_total, voice_total,
+   #                         daily_total, daily_change, change_today, weekly_total, 
+   #                         weekly_change, change_this_week, monthly_total,
+   #                         monthly_change, change_this_month
+   message_stats: |-
+      *Total Messages: {total}*
+
+      Albums: {album_total}
+      Animations: {animation_total}
+      Audio: {audio_total}
+      Contacts: {contact_total}
+      Documents: {document_total}
+      Forwards: {forward_total}
+      Locations: {location_total}
+      Photos: {photo_total}
+      Polls: {poll_total}
+      Stickers: {sticker_total}
+      Text: {text_total}
+      Venues: {venue_total}
+      Videos: {video_total}
+      Video Notes: {video_note_total}
+      Voice: {voice_total}
+
+      Messages today: {daily_total} \({daily_change}% {change_today} from yesterday\)
+      Messages this week: {weekly_total} \({weekly_change}% {change_this_week} from last week\)
+      Messages this month: {monthly_total} \({monthly_change}% {change_this_month} from last month\)
+
+   # Available placeholders: total_users, joined_users, left_users, blacklisted_users, 
+   #                         blacklisted_users, joined_daily_change, joined_change_today, 
+   #                         joined_weekly_total, joined_weekly_change, joined_change_this_week, 
+   #                         joined_monthly_total, joined_monthly_change, joined_change_this_month, 
+   #                         left_daily_total, left_daily_change, left_change_today, 
+   #                         left_weekly_total, left_weekly_change, left_change_this_week, 
+   #                         left_monthly_total, left_monthly_change, left_change_this_month, 
+   #                         net_daily, net_weekly, net_monthly
+   user_stats: |-
+      *Total Users: {total_users}*
+
+      Joined: {joined_users}
+      Left: {left_users}
+      Blacklisted: {blacklisted_users}
+
+      Joined today: {joined_daily_total} \({joined_daily_change}% {joined_change_today} from yesterday\)
+      Joined this week: {joined_weekly_total} \({joined_weekly_change}% {joined_change_this_week} from last week\)
+      Joined this month: {joined_monthly_total} \({joined_monthly_change}% {joined_change_this_month} from last month\)
+
+      Left today: {left_daily_total} \({left_daily_change}% {left_change_today} from yesterday\)
+      Left this week: {left_weekly_total} \({left_weekly_change}% {left_change_this_week} from last week\)
+      Left this month: {left_monthly_total} \({left_monthly_change}% {left_change_this_month} from last month\)
+
+      Net change today: {net_daily} users
+      Net change this week: {net_weekly} users
+      Net change this month: {net_monthly} users
+
+   # Available placeholders: upvotes, downvotes, upvote_daily_total, upvote_daily_change,
+   #                         upvote_change_today, upvote_weekly_total, upvote_weekly_change,
+   #                         upvote_change_this_week, upvote_monthly_total, upvote_monthly_change,
+   #                         upvote_change_this_month, downvote_daily_total, downvote_daily_change, 
+   #                         downvote_change_today, downvote_weekly_total, downvote_weekly_change, 
+   #                         downvote_change_this_week, downvote_monthly_total, 
+   #                         downvote_monthly_change, downvote_change_this_month
+   karma_stats: |-
+      *Total Upvotes: {upvotes}*
+      *Total Downvotes: {downvotes}*
+
+      Upvotes today: {upvote_daily_total} \({upvote_daily_change}% {upvote_change_today} from yesterday\)
+      Upvotes this week: {upvote_weekly_total} \({upvote_weekly_change}% {upvote_change_this_week} from last week\)
+      Upvotes this month: {upvote_monthly_total} \({upvote_monthly_change}% {upvote_change_this_month} from last month\)
+
+      Downvotes today: {downvote_daily_total} \({downvote_daily_change}% {downvote_change_today} from yesterday\)
+      Downvotes this week: {downvote_weekly_total} \({downvote_weekly_change}% {downvote_change_this_week} from last week\)
+      Downvotes this month: {downvote_monthly_total} \({downvote_monthly_change}% {downvote_change_this_month} from last month\)
+
+   # Available placeholders: karma_levels
+   karma_level_stats: |-
+      *Karma Level Users*
+
+      {karma_levels}
+
+   # Available placeholders: total_unique, unique_text, unique_media, total_unoriginal, unoriginal_text, unoriginal_media
+   robot9000_stats: |-
+      *Total Unique Messages: {total_unique}*
+
+      Unique Texts: {unique_text}
+      Unique Media: {unique_media}
+      
+      *Total Unoriginal Messages: {total_unoriginal}*
+
+      Unoriginal Texts: {unoriginal_text}
+      Unoriginal Media: {unoriginal_media}
 
    success: "✅" 
 
@@ -299,7 +415,11 @@ command_descriptions:
 
    unpin: Unpin the most recent pinned message
 
+   stats: Get statistics about the bot
+
    blacklist: Ban a user from the chat
+
+   unblacklist: Unban a user
 
    whitelist: Allow a user to join the chat
 
@@ -345,6 +465,9 @@ logs:
 
    # Available placeholders: id, name, invoker, reason
    blacklisted: "User {id}, aka {name}, has been blacklisted by {invoker} {reason}"
+
+   # Available placeholders: id, name, invoker
+   unblacklisted: "User {id}, aka {name}, has been unbanned by {invoker}"
 
    # Available placeholders: id, invoker
    whitelisted: "User {id} has been whitelisted by {invoker}"

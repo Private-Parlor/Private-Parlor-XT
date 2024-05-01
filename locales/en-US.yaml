@@ -237,7 +237,7 @@ replies:
    # Available placeholders: contact
    blacklist_contact: "Contact: {contact}"
 
-   unblacklisted: "_You have been unbanned\\!_"
+   unblacklisted: "_You have been unbanned\\! Type /start to rejoin\\._"
 
    # Available placeholders: msgs_deleted
    purge_complete: "_{msgs_deleted} messages were matched and deleted\\._"
@@ -247,7 +247,10 @@ replies:
       _You have been kicked due to inactivity \(AFK for {time} days\)\.
       Type /start to receive messages again\!_"
 
-   # Available placeholder: ???
+   # Available placeholders: start_date, days, hours, minutes, seconds, registration_toggle, 
+   #                         media_limit_period, message_lifespan, pseudonymous_toggle,
+   #                         spoilers_toggle, karma_reasons_toggle, robot9000_toggle, 
+   #                         karma_economy_toggle
    config_stats: |-
       *Relaying since {start_date}*
       *Current uptime: {days} days, {hours} hours, {minutes} minutes, {seconds} seconds*
@@ -261,7 +264,13 @@ replies:
       Robot9000: {robot9000_toggle}
       Karma Economy: {karma_economy_toggle}
 
-   # Available placeholders: ???
+   # Available placeholders: total, album_total, animation_total, audio_total,
+   #                         contact_total, document_total, forward_total, location_total,
+   #                         photo_total, poll_total, sticker_total, text_total, 
+   #                         venue_total, video_total, video_note_total, voice_total,
+   #                         daily_total, daily_change, change_today, weekly_total, 
+   #                         weekly_change, change_this_week, monthly_total,
+   #                         monthly_change, change_this_month
    message_stats: |-
       *Total Messages: {total}*
 
@@ -285,7 +294,14 @@ replies:
       Messages this week: {weekly_total} \({weekly_change}% {change_this_week} from last week\)
       Messages this month: {monthly_total} \({monthly_change}% {change_this_month} from last month\)
 
-   # Available placeholders: ???
+   # Available placeholders: total_users, joined_users, left_users, blacklisted_users, 
+   #                         blacklisted_users, joined_daily_change, joined_change_today, 
+   #                         joined_weekly_total, joined_weekly_change, joined_change_this_week, 
+   #                         joined_monthly_total, joined_monthly_change, joined_change_this_month, 
+   #                         left_daily_total, left_daily_change, left_change_today, 
+   #                         left_weekly_total, left_weekly_change, left_change_this_week, 
+   #                         left_monthly_total, left_monthly_change, left_change_this_month, 
+   #                         net_daily, net_weekly, net_monthly
    user_stats: |-
       *Total Users: {total_users}*
 
@@ -305,7 +321,13 @@ replies:
       Net change this week: {net_weekly} users
       Net change this month: {net_monthly} users
 
-
+   # Available placeholders: upvotes, downvotes, upvote_daily_total, upvote_daily_change,
+   #                         upvote_change_today, upvote_weekly_total, upvote_weekly_change,
+   #                         upvote_change_this_week, upvote_monthly_total, upvote_monthly_change,
+   #                         upvote_change_this_month, downvote_daily_total, downvote_daily_change, 
+   #                         downvote_change_today, downvote_weekly_total, downvote_weekly_change, 
+   #                         downvote_change_this_week, downvote_monthly_total, 
+   #                         downvote_monthly_change, downvote_change_this_month
    karma_stats: |-
       *Total Upvotes: {upvotes}*
       *Total Downvotes: {downvotes}*
@@ -318,11 +340,13 @@ replies:
       Downvotes this week: {downvote_weekly_total} \({downvote_weekly_change}% {downvote_change_this_week} from last week\)
       Downvotes this month: {downvote_monthly_total} \({downvote_monthly_change}% {downvote_change_this_month} from last month\)
 
+   # Available placeholders: karma_levels
    karma_level_stats: |-
       *Karma Level Users*
 
       {karma_levels}
 
+   # Available placeholders: total_unique, unique_text, unique_media, total_unoriginal, unoriginal_text, unoriginal_media
    robot9000_stats: |-
       *Total Unique Messages: {total_unique}*
 

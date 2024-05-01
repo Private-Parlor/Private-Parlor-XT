@@ -13,6 +13,9 @@ locale:
    # Values for the loading bar, from empty, to partially full, to full
    loading_bar: ["▱", "▱", "▰"]
 
+   # Symbols for increasing and decreasing change
+   change : ["📉", "📈"]
+
 # Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
 # Placeholders should not be escaped
 # Special characters in MarkdownV2 must be escaped
@@ -241,6 +244,8 @@ replies:
    # Available placeholders: contact
    blacklist_contact: "DaneqjunglaH: {contact}"
 
+   unblacklisted: "_DuteqHa'ta'\\! Damuvqa'meH /start yItur\\._"
+
    # Available placeholders: msgs_deleted
    purge_complete: "_{msgs_deleted} QInmey Sampu' 'ej bIH teqta'_"
 
@@ -248,6 +253,118 @@ replies:
    inactive: |- 
       _SoH DachmeH naDevvo' Duteqta' \({time} jajmey Dach\)\.
       QInmey DaHevqa' /start yItur\._"
+
+   # Available placeholders: start_date, days, hours, minutes, seconds, registration_toggle, 
+   #                         media_limit_period, message_lifespan, pseudonymous_toggle,
+   #                         spoilers_toggle, karma_reasons_toggle, robot9000_toggle, 
+   #                         karma_economy_toggle
+   config_stats: |-
+      *{start_date}vo' QInmey ngeHtaH*
+      *{days} jajmehvo' {hours} repmeyvo' {minutes} tupmevo' {seconds} lupmeyvo' yIntaH*
+
+      qImeH chaw': {registration_toggle}
+      mIllogh poH chaw'be': {media_limit_period}
+      QIn poH yIn: {message_lifespan}
+      lo' law' pongqoq: {pseudonymous_toggle}
+      QIn So' chaw'meH: {spoilers_toggle}
+      naD meqmey: {karma_reasons_toggle}
+      Robot9000: {robot9000_toggle}
+      naD HuchQeD: {karma_economy_toggle}
+
+   # Available placeholders: total, album_total, animation_total, audio_total,
+   #                         contact_total, document_total, forward_total, location_total,
+   #                         photo_total, poll_total, sticker_total, text_total, 
+   #                         venue_total, video_total, video_note_total, voice_total,
+   #                         daily_total, daily_change, change_today, weekly_total, 
+   #                         weekly_change, change_this_week, monthly_total,
+   #                         monthly_change, change_this_month
+   message_stats: |-
+      *QIn mI: {total}*
+
+      De' qolmey: {album_total}
+      mIllogh qolmey: {animation_total}
+      wabmey: {audio_total}
+      ngu'ghachmey: {contact_total}
+      jabbI'IDmey: {document_total}
+      nov QInmey: {forward_total}
+      Quv: {location_total}
+      mIlloghmey: {photo_total}
+      wIvmey: {poll_total}
+      Deghmey: {sticker_total}
+      mu'tlheghmey: {text_total}
+      lopno'mey: {venue_total}
+      HaStamey: {video_total}
+      HaSta QInmey: {video_note_total}
+      ghogh: {voice_total}
+
+      DaHjaj QInmey: {daily_total} \({daily_change}% {change_today} wa'Hu'vo'\)
+      Hoghvam QInmey: {weekly_total} \({weekly_change}% {change_this_week} Hoghvam nungbogh Hoghvo'\)
+      jarvam QInmey: {monthly_total} \({monthly_change}% {change_this_month} jarvam nungbogh jarvo'\)
+
+   # Available placeholders: total_users, joined_users, left_users, blacklisted_users, 
+   #                         blacklisted_users, joined_daily_change, joined_change_today, 
+   #                         joined_weekly_total, joined_weekly_change, joined_change_this_week, 
+   #                         joined_monthly_total, joined_monthly_change, joined_change_this_month, 
+   #                         left_daily_total, left_daily_change, left_change_today, 
+   #                         left_weekly_total, left_weekly_change, left_change_this_week, 
+   #                         left_monthly_total, left_monthly_change, left_change_this_month, 
+   #                         net_daily, net_weekly, net_monthly
+   user_stats: |-
+      *chuD mI: {total_users}*
+
+      mebpu': {joined_users}
+      mebpu' Dach: {left_users}
+      jaghpu': {blacklisted_users}
+
+      DaHjaj muvpu': {joined_daily_total} \({joined_daily_change}% {joined_change_today} wa'Hu'vo'\)
+      Hoghvam muvpu': {joined_weekly_total} \({joined_weekly_change}% {joined_change_this_week} Hoghvam nungbogh Hoghvo'\)
+      jarvam muvpu': {joined_monthly_total} \({joined_monthly_change}% {joined_change_this_month} jarvam nungbogh jarvo'\)
+
+      DaHjaj mejta': {left_daily_total} \({left_daily_change}% {left_change_today} wa'Hu'vo'\)
+      Hoghvam mejta': {left_weekly_total} \({left_weekly_change}% {left_change_this_week} Hoghvam nungbogh Hoghvo'\)
+      jarvam mejta': {left_monthly_total} \({left_monthly_change}% {left_change_this_month} jarvam nungbogh jarvo'\)
+
+      
+      wa'Hu'vo' choH: {net_daily} mebpu'
+      Hoghvam nungbogh Hoghvo' choH: {net_weekly} mebpu'
+      jarvam nungbogh jarvo' choH: {net_monthly} mebpu'
+
+   # Available placeholders: upvotes, downvotes, upvote_daily_total, upvote_daily_change,
+   #                         upvote_change_today, upvote_weekly_total, upvote_weekly_change,
+   #                         upvote_change_this_week, upvote_monthly_total, upvote_monthly_change,
+   #                         upvote_change_this_month, downvote_daily_total, downvote_daily_change, 
+   #                         downvote_change_today, downvote_weekly_total, downvote_weekly_change, 
+   #                         downvote_change_this_week, downvote_monthly_total, 
+   #                         downvote_monthly_change, downvote_change_this_month
+   karma_stats: |-
+      *naD mI: {upvotes}*
+      *naDHa'ghach mI: {downvotes}*
+
+      DaHjaj naDmey: {upvote_daily_total} \({upvote_daily_change}% {upvote_change_today} wa'Hu'vo'\)
+      Hoghvam naDmey: {upvote_weekly_total} \({upvote_weekly_change}% {upvote_change_this_week} Hoghvam nungbogh Hoghvo'\)
+      jarvam naDmey: {upvote_monthly_total} \({upvote_monthly_change}% {upvote_change_this_month} jarvam nungbogh jarvo'\)
+
+      DaHjaj naDHa'ghachmey: {downvote_daily_total} \({downvote_daily_change}% {downvote_change_today} wa'Hu'vo'\)
+      Hoghvam naDHa'ghachmey: {downvote_weekly_total} \({downvote_weekly_change}% {downvote_change_this_week} Hoghvam nungbogh Hoghvo'\)
+      jarvam naDHa'ghachmey: {downvote_monthly_total} \({downvote_monthly_change}% {downvote_change_this_month} jarvam nungbogh jarvo'\)
+
+   # Available placeholders: karma_levels
+   karma_level_stats: |-
+      *naD patlh mI'mey*
+
+      {karma_levels}
+
+   # Available placeholders: total_unique, unique_text, unique_media, total_unoriginal, unoriginal_text, unoriginal_media
+   robot9000_stats: |-
+      *SIrtaH mI: {total_unique}*
+
+      SIrtaH  mu'tlheghmey: {unique_text}
+      SIrtaH  mIlloghmey: {unique_media}
+      
+      *SIrtaHbe' mI: {total_unoriginal}*
+
+      SIrtaHbe' mu'tlheghmey: {unoriginal_text}
+      SIrtaHbe' mIlloghmey: {unoriginal_media}
 
    success: "✅" 
 
@@ -258,11 +375,11 @@ command_descriptions:
 
    stop: ja'chuqmeH Daq mej (QInmey Hevbe')
 
-   info:  mab De' Suq
+   info: mab De' Suq
 
    users: naDev meb mI' legh
 
-   version: patIh nIqHomvam Suq
+   version: patlh nIqHomvam Suq
 
    upvote: QIn naD
 
@@ -284,9 +401,9 @@ command_descriptions:
 
    tsign: pongqoq tlhej QIn 'e' qI'
 
-   ksign: naD patIh tlhej QIn 'e' qI'
+   ksign: naD patlh tlhej QIn 'e' qI'
 
-   ranksay: patIh tlhej QIn 'e' qI'
+   ranksay: patlh tlhej QIn 'e' qI'
 
    warn: QIn ghuHmoH 'ach 'oH teqbe'
 
@@ -300,13 +417,17 @@ command_descriptions:
 
    spoiler: QIn So'
 
-   karma_info: naDmeylIj patIhlIj je legh
+   karma_info: naDmeylIj patlhlIj je legh
 
    pin: QIn vev
 
    unpin: QIn vevHa'
 
+   stats: ja'chuqmeH Dotlh Suq
+
    blacklist: ja'chuqmeH Daqvo' meb teq
+
+   unblacklist: ja'chuqmeH Daqvo' meb teqHa'
 
    whitelist: ja'chuqmeH Daq meb rIt
 
@@ -333,10 +454,10 @@ logs:
    left: "ja'chuqmeH Daqvam mejta' {id} meb (pong: {name})."
 
    # Available placeholders: id, name, rank, invoker
-   promoted: "{id} mebvaD (pong: {name}) patIh {rank} numta' {invoker}"
+   promoted: "{id} mebvaD (pong: {name}) patlh {rank} numta' {invoker}"
 
    # Available placeholders: id, name, rank, invoker
-   demoted: "{id} mebvaD (pong: {name}) patIh {rank} numHa'ta' {invoker}"
+   demoted: "{id} mebvaD (pong: {name}) patlh {rank} numHa'ta' {invoker}"
 
    # Available placeholders: id, name, oid, duration, reason
    warned: "[{oid}] meb ghuHmoHta' {id} meb (pong: {name}) 'ej {duration} poH weghlI ghaH. {reason}"
@@ -352,6 +473,9 @@ logs:
 
    # Available placeholders: id, name, invoker, reason
    blacklisted: "pe'vIl {id} meb (pong: {name}) teqta' {invoker}. {reason}"
+
+   # Available placeholders: id, name, invoker
+   unblacklisted: "{id}, meb (pong: {name}), teqHa'ta' {invoker}"
 
    # Available placeholders: id, invoker
    whitelisted: "{id} meb rItta' {invoker}"
@@ -386,7 +510,7 @@ logs:
    motd_set: "qangtlhIn chenmoHqa'ta' {id} meb (pong: {name}). qangtlhIn chu': {text}"
 
    # Available placeholders: id, name, rank, text
-   ranked_message: "patIh tlhej QIn ngeHta' {id} meb (pong: {name}). QIn: {text}"
+   ranked_message: "patlh tlhej QIn ngeHta' {id} meb (pong: {name}). QIn: {text}"
 
    # Available placeholders: id, name
    force_leave: "{id} meb (pong: {name}) ngabpu'mo' pe'vIl ghaH teqta'"
