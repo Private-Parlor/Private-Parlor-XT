@@ -124,10 +124,12 @@ module PrivateParlorXT
                         (hears = sub_class.annotation(Hears))
                       } %}
 
-        {{hears = hears_handler.annotation(Hears)}}
+        {% hears = hears_handler.annotation(Hears) %}
 
-        {% if hears[:command] %}
+        {% if hears[:command] && hears[:pattern].is_a?(RegexLiteral) %}
           return if text.matches?({{hears[:pattern]}})
+        {% elsif hears[:command] && hears[:pattern].is_a?(StringLiteral) %}
+          return if text.includes?({{hears[:pattern]}})
         {% end %}
       
       {% end %}
