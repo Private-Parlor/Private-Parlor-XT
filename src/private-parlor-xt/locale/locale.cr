@@ -21,5 +21,8 @@ module PrivateParlorXT
 
     @[YAML::Field(key: "change")]
     getter change : Array(String)
+
+    @[YAML::Field(key: "statistics_screens")]
+    getter statistics_screens : Hash(Statistics::StatScreens, String)
   end
 end

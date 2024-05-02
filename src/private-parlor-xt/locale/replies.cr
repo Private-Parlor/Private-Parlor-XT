@@ -244,6 +244,9 @@ module PrivateParlorXT
     @[YAML::Field(key: "robot9000_stats")]
     getter robot9000_stats : String
 
+    @[YAML::Field(key: "no_stats_available")]
+    getter no_stats_available : String
+
     @[YAML::Field(key: "success")]
     getter success : String
 

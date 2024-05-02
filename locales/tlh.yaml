@@ -16,6 +16,15 @@ locale:
    # Symbols for increasing and decreasing change
    change : ["📉", "📈"]
 
+   # The available statistics screens, used for /stats InlineKeyboard button names 
+   statistics_screens:
+      general: "Dotlh"
+      messages: "QInmey"
+      users: "chuDmey"
+      karma: "naDmey"
+      karma_levels: "naD patlhmey"
+      robot9000: "Robot9000"
+
 # Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
 # Placeholders should not be escaped
 # Special characters in MarkdownV2 must be escaped
@@ -365,6 +374,8 @@ replies:
 
       SIrtaHbe' mu'tlheghmey: {unoriginal_text}
       SIrtaHbe' mIlloghmey: {unoriginal_media}
+
+   no_stats_available: "Dotlh Dach\\."
 
    success: "✅" 
 

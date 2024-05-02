@@ -706,8 +706,7 @@ module PrivateParlorXT
 
         result = stats.format_karma_level_counts(services)
 
-        # NOTE: Update if localizing this message
-        result.should(eq("No stats available"))
+        result.should(eq(services.replies.no_stats_available))
       end
     end
 
@@ -744,8 +743,7 @@ module PrivateParlorXT
 
         result = stats.format_robot9000_counts(services)
 
-        # NOTE: Update if localizing this message
-        result.should(eq("No stats available"))
+        result.should(eq(services.replies.no_stats_available))
       end
     end
   end

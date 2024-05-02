@@ -16,6 +16,15 @@ locale:
    # Symbols for increasing and decreasing change
    change : ["📉", "📈"]
 
+   # The available statistics screens, used for /stats InlineKeyboard button names 
+   statistics_screens:
+      general: "General"
+      messages: "Messages"
+      users: "Users"
+      karma: "Karma"
+      karma_levels: "Karma Levels"
+      robot9000: "Robot9000"
+
 # Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
 # Placeholders should not be escaped
 # Special characters in MarkdownV2 must be escaped
@@ -357,6 +366,8 @@ replies:
 
       Unoriginal Texts: {unoriginal_text}
       Unoriginal Media: {unoriginal_media}
+
+   no_stats_available: "No stats available\\."
 
    success: "✅" 
 

@@ -152,29 +152,23 @@ module PrivateParlorXT
       ((final - initial) / (initial.abs)) * 100.0
     end
 
-    # TODO: Rewrite this so that localized texts can be used
     def keyboard_markup(next_screen : StatScreens, services : Services) : Tourmaline::InlineKeyboardMarkup
-      options = {
-        StatScreens::General  => "General",
-        StatScreens::Messages => "Messages",
-        StatScreens::Users    => "Users",
-        StatScreens::Karma    => "Karma",
-      }
+      options = [StatScreens::General, StatScreens::Messages, StatScreens::Users, StatScreens::Karma]
 
       unless services.config.karma_levels.empty?
-        options[StatScreens::KarmaLevels] = "Karma Levels"
+        options << StatScreens::KarmaLevels
       end
 
       if services.robot9000
-        options[StatScreens::Robot9000] = "Robot9000"
+        options << StatScreens::Robot9000
       end
 
       options.delete(next_screen)
 
       buttons = [] of Tourmaline::InlineKeyboardButton
 
-      options.each do |screen, text|
-        buttons << Tourmaline::InlineKeyboardButton.new(text, callback_data: "statistics-next=#{screen}")
+      options.each do |screen|
+        buttons << Tourmaline::InlineKeyboardButton.new(services.locale.statistics_screens[screen], callback_data: "statistics-next=#{screen}")
       end
 
       # Split buttons into rows of 3 at most
@@ -381,7 +375,7 @@ module PrivateParlorXT
 
     def format_karma_level_counts(services : Services) : String
       if services.config.karma_levels.empty?
-        return "No stats available" # TODO: Localize this
+        return services.replies.no_stats_available
       end
 
       levels = services.config.karma_levels
@@ -400,7 +394,7 @@ module PrivateParlorXT
 
     def format_robot9000_counts(services : Services) : String
       unless services.robot9000
-        return "No stats available" # TODO: Localize this
+        return services.replies.no_stats_available
       end
 
       totals = get_robot9000_counts
