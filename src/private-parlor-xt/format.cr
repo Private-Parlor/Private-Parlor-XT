@@ -591,6 +591,7 @@ module PrivateParlorXT
         CommandPermissions::Whitelist    => "/whitelist [ID] - #{descriptions.whitelist}",
         CommandPermissions::Purge        => "/purge - #{descriptions.purge}",
         CommandPermissions::MotdSet      => "/motd - #{descriptions.motd_set}",
+        CommandPermissions::Unblacklist   => "/unblacklist [name/ID]  - #{descriptions.unblacklist}",
       }
 
       reply_required = {
@@ -620,6 +621,7 @@ module PrivateParlorXT
         str << escape_md("/tripcode - #{descriptions.tripcode}\n", version: 2)
         str << escape_md("/motd - #{descriptions.motd}\n", version: 2)
         str << escape_md("/help - #{descriptions.help}\n", version: 2)
+        str << escape_md("/stats - #{descriptions.stats}\n", version: 2)
 
         rank_commands = [] of String
         reply_commands = [] of String
