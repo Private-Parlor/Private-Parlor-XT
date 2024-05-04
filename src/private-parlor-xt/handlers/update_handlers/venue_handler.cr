@@ -18,7 +18,7 @@ module PrivateParlorXT
       return unless venue = message.venue
 
       reply_messages = get_reply_receivers(message, user, services)
-      return unless reply_exists?(message, reply_messages, user, services)
+      return unless reply_messages
 
       record_message_statistics(Statistics::MessageCounts::Venues, services)
 

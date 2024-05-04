@@ -22,7 +22,7 @@ development_dependencies:
 
 targets:
   private-parlor-xt:
-    main: src/private-parlor-xt.cr
+    main: src/private_parlor_xt.cr
 
 crystal: 1.12.0
 

@@ -18,7 +18,7 @@ module PrivateParlorXT
       return unless sticker = message.sticker
 
       reply_messages = get_reply_receivers(message, user, services)
-      return unless reply_exists?(message, reply_messages, user, services)
+      return unless reply_messages
 
       return unless Robot9000.media_check(user, message, services)
 

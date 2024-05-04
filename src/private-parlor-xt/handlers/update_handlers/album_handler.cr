@@ -28,7 +28,7 @@ module PrivateParlorXT
       return unless caption
 
       reply_messages = get_reply_receivers(message, user, services)
-      return unless reply_exists?(message, reply_messages, user, services)
+      return unless reply_messages
 
       return unless Robot9000.checks(user, message, services)
 

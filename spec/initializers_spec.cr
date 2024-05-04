@@ -1,8 +1,6 @@
 require "./spec_helper"
 
 module PrivateParlorXT
-  VERSION = "spec"
-
   @[RespondsTo(command: "hardcode")]
   class HardCodedCommand < CommandHandler
     def do(message : Tourmaline::Message, services : Services)

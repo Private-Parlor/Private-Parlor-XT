@@ -118,7 +118,7 @@ module PrivateParlorXT
 
         # Add user to database
         write do
-          @connection.exec("INSERT INTO users VALUES (#{{{arr}}})", args: user.to_array)
+          @connection.exec("INSERT INTO users VALUES (#{{{arr}}})", args: user.to_a)
         end
       {% end %}
 
@@ -135,7 +135,7 @@ module PrivateParlorXT
         {% arr = arr.join(", ") %}
         # Modify user
         write do
-          @connection.exec("UPDATE users SET #{{{arr}}} WHERE id = ?", args: user.to_array.rotate)
+          @connection.exec("UPDATE users SET #{{{arr}}} WHERE id = ?", args: user.to_a.rotate)
         end
       {% end %}
     end

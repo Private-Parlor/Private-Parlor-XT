@@ -18,7 +18,7 @@ module PrivateParlorXT
         return services.relay.send_to_user(nil, info.id.to_i64, services.replies.not_in_chat)
       end
 
-      unless user.can_chat?
+      unless user.can_use_command?
         return deny_user(user, services)
       end
 
