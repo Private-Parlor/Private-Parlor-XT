@@ -1,6 +1,8 @@
 module PrivateParlorXT
-  # Statistics module used for calculating and recording data
+  # A base class statistics module used for calculating and recording data about messages and users
   abstract class Statistics
+
+    # General information about the bot, such as uptime and certain configuration toggles
     enum BotInfo
       DateStarted
       Uptime
@@ -14,6 +16,8 @@ module PrivateParlorXT
       KarmaEconomyToggle
     end
 
+    # Refers to the counts for each message type, includes the number of total messages 
+    # for daily, weekly, and monthly durations
     enum MessageCounts
       TotalMessages
       Albums
@@ -39,6 +43,7 @@ module PrivateParlorXT
       MessagesYestermonth
     end
 
+    # Refers to the total number of users and users who joined or left for daily, weekly, and monthly durations
     enum UserCounts
       TotalUsers
       TotalJoined
@@ -58,6 +63,7 @@ module PrivateParlorXT
       LeftYestermonth
     end
 
+    # Refers to the total amount of karma given or lost and totals for daily, weekly, and monthly durations
     enum KarmaCounts
       TotalUpvotes
       TotalDownvotes
@@ -75,6 +81,7 @@ module PrivateParlorXT
       DownvotesYestermonth
     end
 
+    # Refers to the total number of unique messages and unoriginal messages for text and media messages
     enum Robot9000Counts
       TotalUnique
       UniqueText
@@ -84,6 +91,7 @@ module PrivateParlorXT
       UnoriginalMedia
     end
 
+    # The available stats screens for the `StatsCommand` and its `Tourmaline::InlineKeyboardMarkup`
     enum StatScreens
       General
       Messages
@@ -93,24 +101,34 @@ module PrivateParlorXT
       Robot9000
     end
 
+    # Get the `Time` the module was initialized, which should coincide closely with the time the bot was started.
+    # Used to calculate uptime.
     getter start_time : Time = Time.utc
 
+    # Returns a `Time::Span` containing the amount of time the bot has been running
     def get_uptime : Time::Span
       Time.utc - @start_time
     end
 
+    # Returns a `String` containing the date at which the statistics module was initialized
     abstract def get_start_date : String
 
+    # Increment the message count according to the given *type* and increment the total number of messages in general
     abstract def increment_message_count(type : MessageCounts) : Nil
 
+    # Increment the number of upvotes given
     abstract def increment_upvote_count : Nil
 
+    # Increment the number of downvotes given
     abstract def increment_downvote_count : Nil
 
+    # Increment the number of unoriginal text messages encountered
     abstract def increment_unoriginal_text_count : Nil
 
+    # Increment the number of unoriginal media messages encountered
     abstract def increment_unoriginal_media_count : Nil
 
+    # Returns a hash of `BotInfo` to `String`, containing information about configuration data and toggles
     def get_configuration_details(services : Services) : Hash(BotInfo, String)
       {
         BotInfo::RegistrationToggle => services.config.registration_open ? services.locale.toggle[1] : services.locale.toggle[0],
@@ -124,16 +142,22 @@ module PrivateParlorXT
       }
     end
 
+    # Returns a hash of `MessageCounts` to `Int32`, containing the total number of message for each type and daily, weekly, and monthly totals
     abstract def get_total_messages : Hash(MessageCounts, Int32)
 
+    # Returns a hash of `UserCounts` to `Int32`, containing the total number of each kind of user and daily, weekly, and monthly totals
     abstract def get_user_counts : Hash(UserCounts, Int32)
 
+    # Returns a hash of `KarmaCounts` to `Int32 , containing the total number of karma given or lost, and daily, weekly, and monthly totals
     abstract def get_karma_counts : Hash(KarmaCounts, Int32)
 
+    # Returns an `Int32` total of users whose karma lie between *start_value* and *end_value*
     abstract def get_karma_level_count(start_value : Int32, end_value : Int32) : Int32
 
+    # Returns a hash of `Robot9000Counts` to `Int32`, containing the total number of unique and unoriginal messages for texts and media types 
     abstract def get_robot9000_counts : Hash(Robot9000Counts, Int32)
 
+    # Returns a `String` of the formatted statistics screen based on the given *next_screen*
     def get_statistic_screen(next_screen : StatScreens, services : Services) : String
       case next_screen
       when StatScreens::General     then format_config_data(services)
@@ -146,12 +170,16 @@ module PrivateParlorXT
       end
     end
 
+    # Returns a `Float64` containing the percent change from *initial* to *final*
     def get_percent_change(initial : Int32, final : Int32) : Float64
       return final * 100.0 if initial == 0
 
       ((final - initial) / (initial.abs)) * 100.0
     end
 
+    # Returns the `Tourmaline::InlineKeyboardMarkup` for the given *next_screen*.
+    # 
+    # Keyboard buttons are localized and displayed in rows of 3 buttons.
     def keyboard_markup(next_screen : StatScreens, services : Services) : Tourmaline::InlineKeyboardMarkup
       options = [StatScreens::General, StatScreens::Messages, StatScreens::Users, StatScreens::Karma]
 
@@ -181,6 +209,7 @@ module PrivateParlorXT
       Tourmaline::InlineKeyboardMarkup.new(button_rows)
     end
 
+    # Returns a formatted `String` containing information about the bot and its toggles
     def format_config_data(services : Services) : String
       start_date = get_start_date
       uptime = get_uptime
@@ -203,6 +232,7 @@ module PrivateParlorXT
       })
     end
 
+    # Returns a formatted `String` containing messages counts
     def format_message_data(services : Services) : String
       totals = get_total_messages
 
@@ -250,6 +280,7 @@ module PrivateParlorXT
       })
     end
 
+    # Returns a formatted `String` containing user counts
     def format_user_counts(services : Services) : String
       totals = get_user_counts
 
@@ -316,6 +347,7 @@ module PrivateParlorXT
       })
     end
 
+    # Returns a formatted `String` containing karma counts
     def format_karma_counts(services : Services) : String
       totals = get_karma_counts
 
@@ -373,6 +405,7 @@ module PrivateParlorXT
       })
     end
 
+    # Returns a formatted `String` containing karma level counts
     def format_karma_level_counts(services : Services) : String
       if services.config.karma_levels.empty?
         return services.replies.no_stats_available
@@ -392,6 +425,7 @@ module PrivateParlorXT
       })
     end
 
+    # Returns a formatted `String` containing Robot9000 counts
     def format_robot9000_counts(services : Services) : String
       unless services.robot9000
         return services.replies.no_stats_available

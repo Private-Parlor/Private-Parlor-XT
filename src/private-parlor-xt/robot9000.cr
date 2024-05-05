@@ -1,15 +1,54 @@
 require "./constants.cr"
 
 module PrivateParlorXT
+
+  # TODO: Remove class methods and move cooldown functionality to its own function
+
+  # A base class for ROBOT9000 implementations
+  # 
+  # ROBOT9000 is an algorithm by Randall Munroe designed to reduce noise in large chats and
+  # encourage original content.
+  #
+  # ROBOT9000 will prevent users from repeating information that has already been posted before. 
+  # When a user's post is considered unoriginal, the post will not be sent and the user will be cooldowned.
+  # 
+  # Subclasses of this type should use a `Database` to store and query unique texts and media IDs
   abstract class Robot9000
+    # An array of Int32 ranges corresponding to Unicode codeblock ranges to accept.
+    # 
+    # When checking texts for uniqueness, each characater/codepoint must be found within these ranges.
+    # 
+    # Default accepts codepoints in the ASCII character set
     @valid_codepoints : Array(Range(Int32, Int32)) = [(0x0000..0x007F)]
 
+    # Returns `true` if this module should check text for uniqueness
+    # 
+    # Returns `false` otherwise
     getter? check_text : Bool? = false
+
+    # Returns `true` if this module should check media (photos, audio, videos, etc.) for uniqueness
+    # 
+    # Returns `false` otherwise
     getter? check_media : Bool? = false
+
+    # Returns `true` if this module should check forwards for uniqueness
+    # 
+    # If true, this module should also check for unique text or media if `check_text` or `check_media` is toggled, respectively.
+    # 
+    # Returns `false` otherwise
     getter? check_forwards : Bool? = false
+
+    # Returns `true` if this module should give the user a warning for unoriginal messages
+    # 
+    # If true, the unoriginal message cooldown should scale with user warnings
+    # 
+    # Returns `false` otherwise
     getter? warn_user : Bool? = false
+
+    # Returns the cooldown duration for unoriginal messages
     getter cooldown : Int32 = 0
 
+    # Returns a `String` containing the given *text* with URLs removed
     def remove_links(text : String, entities : Array(Tourmaline::MessageEntity)) : String
       string = text.to_utf16.to_a
 
@@ -24,6 +63,9 @@ module PrivateParlorXT
       String.from_utf16(utf)
     end
 
+    # Returns `true` if the given *text* has valid codepoints or is empty
+    # 
+    # Returns `false` if any character/codepoint in the given *text* is not found in `valid_codepoints`
     def allow_text?(text : String) : Bool
       return true if text.empty?
 
@@ -36,6 +78,15 @@ module PrivateParlorXT
       true
     end
 
+    # Returns a `String` containing the given *text* in lower case with the following elements removed:
+    #   - Links/URLS
+    #   - Commands
+    #   - Usernames
+    #   - Sequences of 3 or more repeating characters (digits can repeat)
+    #   - Network links/Back links (i.e., ">>>/foo/")
+    #   - Punctuation and the em-dash
+    #   - Repeating spaces and newlines
+    #   - Trailing and leading whitespace
     def strip_text(text : String, entities : Array(Tourmaline::MessageEntity)) : String
       text = remove_links(text, entities)
 
@@ -62,6 +113,7 @@ module PrivateParlorXT
       text.strip
     end
 
+    # Returns a `String` containing the unique file ID from the given *message*
     def get_media_file_id(message : Tourmaline::Message) : String?
       if media = message.animation
       elsif media = message.audio
@@ -78,20 +130,23 @@ module PrivateParlorXT
       media.file_unique_id
     end
 
-    # Returns true if the given text has been sent before
-    # Returns false otherwise
+    # Returns `true` if the given text has been sent before
+    # Returns `false` otherwise
     abstract def unoriginal_text?(text : String) : Bool?
 
-    # Stores the stripped line of text to be referenced later
+    # Stores the stripped line of *text* to be referenced later
     abstract def add_line(text : String) : Nil
 
-    # Returns ture if the given file id has been sent before
-    # Returns false otherwise
+    # Returns `true` if the given file id has been sent before
+    # Returns `false` otherwise
     abstract def unoriginal_media?(id : String) : Bool?
 
-    # Stores the file id to be referenced later
+    # Stores the file *id* to be referenced later
     abstract def add_file_id(id : String) : Nil
 
+    # Checks the message for uniqueness and returns `true` if the message is preformatted (message already checked) or if it passes the checks
+    # 
+    # Returns `false` if the message does not pass the `text_check` or the `media_check`
     def self.checks(user : User, message : Tourmaline::Message, services : Services, text : String? = nil) : Bool
       return true if message.preformatted?
 
@@ -101,6 +156,12 @@ module PrivateParlorXT
       true
     end
 
+    # Checks the forwarded message for uniqueness and returns `true` if:
+    #   - Services does not have a `Robot9000` object
+    #   - This module does not check forwards for uniqueness
+    #   - Forward passes `text_check` and `media_check`
+    # 
+    # Returns `false` if the message does not pass the `text_check` or the `media_check`
     def self.forward_checks(user : User, message : Tourmaline::Message, services : Services) : Bool
       return true unless r9k = services.robot9000
       return true unless r9k.check_forwards?
@@ -111,6 +172,9 @@ module PrivateParlorXT
       true
     end
 
+    # Returns `true` if the *message*'s text or caption is unique, and stores the text/caption for later
+    # 
+    # Returns `false` if the *message`'s text or caption is not unique, and cooldowns the sender if configured to do so
     def self.text_check(user : User, message : Tourmaline::Message, services : Services, text : String? = nil) : Bool
       unless (r9k = services.robot9000) && r9k.check_text?
         return true
@@ -158,12 +222,15 @@ module PrivateParlorXT
       true
     end
 
+    # Returns `true` if the *message*'s media is unique, and stores its file ID for later
+    # 
+    # Returns `false` if the *message`'s media is not unique, and cooldowns the sender if configured to do so
     def self.media_check(user : User, message : Tourmaline::Message, services : Services) : Bool
       unless (r9k = services.robot9000) && r9k.check_media?
         return true
       end
-
-      return false unless file_id = r9k.get_media_file_id(message)
+      
+      return true unless file_id = r9k.get_media_file_id(message)
 
       if r9k.unoriginal_media?(file_id)
         if r9k.cooldown > 0

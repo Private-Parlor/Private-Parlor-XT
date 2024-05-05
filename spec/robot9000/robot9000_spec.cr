@@ -12,14 +12,14 @@ module PrivateParlorXT
 
         entities = [
           Tourmaline::MessageEntity.new(
-            "url",
-            28,
-            22,
+            type: "url",
+            offset: 28,
+            length: 22,
           ),
           Tourmaline::MessageEntity.new(
-            "url",
-            51,
-            15,
+            type: "url",
+            offset: 51,
+            length: 15,
           ),
         ]
 
@@ -63,18 +63,18 @@ module PrivateParlorXT
 
         text_one = "An example of text with urls\n" \
                    "www.example.com\n" \
-                   "and _NOT MUCH_ else."
+                   "and _NOT MUCH_ else.   "
 
         url_entity = Tourmaline::MessageEntity.new(
-          "url",
-          29,
-          15,
+          type: "url",
+          offset: 29,
+          length: 15,
         )
 
-        text_two = "A text that references.\n" \
+        text_two = "  A text that references.\n" \
                    "a user @username and a /pin command."
 
-        text_three = "A tttteeeeexxxxttttt _trying_ *22222* bbbe >>>/foo/ original,"
+        text_three = "A tttteeeeexxxxttttt   _trying_    *22222* bbbe >>>/foo/ original,"
 
         expected_one = "an example of text with urls and not much else"
         expected_two = "a text that references a user and a command"
@@ -90,15 +90,17 @@ module PrivateParlorXT
       it "gets unique animation file id" do
         r9k = MockRobot9000.new
 
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+          message_id: 11,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
         )
 
@@ -108,13 +110,15 @@ module PrivateParlorXT
       it "gets unique audio file id" do
         r9k = MockRobot9000.new
 
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+          message_id: 11,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           audio: Tourmaline::Audio.new(
-            "audio_item_one",
-            "unique_audio",
-            60,
+            file_id: "audio_item_one",
+            file_unique_id: "unique_audio",
+            duration: 60,
           ),
         )
 
@@ -124,12 +128,14 @@ module PrivateParlorXT
       it "gets unique document file id" do
         r9k = MockRobot9000.new
 
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+          message_id: 11,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           document: Tourmaline::Document.new(
-            "document_item_one",
-            "unique_document",
+            file_id: "document_item_one",
+            file_unique_id: "unique_document",
           ),
         )
 
@@ -139,15 +145,17 @@ module PrivateParlorXT
       it "gets unique video file id" do
         r9k = MockRobot9000.new
 
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+          message_id: 11,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           video: Tourmaline::Video.new(
-            "video_item_one",
-            "unique_video",
-            1080,
-            1080,
-            60,
+            file_id: "video_item_one",
+            file_unique_id: "unique_video",
+            width: 1080,
+            height: 1080,
+            duration: 60,
           ),
         )
 
@@ -157,14 +165,16 @@ module PrivateParlorXT
       it "gets unique video note file id" do
         r9k = MockRobot9000.new
 
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+          message_id: 11,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           video_note: Tourmaline::VideoNote.new(
-            "video_note_item_one",
-            "unique_video_note",
-            1080,
-            60,
+            file_id: "video_note_item_one",
+            file_unique_id: "unique_video_note",
+            length: 1080,
+            duration: 60,
           ),
         )
 
@@ -174,31 +184,35 @@ module PrivateParlorXT
       it "gets unique voice file id" do
         r9k = MockRobot9000.new
 
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+          message_id: 11,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           voice: Tourmaline::Voice.new(
-            "voice_item_one",
-            "unique_voice",
-            60,
+            file_id: "voice_item_one",
+            file_unique_id: "unique_voice",
+            duration: 60,
           ),
         )
 
         r9k.get_media_file_id(message).should(eq("unique_voice"))
       end
 
-      it "gets unique voice file id" do
+      it "gets unique photo file id" do
         r9k = MockRobot9000.new
 
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+          message_id: 11,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           photo: [
             Tourmaline::PhotoSize.new(
-              "photo_item_one",
-              "unique_photo",
-              1080,
-              1080,
+              file_id: "photo_item_one",
+              file_unique_id: "unique_photo",
+              width: 1080,
+              height: 1080,
             ),
           ],
         )
@@ -209,37 +223,80 @@ module PrivateParlorXT
       it "gets unique sticker file id" do
         r9k = MockRobot9000.new
 
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+          message_id: 11,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           sticker: Tourmaline::Sticker.new(
-            "sticker_item_one",
-            "unique_sticker",
-            "regular",
-            1080,
-            1080,
-            false,
-            false,
+            file_id: "sticker_item_one",
+            file_unique_id: "unique_sticker",
+            type: "regular",
+            width: 1080,
+            height: 1080,
+            is_animated: false,
+            is_video: false,
           ),
         )
 
         r9k.get_media_file_id(message).should(eq("unique_sticker"))
       end
+
+      it "returns nil if message did not match any message type" do
+        r9k = MockRobot9000.new
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = create_message(
+          message_id: 11,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "Example"
+        )
+
+        r9k.get_media_file_id(message).should(be_nil)
+      end
     end
 
     describe "#checks" do
-      it "returns true if there is no Robot9000 service available" do
+      it "returns true if message is unique" do
         services = create_services()
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
 
         Robot9000.checks(user, message, services).should(be_true)
+      end
+
+      it "returns true if message is preformatted" do
+        services = create_services()
+
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
+
+        message = create_message(
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          caption: "Example Text",
+        )
+
+        Robot9000.checks(user, message, services).should(be_true)
+
+        message2 = create_message(
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          caption: "Example Text",
+          preformatted: true
+        )
+
+        Robot9000.checks(user, message2, services).should(be_true)
       end
 
       it "returns false if message fails r9k text check" do
@@ -249,11 +306,13 @@ module PrivateParlorXT
           )
         )
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
 
@@ -269,18 +328,20 @@ module PrivateParlorXT
           )
         )
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
             Tourmaline::PhotoSize.new(
-              "photo_item_one",
-              "unique_photo",
-              1080,
-              1080,
+              file_id: "photo_item_one",
+              file_unique_id: "unique_photo",
+              width: 1080,
+              height: 1080,
             ),
           ]
         )
@@ -292,14 +353,17 @@ module PrivateParlorXT
     end
 
     describe "#forward_checks" do
+      # TODO: Remove this test when removing Robot9000's class methods
       it "returns true if there is no Robot9000 service available" do
         services = create_services()
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
 
@@ -314,11 +378,35 @@ module PrivateParlorXT
           )
         )
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          caption: "Example Text",
+        )
+
+        Robot9000.forward_checks(user, message, r9k_services).should(be_true)
+      end
+
+      it "returns true if forwarded message is unique" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new(
+            check_text: true,
+            check_media: true,
+            check_forwards: true,
+          )
+        )
+
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
+
+        message = create_message(
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
 
@@ -333,11 +421,13 @@ module PrivateParlorXT
           )
         )
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
 
@@ -354,18 +444,20 @@ module PrivateParlorXT
           )
         )
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
             Tourmaline::PhotoSize.new(
-              "photo_item_one",
-              "unique_photo",
-              1080,
-              1080,
+              file_id: "photo_item_one",
+              file_unique_id: "unique_photo",
+              width: 1080,
+              height: 1080,
             ),
           ]
         )
@@ -377,30 +469,35 @@ module PrivateParlorXT
     end
 
     describe "#text_check" do
+      # TODO: Remove this test when removing Robot9000's class methods
       it "returns true if there is no Robot9000 service available" do
         services = create_services()
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
 
         Robot9000.text_check(user, message, services).should(be_true)
       end
 
-      it "returns true if Robot900 does not check text" do
+      it "returns true if Robot9000 does not check text" do
         r9k_services = create_services(
           r9k: MockRobot9000.new
         )
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
 
@@ -415,11 +512,13 @@ module PrivateParlorXT
           )
         )
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
 
@@ -437,11 +536,13 @@ module PrivateParlorXT
           )
         )
 
-        user = MockUser.new(9000, cooldown_until: nil)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678, cooldown_until: nil)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
 
@@ -462,11 +563,13 @@ module PrivateParlorXT
           )
         )
 
-        user = MockUser.new(9000, warnings: 0)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678, warnings: 0)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
 
@@ -481,18 +584,20 @@ module PrivateParlorXT
         user.cooldown_until.should_not(be_nil)
       end
 
-      it "stores line of text if text is original" do
+      it "stores line of text and returns true if text is original" do
         r9k_services = create_services(
           r9k: MockRobot9000.new(
             check_text: true,
           )
         )
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
 
@@ -507,21 +612,24 @@ module PrivateParlorXT
     end
 
     describe "#media_check" do
+      # TODO: Remove this test when removing Robot9000's class methods
       it "returns true if there is no Robot9000 service available" do
         services = create_services()
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
             Tourmaline::PhotoSize.new(
-              "photo_item_one",
-              "unique_photo",
-              1080,
-              1080,
+              file_id: "photo_item_one",
+              file_unique_id: "unique_photo",
+              width: 1080,
+              height: 1080,
             ),
           ]
         )
@@ -534,20 +642,40 @@ module PrivateParlorXT
           r9k: MockRobot9000.new
         )
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
             Tourmaline::PhotoSize.new(
-              "photo_item_one",
-              "unique_photo",
-              1080,
-              1080,
+              file_id: "photo_item_one",
+              file_unique_id: "unique_photo",
+              width: 1080,
+              height: 1080,
             ),
           ]
+        )
+
+        Robot9000.media_check(user, message, r9k_services).should(be_true)
+      end
+
+      it "returns true if message did not have a file ID" do
+        r9k_services = create_services(
+          r9k: MockRobot9000.new
+        )
+
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
+
+        message = create_message(
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "Example Text",
         )
 
         Robot9000.media_check(user, message, r9k_services).should(be_true)
@@ -560,18 +688,20 @@ module PrivateParlorXT
           )
         )
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
             Tourmaline::PhotoSize.new(
-              "photo_item_one",
-              "unique_photo",
-              1080,
-              1080,
+              file_id: "photo_item_one",
+              file_unique_id: "unique_photo",
+              width: 1080,
+              height: 1080,
             ),
           ]
         )
@@ -589,18 +719,20 @@ module PrivateParlorXT
           )
         )
 
-        user = MockUser.new(9000, cooldown_until: nil)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678, cooldown_until: nil)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
             Tourmaline::PhotoSize.new(
-              "photo_item_one",
-              "unique_photo",
-              1080,
-              1080,
+              file_id: "photo_item_one",
+              file_unique_id: "unique_photo",
+              width: 1080,
+              height: 1080,
             ),
           ]
         )
@@ -622,18 +754,20 @@ module PrivateParlorXT
           )
         )
 
-        user = MockUser.new(9000, warnings: 0)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678, warnings: 0)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
             Tourmaline::PhotoSize.new(
-              "photo_item_one",
-              "unique_photo",
-              1080,
-              1080,
+              file_id: "photo_item_one",
+              file_unique_id: "unique_photo",
+              width: 1080,
+              height: 1080,
             ),
           ]
         )
@@ -649,25 +783,27 @@ module PrivateParlorXT
         user.cooldown_until.should_not(be_nil)
       end
 
-      it "stores file id if media is original" do
+      it "stores file id and returns true if media is original" do
         r9k_services = create_services(
           r9k: MockRobot9000.new(
             check_media: true,
           )
         )
 
-        user = MockUser.new(9000)
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        user = MockUser.new(12345678)
 
         message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          message_id: 6,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
             Tourmaline::PhotoSize.new(
-              "photo_item_one",
-              "unique_photo",
-              1080,
-              1080,
+              file_id: "photo_item_one",
+              file_unique_id: "unique_photo",
+              width: 1080,
+              height: 1080,
             ),
           ]
         )
