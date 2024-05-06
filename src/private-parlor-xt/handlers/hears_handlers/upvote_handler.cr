@@ -5,7 +5,7 @@ require "tourmaline"
 module PrivateParlorXT
   @[Hears(pattern: /^\+1/, config: "enable_upvote", command: true)]
   class UpvoteHandler < HearsHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
       return unless authorized?(user, message, :Upvote, services)

@@ -4,7 +4,7 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: ["blacklist", "ban"], config: "enable_blacklist")]
   class BlacklistCommand < CommandHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
       return unless authorized?(user, message, :Blacklist, services)

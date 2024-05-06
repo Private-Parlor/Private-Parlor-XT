@@ -5,7 +5,7 @@ require "tasker"
 module PrivateParlorXT
   VERSION = "1.2.0"
 
-  services = initialize_services
+  services = initialize_bot
 
   sending_routine = Tasker.every(1.second) do
     loop do

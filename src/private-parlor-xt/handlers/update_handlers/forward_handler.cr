@@ -4,7 +4,7 @@ require "tourmaline"
 module PrivateParlorXT
   @[On(update: :ForwardedMessage, config: "relay_forwarded_message")]
   class ForwardHandler < UpdateHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
       return unless authorized?(user, message, :Forward, services)

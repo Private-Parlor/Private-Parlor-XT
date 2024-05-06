@@ -5,13 +5,47 @@ require "./services.cr"
 require "tasker"
 
 module PrivateParlorXT
-  def self.initialize_services : Services
+  
+  # Reads from the config file and initialize `Services`, recurring tasks, and bot handlers
+  # 
+  # Returns the initialized `Services` object
+  def self.initialize_bot(client : Client? = nil) : Services
     config = Config.parse_config
+
+    unless client
+      client = Client.new(config.token)
+    end
+
+    client.default_parse_mode = Tourmaline::ParseMode::MarkdownV2
+
+    services = initialize_services(config, client)
+
+    initialize_tasks(config, services)
+
+    initialize_handlers(client, config, services)
+
+    services
+  end
+
+  # Returns an initialized `Services` object
+  # 
+  # Checks the `Config` for configurable modules and initializes the `Services` with them
+  def self.initialize_services(config : Config, client : Client) : Services
     localization = Localization.parse_locale(Path["./locales"], config.locale)
 
     connection = DB.open("sqlite3://#{config.database}")
 
     database = SQLiteDatabase.new(connection)
+
+    if config.database_history
+      history = SQLiteHistory.new(config.message_lifespan.hours, connection)
+    else
+      history = CachedHistory.new(config.message_lifespan.hours)
+    end
+
+    access = AuthorizedRanks.new(config.ranks)
+
+    relay = Relay.new(config.log_channel, client)
 
     if config.spam_interval != 0
       spam = config.spam_handler
@@ -33,26 +67,13 @@ module PrivateParlorXT
       robot9000 = nil
     end
 
-    if config.karma_economy != nil
+    if config.karma_economy
       karma_economy = config.karma_economy
     end
 
-    if config.statistics != nil
+    if config.statistics
       stats = SQLiteStatistics.new(connection)
     end
-
-    if config.database_history
-      history = SQLiteHistory.new(config.message_lifespan.hours, connection)
-    else
-      history = CachedHistory.new(config.message_lifespan.hours)
-    end
-
-    access = AuthorizedRanks.new(config.ranks)
-
-    client = Client.new(config.token)
-    client.default_parse_mode = Tourmaline::ParseMode::MarkdownV2
-
-    relay = Relay.new(config.log_channel, client)
 
     services = Services.new(
       HandlerConfig.new(config),
@@ -70,14 +91,15 @@ module PrivateParlorXT
       stats
     )
 
-    initialize_tasks(config, services)
-
-    initialize_handlers(client, config, services)
-
     services
   end
 
-  def self.initialize_tasks(config : Config, services : Services)
+  # Initializes recurring tasks, such as:
+  #   - Warning expiration
+  #   - Message expiration (if toggled)
+  #   - Spam cooldown expiration (if toggled)
+  #   - Inactive user kicking (if toggled)
+  def self.initialize_tasks(config : Config, services : Services) : Nil
     Tasker.every(15.minutes) {
       services.database.expire_warnings(config.warn_lifespan.hours)
     }
@@ -100,7 +122,8 @@ module PrivateParlorXT
       }
     end
   end
-
+  
+  # Initialize bot handlers, such as `CommandHandler`, `HearsHandler`, `CallbackHandler`, and `UpdateHandler`
   def self.initialize_handlers(client : Tourmaline::Client, config : Config, services : Services) : Nil
     events = [] of Tourmaline::EventHandler
 
@@ -119,12 +142,15 @@ module PrivateParlorXT
     generate_update_handlers(config, client, services)
   end
 
+  # Iterate through all `CommandHandler` subclasses and initialize `Tourmaline::CommandHandler` procs for these commands.
+  # 
+  # `CommandDescriptions` for each `CommandHandler` will be registered by the bot if the the command is configurable.
   macro create_command_handlers
     {% for command in CommandHandler.all_subclasses.select { |sub_class|
                         (responds_to = sub_class.annotation(RespondsTo))
                       } %}
 
-      {{responds_to = command.annotation(RespondsTo)}}
+      {% responds_to = command.annotation(RespondsTo) %}
 
       {% if responds_to[:config].nil? %}
         {{warning %(Command #{command} should have a configuration toggle and command description.)}}
@@ -159,6 +185,9 @@ module PrivateParlorXT
     {% end %}
   end
 
+  # Appends given `CommandHandler` to `Tourmaline::CommandHandler` array
+  # 
+  # The given `CommandHandler` will respond to *command* value(s) of `RespondsTo`
   macro append_command_handler(command, call)
     commands = [] of String
 
@@ -197,6 +226,7 @@ module PrivateParlorXT
     arr
   end
 
+  # Iterate through all `HearsHandler` subclasses and initialize `Tourmaline::HearsHandler` procs for these handlers.
   macro create_hears_handlers
     {% for hears_handler in HearsHandler.all_subclasses.select { |sub_class|
                         (hears = sub_class.annotation(Hears))
@@ -227,6 +257,9 @@ module PrivateParlorXT
     {% end %}
   end
 
+  # Appends given `HearsHandler` to `Tourmaline::HearsHandler` array
+  # 
+  # The given `HearsHandler` will respond to the *pattern* value of `Hears`
   macro append_hears_handler(hears_handler, hears)
     # Handler name is command's name but snake cased
     {{handler = (hears_handler.stringify.split("::").last.underscore).id}}  = {{hears_handler}}.new(config)
@@ -251,6 +284,7 @@ module PrivateParlorXT
     arr
   end
 
+  # Initializes all `CallbackHandler`
   def self.generate_callback_query_handlers(config : Config, services : Services) : Array(Tourmaline::CallbackQueryHandler)
     arr = [] of Tourmaline::CallbackQueryHandler
 
@@ -271,6 +305,7 @@ module PrivateParlorXT
     arr
   end
 
+  # Iterate through all `UpdateHandler` subclasses and initialize `Tourmaline::UpdateHandler` procs for these handlers.
   macro create_update_handlers
     {% for update in UpdateHandler.all_subclasses.select { |sub_class|
                        (on = sub_class.annotation(On))
@@ -302,6 +337,9 @@ module PrivateParlorXT
     {% end %}
   end
 
+  # Registers the given `UpdateHandler` with the bot
+  # 
+  # The given `UpdateHandler` will respond to messages of type *update* value of `On`
   macro register_update_handler(update, on)
     {% if @top_level.has_constant?("ForwardHandler") && @top_level.has_constant?("RegularForwardHandler") && update == ForwardHandler %}
       if config.regular_forwards
@@ -326,10 +364,13 @@ module PrivateParlorXT
     end
   end
 
+  # Intialize all update handlers that inherit from `UpdateHandler`
+  # and are annotated with `On`
   def self.generate_update_handlers(config : Config, client : Client, services : Services) : Nil
     create_update_handlers
   end
 
+  # Queues a media_disabled system reply when the `UpdateHandler` was disabled
   def self.media_disabled(message : Tourmaline::Message, type : Tourmaline::UpdateAction, services : Services)
     return unless info = message.from
 
@@ -344,12 +385,14 @@ module PrivateParlorXT
     )
   end
 
+  # Queues a command_disabled system reply when the `CommandHandler` was disabled
   def self.command_disabled(message : Tourmaline::Message, services : Services)
     return unless info = message.from
 
     services.relay.send_to_user(ReplyParameters.new(message.message_id), info.id.to_i64, services.replies.command_disabled)
   end
 
+  # Force-leave users whose last active time is creater than the given `Time::Span` *limit*
   def self.kick_inactive_users(limit : Time::Span, services : Services)
     services.database.get_inactive_users(limit).each do |user|
       user.set_left

@@ -10,7 +10,7 @@ module PrivateParlorXT
       @smileys = config.smileys
     end
 
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
       if reply = message.reply_to_message

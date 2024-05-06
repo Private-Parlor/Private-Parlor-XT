@@ -4,7 +4,7 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "start", config: "enable_start")]
   class StartCommand < CommandHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
       return unless info = message.from
 
       if text = message.text || message.caption

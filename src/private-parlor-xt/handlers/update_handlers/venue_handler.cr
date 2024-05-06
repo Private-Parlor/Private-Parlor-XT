@@ -4,7 +4,7 @@ require "tourmaline"
 module PrivateParlorXT
   @[On(update: :Venue, config: "relay_venue")]
   class VenueHandler < UpdateHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
       return if message.forward_origin

@@ -6,7 +6,7 @@ module PrivateParlorXT
   # Processes karma sign messages before the update handler gets them
   # This handler expects the command handlers to be registered before the update handlers
   class KarmaSignCommand < CommandHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
       return if message.forward_origin

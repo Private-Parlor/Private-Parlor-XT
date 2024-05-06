@@ -7,6 +7,7 @@ module PrivateParlorXT
     getter relay_new_chat_members : Array(Bool) = [true, true]
 
     def initialize(
+      @database = "%3Amemory%3A",
       @upvote_limit_interval = 120,
       @downvote_limit_interval = 120,
       @media_limit_period = 120,
@@ -17,7 +18,14 @@ module PrivateParlorXT
       @karma_reasons = false,
       @salt = "",
       @linked_network = {} of String => String,
+      @database_history = false,
       @karma_economy = nil,
+      @spam_interval = 10,
+      @spam_handler = SpamHandler.new(),
+      @statistics = false,
+      @toggle_r9k_text = false,
+      @toggle_r9k_media = false,
+      @toggle_r9k_forwards = false,
       @karma_levels = {
         (Int32::MIN...0) => "Junk",
         (0...10) => "Normal",

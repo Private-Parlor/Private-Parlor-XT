@@ -8,7 +8,7 @@ module PrivateParlorXT
 
     property albums : Hash(String, Album) = {} of String => Album
 
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
       return unless authorized?(user, message, :Forward, services)

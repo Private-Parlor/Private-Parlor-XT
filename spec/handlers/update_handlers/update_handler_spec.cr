@@ -3,19 +3,19 @@ require "../../spec_helper.cr"
 module PrivateParlorXT
   @[Hears(pattern: /UPDATEHANDLER/, command: true)]
   class ExampleContainsCommand < HearsHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
     end
   end
 
   @[Hears(pattern: "starts_with_UpdateHandler", command: true)]
   class ExampleStartsWithCommand < HearsHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
     end
   end
 
   @[Hears(pattern: "example_hears_UpdateHandler")]
   class ExampleHearshandler < HearsHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
     end
   end
 

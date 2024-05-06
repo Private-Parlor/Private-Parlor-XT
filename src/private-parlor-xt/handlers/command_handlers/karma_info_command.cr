@@ -4,7 +4,7 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: ["karma_info", "karmainfo"], config: "enable_karma_info")]
   class KarmaInfoCommand < CommandHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
       karma_levels = services.config.karma_levels

@@ -4,7 +4,7 @@ require "tourmaline"
 module PrivateParlorXT
   @[On(update: :Video, config: "relay_video")]
   class VideoHandler < UpdateHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
       return unless meets_requirements?(message)

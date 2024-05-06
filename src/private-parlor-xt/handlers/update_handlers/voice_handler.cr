@@ -4,7 +4,7 @@ require "tourmaline"
 module PrivateParlorXT
   @[On(update: :Voice, config: "relay_voice")]
   class VoiceHandler < UpdateHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
       return if message.forward_origin

@@ -1,47 +1,96 @@
 require "./spec_helper"
 
 module PrivateParlorXT
+
+  # NOTE: Can't test initialize_tasks, as we do not store the created Tasks and the function returns nil.
+  # NOTE: Can't test initialize_bot; it would be difficult to do so, and a failure in functionality here is evident immediately at runtime.
+
   @[RespondsTo(command: "hardcode")]
   class HardCodedCommand < CommandHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
     end
   end
 
   @[On(update: :SupergroupChatCreated)]
   class HardCodedUpdate < UpdateHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
     end
   end
 
   @[Hears(pattern: /^test/, command: true)]
   class HardCodedHearsHandler < HearsHandler
-    def do(message : Tourmaline::Message, services : Services)
+    def do(message : Tourmaline::Message, services : Services) : Nil
     end
   end
 
   describe PrivateParlorXT do
-    config = MockConfig.new
-    client = MockClient.new
-    relay = Relay.new("", client)
-    access = AuthorizedRanks.new(config.ranks)
-    localization = Localization.parse_locale(Path["#{__DIR__}/../locales/"], "en-US")
-    database = SQLiteDatabase.new(DB.open("sqlite3://%3Amemory%3A"))
-    history = CachedHistory.new(config.message_lifespan.hours)
+    describe "#initialize_services" do
+      it "initializes services with required objects" do
+        config = MockConfig.new(
+          database_history: false,
+          spam_interval: 0,
+          spam_handler: SpamHandler.new(),
+          toggle_r9k_text: false,
+          toggle_r9k_media: false,
+          toggle_r9k_forwards: false,
+          karma_economy: nil,
+          statistics: false,
+        )
 
-    services = Services.new(
-      HandlerConfig.new(config),
-      localization.locale,
-      localization.replies,
-      localization.logs,
-      localization.command_descriptions,
-      database,
-      history,
-      access,
-      relay,
-    )
+        client = MockClient.new
+
+        services = initialize_services(config, client)
+        services.config.should(be_a(HandlerConfig))
+        services.locale.should(be_a(Locale))
+        services.replies.should(be_a(Replies))
+        services.logs.should(be_a(Logs))
+        services.command_descriptions.should(be_a(CommandDescriptions))
+        services.history.should(be_a(History))
+        services.access.should(be_a(AuthorizedRanks))
+        services.relay.should(be_a(Relay))
+        services.spam.should(be_nil)
+        services.robot9000.should(be_nil)
+        services.karma.should(be_nil)
+        services.stats.should(be_nil)
+      end
+
+      it "initializes optional modules" do
+        config = MockConfig.new(
+          database_history: true,
+          spam_interval: 10,
+          spam_handler: SpamHandler.new(),
+          toggle_r9k_text: true,
+          toggle_r9k_media: true,
+          toggle_r9k_forwards: false,
+          karma_economy: KarmaHandler.new(),
+          statistics: true,
+        )
+
+        client = MockClient.new
+
+        services = initialize_services(config, client)
+        services.config.should(be_a(HandlerConfig))
+        services.locale.should(be_a(Locale))
+        services.replies.should(be_a(Replies))
+        services.logs.should(be_a(Logs))
+        services.command_descriptions.should(be_a(CommandDescriptions))
+        services.history.should(be_a(SQLiteHistory))
+        services.access.should(be_a(AuthorizedRanks))
+        services.relay.should(be_a(Relay))
+        services.spam.should(be_a(SpamHandler))
+        services.robot9000.should(be_a(Robot9000))
+        services.karma.should(be_a(KarmaHandler))
+        services.stats.should(be_a(SQLiteStatistics))
+      end
+    end
 
     describe "#generate_command_handlers" do
       it "generates command handlers" do
+        config = MockConfig.new
+        client = MockClient.new
+
+        services = create_services()
+
         arr = PrivateParlorXT.generate_command_handlers(config, client, services)
 
         contains_mock = false
@@ -55,6 +104,11 @@ module PrivateParlorXT
       end
 
       it "generates command handlers for commands without a config toggle" do
+        config = MockConfig.new
+        client = MockClient.new
+
+        services = create_services()
+
         arr = PrivateParlorXT.generate_command_handlers(config, client, services)
 
         contains_mock = false
@@ -70,7 +124,11 @@ module PrivateParlorXT
 
     describe "#generate_update_handlers" do
       it "generates update handlers" do
-        client = PrivateParlorXT::MockClient.new
+        config = MockConfig.new
+        client = MockClient.new
+
+        services = create_services()
+
         PrivateParlorXT.generate_update_handlers(config, client, services)
 
         registered_actions = client.dispatcher.event_handlers.keys
@@ -79,7 +137,11 @@ module PrivateParlorXT
       end
 
       it "generates update handlers for updates without a config toggle" do
-        client = PrivateParlorXT::MockClient.new
+        config = MockConfig.new
+        client = MockClient.new
+
+        services = create_services()
+
         PrivateParlorXT.generate_update_handlers(config, client, services)
 
         registered_actions = client.dispatcher.event_handlers.keys
@@ -90,6 +152,10 @@ module PrivateParlorXT
 
     describe "#generate_hears_handlers" do
       it "generates hears handlers" do
+        config = MockConfig.new
+
+        services = create_services()
+
         arr = PrivateParlorXT.generate_hears_handlers(config, services)
 
         contains_mock = false
@@ -103,6 +169,10 @@ module PrivateParlorXT
       end
 
       it "generates hears handlers for handlers without a config toggle" do
+        config = MockConfig.new
+
+        services = create_services()
+
         arr = PrivateParlorXT.generate_hears_handlers(config, services)
 
         contains_mock = false
@@ -117,6 +187,8 @@ module PrivateParlorXT
     end
 
     it "kicks inative users" do
+      client = MockClient.new
+
       fresh_services = create_services(client: client)
 
       generate_users(fresh_services.database)
