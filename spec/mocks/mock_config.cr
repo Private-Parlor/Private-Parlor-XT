@@ -14,6 +14,7 @@ module PrivateParlorXT
       @default_rank = 0,
       @registration_open = true,
       @pseudonymous = false,
+      @flag_signatures = false,
       @media_spoilers = false,
       @karma_reasons = false,
       @salt = "",

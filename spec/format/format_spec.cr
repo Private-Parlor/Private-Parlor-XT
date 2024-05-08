@@ -4,19 +4,6 @@ module PrivateParlorXT
   describe Format do
     describe "#substitute_message" do
       it "globally substitutes placeholders" do
-        placeholder_text = "User {id} sent a message [{message_id}] (origin: {message_id})"
-
-        parameters = {
-          "id"         => 9000.to_s,
-          "message_id" => 20.to_s,
-        }
-
-        expected = "User 9000 sent a message [20] (origin: 20)"
-
-        Format.substitute_message(placeholder_text, parameters).should(eq(expected))
-      end
-
-      it "does not raise KeyError when placeholder is not found in parameters" do
         placeholder_text = "User {id} sent a {type} message [{message_id}] (origin: {message_id})"
 
         parameters = {
@@ -32,20 +19,6 @@ module PrivateParlorXT
 
     describe "#substitute_reply" do
       it "globally substitutes placeholders and escapes MarkdownV2" do
-        placeholder_text = "User {id} sent a message [{message_id}] (origin: {message_id}, karma: {karma})"
-
-        parameters = {
-          "id"         => 9000.to_s,
-          "message_id" => 20.to_s,
-          "karma"      => 2.0.to_s,
-        }
-
-        expected = "User 9000 sent a message [20] (origin: 20, karma: 2\\.0)"
-
-        Format.substitute_reply(placeholder_text, parameters).should(eq(expected))
-      end
-
-      it "does not raise KeyError when placeholder is not found in parameters" do
         placeholder_text = "User {id} sent a {type} message [{message_id}] (origin: {message_id}, karma: {karma})"
 
         parameters = {
@@ -120,7 +93,7 @@ module PrivateParlorXT
     end
 
     describe "#format_text" do
-      it "returns unaltered text and entities if preformatted is true" do
+      it "returns unaltered text and entities if message is preformatted" do
         services = create_services()
 
         text = "Example text ~~Admin"
@@ -169,6 +142,245 @@ module PrivateParlorXT
         tuple = Format.format_text(text, entities, false, services)
 
         tuple.should(eq(expected_tuple))
+      end
+    end
+
+    describe "#get_text_and_entities" do
+      it "returns unaltered string and entities if message is preformatted" do
+        services = create_services()
+        generate_users(services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          caption: "Preformatted Text ~~Admin",
+          entities: [
+            Tourmaline::MessageEntity.new(
+              "bold",
+              0,
+              25,
+            ),
+          ],
+          preformatted: true,
+        )
+
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        text, entities = Format.get_text_and_entities(message, user, services)
+
+        text.should(eq("Preformatted Text ~~Admin"))
+
+        entities.size.should(eq(1))
+
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(25))
+      end
+
+      it "returns nil and empty entities when user sends invalid text" do
+        services = create_services()
+        generate_users(services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          caption: "𝐀𝐁𝐂"
+        )
+
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        text, entities = Format.get_text_and_entities(message, user, services)
+
+        text.should(be_nil)
+        entities.should(be_empty)
+      end
+
+      it "returns formatted text and updated entities" do
+        services = create_services()
+        generate_users(services.database)
+
+        config = HandlerConfig.new(
+          MockConfig.new(
+            linked_network: {"foo" => "foochatbot"}
+          )
+        )
+
+        format_services = create_services(config: config)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          caption: "Text with entities and backlinks >>>/foo/",
+          entities: [
+            Tourmaline::MessageEntity.new(
+              "bold",
+              0,
+              4,
+            ),
+            Tourmaline::MessageEntity.new(
+              "underline",
+              4,
+              13,
+            ),
+            Tourmaline::MessageEntity.new(
+              "text_link",
+              0,
+              25,
+              "www.google.com"
+            ),
+          ],
+        )
+
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        expected = "Text with entities and backlinks >>>/foo/\n" \
+                   "(www.google.com)"
+
+        text, entities = Format.get_text_and_entities(message, user, format_services)
+
+        text.should(eq(expected))
+        entities.size.should(eq(2))
+
+        entities[0].type.should(eq("underline"))
+        entities[1].type.should(eq("text_link"))
+        entities[1].length.should(eq(8)) # >>>/foo/
+      end
+
+      it "returns formatted text and updated entities with pseudonym" do
+        config = HandlerConfig.new(
+          MockConfig.new(
+            pseudonymous: true,
+            linked_network: {"foo" => "foochatbot"}
+          )
+        )
+
+        format_services = create_services(config: config)
+
+        generate_users(format_services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(60200, false, "beispiel"),
+          text: "Text with entities and backlinks >>>/foo/",
+          entities: [
+            Tourmaline::MessageEntity.new(
+              "bold",
+              0,
+              4,
+            ),
+            Tourmaline::MessageEntity.new(
+              "underline",
+              4,
+              13,
+            ),
+            Tourmaline::MessageEntity.new(
+              "text_link",
+              0,
+              25,
+              "www.google.com"
+            ),
+          ],
+        )
+
+        unless user = format_services.database.get_user(60200)
+          fail("User 60200 should exist in the database")
+        end
+
+        expected = "Voorb !JMf3r1v1Aw:\n" \
+                   "Text with entities and backlinks >>>/foo/\n" \
+                   "(www.google.com)"
+
+        text, entities = Format.get_text_and_entities(message, user, format_services)
+
+        text.should(eq(expected))
+        entities.size.should(eq(4))
+
+        entities[0].type.should(eq("bold"))
+        entities[1].type.should(eq("code"))
+        entities[2].type.should(eq("underline"))
+        entities[3].type.should(eq("text_link"))
+        entities[3].length.should(eq(8)) # >>>/foo/
+      end
+    end
+
+    describe "#valid_text_and_entities" do
+      it "returns nil and empty entities when user sends invalid text" do
+        services = create_services()
+        generate_users(services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          caption: "𝐀𝐁𝐂"
+        )
+
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        text, entities = Format.get_text_and_entities(message, user, services)
+
+        text.should(be_nil)
+        entities.should(be_empty)
+      end
+
+      it "returns the given message's text and entities" do
+        services = create_services()
+
+        generate_users(services.database)
+
+        config = HandlerConfig.new(
+          MockConfig.new(
+            linked_network: {"foo" => "foochatbot"}
+          )
+        )
+
+        format_services = create_services(config: config)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          caption: "Text with entities and backlinks >>>/foo/",
+          entities: [
+            Tourmaline::MessageEntity.new(
+              "bold",
+              0,
+              4,
+            ),
+            Tourmaline::MessageEntity.new(
+              "underline",
+              4,
+              13,
+            ),
+            Tourmaline::MessageEntity.new(
+              "text_link",
+              0,
+              25,
+              "www.google.com"
+            ),
+          ],
+        )
+
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        expected = "Text with entities and backlinks >>>/foo/"
+
+        text, entities = Format.valid_text_and_entities(message, user, format_services)
+
+        text.should(eq(expected))
+        entities.size.should(eq(3))
+
+        entities[0].type.should(eq("bold"))
+        entities[1].type.should(eq("underline"))
+        entities[2].type.should(eq("text_link"))
       end
     end
 
@@ -351,230 +563,287 @@ module PrivateParlorXT
         entities[2].type.should(eq("underline"))
         entities[3].type.should(eq("strikethrough"))
       end
+
+      it "returns updated entities and text with flag header" do
+        mock_services = create_services(
+          config: HandlerConfig.new(
+            MockConfig.new(
+              pseudonymous: true,
+              flag_signatures: true,
+            )
+          )
+        )
+
+        message_text = "Example Text"
+        message_entities = [
+          Tourmaline::MessageEntity.new(
+            "underline",
+            0,
+            7,
+          ),
+          Tourmaline::MessageEntity.new(
+            "strikethrough",
+            7,
+            4,
+          ),
+        ]
+
+        message = create_message(
+          6_i64,
+          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+          caption: message_text,
+          entities: message_entities,
+        )
+
+        user = MockUser.new(9000, tripcode: "🦤🦆🕊️#DoDuDo")
+
+        text, entities = Format.prepend_pseudonym(
+          message_text,
+          message_entities,
+          user,
+          message,
+          mock_services
+        )
+
+        expected = "🦤🦆🕊️:\n" \
+                   "Example Text"
+
+        text.should(eq(expected))
+        entities.size.should(eq(3))
+
+        entities[0].type.should(eq("code"))
+        entities[1].type.should(eq("underline"))
+        entities[2].type.should(eq("strikethrough"))
+      end
     end
 
-    describe "#get_text_and_entities" do
-      it "returns unaltered string and entities if message is preformatted" do
-        services = create_services()
-        generate_users(services.database)
+    describe "#format_cooldown_until" do
+      it "returns cooldown time response" do
+        services = create_services
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          caption: "Preformatted Text ~~Admin",
-          entities: [
-            Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              25,
-            ),
-          ],
-          preformatted: true,
-        )
+        time = Time.utc
 
-        unless user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
+        expected = "#{services.replies.cooldown_true} #{Format.format_time(time, services.locale.time_format)}"
 
-        text, entities = Format.get_text_and_entities(message, user, services)
+        result = Format.format_cooldown_until(time, services.locale, services.replies)
 
-        text.should(eq("Preformatted Text ~~Admin"))
-
-        entities.size.should(eq(1))
-
-        entities[0].type.should(eq("bold"))
-        entities[0].offset.should(eq(0))
-        entities[0].length.should(eq(25))
+        result.should(eq(expected))
       end
 
-      it "returns nil and empty entities when user sends invalid text" do
-        services = create_services()
-        generate_users(services.database)
+      it "returns a no cooldown response if time is nil" do
+        services = create_services
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          caption: "𝐀𝐁𝐂"
-        )
+        result = Format.format_cooldown_until(nil, services.locale, services.replies)
 
-        unless user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
+        result.should(eq(services.replies.cooldown_false))
+      end
+    end
 
-        text, entities = Format.get_text_and_entities(message, user, services)
+    describe "#format_warn_expiry" do
+      it "returns warning expiration response" do
+        services = create_services
 
-        text.should(be_nil)
-        entities.should(be_empty)
+        time = Time.utc
+
+        expected = Format.substitute_message(services.replies.info_warning, {
+          "warn_expiry" => Format.format_time(time, services.locale.time_format)
+        })
+
+        result = Format.format_warn_expiry(time, services.locale, services.replies)
+
+        result.should(eq(expected))
       end
 
-      it "returns formatted text and updated entities" do
-        services = create_services()
-        generate_users(services.database)
+      it "returns nil if expiration time is nil" do
+        services = create_services
 
-        config = HandlerConfig.new(
-          MockConfig.new(
-            linked_network: {"foo" => "foochatbot"}
-          )
+        result = Format.format_warn_expiry(nil, services.locale, services.replies)
+
+        result.should(be_nil)
+      end
+    end
+
+    describe "#format_tripcode_set_reply" do
+      it "returns tripcode set reponse" do
+        services = create_services
+
+        expected = Format.substitute_message(services.replies.tripcode_set, {
+          "set_format" => Format.substitute_reply(services.replies.tripcode_set_format, {
+            "name" => "name",
+            "tripcode" => "!ozOtJW9BFA",
+          })
+        })
+
+        result = Format.format_tripcode_set_reply(
+          services.replies.tripcode_set_format,
+          "name",
+          "!ozOtJW9BFA",
+          services.replies
         )
 
-        format_services = create_services(config: config)
+        result.should(eq(expected))
+      end
+    end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          caption: "Text with entities and backlinks >>>/foo/",
-          entities: [
-            Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              4,
-            ),
-            Tourmaline::MessageEntity.new(
-              "underline",
-              4,
-              13,
-            ),
-            Tourmaline::MessageEntity.new(
-              "text_link",
-              0,
-              25,
-              "www.google.com"
-            ),
-          ],
-        )
+    describe "#format_reason_reply" do
+      it "returns formatted reason reply" do
+        services = create_services
 
-        unless user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
+        expected = "#{services.replies.reason_prefix}reason"
+
+        result = Format.format_reason_reply("reason", services.replies)
+
+        result.should(eq(expected))
+      end
+
+      it "returns nil if reason is nil" do 
+        services = create_services
+
+        result = Format.format_reason_reply(nil, services.replies)
+
+        result.should(be_nil)
+      end
+    end
+
+    describe "#truncate_karma_reason" do
+      it "returns first 500 characters of karma reason" do
+        services = create_services
+
+        reason = "lorem sed risus ultricies tristique nulla aliquet enim tortor at auctor
+        urna nunc id cursus metus aliquam eleifend mi in nulla posuere sollicitudin aliquam ultrices
+        sagittis orci a scelerisque purus semper eget duis at tellus at urna condimentum mattis pellentesque id nibh tortor
+        id aliquet lectus proin nibh nisl condimentum id venenatis a condimentum vitae sapien pellentesque habitant morbi
+        tristique senectus et netus et malesuada fames ac turpis egestas sed tempus urna et pharetra pharetra massa massa
+        ultricies mi quis hendrerit dolor magna eget est lorem ipsum dolor sit amet consectetur adipiscing elit pellentesque
+        habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas integer eget aliquet nibh praesent
+        tristique magna sit amet purus gravida quis blandit turpis cursus in hac habitasse platea dictumst quisque sagittis"
+
+        expected = "lorem sed risus ultricies tristique nulla aliquet enim tortor at auctor
+        urna nunc id cursus metus aliquam eleifend mi in nulla posuere sollicitudin aliquam ultrices
+        sagittis orci a scelerisque purus semper eget duis at tellus at urna condimentum mattis pellentesque id nibh tortor
+        id aliquet lectus proin nibh nisl condimentum id venenatis a condimentum vitae sapien pellentesque habitant morbi
+        tristique senectus et netus et malesuada fames ac turpis egestas sed temp"
+
+        unless result = Format.truncate_karma_reason(reason)
+          fail("truncate_karma_reason should have returned a result")
         end
 
-        expected = "Text with entities and backlinks >>>/foo/\n" \
+        result.should(eq(expected))
+        result.size.should(eq(500))
+      end
+
+      it "returns nil if karma reason is nil" do
+        services = create_services
+
+        result = Format.truncate_karma_reason(nil)
+
+        result.should(be_nil)
+      end
+    end
+
+    describe "#format_karma_reason_reply" do
+      it "returns formatted karma reply with reason" do
+        services = create_services
+
+        reply = "Karma vote with reason{karma_reason}"
+
+        reason = "lorem sed risus\n" \
+                 "ultricies tristique nulla\n" \
+                 "aliquet enim tortor at auctor"
+
+        expected = "Karma vote with reason\\ for:\n" \
+                   ">lorem sed risus\n" \
+                   ">ultricies tristique nulla\n" \
+                   ">aliquet enim tortor at auctor"
+
+        result = Format.format_karma_reason_reply(reason, reply, services.replies)
+
+        result.should(eq(expected))
+      end
+
+      it "returns karma reply if reason is nil or empty" do
+        services = create_services
+
+        expected = Format.substitute_reply(services.replies.gave_upvote, {} of String => String)
+
+        result = Format.format_karma_reason_reply(nil, services.replies.gave_upvote, services.replies)
+        result.should(eq(expected))
+
+        result_two = Format.format_karma_reason_reply("", services.replies.gave_upvote, services.replies)
+        result_two.should(eq(expected))
+
+        result_three = Format.format_karma_reason_reply("\\\\\\\\", services.replies.gave_upvote, services.replies)
+        result_three.should(eq(expected))
+      end
+    end
+
+    describe "#format_reason_log" do
+      it "returns formatted reason reply" do
+        services = create_services
+
+        expected = "#{services.logs.reason_prefix}reason"
+
+        result = Format.format_reason_log("reason", services.logs)
+
+        result.should(eq(expected))
+      end
+
+      it "returns nil if reason is nil" do 
+        services = create_services
+
+        result = Format.format_reason_log(nil, services.logs)
+
+        result.should(be_nil)
+      end
+    end
+
+    describe "#strip_format" do
+      it "returns text and entities stripped of formatting" do
+        services = create_services
+
+        text = "Example text with >>>/foo/ backlinks"
+        entities = [
+          Tourmaline::MessageEntity.new(
+            "underline",
+            0,
+            7,
+          ),
+          Tourmaline::MessageEntity.new(
+            "strikethrough",
+            7,
+            4,
+          ),
+          Tourmaline::MessageEntity.new(
+            "text_link",
+            13,
+            4,
+            "www.google.com"
+          ),
+        ]
+
+        expected = "Example text with >>>/foo/ backlinks\n"\
                    "(www.google.com)"
 
-        text, entities = Format.get_text_and_entities(message, user, format_services)
-
-        text.should(eq(expected))
-        entities.size.should(eq(2))
-
-        entities[0].type.should(eq("underline"))
-        entities[1].type.should(eq("text_link"))
-        entities[1].length.should(eq(8)) # >>>/foo/
-      end
-
-      it "returns formatted text and updated entities with pseudonym" do
-        config = HandlerConfig.new(
-          MockConfig.new(
-            pseudonymous: true,
-            linked_network: {"foo" => "foochatbot"}
-          )
+        result_text, result_entities = Format.strip_format(
+          text,
+          entities,
+          ["strikethrough"],
+          {"foo" => "foochatbot"}
         )
 
-        format_services = create_services(config: config)
+        result_text.should(eq(expected))
 
-        generate_users(format_services.database)
+        result_entities.size.should(eq(3))
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(60200, false, "beispiel"),
-          caption: "Text with entities and backlinks >>>/foo/",
-          entities: [
-            Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              4,
-            ),
-            Tourmaline::MessageEntity.new(
-              "underline",
-              4,
-              13,
-            ),
-            Tourmaline::MessageEntity.new(
-              "text_link",
-              0,
-              25,
-              "www.google.com"
-            ),
-          ],
-        )
-
-        unless user = format_services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
-        end
-
-        expected = "Voorb !JMf3r1v1Aw:\n" \
-                   "Text with entities and backlinks >>>/foo/\n" \
-                   "(www.google.com)"
-
-        text, entities = Format.get_text_and_entities(message, user, format_services)
-
-        text.should(eq(expected))
-        entities.size.should(eq(4))
-
-        entities[0].type.should(eq("bold"))
-        entities[1].type.should(eq("code"))
-        entities[2].type.should(eq("underline"))
-        entities[3].type.should(eq("text_link"))
-        entities[3].length.should(eq(8)) # >>>/foo/
-      end
-
-      it "returns formatted text and updated entities with pseudonym" do
-        config = HandlerConfig.new(
-          MockConfig.new(
-            pseudonymous: true,
-            linked_network: {"foo" => "foochatbot"}
-          )
-        )
-
-        format_services = create_services(config: config)
-
-        generate_users(format_services.database)
-
-        message = create_message(
-          11,
-          Tourmaline::User.new(60200, false, "beispiel"),
-          text: "Text with entities and backlinks >>>/foo/",
-          entities: [
-            Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              4,
-            ),
-            Tourmaline::MessageEntity.new(
-              "underline",
-              4,
-              13,
-            ),
-            Tourmaline::MessageEntity.new(
-              "text_link",
-              0,
-              25,
-              "www.google.com"
-            ),
-          ],
-        )
-
-        unless user = format_services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
-        end
-
-        expected = "Voorb !JMf3r1v1Aw:\n" \
-                   "Text with entities and backlinks >>>/foo/\n" \
-                   "(www.google.com)"
-
-        text, entities = Format.get_text_and_entities(message, user, format_services)
-
-        text.should(eq(expected))
-        entities.size.should(eq(4))
-
-        entities[0].type.should(eq("bold"))
-        entities[1].type.should(eq("code"))
-        entities[2].type.should(eq("underline"))
-        entities[3].type.should(eq("text_link"))
-        entities[3].length.should(eq(8)) # >>>/foo/
+        result_entities[0].type.should(eq("underline"))
+        result_entities[1].type.should(eq("text_link"))
+        result_entities[2].type.should(eq("text_link"))
+        result_entities[2].length.should(eq(8))
       end
     end
 
     describe "#remove_entities" do
-      it "should remove only the given entity types" do
+      it "removes only the given entity types" do
         strip_types = ["bold", "text_link"]
 
         entities = [
@@ -640,10 +909,16 @@ module PrivateParlorXT
     end
 
     describe "#replace_links" do
-      it "appends text link to string" do
+      it "appends text links to string" do
         text = "Text link example"
 
         entities = [
+          Tourmaline::MessageEntity.new(
+            "text_link",
+            5,
+            4,
+            "www.example.com",
+          ),
           Tourmaline::MessageEntity.new(
             "text_link",
             10,
@@ -652,19 +927,21 @@ module PrivateParlorXT
           ),
         ]
 
-        expected = "Text link example\n(https://crystal-lang.org)"
+        expected = "Text link example\n" \
+                   "(www.example.com)\n" \
+                   "(https://crystal-lang.org)"
 
         Format.replace_links(text, entities).should(eq(expected))
       end
     end
 
     describe "#format_network_links" do
-      network = {
-        "foo"  => "foochatbot",
-        "fizz" => "fizzchatbot",
-      }
-
       it "only formats chats in linked network" do
+        network = {
+          "foo"  => "foochatbot",
+          "fizz" => "fizzchatbot",
+        }
+
         text = "Backlinks: >>>/foo/ >>>/bar/ >>>/fizz/"
 
         entities = Format.format_network_links(text, [] of Tourmaline::MessageEntity, network)
@@ -691,6 +968,11 @@ module PrivateParlorXT
       end
 
       it "handles UTF-16 codepoints in text" do
+        network = {
+          "foo"  => "foochatbot",
+          "fizz" => "fizzchatbot",
+        }
+
         text = "Backlinks: >>>/foo/ 🔁 >>>/fizz/"
 
         entities = Format.format_network_links(text, [] of Tourmaline::MessageEntity, network)
@@ -740,6 +1022,10 @@ module PrivateParlorXT
         Format.get_arg(command).should(eq(expected))
       end
 
+      it "returns nil if there is no arg" do
+        Format.get_arg("/test").should(be_nil)
+      end
+
       it "returns nil if there is no given text" do
         Format.get_arg(nil).should(be_nil)
       end
@@ -757,6 +1043,14 @@ module PrivateParlorXT
         Format.get_args(command, 2).should(eq(count_two))
         Format.get_args(command, 3).should(eq(count_three))
         Format.get_args(command, 4).should(eq(count_three))
+      end
+
+      it "returns an empty array if there is no arg" do
+        unless result = Format.get_args("/test", 1)
+          fail("Result should not be nil")
+        end
+
+        result.should(be_empty)
       end
 
       it "returns nil if there is no given text" do
@@ -1116,6 +1410,22 @@ module PrivateParlorXT
       end
     end
 
+    describe "#format_user_reveal" do
+      it "returns Markdown link to the given user id" do
+        services = create_services
+
+        expected = "[user\\_name](tg://user?id=123456)"
+
+        expected = Format.substitute_message(services.replies.username_reveal, {
+          "username" => expected,
+        })
+
+        result = Format.format_user_reveal(123456, "user_name", services.replies)
+
+        result.should(eq(expected))
+      end
+    end
+
     describe "#format_user_sign" do
       it "returns updated entities and text signed with user name" do
         arg = "Example🦫Text"
@@ -1166,7 +1476,7 @@ module PrivateParlorXT
     end
 
     describe "#format_tripcode_sign" do
-      it "returns updated entities and text signed with tripcode" do
+      it "returns header with updated entities and text for a tripcode" do
         expected_header = "🦫Beaver !Tripcode:\n"
 
         text, entities = Format.format_tripcode_sign(
@@ -1186,6 +1496,25 @@ module PrivateParlorXT
         entities[1].type.should(eq("code"))
         entities[1].offset.should(eq(9))
         entities[1].length.should(eq(9))
+      end
+    end
+    
+    describe "#format_flag_sign" do
+      it "returns header with updated entities and text for user flags" do
+        expected_header = "🦤🦆🕊️:\n"
+
+        text, entities = Format.format_flag_sign(
+          "🦤🦆🕊️",
+          [] of Tourmaline::MessageEntity
+        )
+
+        text.should(eq(expected_header))
+
+        entities.size.should(eq(1))
+
+        entities[0].type.should(eq("code"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(7))
       end
     end
 
@@ -1281,6 +1610,54 @@ module PrivateParlorXT
       end
     end
 
+    describe "#format_contact_reply" do
+      it "returns formatted contact string" do
+        services = create_services
+
+        contact = "@example"
+
+        expected = Format.substitute_message(services.replies.blacklist_contact, {
+          "contact" => contact,
+        })
+
+        Format.format_contact_reply(contact, services.replies).should(eq(expected))
+      end
+
+      it "returns nil if no contact was given" do
+        services = create_services
+
+
+        Format.format_contact_reply(nil, services.replies).should(be_nil)
+      end
+    end
+
+    describe "#format_time_span" do
+      it "returns time and its unit for the given time span" do
+        services = create_services
+
+        time_one = 135.5.days
+        time_two = 0.5.weeks
+        time_three = 65.hours
+        time_four = 13.6.hours
+        time_five = 56.8.minutes
+        time_six = 2.5.seconds
+
+        expected_one = "19#{services.locale.time_units[0]}"
+        expected_two = "3#{services.locale.time_units[1]}"
+        expected_three = "2#{services.locale.time_units[1]}"
+        expected_four = "13#{services.locale.time_units[2]}"
+        expected_five = "56#{services.locale.time_units[3]}"
+        expected_six = "2#{services.locale.time_units[4]}"
+
+        Format.format_time_span(time_one, services.locale).should(eq(expected_one))
+        Format.format_time_span(time_two, services.locale).should(eq(expected_two))
+        Format.format_time_span(time_three, services.locale).should(eq(expected_three))
+        Format.format_time_span(time_four, services.locale).should(eq(expected_four))
+        Format.format_time_span(time_five, services.locale).should(eq(expected_five))
+        Format.format_time_span(time_six, services.locale).should(eq(expected_six))
+      end
+    end
+
     describe "#format_smiley" do
       it "returns smiley face based on number of given warnings" do
         smileys = [":)", ":O", ":/", ">:("]
@@ -1297,11 +1674,9 @@ module PrivateParlorXT
     end
 
     describe "#format_karma_loading_bar" do
-      client = MockClient.new
-
-      services = create_services(client: client)
-
       it "returns full bar when percentage is 100%" do
+        services = create_services()
+
         expected = services.locale.loading_bar[2] * 10
 
         bar = Format.format_karma_loading_bar(100.0_f32, services.locale)
@@ -1310,6 +1685,8 @@ module PrivateParlorXT
       end
 
       it "returns empty bar when percentage is 0%" do
+        services = create_services()
+
         expected = services.locale.loading_bar[0] * 10
 
         bar = Format.format_karma_loading_bar(0.0_f32, services.locale)
@@ -1318,6 +1695,8 @@ module PrivateParlorXT
       end
 
       it "returns bar with a half filled pip when percentage is 55%" do
+        services = create_services()
+
         expected = services.locale.loading_bar[2] * 5
         expected = expected + services.locale.loading_bar[1]
         expected = expected + services.locale.loading_bar[0] * 4
@@ -1328,12 +1707,73 @@ module PrivateParlorXT
       end
 
       it "returns partially filled bar when percentage has a remainder less than 5" do
+        services = create_services()
+
         expected = services.locale.loading_bar[2] * 3
         expected = expected + services.locale.loading_bar[0] * 7
 
         bar = Format.format_karma_loading_bar(33.3_f32, services.locale)
 
         bar.should(eq(expected))
+      end
+    end
+
+    describe "#format_time" do
+      it "returns time string based on the given format" do
+        time = Time.utc
+
+        format = "%D, %T"
+
+        expected = time.to_s(format)
+
+        Format.format_time(time, format).should(eq(expected))
+      end
+
+      it "returns nil when no time was given" do
+        Format.format_time(nil, "%D, %T").should(be_nil)
+      end
+    end
+
+    describe "#format_version" do
+      it "returns string containing source code link and information" do 
+        expected = "Private Parlor XT vspec \\~ [\\[Source\\]](https://github.com/Private-Parlor/Private-Parlor-XT)"
+
+        Format.format_version.should(eq(expected))
+      end
+    end
+
+    describe "#format_help" do
+      it "returns dynamically generated help message according to user's rank" do
+        services = create_services
+        
+        user = MockUser.new(9000, rank: 1000)
+
+        expected = "#{services.replies.help_header}\n" \
+                   "#{Format.escape_md("/start - #{services.command_descriptions.start}\n", version: 2)}" \
+                   "#{Format.escape_md("/stop - #{services.command_descriptions.stop}\n", version: 2)}" \
+                   "#{Format.escape_md("/info - #{services.command_descriptions.info}\n", version: 2)}" \
+                   "#{Format.escape_md("/users - #{services.command_descriptions.users}\n", version: 2)}" \
+                   "#{Format.escape_md("/version - #{services.command_descriptions.version}\n", version: 2)}" \
+                   "#{Format.escape_md("/toggle_karma - #{services.command_descriptions.toggle_karma}\n", version: 2)}" \
+                   "#{Format.escape_md("/toggle_debug - #{services.command_descriptions.toggle_debug}\n", version: 2)}" \
+                   "#{Format.escape_md("/tripcode - #{services.command_descriptions.tripcode}\n", version: 2)}" \
+                   "#{Format.escape_md("/motd - #{services.command_descriptions.motd}\n", version: 2)}" \
+                   "#{Format.escape_md("/help - #{services.command_descriptions.help}\n", version: 2)}" \
+                   "#{Format.escape_md("/stats - #{services.command_descriptions.stats}\n", version: 2)}" \
+                   "\n#{Format.substitute_reply(services.replies.help_rank_commands, {"rank" => "Host"})}\n" \
+                   "#{Format.escape_md("/hostsay [text] - #{services.command_descriptions.ranksay}\n", version: 2)}" \
+                   "#{Format.escape_md("/adminsay [text] - #{services.command_descriptions.ranksay}\n", version: 2)}" \
+                   "#{Format.escape_md("/modsay [text] - #{services.command_descriptions.ranksay}\n", version: 2)}" \
+                   "#{Format.escape_md("/purge - #{services.command_descriptions.purge}\n", version: 2)}" \
+                   "#{Format.escape_md("/promote [name/OID/ID] [rank] - #{services.command_descriptions.promote}\n", version: 2)}" \
+                   "#{Format.escape_md("/demote [name/OID/ID] [rank] - #{services.command_descriptions.demote}\n", version: 2)}" \
+                   "\n#{services.replies.help_reply_commands}\n" \
+                   "#{Format.escape_md("+1 - #{services.command_descriptions.upvote}\n", version: 2)}" \
+                   "#{Format.escape_md("-1 - #{services.command_descriptions.downvote}\n", version: 2)}" 
+
+        result = Format.format_help(user, services.access.ranks, services.command_descriptions, services.replies)
+
+        result.should(eq(expected))
       end
     end
   end

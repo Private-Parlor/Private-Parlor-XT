@@ -2,6 +2,7 @@ require "digest"
 require "tourmaline"
 
 module PrivateParlorXT
+  # A general use module for formatting text and `Tourmaline::MessageEntity`
   module Format
     include Tourmaline::Helpers
     extend self
@@ -26,6 +27,7 @@ module PrivateParlorXT
       end
     end
 
+    # Checks the given *text* for invalid characters
     def check_text(text : String, user : User, message : Tourmaline::Message, services : Services) : Bool
       return true if message.preformatted?
 
@@ -44,6 +46,7 @@ module PrivateParlorXT
       true
     end
 
+    # Removes formatting from teh given *text* and *entities*
     def format_text(text : String, entities : Array(Tourmaline::MessageEntity), preformatted : Bool?, services : Services) : Tuple(String, Array(Tourmaline::MessageEntity))
       unless preformatted
         text, entities = Format.strip_format(text, entities, services.config.entity_types, services.config.linked_network)
@@ -52,6 +55,7 @@ module PrivateParlorXT
       return text, entities
     end
 
+    # Gets the text and message entities from a given *message*
     def get_text_and_entities(message : Tourmaline::Message, user : User, services : Services) : Tuple(String?, Array(Tourmaline::MessageEntity))
       text = message.caption || message.text || ""
       entities = message.entities.empty? ? message.caption_entities : message.entities
@@ -71,6 +75,7 @@ module PrivateParlorXT
       return text, entities
     end
 
+    # Checks the text and entities from the given *message* for validity
     def valid_text_and_entities(message : Tourmaline::Message, user : User, services : Services) : Tuple(String?, Array(Tourmaline::MessageEntity))
       text = message.caption || message.text || ""
       entities = message.entities.empty? ? message.caption_entities : message.entities
@@ -82,6 +87,7 @@ module PrivateParlorXT
       return text, entities
     end
 
+    # Prepend the user's tripcode to the message
     def prepend_pseudonym(text : String, entities : Array(Tourmaline::MessageEntity), user : User, message : Tourmaline::Message, services : Services) : Tuple(String?, Array(Tourmaline::MessageEntity))
       unless services.config.pseudonymous
         return text, entities
@@ -107,6 +113,7 @@ module PrivateParlorXT
       return header + text, entities
     end
 
+    # Format the cooldown until text based on the given *expiration*
     def format_cooldown_until(expiration : Time?, locale : Locale, replies : Replies) : String
       if time = format_time(expiration, locale.time_format)
         "#{replies.cooldown_true} #{time}"
@@ -115,12 +122,14 @@ module PrivateParlorXT
       end
     end
 
+    # Format the warning expiration text based on the given *expiration*
     def format_warn_expiry(expiration : Time?, locale : Locale, replies : Replies) : String?
       if time = format_time(expiration, locale.time_format)
         replies.info_warning.gsub("{warn_expiry}", "#{time}")
       end
     end
 
+    # Format the tripcode set reply
     def format_tripcode_set_reply(set_format : String, name : String, tripcode : String, replies : Replies) : String
       set_format = set_format.gsub("{name}", escape_md(name, version: 2))
 
@@ -129,18 +138,21 @@ module PrivateParlorXT
       replies.tripcode_set.gsub("{set_format}", set_format)
     end
 
+    # Format the *reason* for system message replies
     def format_reason_reply(reason : String?, replies : Replies) : String?
       if reason
         "#{replies.reason_prefix}#{reason}"
       end
     end
 
+    # Return the first 500 characters of the given *reason*
     def truncate_karma_reason(reason : String?) : String?
       return unless reason
 
       reason[0, 500]
     end
 
+    # Format the *reason* for karma related replies
     def format_karma_reason_reply(reason : String?, karma_reply : String, replies : Replies) : String
       return Format.substitute_reply(karma_reply) unless reason
 
@@ -161,12 +173,14 @@ module PrivateParlorXT
       )
     end
 
+    # Format the *reason* for log messages
     def format_reason_log(reason : String?, logs : Logs) : String?
       if reason
         "#{logs.reason_prefix}#{reason}"
       end
     end
 
+    # Resturns text and message entities with formatting stripped, such as text_links and stripped entities, and formats network links
     def strip_format(text : String, entities : Array(Tourmaline::MessageEntity), strip_types : Array(String), linked_network : Hash(String, String)) : Tuple(String, Array(Tourmaline::MessageEntity))
       formatted_text = replace_links(text, entities)
 
@@ -177,6 +191,7 @@ module PrivateParlorXT
       return formatted_text, valid_entities
     end
 
+    # Removes message *entities* if their types are found in *strip_types*
     def remove_entities(entities : Array(Tourmaline::MessageEntity), strip_types : Array(String)) : Array(Tourmaline::MessageEntity)
       stripped_entities = [] of Tourmaline::MessageEntity
 
@@ -249,6 +264,7 @@ module PrivateParlorXT
       {name, tripcode}
     end
 
+    # Replaces appends links contained in text link entities to the end of the given *text*
     def replace_links(text : String, entities : Array(Tourmaline::MessageEntity)) : String
       entities.each do |entity|
         if entity.type == "text_link" && (url = entity.url)
@@ -266,6 +282,7 @@ module PrivateParlorXT
       text
     end
 
+    # Returns a text link message entities corresponding to the network links in *text*, linking to their respective chats
     def format_network_links(text : String, entities : Array(Tourmaline::MessageEntity), linked_network : Hash(String, String)) : Array(Tourmaline::MessageEntity)
       offset = 0
 
@@ -295,9 +312,9 @@ module PrivateParlorXT
       entities
     end
 
-    # Checks the content of the message text and determines if it should be relayed.
+    # Checks the content of the message *text* and determines if it should be relayed.
     #
-    # Returns false if the text has mathematical alphanumeric symbols, as they contain bold and italic characters.
+    # Returns `true` if the *text* is empty or permitted, `false` if the text has mathematical alphanumeric symbols, as they contain bold and italic characters.
     def allow_text?(text : String) : Bool
       if text.empty?
         true
@@ -308,13 +325,14 @@ module PrivateParlorXT
       end
     end
 
-    # Returns arguments found after a command from a message text.
+    # Returns the argument following a given *text*, usually a command where the argument comes after the first whitespace
     def get_arg(text : String?) : String | Nil
       return unless text
 
       text.split(2)[1]?
     end
 
+    # Returns *count* number of args after a given *text*, usually a command where the command precedes the first whitespace.
     def get_args(text : String?, count : Int) : Array(String) | Nil
       return unless text
 
@@ -324,7 +342,7 @@ module PrivateParlorXT
     # Checks the text and entities for a forwarded message to determine if it
     # was relayed as a regular message
     #
-    # Returns true if the forward message was relayed regularly, nil otherwise
+    # Returns `true` if the forward message was relayed regularly, `nil` otherwise
     def regular_forward?(text : String?, entities : Array(Tourmaline::MessageEntity)) : Bool?
       return unless text
       if ent = entities.first?
@@ -332,6 +350,7 @@ module PrivateParlorXT
       end
     end
 
+    # Returns a 'Forwarded from' header according to the original user which the message came from
     def get_forward_header(message : Tourmaline::Message, entities : Array(Tourmaline::MessageEntity)) : Tuple(String?, Array(Tourmaline::MessageEntity))
       unless origin = message.forward_origin
         return nil, [] of Tourmaline::MessageEntity
@@ -356,11 +375,7 @@ module PrivateParlorXT
       end
     end
 
-    # Returns a link to a given user's account, for reveal messages
-    def format_user_reveal(id : UserID, name : String, replies : Replies) : String
-      replies.username_reveal.gsub("{username}", "[#{escape_md(name, version: 2)}](tg://user?id=#{id})")
-    end
-
+    # Returns a 'Forwarded from' header for users who do not have forward privacy enabled
     def format_user_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "Forwarded from #{name}\n\n"
 
@@ -377,6 +392,7 @@ module PrivateParlorXT
       return header, entities
     end
 
+    # Returns a 'Forwarded from' header for private users
     def format_private_user_forward(name : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "Forwarded from #{name}\n\n"
 
@@ -393,7 +409,7 @@ module PrivateParlorXT
       return header, entities
     end
 
-    # For bots or public channels
+    # Returns a 'Forwarded from' header for bots and public channels
     def format_username_forward(name : String, username : String?, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "Forwarded from #{name}\n\n"
 
@@ -410,7 +426,7 @@ module PrivateParlorXT
       return header, entities
     end
 
-    # Removes the "-100" prefix for private channels
+    # Returns a 'Forwarded from' header for private channels, removing the "-100" prefix for private channel IDs
     def format_private_channel_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "Forwarded from #{name}\n\n"
 
@@ -427,6 +443,12 @@ module PrivateParlorXT
       return header, entities
     end
 
+    # Returns a link to a given user's account, for reveal messages
+    def format_user_reveal(id : UserID, name : String, replies : Replies) : String
+      replies.username_reveal.gsub("{username}", "[#{escape_md(name, version: 2)}](tg://user?id=#{id})")
+    end
+
+    # Format the user sign based on the given *name*, appending the signature to *arg* as a text link to the user's ID
     def format_user_sign(name : String, id : UserID, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       signature = "~~#{name}"
 
@@ -444,6 +466,7 @@ module PrivateParlorXT
       return "#{arg} #{signature}", entities
     end
 
+    # Format the karma level sign based on the given *level* appending the signature to *arg*
     def format_karma_sign(level : String, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       signature = "t. #{level}"
 
@@ -457,6 +480,7 @@ module PrivateParlorXT
       return "#{arg} #{signature}", entities
     end
 
+    # Format the tripcode header for tripcode signs
     def format_tripcode_sign(name : String, tripcode : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "#{name} #{tripcode}:\n"
 
@@ -474,6 +498,7 @@ module PrivateParlorXT
       return header, entities
     end
 
+    # Format the flag sign header for tripcode messages when flag signs are enabled
     def format_flag_sign(name : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "#{name}:\n"
 
@@ -489,6 +514,7 @@ module PrivateParlorXT
       return header, entities
     end
 
+    # Format ranksay signature for the given *rank*, appending it to the given *arg*
     def format_ranksay(rank : String, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       signature = "~~#{rank}"
 
@@ -501,6 +527,7 @@ module PrivateParlorXT
       return "#{arg} #{signature}", entities
     end
 
+    # Add the given *offset* to the offset of each message entity
     def offset_entities(entities : Array(Tourmaline::MessageEntity), offset : Int32) : Array(Tourmaline::MessageEntity)
       entities.each do |entity|
         entity.offset += offset
@@ -509,6 +536,7 @@ module PrivateParlorXT
       entities
     end
 
+    # Subtract the given *amount* from the offset of each message entity
     def reset_entities(entities : Array(Tourmaline::MessageEntity), amount : Int32) : Array(Tourmaline::MessageEntity)
       entities.each do |entity|
         entity.offset -= amount
@@ -517,12 +545,14 @@ module PrivateParlorXT
       entities
     end
 
+    # Format the given *contact* for blacklist contact replies
     def format_contact_reply(contact : String?, replies : Replies) : String?
       if contact
         replies.blacklist_contact.gsub("{contact}", contact)
       end
     end
 
+    # Format a time span using localized time units
     def format_time_span(time : Time::Span, locale : Locale) : String
       case
       when time < 1.minute then "#{time.to_i}#{locale.time_units[4]}"
@@ -564,6 +594,7 @@ module PrivateParlorXT
       end
     end
 
+    # Formats a given `Time` based on the given *format*
     def format_time(time : Time?, format : String) : String?
       if time
         time.to_s(format)
@@ -577,7 +608,7 @@ module PrivateParlorXT
       "Private Parlor XT v#{escape_md(VERSION, version: 2)} \\~ [\\[Source\\]](https://github.com/Private-Parlor/Private-Parlor-XT)"
     end
 
-    # Returns a message containing the commands the user can use.
+    # Returns a generated message containing the commands the user can use based on his rank.
     def format_help(user : User, ranks : Hash(Int32, Rank), descriptions : CommandDescriptions, replies : Replies) : String
       ranked = {
         CommandPermissions::Promote      => "/promote [name/OID/ID] [rank] - #{descriptions.promote}",
@@ -623,38 +654,42 @@ module PrivateParlorXT
         str << escape_md("/help - #{descriptions.help}\n", version: 2)
         str << escape_md("/stats - #{descriptions.stats}\n", version: 2)
 
+        next unless rank = ranks[user.rank]?
+
         rank_commands = [] of String
         reply_commands = [] of String
 
-        if rank = ranks[user.rank]?
-          if rank.command_permissions.includes?(:ranksay_lower)
-            ranks.each do |k, v|
-              if k <= user.rank && k != -10 && v.command_permissions.includes?(:ranksay)
-                rank_commands << escape_md("/#{v.name.downcase}say [text] - #{descriptions.ranksay}\n", version: 2)
-              end
+        if rank.command_permissions.includes?(CommandPermissions::RanksayLower)
+          lower_ranks = ranks.select{|k, _| k <= user.rank && k != -10}
+
+          lower_ranks.each do |k, v|
+            ranksay_permissions = Set{CommandPermissions::Ranksay, CommandPermissions::RanksayLower}
+
+            unless (v.command_permissions & ranksay_permissions).empty?
+              rank_commands << escape_md("/#{v.name.downcase}say [text] - #{descriptions.ranksay}", version: 2)
             end
           end
+        end
 
-          rank.command_permissions.each do |permission|
-            if ranked.keys.includes?(permission)
-              rank_commands << escape_md(ranked[permission], version: 2)
-            elsif reply_required.keys.includes?(permission)
-              reply_commands << escape_md(reply_required[permission], version: 2)
-            end
+        rank.command_permissions.each do |permission|
+          if ranked.keys.includes?(permission)
+            rank_commands << escape_md(ranked[permission], version: 2)
+          elsif reply_required.keys.includes?(permission)
+            reply_commands << escape_md(reply_required[permission], version: 2)
           end
+        end
 
-          unless rank_commands.empty?
-            str << "\n"
-            str << substitute_reply(replies.help_rank_commands, {"rank" => rank.name})
-            str << "\n"
-            rank_commands.each { |line| str << "#{line}\n" }
-          end
-          unless reply_commands.empty?
-            str << "\n"
-            str << replies.help_reply_commands
-            str << "\n"
-            reply_commands.each { |line| str << "#{line}\n" }
-          end
+        unless rank_commands.empty?
+          str << "\n"
+          str << substitute_reply(replies.help_rank_commands, {"rank" => rank.name})
+          str << "\n"
+          rank_commands.each { |line| str << "#{line}\n" }
+        end
+        unless reply_commands.empty?
+          str << "\n"
+          str << replies.help_reply_commands
+          str << "\n"
+          reply_commands.each { |line| str << "#{line}\n" }
         end
       end
     end
