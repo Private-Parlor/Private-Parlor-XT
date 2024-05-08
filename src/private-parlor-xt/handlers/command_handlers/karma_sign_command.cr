@@ -28,7 +28,7 @@ module PrivateParlorXT
 
       text, entities = Format.format_text(text, entities, false, services)
 
-      entities = update_entities(text, entities, arg, message)
+      entities = update_entities(text, entities, arg)
 
       current_level = get_karma_level(karma_levels, user)
 
