@@ -1,6 +1,9 @@
 require "../spec_helper.cr"
 
 module PrivateParlorXT
+
+  # NOTE: Can't test relay_album due to its delayed task
+
   module AlbumHelpers
     extend self
   end
@@ -8,15 +11,20 @@ module PrivateParlorXT
   describe AlbumHelpers do
     describe "#get_album_input" do
       it "returns InputMediaPhoto when message contains a photo" do
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          1_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          photo: [Tourmaline::PhotoSize.new(
-            "photo_item_one",
-            "unique_photo",
-            1080,
-            1080,
-          )],
+          message_id: 1,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          photo: [
+            Tourmaline::PhotoSize.new(
+              file_id: "photo_item_one",
+              file_unique_id: "unique_photo",
+              width: 1080,
+              height: 1080,
+            )
+          ],
           has_media_spoiler: true
         )
 
@@ -35,15 +43,18 @@ module PrivateParlorXT
       end
 
       it "returns InputMediaVideo when message contains a video" do
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          1_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
+          message_id: 1,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           video: Tourmaline::Video.new(
-            "video_item_one",
-            "unique_video",
-            1080,
-            1080,
-            60,
+            file_id: "video_item_one",
+            file_unique_id: "unique_video",
+            width: 1080,
+            height: 1080,
+            duration: 60,
           ),
           has_media_spoiler: true
         )
@@ -63,10 +74,17 @@ module PrivateParlorXT
       end
 
       it "returns InputMediaAudio when message contains an audio file" do
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          1_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          audio: Tourmaline::Audio.new("audio_item_one", "unique_audio", 60),
+          message_id: 1,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          audio: Tourmaline::Audio.new(
+            file_id: "audio_item_one",
+            file_unique_id: "unique_audio",
+            duration: 60,
+          ),
         )
 
         unless input = AlbumHelpers.get_album_input(message, "audio caption", [] of Tourmaline::MessageEntity, true)
@@ -83,10 +101,16 @@ module PrivateParlorXT
       end
 
       it "returns InputMediaDocument when message contains a document" do
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          1_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          document: Tourmaline::Document.new("document_item_one", "unique_document"),
+          message_id: 1,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          document: Tourmaline::Document.new(
+            file_id: "document_item_one",
+            file_unique_id: "unique_document",
+          ),
         )
 
         unless input = AlbumHelpers.get_album_input(message, "document caption", [] of Tourmaline::MessageEntity, true)
@@ -103,15 +127,18 @@ module PrivateParlorXT
       end
 
       it "returns nil when message does not contain a media group type" do
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
         message = create_message(
-          1_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
+          message_id: 1,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60,
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
         )
 

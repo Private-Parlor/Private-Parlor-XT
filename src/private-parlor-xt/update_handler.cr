@@ -22,7 +22,7 @@ module PrivateParlorXT
   # and include an `On` annotation to have it be usable by the bot.
   abstract class UpdateHandler < Handler
 
-    # Retruns the `User` associated with the message if the `User` could be found in the `Database`.
+    # Returns the `User` associated with the message if the `User` could be found in the `Database`.
     # This will also update the `User`'s username and realname if they have changed since the last message.
     # 
     # Returns `nil`  if:

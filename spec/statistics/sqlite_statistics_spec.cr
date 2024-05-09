@@ -148,94 +148,6 @@ module PrivateParlorXT
       end
     end
 
-    describe "#ensure_schema" do
-      it "creates message_stats table" do
-        connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
-        stats = SQLiteStatistics.new(connection)
-
-        connection.exec("DROP TABLE IF EXISTS message_stats")
-
-        stats.ensure_schema()
-
-        result = connection.query_one?("
-          SELECT EXISTS (
-            SELECT name FROM sqlite_schema WHERE type='table' AND name='message_stats'
-          )", 
-          as: Int32
-        )
-
-        result.should(eq(1))
-      end
-
-      it "creates proper schema" do
-        fields = [
-          "message_stats",
-          "date TIMESTAMP NOT NULL",
-          "albums INTEGER NOT NULL DEFAULT 0",
-          "animations INTEGER NOT NULL DEFAULT 0",
-          "audio INTEGER NOT NULL DEFAULT 0",
-          "contacts INTEGER NOT NULL DEFAULT 0",
-          "documents INTEGER NOT NULL DEFAULT 0",
-          "forwards INTEGER NOT NULL DEFAULT 0",
-          "locations INTEGER NOT NULL DEFAULT 0",
-          "photos INTEGER NOT NULL DEFAULT 0",
-          "polls INTEGER NOT NULL DEFAULT 0",
-          "stickers INTEGER NOT NULL DEFAULT 0",
-          "text INTEGER NOT NULL DEFAULT 0",
-          "venues INTEGER NOT NULL DEFAULT 0",
-          "videos INTEGER NOT NULL DEFAULT 0",
-          "videonotes INTEGER NOT NULL DEFAULT 0",
-          "voice INTEGER NOT NULL DEFAULT 0",
-          "upvotes INTEGER NOT NULL DEFAULT 0",
-          "downvotes INTEGER NOT NULL DEFAULT 0",
-          "unoriginal_text INTEGER NOT NULL DEFAULT 0",
-          "unoriginal_media INTEGER NOT NULL DEFAULT 0",
-          "total_messages INTEGER NOT NULL DEFAULT 0",
-          "PRIMARY KEY (date)",
-        ]
-        
-        connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
-        stats = SQLiteStatistics.new(connection)
-
-        connection.exec("DROP TABLE IF EXISTS message_stats")
-
-        stats.ensure_schema()
-
-        result = connection.query_one?("
-          SELECT sql FROM sqlite_schema WHERE type='table' AND name='message_stats'", 
-          as: String
-        )
-
-        unless result
-          fail("The database should have a 'message_stat' table schema")
-        end
-
-        fields.each do |necessary_field|
-          result.should(contain(necessary_field))
-        end
-      end
-    end
-
-    describe "#ensure_start_date" do
-      it "sets statistics module start date" do
-        connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
-        stats = SQLiteStatistics.new(connection)
-
-        stats.ensure_start_date()
-
-        result = connection.query_one?("SELECT value FROM system_config WHERE name = 'start_date'", as: String)
-
-        unless result
-          fail("The value for 'start_date' in system_config should be set")
-        end
-
-        result.should(eq(Time.utc.to_s("%Y-%m-%d")))
-      end
-    end
-
     describe "#get_start_date" do
       it "gets statistics module start date" do
         connection = DB.open("sqlite3://%3Amemory%3A")
@@ -458,6 +370,94 @@ module PrivateParlorXT
         results[Statistics::Robot9000Counts::TotalUnoriginal].should(eq(48))
         results[Statistics::Robot9000Counts::UnoriginalText].should(eq(25))
         results[Statistics::Robot9000Counts::UnoriginalMedia].should(eq(23))
+      end
+    end
+
+    describe "#ensure_schema" do
+      it "creates message_stats table" do
+        connection = DB.open("sqlite3://%3Amemory%3A")
+        db = SQLiteDatabase.new(connection)
+        stats = SQLiteStatistics.new(connection)
+
+        connection.exec("DROP TABLE IF EXISTS message_stats")
+
+        stats.ensure_schema()
+
+        result = connection.query_one?("
+          SELECT EXISTS (
+            SELECT name FROM sqlite_schema WHERE type='table' AND name='message_stats'
+          )", 
+          as: Int32
+        )
+
+        result.should(eq(1))
+      end
+
+      it "creates proper schema" do
+        fields = [
+          "message_stats",
+          "date TIMESTAMP NOT NULL",
+          "albums INTEGER NOT NULL DEFAULT 0",
+          "animations INTEGER NOT NULL DEFAULT 0",
+          "audio INTEGER NOT NULL DEFAULT 0",
+          "contacts INTEGER NOT NULL DEFAULT 0",
+          "documents INTEGER NOT NULL DEFAULT 0",
+          "forwards INTEGER NOT NULL DEFAULT 0",
+          "locations INTEGER NOT NULL DEFAULT 0",
+          "photos INTEGER NOT NULL DEFAULT 0",
+          "polls INTEGER NOT NULL DEFAULT 0",
+          "stickers INTEGER NOT NULL DEFAULT 0",
+          "text INTEGER NOT NULL DEFAULT 0",
+          "venues INTEGER NOT NULL DEFAULT 0",
+          "videos INTEGER NOT NULL DEFAULT 0",
+          "videonotes INTEGER NOT NULL DEFAULT 0",
+          "voice INTEGER NOT NULL DEFAULT 0",
+          "upvotes INTEGER NOT NULL DEFAULT 0",
+          "downvotes INTEGER NOT NULL DEFAULT 0",
+          "unoriginal_text INTEGER NOT NULL DEFAULT 0",
+          "unoriginal_media INTEGER NOT NULL DEFAULT 0",
+          "total_messages INTEGER NOT NULL DEFAULT 0",
+          "PRIMARY KEY (date)",
+        ]
+        
+        connection = DB.open("sqlite3://%3Amemory%3A")
+        db = SQLiteDatabase.new(connection)
+        stats = SQLiteStatistics.new(connection)
+
+        connection.exec("DROP TABLE IF EXISTS message_stats")
+
+        stats.ensure_schema()
+
+        result = connection.query_one?("
+          SELECT sql FROM sqlite_schema WHERE type='table' AND name='message_stats'", 
+          as: String
+        )
+
+        unless result
+          fail("The database should have a 'message_stat' table schema")
+        end
+
+        fields.each do |necessary_field|
+          result.should(contain(necessary_field))
+        end
+      end
+    end
+
+    describe "#ensure_start_date" do
+      it "sets statistics module start date" do
+        connection = DB.open("sqlite3://%3Amemory%3A")
+        db = SQLiteDatabase.new(connection)
+        stats = SQLiteStatistics.new(connection)
+
+        stats.ensure_start_date()
+
+        result = connection.query_one?("SELECT value FROM system_config WHERE name = 'start_date'", as: String)
+
+        unless result
+          fail("The value for 'start_date' in system_config should be set")
+        end
+
+        result.should(eq(Time.utc.to_s("%Y-%m-%d")))
       end
     end
   end

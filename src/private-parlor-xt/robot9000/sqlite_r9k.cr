@@ -3,6 +3,8 @@ require "../robot9000.cr"
 require "db"
 
 module PrivateParlorXT
+
+  # An implementation of `Robot9000` using the `Database` to store unique text and media IDs
   class SQLiteRobot9000 < Robot9000
     @connection : DB::Database
 
@@ -57,6 +59,7 @@ module PrivateParlorXT
       end
     end
 
+    # Ensures that the text table, file_id table, or both are created in the `Database`, according to the values of `check_text` and `check_media`
     def ensure_schema : Nil
       if @check_text
         write do

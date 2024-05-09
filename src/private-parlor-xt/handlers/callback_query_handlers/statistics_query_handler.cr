@@ -3,7 +3,7 @@ require "tourmaline"
 
 module PrivateParlorXT
   class StatisticsQueryHandler < CallbackHandler
-    def do(callback : Tourmaline::CallbackQuery, services : Services)
+    def do(callback : Tourmaline::CallbackQuery, services : Services) : Nil
       return unless user = get_user_from_callback(callback, services)
 
       return unless message = callback.message

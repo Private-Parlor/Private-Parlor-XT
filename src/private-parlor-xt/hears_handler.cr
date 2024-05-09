@@ -12,7 +12,7 @@ module PrivateParlorXT
   #       A `RegexLiteral` will match patterns inside text, whereas a `StringLiteral` will match patterns at the start of text.
   #
   # `config`
-  # :     `String`, the name of the `Config` member that enables this handler.
+  # :     `StringLiteral`, the name of the `Config` member that enables this handler.
   #       Handlers should be configurable, though a value is not required here to compile or be used in the program.
   #
   # `command`

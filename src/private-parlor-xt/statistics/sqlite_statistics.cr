@@ -3,6 +3,7 @@ require "../statistics.cr"
 require "db"
 
 module PrivateParlorXT
+  # An implementation of `Statistics` using the `Database` for storing message data
   class SQLiteStatistics < Statistics
     # Generally this should use the same connection that was used for the database
     def initialize(@connection : DB::Database)
@@ -20,6 +21,7 @@ module PrivateParlorXT
       end
     end
 
+    # :inherit:
     def get_start_date : String
       @connection.query_one("
         SELECT value
@@ -29,6 +31,7 @@ module PrivateParlorXT
       )
     end
 
+    # :inherit:
     def increment_message_count(type : MessageCounts) : Nil
       column = type.to_s.downcase
 
@@ -41,6 +44,7 @@ module PrivateParlorXT
       end
     end
 
+    # :inherit:
     def increment_upvote_count : Nil
       write do
         @connection.exec("
@@ -51,6 +55,7 @@ module PrivateParlorXT
       end
     end
 
+    # :inherit:
     def increment_downvote_count : Nil
       write do
         @connection.exec("
@@ -61,6 +66,7 @@ module PrivateParlorXT
       end
     end
 
+    # :inherit:
     def increment_unoriginal_text_count : Nil
       write do
         @connection.exec("
@@ -71,6 +77,7 @@ module PrivateParlorXT
       end
     end
 
+    # :inherit:
     def increment_unoriginal_media_count : Nil
       write do
         @connection.exec("
@@ -81,6 +88,7 @@ module PrivateParlorXT
       end
     end
 
+    # :inherit:
     def get_total_messages : Hash(MessageCounts, Int32)
       totals = @connection.query_one("
         SELECT
@@ -119,6 +127,7 @@ module PrivateParlorXT
       Hash.zip(MessageCounts.values, totals.to_a)
     end
 
+    # :inherit:
     def get_user_counts : Hash(UserCounts, Int32)
       totals = @connection.query_one("
         SELECT
@@ -150,6 +159,7 @@ module PrivateParlorXT
       Hash.zip(UserCounts.values, totals.to_a)
     end
 
+    # :inherit:
     def get_karma_counts : Hash(KarmaCounts, Int32)
       totals = @connection.query_one("
         SELECT
@@ -178,6 +188,7 @@ module PrivateParlorXT
       Hash.zip(KarmaCounts.values, totals.to_a)
     end
 
+    # :inherit:
     def get_karma_level_count(start_value : Int32, end_value : Int32) : Int32
       @connection.query_one("
         SELECT count(id)
@@ -188,6 +199,7 @@ module PrivateParlorXT
       )
     end
 
+    # :inherit:
     def get_robot9000_counts : Hash(Robot9000Counts, Int32)
       totals = @connection.query_one("
         SELECT
@@ -206,6 +218,7 @@ module PrivateParlorXT
       Hash.zip(Robot9000Counts.values, totals.to_a)
     end
 
+    # Ensures that there is a 'message_stats' table in the database
     def ensure_schema : Nil
       write do
         @connection.exec("CREATE TABLE IF NOT EXISTS message_stats (
@@ -235,6 +248,7 @@ module PrivateParlorXT
       end
     end
 
+    # Ensures that there is a date value for the 'start_date' key in the 'system_config' table
     def ensure_start_date : Nil
       return if @connection.query_one?("SELECT value FROM system_config WHERE name = 'start_date'", as: String)
 

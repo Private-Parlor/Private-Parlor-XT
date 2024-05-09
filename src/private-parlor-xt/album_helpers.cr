@@ -8,6 +8,7 @@ module PrivateParlorXT
 
     alias AlbumMedia = Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo | Tourmaline::InputMediaAudio | Tourmaline::InputMediaDocument
 
+    # A set of relay parameters associated with an album
     class AlbumRelayParameters
       getter original_messages : Array(MessageID)
       getter sender : UserID
@@ -25,16 +26,17 @@ module PrivateParlorXT
       end
     end
 
+    # An object representing a prepared media group to queue and relay
     class Album
       property message_ids : Array(MessageID) = [] of MessageID
       property media : Array(AlbumMedia) = [] of AlbumMedia
 
-      # Creates and instance of `Album`, representing a prepared media group to queue and relay
+      # Creates and instance of `Album`
       #
       # ## Arguments:
       #
-      # `msid`
-      # :     the message ID of the first media file in the album
+      # `message`
+      # :     the `MessageID` of the first media file in the album
       #
       # `media`
       # :     the media type corresponding with the given MSID
@@ -44,6 +46,9 @@ module PrivateParlorXT
       end
     end
 
+    # Returns the `Tourmaline::InputMedia` from the media in the given *message*, if available.
+    # 
+    # Returns `nil` if there was no media in the *message* to create a `Tourmaline::InputMedia`
     def get_album_input(message : Tourmaline::Message, caption : String, entities : Array(Tourmaline::MessageEntity), allow_spoilers : Bool? = false) : AlbumMedia?
       if media = message.photo.last?
         Tourmaline::InputMediaPhoto.new(media.file_id, caption: caption, caption_entities: entities, parse_mode: nil, has_spoiler: message.has_media_spoiler? && allow_spoilers)
@@ -58,6 +63,9 @@ module PrivateParlorXT
       end
     end
 
+    # Relays the given *album* after an arbitrary amount of time, waiting for the rest of the media group updates to come in
+    # 
+    # Returns early if the album is already queued for relaying, and adds the *input* to the Album object.
     def relay_album(albums : Hash(String, Album), album : String, message_id : MessageID, input : AlbumMedia, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, ReplyParameters), services : Services)
       if albums[album]?
         albums[album].message_ids << message_id
