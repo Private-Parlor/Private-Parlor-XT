@@ -3,9 +3,13 @@ require "./command_permissions.cr"
 require "./message_permissions.cr"
 
 module PrivateParlorXT
+
+  # A handler for `Rank` and determines if a `Rank` has access to certain commands and message types
   class AuthorizedRanks
+    # A hash of `Int32` to `Rank`, where each value represents a `Rank`
     getter ranks : Hash(Int32, Rank)
 
+    # Creates an instance of `AuthorizedRanks`
     def initialize(@ranks : Hash(Int32, Rank))
     end
 
@@ -50,7 +54,7 @@ module PrivateParlorXT
       end
     end
 
-    # Return an array of rank names that have a ranksay permission
+    # Return an array of rank names that have a `CommandPermissions::Ranksay` or `CommandPermissions::RanksayLower` permission
     def ranksay_ranks : Array(String)
       names = [] of String
 

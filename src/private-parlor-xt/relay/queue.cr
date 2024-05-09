@@ -1,8 +1,13 @@
 require "./queued_message.cr"
 
 module PrivateParlorXT
+  
+  # A container for messages ready to be sent to Telegram
   class MessageQueue
+    # A double-ended queue of `QueuedMessage`; enqueued user messages are sent to the back of the queue, while system messages are sent to the front. 
     getter queue : Deque(QueuedMessage)
+
+    # Provides mutually exclusion for elements in the queue. Assume that it is necessary when interacting with the queue.
     getter queue_mutex : Mutex
 
     def initialize
@@ -10,6 +15,7 @@ module PrivateParlorXT
       @queue_mutex = Mutex.new
     end
 
+    # Removes messsages from queue based on if the given block is truthy
     def reject_messages(&) : Nil
       @queue_mutex.synchronize do
         @queue.reject! do |msg|
@@ -35,6 +41,9 @@ module PrivateParlorXT
       end
     end
 
+    # Returns the first `QueuedMessage` in the `queue` if it is available
+    # 
+    # Returns `nil` if there is no `QueuedMessage` in the `queue`
     def get_message : QueuedMessage?
       msg = nil
       @queue_mutex.synchronize do
