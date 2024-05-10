@@ -2,30 +2,41 @@ require "../constants.cr"
 require "../history.cr"
 
 module PrivateParlorXT
+
+  # An implementation of `History` storing the messages in RAM
   class CachedHistory < History
+
+    # Represents single message sent and all of its receivers
     class MessageGroup
+      # User who sent this message
       getter sender : UserID = 0
+
+      # The original message ID of this message
       getter origin : MessageID = 0
+
+      # The time at which this message was sent
       getter sent : Time = Time.utc
+
+      # Users who received this message and their corresponding `MessageID`
       property receivers : Hash(UserID, MessageID) = {} of UserID => MessageID
-      property ratings : Set(Int64) = Set(Int64).new
+
+      # Set of users who upvoted or downvoted this message
+      property ratings : Set(UserID) = Set(UserID).new
+
+      # Whether or not this message has been warned
+      # 
+      # If `true`, a warning has been given to the user who sent this message, `false` otherwise
       property warned : Bool? = false
 
       # Creates an instance of `MessageGroup`
-      #
-      # ## Arguments:
-      #
-      # `sender`
-      # :     the id of the user who sent this message
-      #
-      # `msid`
-      # :     the message ID returned when the message was sent successfully
       def initialize(@sender : UserID, @origin : MessageID)
       end
     end
 
+    # A hash of `MessageID` to `MessageGroup`
     getter message_map : Hash(MessageID, MessageGroup) = {} of MessageID => MessageGroup
 
+    # :inherit:
     def close
     end
 
@@ -122,7 +133,7 @@ module PrivateParlorXT
       hash
     end
 
-    # Deletes a `MessageGroup` from the `message_map`
+    # :inherit:
     def delete_message_group(message : MessageID) : MessageID?
       message = @message_map[message]
 
@@ -134,8 +145,9 @@ module PrivateParlorXT
       message.origin
     end
 
-    # Returns true if the given message group is older than `lifespan`
-    # Returns false otherwise
+    # Returns `true` if the given message group is older than `lifespan`
+    # 
+    # Returns `false` otherwise
     private def expired?(message : MessageGroup) : Bool
       message.sent <= Time.utc - @lifespan
     end

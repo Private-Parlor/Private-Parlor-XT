@@ -3,6 +3,8 @@ require "../history.cr"
 require "db"
 
 module PrivateParlorXT
+
+  # An implementation of `History` using the SQLite `Database` for storing message data
   class SQLiteHistory < History
     @connection : DB::Database
 
@@ -178,6 +180,7 @@ module PrivateParlorXT
       hash
     end
 
+    # :inherit:
     def delete_message_group(message : MessageID) : MessageID?
       origin_msid = get_origin_message(message)
 
@@ -207,6 +210,7 @@ module PrivateParlorXT
       end
     end
 
+    # Ensures that there are message_group, receivers, and karma tables in the `Database`
     def ensure_schema : Nil
       write do
         @connection.exec("PRAGMA foreign_keys = ON")

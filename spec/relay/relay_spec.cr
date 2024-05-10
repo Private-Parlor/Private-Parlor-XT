@@ -4,7 +4,7 @@ module PrivateParlorXT
 
   # NOTE: Can't test most of the 'send_*' functions as these work directly with the Telegram API
 
-  describe Relay, focus: true do
+  describe Relay do
     describe "#reject_blacklisted_messages" do
       it "removes messages sent by and addressed to the given user" do
         services = create_services(relay: MockRelay.new("", MockClient.new))
