@@ -73,7 +73,24 @@ module PrivateParlorXT
     # The amount of karma necessary to post a contact
     getter karma_contact : Int32 = 10
 
-    def initialize()
+    def initialize(
+      @cutoff_rank : Int32 = 10,
+      @karma_text : Int32 = 0,
+      @karma_animation : Int32 = 5,
+      @karma_audio : Int32 = 2,
+      @karma_document : Int32 = 2,
+      @karma_video : Int32 = 10,
+      @karma_video_note : Int32 = 10,
+      @karma_voice : Int32 = 2,
+      @karma_photo : Int32 = 5,
+      @karma_media_group : Int32 = 10,
+      @karma_poll : Int32 = 20,
+      @karma_forwarded_message : Int32 = 10,
+      @karma_sticker : Int32 = 2,
+      @karma_venue : Int32 = 10,
+      @karma_location : Int32 = 10,
+      @karma_contact : Int32 = 10,
+    )
     end
   end
 end

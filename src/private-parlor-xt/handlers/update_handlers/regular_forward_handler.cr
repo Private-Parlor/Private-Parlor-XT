@@ -3,11 +3,18 @@ require "../../album_helpers.cr"
 require "tourmaline"
 
 module PrivateParlorXT
+
+  # An alternative to the `ForwardHandler` which handles forwarded messages, but 
+  # appends a "Forwarded from" header to the text/caption of the message and relays
+  # the message as though it were being relayed by the `TextHandler`, `AlbumHandler`, `PhotoHandler`
+  # or a similar `UpdateHandler` with respect to the forwarded message's media type
   class RegularForwardHandler < UpdateHandler
     include AlbumHelpers
 
+    # A hash of `String`, media group IDs, to `Album`, representing forwarded albums
     property albums : Hash(String, Album) = {} of String => Album
 
+    # Checks if the forwarded message meets requirements and relays it
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
@@ -70,6 +77,9 @@ module PrivateParlorXT
       )
     end
 
+    # Checks if the user is spamming forwarded messages
+    # 
+    # Returns `true` if the user is spamming forwarded messages, `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
@@ -83,6 +93,9 @@ module PrivateParlorXT
       false
     end
 
+    # Returns `true` if the forwarded poll does not have anonymous voting
+    # 
+    # Returns `false` otherwise
     def deanonymous_poll(user : User, message : Tourmaline::Message, services : Services) : Bool
       if (poll = message.poll) && !poll.is_anonymous?
         services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.deanon_poll)
@@ -92,6 +105,15 @@ module PrivateParlorXT
       false
     end
 
+    # Checks if the user has sufficient karma to send a forwarded message when `KarmaHandler` is enabled
+    # 
+    # Returns `true` if:
+    #   - `KarmaHandler` is not enabled
+    #   - The price for forwarded messages is less than 0
+    #   - The *user's* `Rank` is equal to or greater than the cutoff `Rank`
+    #   - User has sufficient karma
+    # 
+    # Returns `nil` if the user does not have sufficient karma
     def has_sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
       return true unless karma = services.karma
 
@@ -115,6 +137,8 @@ module PrivateParlorXT
       true
     end
 
+    # Returns the `User` with decremented karma when `KarmaHandler` is enabled and 
+    # *user* has sufficient karma for a forwarded message
     def spend_karma(user : User, message : Tourmaline::Message, services : Services) : User
       return user unless karma = services.karma
 
@@ -129,6 +153,7 @@ module PrivateParlorXT
       user
     end
 
+    # Returns the forwarded fromheader and its entities from the given *message* and *entities*
     def get_header(message : Tourmaline::Message, entities : Array(Tourmaline::MessageEntity)) : Tuple(String?, Array(Tourmaline::MessageEntity))
       if (album = message.media_group_id) && @albums[album]?
         return "", [] of Tourmaline::MessageEntity
@@ -137,15 +162,17 @@ module PrivateParlorXT
       end
     end
 
+    # Relays the forwarded message as though it were a text message, album, photo, or similar media type
     def relay_regular_forward(message : Tourmaline::Message, text : String, entities : Array(Tourmaline::MessageEntity), cached_message : MessageID, user : User, receivers : Array(UserID), services : Services)
       if message.text
-        services.relay.send_text(RelayParameters.new(
-          original_message: cached_message,
-          sender: user.id,
-          receivers: receivers,
-          text: text,
-          entities: entities,
-        )
+        services.relay.send_text(
+          RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+            text: text,
+            entities: entities,
+          )
         )
       elsif album = message.media_group_id
         return unless input = get_album_input(message, text, entities)
@@ -161,65 +188,71 @@ module PrivateParlorXT
           services
         )
       elsif file = message.animation
-        services.relay.send_animation(RelayParameters.new(
-          original_message: cached_message,
-          sender: user.id,
-          receivers: receivers,
-          media: file.file_id,
-          text: text,
-          entities: entities,
-          spoiler: message.has_media_spoiler?,
-        )
+        services.relay.send_animation(
+          RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+            media: file.file_id,
+            text: text,
+            entities: entities,
+            spoiler: message.has_media_spoiler?,
+          )
         )
       elsif file = message.audio
-        services.relay.send_audio(RelayParameters.new(
-          original_message: cached_message,
-          sender: user.id,
-          receivers: receivers,
-          media: file.file_id,
-          text: text,
-          entities: entities,
-        )
+        services.relay.send_audio(
+          RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+            media: file.file_id,
+            text: text,
+            entities: entities,
+          )
         )
       elsif file = message.document
-        services.relay.send_document(RelayParameters.new(
-          original_message: cached_message,
-          sender: user.id,
-          receivers: receivers,
-          media: file.file_id,
-          text: text,
-          entities: entities,
-        )
+        services.relay.send_document(
+          RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+            media: file.file_id,
+            text: text,
+            entities: entities,
+          )
         )
       elsif file = message.video
-        services.relay.send_video(RelayParameters.new(
-          original_message: cached_message,
-          sender: user.id,
-          receivers: receivers,
-          media: file.file_id,
-          text: text,
-          entities: entities,
-          spoiler: message.has_media_spoiler?,
-        )
+        services.relay.send_video(
+          RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+            media: file.file_id,
+            text: text,
+            entities: entities,
+            spoiler: message.has_media_spoiler?,
+          )
         )
       elsif (file = message.photo) && file.last?
         file = file.last
-        services.relay.send_photo(RelayParameters.new(
-          original_message: cached_message,
-          sender: user.id,
-          receivers: receivers,
-          media: file.file_id,
-          text: text,
-          entities: entities,
-          spoiler: message.has_media_spoiler?,
-        )
+        services.relay.send_photo(
+          RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+            media: file.file_id,
+            text: text,
+            entities: entities,
+            spoiler: message.has_media_spoiler?,
+          )
         )
       else
-        services.relay.send_forward(RelayParameters.new(
-          original_message: cached_message,
-          sender: user.id,
-          receivers: receivers,
-        ),
+        services.relay.send_forward(
+          RelayParameters.new(
+            original_message: cached_message,
+            sender: user.id,
+            receivers: receivers,
+          ),
           message.message_id.to_i64
         )
       end

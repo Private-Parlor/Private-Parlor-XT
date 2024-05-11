@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[On(update: :ForwardedMessage, config: "relay_forwarded_message")]
+  # A handler for forwarded message updates
   class ForwardHandler < UpdateHandler
+    # Checks if the forwarded message meets requirements and relays it
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
@@ -27,15 +29,19 @@ module PrivateParlorXT
 
       receivers = get_message_receivers(user, services)
 
-      services.relay.send_forward(RelayParameters.new(
-        original_message: new_message,
-        sender: user.id,
-        receivers: receivers,
-      ),
+      services.relay.send_forward(
+        RelayParameters.new(
+          original_message: new_message,
+          sender: user.id,
+          receivers: receivers,
+        ),
         message.message_id.to_i64
       )
     end
 
+    # Checks if the user is spamming forwarded messages
+    # 
+    # Returns `true` if the user is spamming forwarded messages, `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
@@ -47,6 +53,9 @@ module PrivateParlorXT
       false
     end
 
+    # Returns `true` if the forwarded poll does not have anonymous voting
+    # 
+    # Returns `false` otherwise
     def deanonymous_poll(user : User, message : Tourmaline::Message, services : Services) : Bool
       if (poll = message.poll) && (!poll.is_anonymous?)
         services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.deanon_poll)
@@ -56,6 +65,15 @@ module PrivateParlorXT
       false
     end
 
+    # Checks if the user has sufficient karma to send a forwarded message when `KarmaHandler` is enabled
+    # 
+    # Returns `true` if:
+    #   - `KarmaHandler` is not enabled
+    #   - The price for forwarded messages is less than 0
+    #   - The *user's* `Rank` is equal to or greater than the cutoff `Rank`
+    #   - User has sufficient karma
+    # 
+    # Returns `nil` if the user does not have sufficient karma
     def has_sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
       return true unless karma = services.karma
 
@@ -77,6 +95,8 @@ module PrivateParlorXT
       true
     end
 
+    # Returns the `User` with decremented karma when `KarmaHandler` is enabled and 
+    # *user* has sufficient karma for a forwarded message
     def spend_karma(user : User, services : Services) : User
       return user unless karma = services.karma
 

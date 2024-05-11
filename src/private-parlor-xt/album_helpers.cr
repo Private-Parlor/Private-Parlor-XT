@@ -86,13 +86,14 @@ module PrivateParlorXT
           cached_messages << services.history.new_message(user.id, msid)
         end
 
-        services.relay.send_album(AlbumRelayParameters.new(
-          original_messages: cached_messages,
-          sender: user.id,
-          receivers: receivers,
-          replies: reply_msids,
-          media: prepared_album.media,
-        )
+        services.relay.send_album(
+          AlbumRelayParameters.new(
+            original_messages: cached_messages,
+            sender: user.id,
+            receivers: receivers,
+            replies: reply_msids,
+            media: prepared_album.media,
+          )
         )
       }
     end

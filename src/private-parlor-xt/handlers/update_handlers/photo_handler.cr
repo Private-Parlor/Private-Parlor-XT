@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[On(update: :Photo, config: "relay_photo")]
+  # A handler for photo message updates
   class PhotoHandler < UpdateHandler
+    # Checks if the photo message meets requirements and relays it
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
@@ -15,7 +17,7 @@ module PrivateParlorXT
 
       return if spamming?(user, message, services)
 
-      return unless photo = message.photo.last
+      return unless photo = message.photo.last?
 
       caption, entities = Format.get_text_and_entities(message, user, services)
       return unless caption
@@ -35,19 +37,23 @@ module PrivateParlorXT
 
       receivers = get_message_receivers(user, services)
 
-      services.relay.send_photo(RelayParameters.new(
-        original_message: new_message,
-        sender: user.id,
-        receivers: receivers,
-        replies: reply_messages,
-        media: photo.file_id,
-        text: caption,
-        entities: entities,
-        spoiler: services.config.allow_spoilers ? message.has_media_spoiler? : false,
-      )
+      services.relay.send_photo(
+        RelayParameters.new(
+          original_message: new_message,
+          sender: user.id,
+          receivers: receivers,
+          replies: reply_messages,
+          media: photo.file_id,
+          text: caption,
+          entities: entities,
+          spoiler: services.config.allow_spoilers ? message.has_media_spoiler? : false,
+        )
       )
     end
 
+    # Checks if the user is spamming photos
+    # 
+    # Returns `true` if the user is spamming photos, `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
@@ -59,6 +65,15 @@ module PrivateParlorXT
       false
     end
 
+    # Checks if the user has sufficient karma to send a photo when `KarmaHandler` is enabled
+    # 
+    # Returns `true` if:
+    #   - `KarmaHandler` is not enabled
+    #   - The price for photos is less than 0
+    #   - The *user's* `Rank` is equal to or greater than the cutoff `Rank`
+    #   - User has sufficient karma
+    # 
+    # Returns `nil` if the user does not have sufficient karma
     def has_sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
       return true unless karma = services.karma
 
@@ -80,6 +95,8 @@ module PrivateParlorXT
       true
     end
 
+    # Returns the `User` with decremented karma when `KarmaHandler` is enabled and 
+    # *user* has sufficient karma for a photo
     def spend_karma(user : User, services : Services) : User
       return user unless karma = services.karma
 

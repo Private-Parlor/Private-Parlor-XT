@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[On(update: :Document, config: "relay_document")]
+  # A handler for files and document message updates
   class DocumentHandler < UpdateHandler
+    # Checks if the document message meets requirements and relays it
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
@@ -35,18 +37,23 @@ module PrivateParlorXT
 
       receivers = get_message_receivers(user, services)
 
-      services.relay.send_document(RelayParameters.new(
-        original_message: new_message,
-        sender: user.id,
-        receivers: receivers,
-        replies: reply_messages,
-        media: document.file_id,
-        text: caption,
-        entities: entities,
-      )
+      services.relay.send_document(
+        RelayParameters.new(
+          original_message: new_message,
+          sender: user.id,
+          receivers: receivers,
+          replies: reply_messages,
+          media: document.file_id,
+          text: caption,
+          entities: entities,
+        )
       )
     end
 
+    # Returns `true` if the message meets requirements
+    # 
+    # Returns `false if the message does not meet requirements, when the message is
+    # a forward, part of an album, or an animation/GIF
     def meets_requirements?(message : Tourmaline::Message) : Bool
       return false if message.forward_origin
       return false if message.media_group_id
@@ -55,6 +62,9 @@ module PrivateParlorXT
       true
     end
 
+    # Checks if the user is spamming documents
+    # 
+    # Returns `true` if the user is spamming documents, `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
@@ -66,6 +76,15 @@ module PrivateParlorXT
       false
     end
 
+    # Checks if the user has sufficient karma to send a document when `KarmaHandler` is enabled
+    # 
+    # Returns `true` if:
+    #   - `KarmaHandler` is not enabled
+    #   - The price for documents is less than 0
+    #   - The *user's* `Rank` is equal to or greater than the cutoff `Rank`
+    #   - User has sufficient karma
+    # 
+    # Returns `nil` if the user does not have sufficient karma
     def has_sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
       return true unless karma = services.karma
 
@@ -87,6 +106,8 @@ module PrivateParlorXT
       true
     end
 
+    # Returns the `User` with decremented karma when `KarmaHandler` is enabled and 
+    # *user* has sufficient karma for a document
     def spend_karma(user : User, services : Services) : User
       return user unless karma = services.karma
 
