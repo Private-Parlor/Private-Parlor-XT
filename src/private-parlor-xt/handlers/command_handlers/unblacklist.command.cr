@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: ["unblacklist", "unban"], config: "enable_unblacklist")]
+  # A command used to unban a user in the bot
   class UnblacklistCommand < CommandHandler
+    # Unbans a user via a username or unique ID if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 

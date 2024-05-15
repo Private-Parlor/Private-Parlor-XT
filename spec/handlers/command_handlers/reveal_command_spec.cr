@@ -1,12 +1,12 @@
 require "../../spec_helper.cr"
 
 module PrivateParlorXT
-  describe DeleteCommand do
+  describe RevealCommand do
     ranks = {
       10 => Rank.new(
         "Mod",
         Set{
-          CommandPermissions::Delete,
+          CommandPermissions::Reveal,
         },
         Set(MessagePermissions).new,
       ),
@@ -21,7 +21,7 @@ module PrivateParlorXT
       it "returns early if user is not authorized" do
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = DeleteCommand.new(MockConfig.new)
+        handler = RevealCommand.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
@@ -30,7 +30,7 @@ module PrivateParlorXT
         tourmaline_user = Tourmaline::User.new(20000, false, "example")
 
         reply_to = create_message(
-          message_id: 10,
+          message_id: 9,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
         )
@@ -38,7 +38,7 @@ module PrivateParlorXT
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/delete detailed reason",
+          text: "/reveal",
           from: tourmaline_user,
           reply_to_message: reply_to
         )
@@ -52,30 +52,72 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.command_disabled))
       end
 
-      it "returns early with 'no reply' if message has no reply" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+      it "returns early if user has forward privacy enabled" do
+        host_ranks = {
+          1000 => Rank.new(
+            "Host",
+            Set{
+              CommandPermissions::Reveal,
+            },
+            Set(MessagePermissions).new,
+          ),
+        }
 
-        handler = DeleteCommand.new(MockConfig.new)
+        services = create_services(ranks: host_ranks, relay: MockRelay.new("", MockClient.new))
+
+        handler = RevealCommand.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
 
+        reply_to = create_message(
+          message_id: 9,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
+        )
+
+        message = create_message(
+          message_id: 11,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "/reveal",
+          from: tourmaline_user,
+          reply_to_message: reply_to
+        )
+
+        handler.do(message, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(1))
+
+        messages[0].data.should(eq(services.replies.private_sign))
+      end
+
+      it "returns early with 'no reply' if message has no reply" do
+        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+
+        handler = RevealCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+        generate_history(services.history)
+
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/delete",
+          text: "/reveal",
           from: tourmaline_user,
         )
 
         handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
+
         messages.size.should(eq(1))
 
         messages[0].data.should(eq(services.replies.no_reply))
@@ -84,13 +126,9 @@ module PrivateParlorXT
       it "returns early with 'not in cache' response if reply message does not exist in message history" do 
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = DeleteCommand.new(MockConfig.new)
+        handler = RevealCommand.new(MockConfig.new)
 
         generate_users(services.database)
-
-        unless user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
 
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
@@ -104,7 +142,7 @@ module PrivateParlorXT
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/delete",
+          text: "/reveal",
           from: tourmaline_user,
           reply_to_message: reply_to
         )
@@ -112,15 +150,102 @@ module PrivateParlorXT
         handler.do(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
+
         messages.size.should(eq(1))
 
         messages[0].data.should(eq(services.replies.not_in_cache))
       end
 
+      it "returns early if user attempts to reveal username to himself" do
+        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+
+        handler = RevealCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+        generate_history(services.history)
+
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        reply_to = create_message(
+          message_id: 2,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
+        )
+
+        message = create_message(
+          message_id: 11,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "/reveal",
+          from: tourmaline_user,
+          reply_to_message: reply_to
+        )
+
+        handler.do(message, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(1))
+
+        messages[0].data.should(eq(services.replies.fail))
+      end
+
+      it "returns early is user is spamming signatures" do
+        services = create_services(
+          ranks: ranks,
+          spam: SpamHandler.new(),
+          relay: MockRelay.new("", MockClient.new)
+        )
+
+        handler = RevealCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+        generate_history(services.history)
+
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        reply_to = create_message(
+          message_id: 10,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
+        )
+
+        message = create_message(
+          message_id: 11,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "/reveal",
+          from: tourmaline_user,
+          reply_to_message: reply_to
+        )
+
+        handler.do(message, services)
+
+        expected = Format.format_user_reveal(80300, "beispiel", services.replies)
+
+        messages = services.relay.as(MockRelay).empty_queue
+        messages.size.should(eq(2))
+
+        responses = [services.replies.success, expected]
+
+        messages.each do |msg|
+          msg.data.in?(responses).should(be_true)
+
+          responses = responses - [msg.data]
+        end
+
+        handler.do(message, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+        messages.size.should(eq(1))
+
+        messages[0].data.should(eq(services.replies.sign_spam))
+      end
+
       it "updates user activity" do
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = DeleteCommand.new(MockConfig.new)
+        handler = RevealCommand.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
@@ -141,7 +266,7 @@ module PrivateParlorXT
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/delete",
+          text: "/reveal",
           from: tourmaline_user,
           reply_to_message: reply_to
         )
@@ -155,19 +280,13 @@ module PrivateParlorXT
         user.last_active.should(be < updated_user.last_active)
       end
 
-      it "deletes message group and warns the user" do
+      it "reveals username to a user" do
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = DeleteCommand.new(MockConfig.new)
+        handler = RevealCommand.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
-
-        unless reply_user = services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
-        end
-
-        prior_warnings = reply_user.warnings
 
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
@@ -181,21 +300,14 @@ module PrivateParlorXT
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/delete detailed reason",
+          text: "/reveal",
           from: tourmaline_user,
           reply_to_message: reply_to
         )
 
         handler.do(message, services)
 
-        # Get cooldown for a user with 1 warnings
-        temp_user = MockUser.new(9000, warnings: 1)
-        duration = temp_user.cooldown(services.config.cooldown_base)
-
-        expected = Format.substitute_reply(services.replies.message_deleted, {
-          "reason" => Format.format_reason_reply("detailed reason", services.replies),
-          "duration" => Format.format_time_span(duration, services.locale),
-        })
+        expected = Format.format_user_reveal(80300, "beispiel", services.replies)
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(2))
@@ -204,16 +316,9 @@ module PrivateParlorXT
 
         messages.each do |msg|
           msg.data.in?(responses).should(be_true)
+
           responses = responses - [msg.data]
         end
-
-        services.history.get_origin_message(10).should(be_nil)
-
-        unless updated_reply_user = services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
-        end
-
-        updated_reply_user.warnings.should(be > prior_warnings)
       end
     end
   end

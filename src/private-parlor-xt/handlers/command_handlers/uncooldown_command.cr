@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "uncooldown", config: "enable_uncooldown")]
+  # A command used for removing cooldowns from users via a username, OID, or unique ID argument
   class UncooldownCommand < CommandHandler
+    # Removes a cooldown and warning from a user if the user is currently cooldowned.
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 

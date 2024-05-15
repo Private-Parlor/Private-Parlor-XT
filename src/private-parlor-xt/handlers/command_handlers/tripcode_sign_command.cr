@@ -3,9 +3,11 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: ["tsign", "ts"], config: "enable_tripsign")]
-  # Processes tripcode sign messages before the update handler gets them
+  # Processes tripcode sign messages before an `UpdateHandler` gets them
+  # 
   # This handler expects the command handlers to be registered before the update handlers
   class TripcodeSignCommand < CommandHandler
+    # Preformats the given *message* with a tripcode signature header if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
@@ -53,6 +55,9 @@ module PrivateParlorXT
       message.preformatted = true
     end
 
+    # Checks if the user is spamming tripcode signatures
+    # 
+    # Returns `true` if the user is spamming tripcode signatures or unformatted text is spammy, returns `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, arg : String, services : Services) : Bool
       return false unless spam = services.spam
 

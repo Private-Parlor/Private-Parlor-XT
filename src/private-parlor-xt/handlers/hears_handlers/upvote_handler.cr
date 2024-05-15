@@ -4,7 +4,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[Hears(pattern: /^\+1/, config: "enable_upvote", command: true)]
+  # A command-like `HearsHandler` used for upvote messages sent by other users.
   class UpvoteHandler < HearsHandler
+    # Upvotes the message that the given *message* replies to if it meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
@@ -25,6 +27,13 @@ module PrivateParlorXT
       send_replies(user, reply_user, message, reply, services)
     end
 
+    # Returns the `User` associated with the message if the `User` could be found in the `Database`.
+    # This will also update the `User`'s username and realname if they have changed since the last message.
+    # 
+    # Returns `nil`  if:
+    #   - Message has no sender
+    #   - `User` does not exist in the `Database`
+    #   - `User` cannot use a command due to being blacklisted
     def get_user_from_message(message : Tourmaline::Message, services : Services) : User?
       return unless info = message.from
 
@@ -39,6 +48,9 @@ module PrivateParlorXT
       user
     end
 
+    # Checks if the user is authorized to upvote a message
+    # 
+    # Returns `true` if so, `false` otherwise
     def authorized?(user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, authority)
         services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
@@ -48,6 +60,9 @@ module PrivateParlorXT
       true
     end
 
+    # Checks if the user is spamming upvotes
+    # 
+    # Returns `true` if the user is spamming upvotes, `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
@@ -78,12 +93,16 @@ module PrivateParlorXT
       true
     end
 
-    def record_message_statistics(services : Services)
+    # Records message statistics about upvotes if the `Statistics` module is enabled
+    def record_message_statistics(services : Services) : Nil
       return unless stats = services.stats
 
       stats.increment_upvote_count
     end
 
+    # Queues 'gave upvote' and 'got upvoted' replies for the *user* and *reply_user*, respectively
+    # 
+    # Includes a reason for the upvote if karma reasons are enabled.
     def send_replies(user : User, reply_user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services) : Nil
       if services.config.karma_reasons
         reason = Format.get_arg(message.text)
@@ -122,7 +141,8 @@ module PrivateParlorXT
       end
     end
 
-    def karma_level_up(reply_user : User, reply_parameters : ReplyParameters?, services : Services)
+    # Checks if the user has gained a karma level when karma levels are set, and if so, queues a 'leveled up' response
+    def karma_level_up(reply_user : User, reply_parameters : ReplyParameters?, services : Services) : Nil
       return if services.config.karma_levels.empty?
 
       next_level = services.config.karma_levels.find(nil) {|range, level| range.begin == reply_user.karma}

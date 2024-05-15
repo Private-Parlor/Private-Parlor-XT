@@ -4,7 +4,7 @@ module PrivateParlorXT
   class MockRelay < Relay
     @queue : MessageQueue = MockMessageQueue.new
 
-    def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String)
+    def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String, reply_markup : Tourmaline::InlineKeyboardMarkup? = nil)
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue_priority(
@@ -342,6 +342,63 @@ module PrivateParlorXT
             vcard: contact.vcard,
             reply_parameters: reply,
           )
+        }
+      )
+    end
+
+    def pin_message(user : UserID, message : MessageID)
+      return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
+
+      queue.add_to_queue_priority(
+        user,
+        ReplyParameters.new(message),
+        "",
+        Array(Tourmaline::MessageEntity).new,
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          return false unless reply
+          @client.pin_chat_message(receiver, reply.message_id)
+        }
+      )
+    end
+
+    def unpin_message(user : UserID, message : MessageID? = nil)
+      return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
+
+      if message
+        message = ReplyParameters.new(message)
+      else
+        message = nil
+      end
+
+      queue.add_to_queue_priority(
+        user,
+        message,
+        "",
+        Array(Tourmaline::MessageEntity).new,
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          if reply
+            @client.unpin_chat_message(receiver, reply.message_id)
+          else
+            @client.unpin_chat_message(receiver, nil)
+          end
+        }
+      )
+    end
+
+    def edit_message_media(user : UserID, media : Tourmaline::InputMedia, message : MessageID)
+      return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
+      
+      queue.add_to_queue_priority(
+        user,
+        ReplyParameters.new(message),
+        "#{media.media};#{media.type};#{media.caption};#{media.has_spoiler?}",
+        Array(Tourmaline::MessageEntity).new,
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          return false unless reply
+          @client.edit_message_media(media, receiver, reply.message_id)
+          # We don't care about the result, so return a boolean
+          # to satisfy type requirements
+          true
         }
       )
     end

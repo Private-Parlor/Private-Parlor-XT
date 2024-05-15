@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "whitelist", config: "enable_whitelist")]
+  # A command used to whitelist users through the Telegram bot
   class WhitelistCommand < CommandHandler
+    # Whitelists a user, allowing them to join the chat, if the given *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 

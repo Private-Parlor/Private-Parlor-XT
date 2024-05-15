@@ -4,9 +4,11 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "ranksay", config: "enable_ranksay")]
-  # Processes ranksay messages before the update handler gets them
+  # Processes ranksay messages before an `UpdateHandler` gets them
+  # 
   # This handler expects the command handlers to be registered before the update handlers
   class RanksayCommand < CommandHandler
+    # Preformats the given *message* with a rank name signature if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
@@ -58,6 +60,9 @@ module PrivateParlorXT
       )
     end
 
+    # Checks if the user is spamming rank signatures
+    # 
+    # Returns `true` if the user is spamming rank signatures or unformatted text is spammy, returns `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, arg : String, services : Services) : Bool
       return false unless spam = services.spam
 
@@ -69,6 +74,11 @@ module PrivateParlorXT
       false
     end
 
+    # For ranksay commands that are not initiated using "/ranksay" and instead uses the name of the rank followed by "-say"
+    # 
+    # Returns the name of the `Rank` if the rank in the given *text* can ranksay
+    # 
+    # Returns `nil` otherwise
     def get_rank_name(text : String, user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services) : String?
       return unless rank = text.match(/^\/(.+?)say\s/).try(&.[1])
 
@@ -91,14 +101,6 @@ module PrivateParlorXT
       end
 
       parsed_rank[1].name
-    end
-
-    def authorized?(user : User, message : Tourmaline::Message, services : Services, *permissions : CommandPermissions) : CommandPermissions?
-      if authority = services.access.authorized?(user.rank, *permissions)
-        authority
-      else
-        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.command_disabled)
-      end
     end
   end
 end

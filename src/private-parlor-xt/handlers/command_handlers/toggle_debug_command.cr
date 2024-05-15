@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: ["toggle_debug", "toggledebug"], config: "enable_toggle_debug")]
+  # A command used to enable or disable debug mode, which relays a copy of a sent message to the sender if it is enabled.
   class ToggleDebugCommand < CommandHandler
+    # Relays a copy of a sent message back to the sender if debug mode is enabled; relays messages normally if debug mode is disabled
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 

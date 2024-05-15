@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: ["stats", "statistics"], config: "enable_stats")]
+  # A command used for getting statistics about the bot
   class StatsCommand < CommandHandler
+    # Returns a message containing general bot statistics if *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 

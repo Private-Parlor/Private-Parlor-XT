@@ -2,22 +2,252 @@ require "../../spec_helper.cr"
 
 module PrivateParlorXT
   describe KarmaSignCommand do
-    client = MockClient.new
-
-    services = create_services(relay: MockRelay.new("", client))
-
-    handler = KarmaSignCommand.new(MockConfig.new)
-
-    around_each do |test|
-      services = create_services(relay: MockRelay.new("", client))
-
-      test.run
-
-      services.database.close
-    end
-
     describe "#do" do
+      it "returns early if message is a forward" do
+        services = create_services(relay: MockRelay.new("", MockClient.new))
+
+        handler = KarmaSignCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          animation: Tourmaline::Animation.new(
+            "animation_item_one",
+            "unique_animation",
+            1080,
+            1080,
+            60
+          ),
+          caption: "/ksign   Example text",
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(123456, false, "other user")
+          )
+        )
+
+        handler.do(message, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(0))
+      end
+
+      it "returns early if there are no karma levels" do
+        services = create_services(
+          relay: MockRelay.new("", MockClient.new),
+          config: HandlerConfig.new(
+            MockConfig.new(karma_levels: {} of Range(Int32, Int32) => String)
+          )
+        )
+
+        handler = KarmaSignCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          animation: Tourmaline::Animation.new(
+            "animation_item_one",
+            "unique_animation",
+            1080,
+            1080,
+            60
+          ),
+          caption: "/ksign Karma level sign",
+        )
+
+        handler.do(message, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(0))
+      end
+
+      it "returns early if text contains invalid characters" do
+        services = create_services(relay: MockRelay.new("", MockClient.new))
+
+        handler = KarmaSignCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          animation: Tourmaline::Animation.new(
+            "animation_item_one",
+            "unique_animation",
+            1080,
+            1080,
+            60
+          ),
+          caption: "/ksign 𝐀𝐁𝐂",
+        )
+
+        handler.do(message, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(1))
+        messages[0].data.should(eq(services.replies.rejected_message))
+      end
+
+      it "returns early if message has no arguments" do
+        services = create_services(relay: MockRelay.new("", MockClient.new))
+
+        handler = KarmaSignCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          animation: Tourmaline::Animation.new(
+            "animation_item_one",
+            "unique_animation",
+            1080,
+            1080,
+            60
+          ),
+          caption: "/ksign",
+        )
+
+        handler.do(message, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(1))
+        messages[0].data.should(eq(services.replies.missing_args))
+      end
+
+      it "returns early if user is spamming" do
+        services = create_services(
+          
+          spam: SpamHandler.new(
+            spam_limit: 10, 
+            score_animation: 2,
+            score_text: 0,
+            score_line: 5,
+            score_character: 1,
+          ),
+          relay: MockRelay.new("", MockClient.new)
+        )
+
+        handler = KarmaSignCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          animation: Tourmaline::Animation.new(
+            "animation_item_one",
+            "unique_animation",
+            1080,
+            1080,
+            60
+          ),
+          caption: "/ksign   Example text",
+        )
+
+        handler.do(message, services)
+
+        unless updated_message = message
+          fail("Message should not be nil")
+        end
+
+        updated_message.preformatted?.should(be_true)
+
+        spammy_message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          text: "/ksign   Example text",
+        )
+
+        handler.do(spammy_message, services)
+
+        unless updated_message = spammy_message
+          fail("Message should not be nil")
+        end
+
+        updated_message.preformatted?.should(be_falsey)
+
+        messages = services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(1))
+        messages[0].data.should(eq(services.replies.spamming))
+      end
+
+      it "returns early if message is not unique" do
+        services = create_services(
+          
+          r9k: SQLiteRobot9000.new(
+            DB.open("sqlite3://%3Amemory%3A"),
+            check_media: true,
+          ),
+          relay: MockRelay.new("", MockClient.new)
+        )
+
+        handler = KarmaSignCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          animation: Tourmaline::Animation.new(
+            "animation_item_one",
+            "unique_animation",
+            1080,
+            1080,
+            60
+          ),
+          caption: "/ksign   Example text",
+        )
+
+        handler.do(message, services)
+
+        unless updated_message = message
+          fail("Message should not be nil")
+        end
+
+        updated_message.preformatted?.should(be_true)
+
+        unoriginal_message = create_message(
+          11,
+          Tourmaline::User.new(80300, false, "beispiel"),
+          animation: Tourmaline::Animation.new(
+            "animation_item_one",
+            "unique_animation",
+            1080,
+            1080,
+            60
+          ),
+          caption: "/ksign   Example text",
+        )
+
+        handler.do(unoriginal_message, services)
+
+        unless updated_message = unoriginal_message
+          fail("Message should not be nil")
+        end
+
+        updated_message.preformatted?.should(be_falsey)
+
+        messages = services.relay.as(MockRelay).empty_queue
+
+        messages.size.should(eq(1))
+        messages[0].data.should(eq(services.replies.unoriginal_message))
+      end
+
       it "updates message contents" do
+        services = create_services(relay: MockRelay.new("", MockClient.new))
+
+        handler = KarmaSignCommand.new(MockConfig.new)
+    
         generate_users(services.database)
 
         message = create_message(
@@ -58,11 +288,17 @@ module PrivateParlorXT
         updated_message.entities[1].type.should(eq("italic"))
         updated_message.entities[1].offset.should(eq(13))
         updated_message.entities[1].length.should(eq(9))
+
+        updated_message.preformatted?.should(be_true)
       end
     end
 
     describe "#spamming?" do
       it "returns true if user is sign spamming" do
+        services = create_services(relay: MockRelay.new("", MockClient.new))
+
+        handler = KarmaSignCommand.new(MockConfig.new)
+
         generate_users(services.database)
 
         unless beispiel = services.database.get_user(80300)
@@ -75,7 +311,7 @@ module PrivateParlorXT
           text: "/ksign Example",
         )
 
-        spam_services = create_services(client: client, spam: SpamHandler.new)
+        spam_services = create_services(spam: SpamHandler.new)
 
         unless spam = spam_services.spam
           fail("Services should contain a spam handler")
@@ -91,6 +327,10 @@ module PrivateParlorXT
       end
 
       it "returns true if user is spamming text" do
+        services = create_services(relay: MockRelay.new("", MockClient.new))
+
+        handler = KarmaSignCommand.new(MockConfig.new)
+
         generate_users(services.database)
 
         unless beispiel = services.database.get_user(80300)
@@ -103,7 +343,7 @@ module PrivateParlorXT
           text: "/ksign Example",
         )
 
-        spam_services = create_services(client: client, spam: SpamHandler.new(
+        spam_services = create_services(spam: SpamHandler.new(
           spam_limit: 10,
           score_character: 1,
           score_line: 0,
@@ -124,6 +364,10 @@ module PrivateParlorXT
       end
 
       it "returns false if user is not sign spamming" do
+        services = create_services(relay: MockRelay.new("", MockClient.new))
+
+        handler = KarmaSignCommand.new(MockConfig.new)
+
         generate_users(services.database)
 
         unless beispiel = services.database.get_user(80300)
@@ -136,12 +380,16 @@ module PrivateParlorXT
           text: "/ksign Example",
         )
 
-        spam_services = create_services(client: client, spam: SpamHandler.new)
+        spam_services = create_services(spam: SpamHandler.new)
 
         handler.spamming?(beispiel, message, "", spam_services).should(be_false)
       end
 
       it "returns false if no spam handler" do
+        services = create_services(relay: MockRelay.new("", MockClient.new))
+
+        handler = KarmaSignCommand.new(MockConfig.new)
+        
         generate_users(services.database)
 
         unless beispiel = services.database.get_user(80300)
@@ -154,7 +402,7 @@ module PrivateParlorXT
           text: "/ksign Example",
         )
 
-        spamless_services = create_services(client: client)
+        spamless_services = create_services()
 
         handler.spamming?(beispiel, message, "", spamless_services).should(be_false)
       end
@@ -162,6 +410,10 @@ module PrivateParlorXT
 
     describe "#get_karma_level" do
       it "returns karma level according to user's karma" do
+        services = create_services(relay: MockRelay.new("", MockClient.new))
+
+        handler = KarmaSignCommand.new(MockConfig.new)
+
         handler.get_karma_level(
           services.config.karma_levels,
           MockUser.new(1000, karma: -50),

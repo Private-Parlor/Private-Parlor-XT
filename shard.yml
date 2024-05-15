@@ -5,7 +5,7 @@ authors:
   - Charybdis
 
 dependencies:
-  # Using fork to for some custom methods and nil for parse mode parameters
+  # Using fork to use some custom methods and nil for parse mode parameters
   tourmaline:
     github: Charibdys/tourmaline
     branch: none-parsemode

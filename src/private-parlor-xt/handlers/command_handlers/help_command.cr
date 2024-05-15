@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "help", config: "enable_help")]
+  # A command used to view the commands that one can use
   class HelpCommand < CommandHandler
+    # Returns a message containing commands that the sender of the *message* can use
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 

@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: ["karma_info", "karmainfo"], config: "enable_karma_info")]
+  # A command used to obtain information about one's current karma and karma level progress
   class KarmaInfoCommand < CommandHandler
+    # Returns a message containing the user's karma level progress if karma levels are not empty
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
@@ -28,6 +30,14 @@ module PrivateParlorXT
           next_level = "???"
           limit = "???"
           percentage = 100.0_f32
+        elsif range == karma_levels.first_key
+          next_range = level_keys[index + 1]
+          next_level = karma_levels[next_range]
+          limit = next_range.begin
+
+          range_begin = range.begin.to_i64
+
+          percentage = ((-range_begin + user.karma) * 100) / (-range_begin + next_range.begin).to_f32
         else
           next_range = level_keys[index + 1]
           next_level = karma_levels[next_range]

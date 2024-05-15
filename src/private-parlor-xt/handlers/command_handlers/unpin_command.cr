@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "unpin", config: "enable_unpin")]
+  # A command for unpinning messages from the chat
   class UnpinCommand < CommandHandler
+    # Unpins the most recently pinned message or the message that *message* replies to if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 

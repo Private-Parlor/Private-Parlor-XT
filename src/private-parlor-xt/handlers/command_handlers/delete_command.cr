@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "delete", config: "enable_delete")]
+  # A command used to delete a message and give its sender a cooldown and warning
   class DeleteCommand < CommandHandler
+    # Deletes the reply of the given *message* for everybody and gives a cooldown and warning to the user who sent it, if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 

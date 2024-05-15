@@ -1,12 +1,12 @@
 require "../../spec_helper.cr"
 
 module PrivateParlorXT
-  describe DeleteCommand do
+  describe PinCommand do
     ranks = {
       10 => Rank.new(
         "Mod",
         Set{
-          CommandPermissions::Delete,
+          CommandPermissions::Pin,
         },
         Set(MessagePermissions).new,
       ),
@@ -19,28 +19,25 @@ module PrivateParlorXT
 
     describe "#do" do
       it "returns early if user is not authorized" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(relay: MockRelay.new("", MockClient.new))
 
-        handler = DeleteCommand.new(MockConfig.new)
+        handler = PinCommand.new(MockConfig.new)
 
         generate_users(services.database)
-        generate_history(services.history)
 
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(20000, false, "example")
 
         reply_to = create_message(
-          message_id: 10,
+          message_id: 9,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user,
         )
 
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/delete detailed reason",
-          from: tourmaline_user,
-          reply_to_message: reply_to
+          text: "/pin",
+          from: tourmaline_user
         )
 
         handler.do(message, services)
@@ -52,10 +49,10 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.command_disabled))
       end
 
-      it "returns early with 'no reply' if message has no reply" do
+      it "returns early if message has no reply" do 
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = DeleteCommand.new(MockConfig.new)
+        handler = PinCommand.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
@@ -69,8 +66,8 @@ module PrivateParlorXT
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/delete",
-          from: tourmaline_user,
+          text: "/pin",
+          from: tourmaline_user
         )
 
         handler.do(message, services)
@@ -81,12 +78,13 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.no_reply))
       end
 
-      it "returns early with 'not in cache' response if reply message does not exist in message history" do 
+      it "returns early if reply does not exist" do 
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = DeleteCommand.new(MockConfig.new)
+        handler = PinCommand.new(MockConfig.new)
 
         generate_users(services.database)
+        generate_history(services.history)
 
         unless user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
@@ -96,17 +94,16 @@ module PrivateParlorXT
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
         reply_to = create_message(
-          message_id: 10,
+          message_id: 50,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user,
         )
 
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/delete",
-          from: tourmaline_user,
-          reply_to_message: reply_to
+          text: "/pin",
+          reply_to_message: reply_to,
+          from: tourmaline_user
         )
 
         handler.do(message, services)
@@ -120,7 +117,7 @@ module PrivateParlorXT
       it "updates user activity" do
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = DeleteCommand.new(MockConfig.new)
+        handler = PinCommand.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
@@ -135,15 +132,14 @@ module PrivateParlorXT
         reply_to = create_message(
           message_id: 10,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user,
         )
 
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/delete",
+          text: "/users",
+          reply_to_message: reply_to,
           from: tourmaline_user,
-          reply_to_message: reply_to
         )
 
         handler.do(message, services)
@@ -152,22 +148,20 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        user.last_active.should(be < updated_user.last_active)
+        user.last_active.should(be < updated_user.last_active) 
       end
 
-      it "deletes message group and warns the user" do
+      it "pins replied to message" do 
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = DeleteCommand.new(MockConfig.new)
+        handler = PinCommand.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
 
-        unless reply_user = services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
         end
-
-        prior_warnings = reply_user.warnings
 
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
@@ -175,45 +169,37 @@ module PrivateParlorXT
         reply_to = create_message(
           message_id: 10,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user,
         )
 
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/delete detailed reason",
-          from: tourmaline_user,
-          reply_to_message: reply_to
+          text: "/pin",
+          reply_to_message: reply_to,
+          from: tourmaline_user
         )
 
         handler.do(message, services)
 
-        # Get cooldown for a user with 1 warnings
-        temp_user = MockUser.new(9000, warnings: 1)
-        duration = temp_user.cooldown(services.config.cooldown_base)
-
-        expected = Format.substitute_reply(services.replies.message_deleted, {
-          "reason" => Format.format_reason_reply("detailed reason", services.replies),
-          "duration" => Format.format_time_span(duration, services.locale),
-        })
-
         messages = services.relay.as(MockRelay).empty_queue
-        messages.size.should(eq(2))
 
-        responses = [services.replies.success, expected]
+        messages.size.should(eq(3))
 
         messages.each do |msg|
-          msg.data.in?(responses).should(be_true)
-          responses = responses - [msg.data]
+          unless reply_to = msg.reply_to
+            fail("Queued pin message should have a reply here")
+          end
+
+          if msg.receiver == 60200
+            reply_to.message_id.should(eq(8))
+          end
+          if msg.receiver == 20000
+            reply_to.message_id.should(eq(9))
+          end
+          if msg.receiver == 80300
+            reply_to.message_id.should(eq(10))
+          end
         end
-
-        services.history.get_origin_message(10).should(be_nil)
-
-        unless updated_reply_user = services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
-        end
-
-        updated_reply_user.warnings.should(be > prior_warnings)
       end
     end
   end

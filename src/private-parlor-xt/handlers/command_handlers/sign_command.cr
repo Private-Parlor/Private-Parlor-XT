@@ -3,9 +3,11 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: ["sign", "s"], config: "enable_sign")]
-  # Processes sign messages before the update handler gets them
+  # Processes sign messages before an `UpdateHandler` gets them
+  # 
   # This handler expects the command handlers to be registered before the update handlers
   class SignCommand < CommandHandler
+    # Preformats the given *message* with a username signature if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
@@ -13,7 +15,7 @@ module PrivateParlorXT
 
       return unless authorized?(user, message, :Sign, services)
 
-      if (chat = message.sender_chat) && chat.has_private_forwards?
+      if (chat = services.relay.get_chat(user.id)) && chat.has_private_forwards?
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.private_sign)
       end
 
@@ -26,7 +28,7 @@ module PrivateParlorXT
 
       return if spamming?(user, message, arg, services)
 
-      return unless Robot9000.text_check(user, message, services, arg)
+      return unless Robot9000.checks(user, message, services, arg)
 
       text, entities = Format.format_text(text, entities, false, services)
 
@@ -45,6 +47,9 @@ module PrivateParlorXT
       message.preformatted = true
     end
 
+    # Checks if the user is spamming username signatures
+    # 
+    # Returns `true` if the user is spamming username signatures or unformatted text is spammy, returns `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, arg : String, services : Services) : Bool
       return false unless spam = services.spam
 

@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "version", config: "enable_version")]
+  # A handler for getting the version of this bot and its source code
   class VersionCommand < CommandHandler
+    # Returns a message containing this bots's version number and a link to the soure code if the user exists and is not blacklisted
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 

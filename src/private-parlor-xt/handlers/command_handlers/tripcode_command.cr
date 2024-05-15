@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: ["tripcode", "signature"], config: "enable_tripcode")]
+  # A command used to set the user's tripcode, so that it can be used for tripcode signatures
   class TripcodeCommand < CommandHandler
+    # Sets the user's tripcode or returns the user's tripcode if set when the message meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
@@ -59,10 +61,13 @@ module PrivateParlorXT
       services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
     end
 
+    # Returns `true` if the given *arg* is a valid tripcode
+    # 
+    # Returns false otherwise
     def valid_tripcode?(arg : String) : Bool
-      return false unless pound_index = arg.index('#')
+      return false if (count = arg.count('#')) && count == 0
 
-      return false if pound_index == arg.size - 1
+      return false if count == 1 && arg.ends_with?("#")
 
       return false if arg.size > 30
 
@@ -71,6 +76,9 @@ module PrivateParlorXT
       true
     end
 
+    # Returns `true` if the given *arg* is a valid flag signature
+    # 
+    # Returns `false` otherwise
     def valid_signature?(arg : String) : Bool?
       return false if arg.graphemes.size > 5
       return false if arg.includes?("\n")

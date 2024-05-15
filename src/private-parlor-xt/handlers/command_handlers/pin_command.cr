@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "pin", config: "enable_pin")]
+  # A command for pinning messages to the chat
   class PinCommand < CommandHandler
+    # Pins the message that *message* replies to if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 

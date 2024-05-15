@@ -152,7 +152,7 @@ module PrivateParlorXT
       )
     end
 
-    # :inherit
+    # :inherit:
     def get_purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
       hash = {} of UserID => Array(MessageID)
 

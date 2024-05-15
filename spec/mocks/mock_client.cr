@@ -39,8 +39,19 @@ module PrivateParlorXT
     def set_my_commands(commands : Array(Tourmaline::BotCommand), scope : Tourmaline::BotCommandScope? = nil, language_code : String? = nil)
     end
 
-    def get_chat(chat_id : Int32 | Int64 | String)
-      Tourmaline::Chat.new(chat_id, "private")
+    def get_chat(chat_id : Int32 | Int64 | String) : Tourmaline::ChatFullInfo?
+      chat_info = Tourmaline::ChatFullInfo.new(
+        id: chat_id,
+        type: "private",
+        accent_color_id: 0,
+        max_reaction_count: 5,
+      )
+
+      if chat_id == 20000
+        chat_info.has_private_forwards = true
+      end
+
+      chat_info
     end
   end
 end

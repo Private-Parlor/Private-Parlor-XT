@@ -3,13 +3,15 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "reveal", config: "enable_reveal")]
+  # A command used to privately reveal one's username to another user.
   class RevealCommand < CommandHandler
+    # Privately sends the *message* sender's username signature to the sender of the message this *message* replies to, if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
       return unless authorized?(user, message, :Reveal, services)
 
-      if (chat = message.sender_chat) && chat.has_private_forwards?
+      if (chat = services.relay.get_chat(user.id)) && chat.has_private_forwards?
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.private_sign)
       end
 

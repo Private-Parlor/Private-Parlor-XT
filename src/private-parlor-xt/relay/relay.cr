@@ -68,6 +68,13 @@ module PrivateParlorXT
       @log_channel = channel_id
     end
 
+    # Returns the full chat information for the given *user*
+    def get_chat(user : UserID) : Tourmaline::ChatFullInfo?
+      @client.get_chat(user)
+    rescue
+      nil
+    end
+
     # Start polling Telegram for updates
     def start_polling
       @client.poll
@@ -260,7 +267,9 @@ module PrivateParlorXT
       @client.send_poll(
         user.id,
         question: poll.question,
-        options: poll.options.map(&.text),
+        options: poll.options.map { |option| 
+          Tourmaline::InputPollOption.new(option.text, text_entities: option.text_entities)
+        },
         is_anonymous: true,
         type: poll.type,
         allows_multiple_answers: poll.allows_multiple_answers?,

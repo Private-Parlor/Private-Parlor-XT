@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "spoiler", config: "enable_spoiler")]
+  # A command used to add or remove a spoiler on a message after it has been sent.
   class SpoilerCommand < CommandHandler
+    # Adds a spoiler to the given *message* if it does not have one, or removes it if it does, and *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
@@ -14,6 +16,7 @@ module PrivateParlorXT
       if reply.forward_origin
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
+
       unless services.history.get_sender(reply.message_id.to_i64)
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.not_in_cache)
       end
@@ -23,17 +26,20 @@ module PrivateParlorXT
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
 
-      update_user_activity(user, services)
-
       unless input = get_message_input(reply)
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
 
       spoil_messages(reply, user, input, services)
 
+      update_user_activity(user, services)
+
       services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
     end
 
+    # Returns a `Tourmaline::InputMedia` from the media contents of the given *message*
+    # 
+    # Returns `nil` unless message contains a photo, video, or animation/GIF
     def get_message_input(message : Tourmaline::Message) : Tourmaline::InputMedia?
       if media = message.photo.last?
         Tourmaline::InputMediaPhoto.new(media.file_id, caption: message.caption, caption_entities: message.caption_entities)

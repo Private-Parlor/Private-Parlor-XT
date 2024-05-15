@@ -1,12 +1,12 @@
 require "../../spec_helper.cr"
 
 module PrivateParlorXT
-  describe UncooldownCommand do
+  describe UnblacklistCommand do
     ranks = {
       10 => Rank.new(
         "Mod",
         Set{
-          CommandPermissions::Uncooldown,
+          CommandPermissions::Unblacklist,
         },
         Set(MessagePermissions).new,
       ),
@@ -21,7 +21,7 @@ module PrivateParlorXT
       it "returns early if user is not authorized" do
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = UncooldownCommand.new(MockConfig.new)
+        handler = UnblacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
@@ -30,7 +30,7 @@ module PrivateParlorXT
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/uncooldown user",
+          text: "/unblacklist user",
           from: tourmaline_user,
         )
 
@@ -46,7 +46,7 @@ module PrivateParlorXT
       it "returns early if message has no args" do
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = UncooldownCommand.new(MockConfig.new)
+        handler = UnblacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
@@ -59,7 +59,7 @@ module PrivateParlorXT
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/uncooldown",
+          text: "/unblacklist",
           from: tourmaline_user,
         )
 
@@ -74,7 +74,7 @@ module PrivateParlorXT
       it "returns early if no user could be found with args" do
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = UncooldownCommand.new(MockConfig.new)
+        handler = UnblacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
@@ -87,7 +87,7 @@ module PrivateParlorXT
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/uncooldown 9000",
+          text: "/unblacklist 9000",
           from: tourmaline_user,
         )
 
@@ -99,10 +99,10 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.no_user_found))
       end
 
-      it "returns early if user is not on cooldown" do
+      it "returns early if user is not blacklisted" do
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = UncooldownCommand.new(MockConfig.new)
+        handler = UnblacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
@@ -115,7 +115,7 @@ module PrivateParlorXT
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/uncooldown voorb",
+          text: "/unblacklist voorb",
           from: tourmaline_user,
         )
 
@@ -124,25 +124,15 @@ module PrivateParlorXT
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
 
-        messages[0].data.should(eq(services.replies.not_in_cooldown))
+        messages[0].data.should(eq(services.replies.fail))
       end
 
       it "updates user activity" do
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = UncooldownCommand.new(MockConfig.new)
+        handler = UnblacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
-
-        unless cooldowned_user = services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
-        end
-
-        prior_warnings = cooldowned_user.warnings
-
-        cooldowned_user.cooldown(10.minutes)
-
-        services.database.update_user(cooldowned_user)
 
         unless user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
@@ -153,7 +143,7 @@ module PrivateParlorXT
         message = create_message(
           message_id: 11,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/uncooldown voorb",
+          text: "/unblacklist 70000",
           from: tourmaline_user,
         )
 
@@ -166,104 +156,108 @@ module PrivateParlorXT
         user.last_active.should(be < updated_user.last_active) 
       end
 
-      it "uncooldowns the given user by ID" do
+      it "unblacklists the given user by ID" do
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = UncooldownCommand.new(MockConfig.new)
+        handler = UnblacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        unless cooldowned_user = services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
+        unless blacklisted_user = services.database.get_user(70000)
+          fail("User 70000 should exist in the database")
         end
 
-        prior_warnings = cooldowned_user.warnings
-
-        cooldowned_user.cooldown(10.minutes)
-
-        services.database.update_user(cooldowned_user)
+        services.database.update_user(blacklisted_user)
 
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
-          text: "/uncooldown 60200",
+          text: "/unblacklist 70000",
         )
 
         handler.do(message, services)
 
-        unless updated_user = services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
+        unless updated_user = services.database.get_user(70000)
+          fail("User 70000 should exist in the database")
         end
 
-        updated_user.warnings.should(be < prior_warnings)
-        updated_user.cooldown_until.should(be_nil)
+        updated_user.rank.should_not(eq(-10))
+        updated_user.left.should(be_nil)
       end
 
-      it "uncooldowns the given user by OID" do
+      it "does not unblacklist the given user by OID" do
         services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
 
-        handler = UncooldownCommand.new(MockConfig.new)
+        handler = UnblacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        unless cooldowned_user = services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
+        unless blacklisted_user = services.database.get_user(70000)
+          fail("User 70000 should exist in the database")
         end
 
-        prior_warnings = cooldowned_user.warnings
-        obfuscated_id = cooldowned_user.get_obfuscated_id
+        obfuscated_id = blacklisted_user.get_obfuscated_id
 
-        cooldowned_user.cooldown(10.minutes)
-
-        services.database.update_user(cooldowned_user)
+        services.database.update_user(blacklisted_user)
 
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
-          text: "/uncooldown #{obfuscated_id}",
+          text: "/unblacklist #{obfuscated_id}",
         )
 
         handler.do(message, services)
 
-        unless updated_user = services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
+        unless updated_user = services.database.get_user(70000)
+          fail("User 70000 should exist in the database")
         end
 
-        updated_user.warnings.should(be < prior_warnings)
-        updated_user.cooldown_until.should(be_nil)
+        updated_user.rank.should(eq(-10))
+        updated_user.left.should_not(be_nil)
+
+        messages = services.relay.as(MockRelay).empty_queue
+        messages.size.should(eq(1))
+
+        messages[0].data.should(eq(services.replies.no_user_found))
       end
 
-      it "uncooldowns the given user by username" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+      it "unblacklists the given user by username" do
+        services = create_services(
+          ranks: ranks,
+          config: HandlerConfig.new(
+            MockConfig.new(
+              default_rank: 100
+            ),
+          ),
+          relay: MockRelay.new("", MockClient.new)
+        )
 
-        handler = UncooldownCommand.new(MockConfig.new)
+        handler = UnblacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        unless cooldowned_user = services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
+        unless blacklisted_user = services.database.get_user(70000)
+          fail("User 70000 should exist in the database")
         end
 
-        prior_warnings = cooldowned_user.warnings
+        blacklisted_user.update_names("blacklisted_user", "BLACKLISTED")
 
-        cooldowned_user.cooldown(10.minutes)
-
-        services.database.update_user(cooldowned_user)
+        services.database.update_user(blacklisted_user)
 
         message = create_message(
           11,
           Tourmaline::User.new(80300, false, "beispiel"),
-          text: "/uncooldown voorb",
+          text: "/unblacklist blacklisted_user",
         )
 
         handler.do(message, services)
 
-        unless updated_user = services.database.get_user(60200)
-          fail("User 60200 should exist in the database")
+        unless updated_user = services.database.get_user(70000)
+          fail("User 70000 should exist in the database")
         end
 
-        updated_user.warnings.should(be < prior_warnings)
-        updated_user.cooldown_until.should(be_nil)
+        updated_user.rank.should(eq(100))
+        updated_user.left.should(be_nil)
       end
     end
   end

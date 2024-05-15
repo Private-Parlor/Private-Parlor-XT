@@ -3,7 +3,9 @@ require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "start", config: "enable_start")]
+  # A command used to join the bot and start receiving messages
   class StartCommand < CommandHandler
+    # Adds the user from the given *message* to the bot if he is not in the database; rejoins users who have previously joined the chat.
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless info = message.from
 
@@ -18,6 +20,7 @@ module PrivateParlorXT
       end
     end
 
+    # Handles users attempting to rejoin if they are already in the database
     def existing_user(user : User, username : String?, fullname : String, message_id : MessageID, services : Services)
       if user.blacklisted?
         response = Format.substitute_reply(services.replies.blacklisted, {
@@ -46,6 +49,7 @@ module PrivateParlorXT
       end
     end
 
+    # Adds the user with the given *id* to the database if registration is open.
     def new_user(id : UserID, username : String?, fullname : String, message_id : MessageID, services : Services)
       unless services.config.registration_open
         return services.relay.send_to_user(nil, id, services.replies.registration_closed)
