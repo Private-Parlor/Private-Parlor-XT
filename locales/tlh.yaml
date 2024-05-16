@@ -253,7 +253,7 @@ replies:
    # Available placeholders: contact
    blacklist_contact: "DaneqjunglaH: {contact}"
 
-   unblacklisted: "_DuteqHa'ta'\\! Damuvqa'meH /start yItur\\._"
+   unblacklisted: "_DuteqHa'ta'\\!_"
 
    # Available placeholders: msgs_deleted
    purge_complete: "_{msgs_deleted} QInmey Sampu' 'ej bIH teqta'_"

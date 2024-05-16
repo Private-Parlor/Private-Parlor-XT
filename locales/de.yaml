@@ -246,7 +246,7 @@ replies:
    # Available placeholders: contact
    blacklist_contact: "Kontakt: {contact}"
 
-   unblacklisted: "_Deine Verbot wurde aufgehoben\\! Benutzt den /start Befehl zu diesem Chat wieder eingetreten\\._"
+   unblacklisted: "_Deine Verbot wurde aufgehoben\\!_"
 
    # Available placeholders: msgs_deleted
    purge_complete: "_{msgs_deleted} Nachrichten war gefunden und gelöscht\\._"

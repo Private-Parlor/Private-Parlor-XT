@@ -246,7 +246,7 @@ replies:
    # Available placeholders: contact
    blacklist_contact: "Contact: {contact}"
 
-   unblacklisted: "_You have been unbanned\\! Type /start to rejoin\\._"
+   unblacklisted: "_You have been unbanned\\!_"
 
    # Available placeholders: msgs_deleted
    purge_complete: "_{msgs_deleted} messages were matched and deleted\\._"
