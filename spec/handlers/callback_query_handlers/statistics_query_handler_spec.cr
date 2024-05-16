@@ -2,6 +2,21 @@ require "../../spec_helper.cr"
 
 module PrivateParlorXT
   describe StatisticsQueryHandler do
+    ranks = {
+      10 => Rank.new(
+        "Mod",
+        Set{
+          CommandPermissions::Users,
+        },
+        Set(MessagePermissions).new,
+      ),
+      0 => Rank.new(
+        "User",
+        Set(CommandPermissions).new,
+        Set(MessagePermissions).new,
+      ),
+    }
+
     describe "#do" do
       it "returns early if callback has no message" do
         services = create_services(
@@ -125,6 +140,7 @@ module PrivateParlorXT
 
       it "returns edited message text for given statistics screen" do
         services = create_services(
+          ranks: ranks,
           statistics: MockStatistics.new
         )
 
@@ -178,7 +194,7 @@ module PrivateParlorXT
         
         messages[0].data.should(eq(stats.get_statistic_screen(:Messages, services)))
 
-        # Get User statistics
+        # Get Full User statistics
         query = Tourmaline::CallbackQuery.new(
           id: "query_one",
           from: tourmaline_user,
@@ -193,6 +209,23 @@ module PrivateParlorXT
         messages.size.should(eq(1))
         
         messages[0].data.should(eq(stats.get_statistic_screen(:Users, services)))
+
+        # Get User statistics
+        user_rank_user = Tourmaline::User.new(60200, false, "voorbeeld")
+        query = Tourmaline::CallbackQuery.new(
+          id: "query_one",
+          from: user_rank_user,
+          chat_instance: "",
+          message: message,
+          data: "statistics-next=Users"
+        )
+
+        handler.do(query, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+        messages.size.should(eq(1))
+        
+        messages[0].data.should(eq(stats.format_user_counts(services)))
 
         # Get Karma statistics
         query = Tourmaline::CallbackQuery.new(

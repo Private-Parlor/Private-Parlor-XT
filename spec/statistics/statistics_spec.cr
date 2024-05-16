@@ -254,7 +254,7 @@ module PrivateParlorXT
 
         result = stats.get_statistic_screen(:Users, services)
 
-        expected = Format.substitute_reply(services.replies.user_stats, {
+        expected = Format.substitute_reply(services.replies.full_user_stats, {
           "total_users"              => "30",
           "joined_users"             => "19",
           "left_users"               => "11",
@@ -592,17 +592,17 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_user_counts" do
-      it "returns formatted user stats screen" do
+    describe "#format_full_user_counts" do
+      it "returns formatted full user stats screen" do
         config = HandlerConfig.new(MockConfig.new())
 
         services = create_services(config: config)
 
         stats = MockStatistics.new()
 
-        result = stats.format_user_counts(services)
+        result = stats.format_full_user_counts(services)
 
-        expected = Format.substitute_reply(services.replies.user_stats, {
+        expected = Format.substitute_reply(services.replies.full_user_stats, {
           "total_users"              => "30",
           "joined_users"             => "19",
           "left_users"               => "11",
@@ -625,6 +625,27 @@ module PrivateParlorXT
           "left_change_today"        => services.locale.change[1],
           "left_change_this_week"    => services.locale.change[0],
           "left_change_this_month"   => services.locale.change[1],
+          "net_daily"                => "2",
+          "net_weekly"               => "13",
+          "net_monthly"              => "15",
+        })
+
+        result.should(eq(expected))
+      end
+    end
+
+    describe "#format_user_counts" do
+      it "returns formatted user stats screen" do
+        config = HandlerConfig.new(MockConfig.new())
+
+        services = create_services(config: config)
+
+        stats = MockStatistics.new()
+
+        result = stats.format_user_counts(services)
+
+        expected = Format.substitute_reply(services.replies.user_stats, {
+          "total_users"              => "30",
           "net_daily"                => "2",
           "net_weekly"               => "13",
           "net_monthly"              => "15",

@@ -311,7 +311,7 @@ replies:
    #                         left_weekly_total, left_weekly_change, left_change_this_week, 
    #                         left_monthly_total, left_monthly_change, left_change_this_month, 
    #                         net_daily, net_weekly, net_monthly
-   user_stats: |-
+   full_user_stats: |-
       *Total Users: {total_users}*
 
       Joined: {joined_users}
@@ -325,6 +325,14 @@ replies:
       Left today: {left_daily_total} \({left_daily_change}% {left_change_today} from yesterday\)
       Left this week: {left_weekly_total} \({left_weekly_change}% {left_change_this_week} from last week\)
       Left this month: {left_monthly_total} \({left_monthly_change}% {left_change_this_month} from last month\)
+
+      Net change today: {net_daily} users
+      Net change this week: {net_weekly} users
+      Net change this month: {net_monthly} users
+
+   # Available placeholders: total_users, net_daily, net_weekly, net_monthly
+   user_stats: |-
+      *Total Users: {total_users}*
 
       Net change today: {net_daily} users
       Net change this week: {net_weekly} users

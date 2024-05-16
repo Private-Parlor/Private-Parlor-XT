@@ -162,7 +162,7 @@ module PrivateParlorXT
       case next_screen
       when StatScreens::General     then format_config_data(services)
       when StatScreens::Messages    then format_message_data(services)
-      when StatScreens::Users       then format_user_counts(services)
+      when StatScreens::Users       then format_full_user_counts(services)
       when StatScreens::Karma       then format_karma_counts(services)
       when StatScreens::KarmaLevels then format_karma_level_counts(services)
       when StatScreens::Robot9000   then format_robot9000_counts(services)
@@ -281,7 +281,7 @@ module PrivateParlorXT
     end
 
     # Returns a formatted `String` containing user counts
-    def format_user_counts(services : Services) : String
+    def format_full_user_counts(services : Services) : String
       totals = get_user_counts
 
       joined_daily_change = get_percent_change(
@@ -318,7 +318,7 @@ module PrivateParlorXT
       net_weekly = totals[UserCounts::JoinedWeekly] - totals[UserCounts::LeftWeekly]
       net_monthly = totals[UserCounts::JoinedMonthly] - totals[UserCounts::LeftMonthly]
 
-      Format.substitute_reply(services.replies.user_stats, {
+      Format.substitute_reply(services.replies.full_user_stats, {
         "total_users"              => totals[UserCounts::TotalUsers].to_s,
         "joined_users"             => totals[UserCounts::TotalJoined].to_s,
         "left_users"               => totals[UserCounts::TotalLeft].to_s,
@@ -341,6 +341,22 @@ module PrivateParlorXT
         "left_change_today"        => left_daily_change.positive? ? services.locale.change[1] : services.locale.change[0],
         "left_change_this_week"    => left_weekly_change.positive? ? services.locale.change[1] : services.locale.change[0],
         "left_change_this_month"   => left_monthly_change.positive? ? services.locale.change[1] : services.locale.change[0],
+        "net_daily"                => net_daily.to_s,
+        "net_weekly"               => net_weekly.to_s,
+        "net_monthly"              => net_monthly.to_s,
+      })
+    end
+
+    # Returns a formatted `String` containing a counts of user totals
+    def format_user_counts(services : Services) : String
+      totals = get_user_counts
+
+      net_daily = totals[UserCounts::JoinedDaily] - totals[UserCounts::LeftDaily]
+      net_weekly = totals[UserCounts::JoinedWeekly] - totals[UserCounts::LeftWeekly]
+      net_monthly = totals[UserCounts::JoinedMonthly] - totals[UserCounts::LeftMonthly]
+
+      Format.substitute_reply(services.replies.user_stats, {
+        "total_users"              => totals[UserCounts::TotalUsers].to_s,
         "net_daily"                => net_daily.to_s,
         "net_weekly"               => net_weekly.to_s,
         "net_monthly"              => net_monthly.to_s,

@@ -19,7 +19,11 @@ module PrivateParlorXT
 
       next_screen = Statistics::StatScreens.parse(split[1])
 
-      response = stats.get_statistic_screen(next_screen, services)
+      if next_screen == Statistics::StatScreens::Users && !services.access.authorized?(user.rank, CommandPermissions::Users)
+        response = stats.format_user_counts(services)
+      else
+        response = stats.get_statistic_screen(next_screen, services)
+      end
 
       reply_markup = stats.keyboard_markup(next_screen, services)
 

@@ -318,7 +318,7 @@ replies:
    #                         left_weekly_total, left_weekly_change, left_change_this_week, 
    #                         left_monthly_total, left_monthly_change, left_change_this_month, 
    #                         net_daily, net_weekly, net_monthly
-   user_stats: |-
+   full_user_stats: |-
       *chuD mI: {total_users}*
 
       mebpu': {joined_users}
@@ -333,6 +333,14 @@ replies:
       Hoghvam mejta': {left_weekly_total} \({left_weekly_change}% {left_change_this_week} Hoghvam nungbogh Hoghvo'\)
       jarvam mejta': {left_monthly_total} \({left_monthly_change}% {left_change_this_month} jarvam nungbogh jarvo'\)
 
+      
+      wa'Hu'vo' choH: {net_daily} mebpu'
+      Hoghvam nungbogh Hoghvo' choH: {net_weekly} mebpu'
+      jarvam nungbogh jarvo' choH: {net_monthly} mebpu'
+
+   # Available placeholders: total_users, net_daily, net_weekly, net_monthly
+   user_stats: |-
+      *chuD mI: {total_users}*
       
       wa'Hu'vo' choH: {net_daily} mebpu'
       Hoghvam nungbogh Hoghvo' choH: {net_weekly} mebpu'

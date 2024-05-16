@@ -310,8 +310,12 @@ module PrivateParlorXT
     # Message containing totals of different message types when `Statistics` are enabled
     getter message_stats : String
 
-    @[YAML::Field(key: "user_stats")]
+    @[YAML::Field(key: "full_user_stats")]
     # Message containing totals of joined, left, and blacklisted users when `Statistics` are enabled
+    getter full_user_stats : String
+
+    @[YAML::Field(key: "user_stats")]
+    # Message containing user totals when `Statistics` are enabled
     getter user_stats : String
 
     @[YAML::Field(key: "karma_stats")]
