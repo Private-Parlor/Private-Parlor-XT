@@ -40,15 +40,23 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        reply_to = create_message(
-          6,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          reply_to_message: reply_to,
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          reply_to_message: reply,
         )
 
         unless user = services.database.get_user(80300)
@@ -57,29 +65,33 @@ module PrivateParlorXT
 
         reply_to = handler.get_reply_message(user, message, services)
 
-        reply_to.should(eq(reply_to))
+        reply_to.should(eq(reply))
       end
 
       it "returns nil and queues 'no_reply' response if reply message does not exist" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = MockHandler.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
 
-        no_reply_message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        no_reply_message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
         )
 
         unless user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
-        reply_to = handler.get_reply_message(user, no_reply_message, services)
+        reply = handler.get_reply_message(user, no_reply_message, services)
 
-        reply_to.should(be_nil)
+        reply.should(be_nil)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -97,16 +109,20 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        reply_to = create_message(
-          6,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
         unless user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
-        unless reply_user = handler.get_reply_user(user, reply_to, services)
+        unless reply_user = handler.get_reply_user(user, reply, services)
           fail("Reply user should not be nil")
         end
 
@@ -114,16 +130,20 @@ module PrivateParlorXT
       end
 
       it "returns nil and queues not in cache response if message is not in cache" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = MockHandler.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
 
-        fake_message = create_message(
-          50,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        fake_message = Tourmaline::Message.new(
+          message_id: 50,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
         unless user = services.database.get_user(80300)
@@ -141,7 +161,7 @@ module PrivateParlorXT
       end
 
       it "returns nil and queues not in cache response if reply user does not exist in database" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = MockHandler.new(MockConfig.new)
 
@@ -151,9 +171,13 @@ module PrivateParlorXT
         services.history.new_message(12345, 50)
         services.history.add_to_history(50, 51, 80300)
 
-        no_user_message = create_message(
-          51,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        no_user_message = Tourmaline::Message.new(
+          message_id: 51,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
         unless user = services.database.get_user(80300)

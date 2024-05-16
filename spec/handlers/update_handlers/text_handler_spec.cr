@@ -19,15 +19,19 @@ module PrivateParlorXT
 
     describe "#do" do
       it "returns early if message is a forward" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         generate_users(services.database)
 
         handler = TextHandler.new(MockConfig.new)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
           forward_origin: Tourmaline::MessageOriginUser.new(
             "user",
@@ -44,15 +48,19 @@ module PrivateParlorXT
       end
 
       it "returns early if user is not authorized" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         generate_users(services.database)
 
         handler = TextHandler.new(MockConfig.new)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
         )
 
@@ -78,7 +86,7 @@ module PrivateParlorXT
             cutoff_rank: 100,
             karma_text: 10,
           ),
-          relay: MockRelay.new("", MockClient.new))
+        )
 
         handler = TextHandler.new(MockConfig.new)
         
@@ -90,9 +98,13 @@ module PrivateParlorXT
 
         user.karma.should(eq(-20))
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
         )
 
@@ -118,15 +130,19 @@ module PrivateParlorXT
             score_character: 0, 
             score_line: 0
           ),
-          relay: MockRelay.new("", MockClient.new))
+        )
 
         handler = TextHandler.new(MockConfig.new)
         
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
         )
 
@@ -136,9 +152,13 @@ module PrivateParlorXT
 
         messages.size.should(eq(4))
 
-        spammy_message = create_message(
-          20,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        spammy_message = Tourmaline::Message.new(
+          message_id: 20,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
         )
 
@@ -151,15 +171,19 @@ module PrivateParlorXT
       end
 
       it "returns early with 'rejected message' response if text is invalid" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = TextHandler.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "𝐀𝐁𝐂",
         )
 
@@ -172,30 +196,38 @@ module PrivateParlorXT
       end
 
       it "returns early with 'not in cache' response if reply message does not exist in message history" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = TextHandler.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
 
-        reply_to = create_message(
-          50,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 50,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
           entities: [
             Tourmaline::MessageEntity.new(
-              "underline",
-              0,
-              7,
+              type: "underline",
+              offset: 0,
+              length: 7,
             ),
           ],
-          reply_to_message: reply_to
+          reply_to_message: reply
         )
 
         handler.do(message, services)
@@ -213,15 +245,19 @@ module PrivateParlorXT
             DB.open("sqlite3://%3Amemory%3A"),
             check_text: true,
           ),
-          relay: MockRelay.new("", MockClient.new))
+        )
 
         handler = TextHandler.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
         )
 
@@ -232,9 +268,13 @@ module PrivateParlorXT
         messages.size.should(eq(4))
         messages[0].data.should(eq("Example Text"))
 
-        unoriginal_message = create_message(
-          20,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        unoriginal_message = Tourmaline::Message.new(
+          message_id: 20,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
         )
 
@@ -259,9 +299,13 @@ module PrivateParlorXT
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
         )
 
@@ -298,9 +342,13 @@ module PrivateParlorXT
         user.increment_karma(30)
         services.database.update_user(user)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
         )
 
@@ -324,9 +372,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
         )
 
@@ -340,21 +392,25 @@ module PrivateParlorXT
       end
 
       it "queues text message" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = TextHandler.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
           entities: [
             Tourmaline::MessageEntity.new(
-              "underline",
-              0,
-              7,
+              type: "underline",
+              offset: 0,
+              length: 7,
             ),
           ]
         )
@@ -388,30 +444,38 @@ module PrivateParlorXT
       end
 
       it "queues text message with reply" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         generate_users(services.database)
         generate_history(services.history)
 
         handler = TextHandler.new(MockConfig.new)
         
-        reply_to = create_message(
-          6,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Example Text",
           entities: [
             Tourmaline::MessageEntity.new(
-              "underline",
-              0,
-              7,
+              type: "underline",
+              offset: 0,
+              length: 7,
             ),
           ],
-          reply_to_message: reply_to
+          reply_to_message: reply
         )
 
         handler.do(message, services)
@@ -434,8 +498,8 @@ module PrivateParlorXT
           msg.entities.size.should(eq(1))
           msg.entities[0].type.should(eq("underline"))
 
-          if reply_to = msg.reply_to
-            reply_to.message_id.should(eq(replies[msg.receiver]))
+          if reply = msg.reply_to
+            reply.message_id.should(eq(replies[msg.receiver]))
           else
             msg.receiver.should(eq(50000))
           end
@@ -467,9 +531,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "example",
         )
 
@@ -514,9 +582,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
         )
 
         spam_services = create_services(
@@ -550,9 +622,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "example",
         )
 
@@ -576,9 +652,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "example",
         )
 
@@ -602,12 +682,17 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "example",
-          preformatted: true,
         )
+
+        message.preformatted = true
 
         handler.spamming?(
           beispiel,
@@ -625,9 +710,13 @@ module PrivateParlorXT
 
         user = MockUser.new(9000, karma: 10)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
         )
 
         handler.has_sufficient_karma?(user, message, services).should(be_true)
@@ -640,9 +729,13 @@ module PrivateParlorXT
 
         user = MockUser.new(9000, karma: 10)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
         )
 
         handler.has_sufficient_karma?(user, message, services).should(be_true)
@@ -658,9 +751,13 @@ module PrivateParlorXT
 
         user = MockUser.new(9000, rank: 10, karma: 10)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
         )
 
         handler.has_sufficient_karma?(user, message, services).should(be_true)
@@ -676,9 +773,13 @@ module PrivateParlorXT
 
         user = MockUser.new(9000, rank: 10, karma: 10)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
         )
 
         handler.has_sufficient_karma?(user, message, services).should(be_true)
@@ -686,7 +787,6 @@ module PrivateParlorXT
 
       it "returns nil and queues 'insufficient karma' response if user does not have enough karma" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new), 
           karma_economy: KarmaHandler.new(
             cutoff_rank: 100,
             karma_text: 10,
@@ -697,9 +797,13 @@ module PrivateParlorXT
 
         user = MockUser.new(9000, rank: 10, karma: 9)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
         )
 
         handler.has_sufficient_karma?(user, message, services).should(be_nil)

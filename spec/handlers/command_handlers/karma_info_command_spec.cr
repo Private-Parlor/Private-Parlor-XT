@@ -5,7 +5,6 @@ module PrivateParlorXT
     describe "#do" do
       it "returns early if there are no karma levels" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           config: HandlerConfig.new(
             MockConfig.new(karma_levels: {} of Range(Int32, Int32) => String)
           )
@@ -15,15 +14,19 @@ module PrivateParlorXT
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ksign Karma level sign",
         )
@@ -36,7 +39,7 @@ module PrivateParlorXT
       end
 
       it "updates user activity" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = KarmaInfoCommand.new(MockConfig.new)
 
@@ -48,8 +51,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/karma_info",
           from: tourmaline_user,
@@ -65,7 +69,7 @@ module PrivateParlorXT
       end
 
       it "returns message containing karma and karma level information" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = KarmaInfoCommand.new(MockConfig.new)
 
@@ -79,8 +83,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/karma_info",
           from: tourmaline_user,

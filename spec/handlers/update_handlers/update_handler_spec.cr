@@ -29,8 +29,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: nil,
         )
@@ -46,32 +47,37 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        command_message = create_message(
+        command_message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/test",
         )
 
-        upvote_message = create_message(
+        upvote_message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "+1",
         )
 
-        downvote_message = create_message(
+        downvote_message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "-1",
         )
 
-        example_contains_message = create_message(
+        example_contains_message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "This is a message where \"UPDATEHANDLER\" is in the text",
         )
 
-        example_starts_with_message = create_message(
+        example_starts_with_message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "starts_with_UpdateHandler This is a command",
         )
@@ -92,16 +98,18 @@ module PrivateParlorXT
         reply_tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(reply_tourmaline_user.id, "private"),
-          from: reply_tourmaline_user,
+          from: reply_tourmaline_user
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -120,8 +128,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "example_hears_UpdateHandler This is not a command, but it matches a hears handler",
           from: tourmaline_user
@@ -142,8 +151,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel", "spec", "new_username")
 
-        new_names_message = create_message(
+        new_names_message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user
         )
@@ -159,15 +169,16 @@ module PrivateParlorXT
       end
 
       it "returns nil if user does not exist and queues 'not_in_chat' reply" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
 
         generate_users(services.database)
         
         tourmaline_user = Tourmaline::User.new(12345678, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user
         )
@@ -181,15 +192,16 @@ module PrivateParlorXT
       end
 
       it "returns nil if user cannot chat at this time" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
 
         generate_users(services.database)
 
         tourmaline_user = Tourmaline::User.new(40000, false, "esimerkki")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user
         )
@@ -205,8 +217,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
         )
 
@@ -216,14 +229,16 @@ module PrivateParlorXT
       end
 
       it "returns false and queues 'media_disabled' reply if user can't send the given update type" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
 
         tourmaline_user = Tourmaline::User.new(70000, false, "BLACKLISTED")
         
-        message = create_message(
-          message_id:11,
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
         )
 
         unauthorized_user = MockUser.new(70000, rank: -10)
@@ -246,8 +261,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
         )
 
@@ -260,8 +276,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           forward_origin: Tourmaline::MessageOriginUser.new(
             "user",
@@ -279,8 +296,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           media_group_id: "10000"
         )
@@ -291,7 +309,7 @@ module PrivateParlorXT
 
     describe "#deny_user" do
       it "queues blacklisted response when user is blacklisted" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
 
         user = MockUser.new(9000, rank: -10)
@@ -310,7 +328,7 @@ module PrivateParlorXT
       end
 
       it "queues cooldowned response when user is cooldowned" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
 
         user = MockUser.new(9000, rank: 0)
@@ -331,7 +349,6 @@ module PrivateParlorXT
 
       it "queues media limit response when user can't send media" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           config: HandlerConfig.new(
             MockConfig.new(
               media_limit_period: 5,
@@ -364,7 +381,6 @@ module PrivateParlorXT
 
       it "queues not in chat message when user still can't chat" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           config: HandlerConfig.new(
             MockConfig.new(
               media_limit_period: 0,
@@ -396,15 +412,18 @@ module PrivateParlorXT
         reply_tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(reply_tourmaline_user.id, "private"),
+          from: reply_tourmaline_user,
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         user = MockUser.new(80300, rank: 10)
@@ -426,8 +445,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
         )
 
@@ -449,22 +469,24 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 1,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
           text: "Example text with entities",
-          entities: [Tourmaline::MessageEntity.new("bold", offset: 0, length: 7)]
+          entities: [Tourmaline::MessageEntity.new(type: "bold", offset: 0, length: 7)]
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           quote: Tourmaline::TextQuote.new(
             text: "Example text with entities",
             position: 0,
-            entities: [Tourmaline::MessageEntity.new("bold", offset: 0, length: 7)]
+            entities: [Tourmaline::MessageEntity.new(type: "bold", offset: 0, length: 7)]
           )
         )
 
@@ -489,18 +511,21 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 1,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
           text: "Example text with entities",
-          edit_date: Time.utc
         )
 
-        message = create_message(
+        reply.edit_date = Time.utc
+
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           quote: Tourmaline::TextQuote.new(
             text: "Example text with entities",
             position: 0,
@@ -529,22 +554,25 @@ module PrivateParlorXT
         reply_tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(reply_tourmaline_user.id, "private"),
           from: reply_tourmaline_user,
           text: "Example text with entities",
-          edit_date: Time.utc
         )
 
-        message = create_message(
+        reply.edit_date = Time.utc
+
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           quote: Tourmaline::TextQuote.new(
             text: "Example text with entities",
             position: 0,
-            entities: [Tourmaline::MessageEntity.new("bold", offset: 0, length: 7)]
+            entities: [Tourmaline::MessageEntity.new(type: "bold", offset: 0, length: 7)]
           )
         )
 
@@ -568,7 +596,7 @@ module PrivateParlorXT
       end
 
       it "returns nil and queues 'not_in_cache' reply if message has a reply but it is not cached" do 
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
 
         generate_users(services.database)
@@ -576,15 +604,18 @@ module PrivateParlorXT
         reply_tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 100,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(reply_tourmaline_user.id, "private"),
+          from: reply_tourmaline_user
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         user = MockUser.new(80300, rank: 10)

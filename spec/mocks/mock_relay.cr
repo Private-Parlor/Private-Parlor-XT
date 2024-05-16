@@ -188,10 +188,14 @@ module PrivateParlorXT
     end
 
     def send_poll_copy(reply : MessageID?, user : User, poll : Tourmaline::Poll)
-      PrivateParlorXT.create_message(
-        reply + 1,
-        Tourmaline::User.new(12345678, true, "spec"),
+      bot_user = Tourmaline::User.new(12345678, true, "spec")
+
+      Tourmaline::Message.new(
+        message_id: reply + 1,
+        date: Time.utc,
+        chat: Tourmaline::Chat.new(bot_user.id, "private"),
         poll: poll,
+        from: bot_user
       )
     end
 

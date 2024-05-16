@@ -37,12 +37,17 @@ module PrivateParlorXT
       it "returns true if message is preformatted" do
         services = create_services()
 
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
           caption: "Example Text",
-          preformatted: true,
+          from: bot_user,
         )
+
+        message.preformatted = true
 
         user = MockUser.new(9000, rank: 0)
 
@@ -52,10 +57,14 @@ module PrivateParlorXT
       it "returns true if text passes checks" do
         services = create_services()
 
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
           caption: "Example Text",
+          from: bot_user,
         )
 
         user = MockUser.new(9000, rank: 0)
@@ -66,10 +75,14 @@ module PrivateParlorXT
       it "returns false if text is not allowed" do
         services = create_services()
 
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
           caption: "𝐀𝐁𝐂",
+          from: bot_user,
         )
 
         user = MockUser.new(9000, rank: 0)
@@ -80,10 +93,14 @@ module PrivateParlorXT
       it "returns false if text contains codepoints not permitted by Robot9000" do
         r9k_services = create_services(r9k: MockRobot9000.new)
 
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
           caption: "🐖",
+          from: bot_user,
         )
 
         user = MockUser.new(9000, rank: 0)
@@ -100,15 +117,15 @@ module PrivateParlorXT
 
         entities = [
           Tourmaline::MessageEntity.new(
-            "text_link",
-            8,
-            4,
+            type: "text_link",
+            offset: 8,
+            length: 4,
             url: "www.example.com"
           ),
           Tourmaline::MessageEntity.new(
-            "bold",
-            13,
-            7,
+            type: "bold",
+            offset: 13,
+            length: 7,
           ),
         ]
 
@@ -125,15 +142,15 @@ module PrivateParlorXT
 
         entities = [
           Tourmaline::MessageEntity.new(
-            "text_link",
-            8,
-            4,
+            type: "text_link",
+            offset: 8,
+            length: 4,
             url: "www.example.com"
           ),
           Tourmaline::MessageEntity.new(
-            "bold",
-            13,
-            7,
+            type: "bold",
+            offset: 13,
+            length: 7,
           ),
         ]
 
@@ -150,19 +167,36 @@ module PrivateParlorXT
         services = create_services()
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          caption: "🐖",
+          from: tourmaline_user,
+        )
+
+        message.preformatted = true
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           caption: "Preformatted Text ~~Admin",
           entities: [
             Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              25,
+              type: "bold",
+              offset: 0,
+              length: 25,
             ),
           ],
-          preformatted: true,
         )
+
+        message.preformatted = true
 
         unless user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
@@ -183,9 +217,13 @@ module PrivateParlorXT
         services = create_services()
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           caption: "𝐀𝐁𝐂"
         )
 
@@ -211,26 +249,30 @@ module PrivateParlorXT
 
         format_services = create_services(config: config)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           caption: "Text with entities and backlinks >>>/foo/",
           entities: [
             Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              4,
+              type: "bold",
+              offset: 0,
+              length: 4,
             ),
             Tourmaline::MessageEntity.new(
-              "underline",
-              4,
-              13,
+              type: "underline",
+              offset: 4,
+              length: 13,
             ),
             Tourmaline::MessageEntity.new(
-              "text_link",
-              0,
-              25,
-              "www.google.com"
+              type: "text_link",
+              offset: 0,
+              length: 25,
+              url:  "www.google.com"
             ),
           ],
         )
@@ -264,26 +306,30 @@ module PrivateParlorXT
 
         generate_users(format_services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(60200, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(60200, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "Text with entities and backlinks >>>/foo/",
           entities: [
             Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              4,
+              type: "bold",
+              offset: 0,
+              length: 4,
             ),
             Tourmaline::MessageEntity.new(
-              "underline",
-              4,
-              13,
+              type: "underline",
+              offset: 4,
+              length: 13,
             ),
             Tourmaline::MessageEntity.new(
-              "text_link",
-              0,
-              25,
-              "www.google.com"
+              type: "text_link",
+              offset: 0,
+              length: 25,
+              url:  "www.google.com"
             ),
           ],
         )
@@ -314,9 +360,13 @@ module PrivateParlorXT
         services = create_services()
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           caption: "𝐀𝐁𝐂"
         )
 
@@ -343,26 +393,30 @@ module PrivateParlorXT
 
         format_services = create_services(config: config)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           caption: "Text with entities and backlinks >>>/foo/",
           entities: [
             Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              4,
+              type: "bold",
+              offset: 0,
+              length: 4,
             ),
             Tourmaline::MessageEntity.new(
-              "underline",
-              4,
-              13,
+              type: "underline",
+              offset: 4,
+              length: 13,
             ),
             Tourmaline::MessageEntity.new(
-              "text_link",
-              0,
-              25,
-              "www.google.com"
+              type: "text_link",
+              offset: 0,
+              length: 25,
+              url:  "www.google.com"
             ),
           ],
         )
@@ -391,20 +445,24 @@ module PrivateParlorXT
         message_text = "Example Text"
         message_entities = [
           Tourmaline::MessageEntity.new(
-            "underline",
-            0,
-            7,
+            type: "underline",
+            offset: 0,
+            length: 7,
           ),
           Tourmaline::MessageEntity.new(
-            "strikethrough",
-            7,
-            4,
+            type: "strikethrough",
+            offset: 7,
+            length: 4,
           ),
         ]
 
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+        bot_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
           caption: message_text,
           entities: message_entities,
         )
@@ -435,24 +493,29 @@ module PrivateParlorXT
         message_text = "Example Text"
         message_entities = [
           Tourmaline::MessageEntity.new(
-            "underline",
-            0,
-            7,
+            type: "underline",
+            offset: 0,
+            length: 7,
           ),
           Tourmaline::MessageEntity.new(
-            "strikethrough",
-            7,
-            4,
+            type: "strikethrough",
+            offset: 7,
+            length: 4,
           ),
         ]
 
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+        bot_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
           caption: message_text,
           entities: message_entities,
-          preformatted: true,
         )
+
+        message.preformatted = true
 
         user = MockUser.new(9000)
 
@@ -480,20 +543,24 @@ module PrivateParlorXT
         message_text = "Example Text"
         message_entities = [
           Tourmaline::MessageEntity.new(
-            "underline",
-            0,
-            7,
+            type: "underline",
+            offset: 0,
+            length: 7,
           ),
           Tourmaline::MessageEntity.new(
-            "strikethrough",
-            7,
-            4,
+            type: "strikethrough",
+            offset: 7,
+            length: 4,
           ),
         ]
 
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+        bot_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
           caption: message_text,
           entities: message_entities,
         )
@@ -524,20 +591,24 @@ module PrivateParlorXT
         message_text = "Example Text"
         message_entities = [
           Tourmaline::MessageEntity.new(
-            "underline",
-            0,
-            7,
+            type: "underline",
+            offset: 0,
+            length: 7,
           ),
           Tourmaline::MessageEntity.new(
-            "strikethrough",
-            7,
-            4,
+            type: "strikethrough",
+            offset: 7,
+            length: 4,
           ),
         ]
 
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+        bot_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
           caption: message_text,
           entities: message_entities,
         )
@@ -577,20 +648,24 @@ module PrivateParlorXT
         message_text = "Example Text"
         message_entities = [
           Tourmaline::MessageEntity.new(
-            "underline",
-            0,
-            7,
+            type: "underline",
+            offset: 0,
+            length: 7,
           ),
           Tourmaline::MessageEntity.new(
-            "strikethrough",
-            7,
-            4,
+            type: "strikethrough",
+            offset: 7,
+            length: 4,
           ),
         ]
 
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+        bot_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
           caption: message_text,
           entities: message_entities,
         )
@@ -804,20 +879,20 @@ module PrivateParlorXT
         text = "Example text with >>>/foo/ backlinks"
         entities = [
           Tourmaline::MessageEntity.new(
-            "underline",
-            0,
-            7,
+            type: "underline",
+            offset: 0,
+            length: 7,
           ),
           Tourmaline::MessageEntity.new(
-            "strikethrough",
-            7,
-            4,
+            type: "strikethrough",
+            offset: 7,
+            length: 4,
           ),
           Tourmaline::MessageEntity.new(
-            "text_link",
-            13,
-            4,
-            "www.google.com"
+            type: "text_link",
+            offset: 13,
+            length: 4,
+            url: "www.google.com"
           ),
         ]
 
@@ -848,25 +923,25 @@ module PrivateParlorXT
 
         entities = [
           Tourmaline::MessageEntity.new(
-            "bold",
-            3,
-            4,
+            type: "bold",
+            offset: 3,
+            length: 4,
           ),
           Tourmaline::MessageEntity.new(
-            "bold",
-            10,
-            7,
+            type: "bold",
+            offset: 10,
+            length: 7,
           ),
           Tourmaline::MessageEntity.new(
-            "text_link",
-            10,
-            7,
-            "https://crystal-lang.org",
+            type: "text_link",
+            offset: 10,
+            length: 7,
+            url: "https://crystal-lang.org",
           ),
           Tourmaline::MessageEntity.new(
-            "italic",
-            20,
-            4,
+            type: "italic",
+            offset: 20,
+            length: 4,
           ),
         ]
 
@@ -914,16 +989,16 @@ module PrivateParlorXT
 
         entities = [
           Tourmaline::MessageEntity.new(
-            "text_link",
-            5,
-            4,
-            "www.example.com",
+            type: "text_link",
+            offset: 5,
+            length: 4,
+            url: "www.example.com",
           ),
           Tourmaline::MessageEntity.new(
-            "text_link",
-            10,
-            7,
-            "https://crystal-lang.org",
+            type: "text_link",
+            offset: 10,
+            length: 7,
+            url: "https://crystal-lang.org",
           ),
         ]
 
@@ -1064,9 +1139,9 @@ module PrivateParlorXT
 
         entities = [
           Tourmaline::MessageEntity.new(
-            "bold",
-            0,
-            19,
+            type: "bold",
+            offset: 0,
+            length: 19,
           ),
         ]
 
@@ -1078,9 +1153,9 @@ module PrivateParlorXT
 
         entities = [
           Tourmaline::MessageEntity.new(
-            "italic",
-            0,
-            19,
+            type: "italic",
+            offset: 0,
+            length: 19,
           ),
         ]
 
@@ -1100,9 +1175,13 @@ module PrivateParlorXT
 
     describe "#get_forward_header" do
       it "returns header and entities for forwards from users with public forwards" do
-        message = create_message(
-          100_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 100,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           forward_origin: Tourmaline::MessageOriginUser.new(
             "user",
             Time.utc,
@@ -1135,9 +1214,13 @@ module PrivateParlorXT
       end
 
       it "returns header and entities for forwards from Telegram bots" do
-        message = create_message(
-          100_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 100,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           forward_origin: Tourmaline::MessageOriginUser.new(
             "user",
             Time.utc,
@@ -1171,9 +1254,13 @@ module PrivateParlorXT
       end
 
       it "returns header and entities for forwards from public channels" do
-        message = create_message(
-          100_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 100,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           forward_origin: Tourmaline::MessageOriginChannel.new(
             "channel",
             Time.utc,
@@ -1207,9 +1294,13 @@ module PrivateParlorXT
       end
 
       it "returns header and entities for forwards from private channels" do
-        message = create_message(
-          100_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 100,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           forward_origin: Tourmaline::MessageOriginChannel.new(
             "channel",
             Time.utc,
@@ -1242,9 +1333,13 @@ module PrivateParlorXT
       end
 
       it "returns header and entities in italics for forwards from users with private forwards" do
-        message = create_message(
-          100_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 100,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           forward_origin: Tourmaline::MessageOriginHiddenUser.new(
             "hidden_user",
             Time.utc,
@@ -1278,7 +1373,7 @@ module PrivateParlorXT
           9000,
           [
             Tourmaline::MessageEntity.new(
-              "underline",
+              type: "underline",
               offset: 0,
               length: 10,
             ),
@@ -1312,7 +1407,7 @@ module PrivateParlorXT
           "Private 🔒🦤 Dodo",
           [
             Tourmaline::MessageEntity.new(
-              "underline",
+              type: "underline",
               offset: 0,
               length: 10,
             ),
@@ -1347,7 +1442,7 @@ module PrivateParlorXT
           "dodobot",
           [
             Tourmaline::MessageEntity.new(
-              "underline",
+              type: "underline",
               offset: 0,
               length: 10,
             ),
@@ -1382,7 +1477,7 @@ module PrivateParlorXT
           9000,
           [
             Tourmaline::MessageEntity.new(
-              "underline",
+              type: "underline",
               offset: 0,
               length: 10,
             ),
@@ -1544,25 +1639,25 @@ module PrivateParlorXT
       it "adds offset to each entity's offset field" do
         entities = [
           Tourmaline::MessageEntity.new(
-            "bold",
-            3,
-            4,
+            type: "bold",
+            offset: 3,
+            length: 4,
           ),
           Tourmaline::MessageEntity.new(
-            "bold",
-            10,
-            7,
+            type: "bold",
+            offset: 10,
+            length: 7,
           ),
           Tourmaline::MessageEntity.new(
-            "text_link",
-            10,
-            7,
-            "https://crystal-lang.org",
+            type: "text_link",
+            offset: 10,
+            length: 7,
+            url: "https://crystal-lang.org",
           ),
           Tourmaline::MessageEntity.new(
-            "italic",
-            20,
-            4,
+            type: "italic",
+            offset: 20,
+            length: 4,
           ),
         ]
 
@@ -1579,25 +1674,25 @@ module PrivateParlorXT
       it "subtracts offset from each entity's offset field" do
         entities = [
           Tourmaline::MessageEntity.new(
-            "bold",
-            3,
-            4,
+            type: "bold",
+            offset: 3,
+            length: 4,
           ),
           Tourmaline::MessageEntity.new(
-            "bold",
-            10,
-            7,
+            type: "bold",
+            offset: 10,
+            length: 7,
           ),
           Tourmaline::MessageEntity.new(
-            "text_link",
-            10,
-            7,
-            "https://crystal-lang.org",
+            type: "text_link",
+            offset: 10,
+            length: 7,
+            url: "https://crystal-lang.org",
           ),
           Tourmaline::MessageEntity.new(
-            "italic",
-            20,
-            4,
+            type: "italic",
+            offset: 20,
+            length: 4,
           ),
         ]
 

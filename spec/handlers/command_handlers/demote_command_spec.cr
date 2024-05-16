@@ -43,7 +43,6 @@ module PrivateParlorXT
               default_rank: 0
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = DemoteCommand.new(MockConfig.new)
@@ -52,8 +51,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(60200, false, "voorbeeld")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/demote 40000 admin",
           from: tourmaline_user,
@@ -76,7 +76,6 @@ module PrivateParlorXT
               default_rank: 0
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = DemoteCommand.new(MockConfig.new)
@@ -85,8 +84,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/demote",
           from: tourmaline_user,
@@ -109,7 +109,6 @@ module PrivateParlorXT
               default_rank: -5
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = DemoteCommand.new(MockConfig.new)
@@ -122,8 +121,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/demote 40000",
           from: tourmaline_user,
@@ -146,7 +146,6 @@ module PrivateParlorXT
               default_rank: -5
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         generate_users(services.database)
@@ -156,18 +155,20 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 10,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/demote -50",
           from: tourmaline_user,
-          reply_to_message: reply_to
+          reply_to_message: reply
         )
 
         handler.do(message, services)
@@ -187,8 +188,9 @@ module PrivateParlorXT
 
         messages[0].data.should(eq(expected))
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 12,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/demote 40000",
           from: tourmaline_user,
@@ -218,7 +220,6 @@ module PrivateParlorXT
               default_rank: 0
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = DemoteCommand.new(MockConfig.new)
@@ -234,13 +235,14 @@ module PrivateParlorXT
 
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 10,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
         )
 
-        handler.demote_from_reply("10000", user, 11, reply_to, services)
+        handler.demote_from_reply("10000", user, 11, reply, services)
 
         unless reply_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
@@ -266,7 +268,6 @@ module PrivateParlorXT
               default_rank: 0
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = DemoteCommand.new(MockConfig.new)
@@ -281,13 +282,14 @@ module PrivateParlorXT
 
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 10,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
         )
 
-        handler.demote_from_reply("mod", user, 11, reply_to, services)
+        handler.demote_from_reply("mod", user, 11, reply, services)
 
         unless reply_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
@@ -309,7 +311,6 @@ module PrivateParlorXT
               default_rank: 0
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = DemoteCommand.new(MockConfig.new)
@@ -325,13 +326,14 @@ module PrivateParlorXT
 
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 10,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
         )
 
-        handler.demote_from_reply("host", user, 11, reply_to, services)
+        handler.demote_from_reply("host", user, 11, reply, services)
 
         unless reply_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
@@ -344,7 +346,7 @@ module PrivateParlorXT
 
         messages[0].data.should(eq(services.replies.fail))
 
-        handler.demote_from_reply("-10", user, 11, reply_to, services)
+        handler.demote_from_reply("-10", user, 11, reply, services)
 
         unless reply_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
@@ -366,7 +368,6 @@ module PrivateParlorXT
               default_rank: -5
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = DemoteCommand.new(MockConfig.new)
@@ -382,13 +383,14 @@ module PrivateParlorXT
 
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 10,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
         )
 
-        handler.demote_from_reply("restricted", user, 11, reply_to, services)
+        handler.demote_from_reply("restricted", user, 11, reply, services)
 
         unless updated_user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
@@ -405,7 +407,6 @@ module PrivateParlorXT
               default_rank: 0 
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         generate_users(services.database)
@@ -413,16 +414,20 @@ module PrivateParlorXT
 
         handler = DemoteCommand.new(MockConfig.new)
 
-        reply_to = create_message(
-          3,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 3,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
         unless user = services.database.get_user(20000)
           fail("User 20000 should exist in the database")
         end
 
-        handler.demote_from_reply(nil, user, 11, reply_to, services)
+        handler.demote_from_reply(nil, user, 11, reply, services)
 
         unless reply_user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
@@ -439,7 +444,6 @@ module PrivateParlorXT
               default_rank: 0
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         generate_users(services.database)
@@ -453,16 +457,20 @@ module PrivateParlorXT
 
         services.database.update_user(demoted_user)
 
-        reply_to = create_message(
-          3,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 3,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
         unless user = services.database.get_user(20000)
           fail("User 20000 should exist in the database")
         end
 
-        handler.demote_from_reply("mod", user, 11, reply_to, services)
+        handler.demote_from_reply("mod", user, 11, reply, services)
 
         unless reply_user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
@@ -481,7 +489,6 @@ module PrivateParlorXT
               default_rank: 0
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = DemoteCommand.new(MockConfig.new)
@@ -517,7 +524,6 @@ module PrivateParlorXT
               default_rank: 0
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = DemoteCommand.new(MockConfig.new)
@@ -556,7 +562,6 @@ module PrivateParlorXT
               default_rank: 0
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = DemoteCommand.new(MockConfig.new)
@@ -585,7 +590,6 @@ module PrivateParlorXT
               default_rank: 0
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = DemoteCommand.new(MockConfig.new)
@@ -633,7 +637,6 @@ module PrivateParlorXT
               default_rank: -5
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = DemoteCommand.new(MockConfig.new)
@@ -669,7 +672,6 @@ module PrivateParlorXT
               default_rank: 0
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         generate_users(services.database)
@@ -697,7 +699,6 @@ module PrivateParlorXT
               default_rank: 0
             )
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         generate_users(services.database)

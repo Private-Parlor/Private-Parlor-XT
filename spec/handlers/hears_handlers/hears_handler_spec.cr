@@ -4,7 +4,7 @@ module PrivateParlorXT
   describe HearsHandler do
     describe "#deny_user" do
       it "queues blacklisted response when user is blacklisted" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = HardCodedHearsHandler.new(MockConfig.new)
 

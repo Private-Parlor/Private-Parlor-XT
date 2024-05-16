@@ -92,8 +92,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           animation: Tourmaline::Animation.new(
             file_id: "animation_item_one",
@@ -112,8 +113,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           audio: Tourmaline::Audio.new(
             file_id: "audio_item_one",
@@ -130,8 +132,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           document: Tourmaline::Document.new(
             file_id: "document_item_one",
@@ -147,8 +150,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           video: Tourmaline::Video.new(
             file_id: "video_item_one",
@@ -167,8 +171,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           video_note: Tourmaline::VideoNote.new(
             file_id: "video_note_item_one",
@@ -186,8 +191,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           voice: Tourmaline::Voice.new(
             file_id: "voice_item_one",
@@ -204,8 +210,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           photo: [
             Tourmaline::PhotoSize.new(
@@ -225,8 +232,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           sticker: Tourmaline::Sticker.new(
             file_id: "sticker_item_one",
@@ -247,8 +255,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "Example"
         )
@@ -265,8 +274,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
@@ -281,20 +291,23 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
 
         Robot9000.checks(user, message, services).should(be_true)
 
-        message2 = create_message(
+        message2 = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
-          preformatted: true
         )
+
+        message2.preformatted = true
 
         Robot9000.checks(user, message2, services).should(be_true)
       end
@@ -310,8 +323,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
@@ -332,8 +346,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
@@ -361,8 +376,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
@@ -382,8 +398,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
@@ -404,8 +421,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
@@ -425,8 +443,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
@@ -448,8 +467,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
@@ -477,8 +497,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
@@ -495,8 +516,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
@@ -516,8 +538,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
@@ -540,8 +563,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678, cooldown_until: nil)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
@@ -567,8 +591,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678, warnings: 0)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
@@ -595,8 +620,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
         )
@@ -620,8 +646,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
@@ -646,8 +673,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
@@ -672,8 +700,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "Example Text",
         )
@@ -692,8 +721,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
@@ -723,8 +753,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678, cooldown_until: nil)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
@@ -758,8 +789,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678, warnings: 0)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [
@@ -794,8 +826,9 @@ module PrivateParlorXT
 
         user = MockUser.new(12345678)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Example Text",
           photo: [

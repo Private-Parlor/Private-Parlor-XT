@@ -13,8 +13,9 @@ module PrivateParlorXT
       it "returns InputMediaPhoto when message contains a photo" do
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 1,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
           photo: [
@@ -45,8 +46,9 @@ module PrivateParlorXT
       it "returns InputMediaVideo when message contains a video" do
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 1,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
           video: Tourmaline::Video.new(
@@ -76,8 +78,9 @@ module PrivateParlorXT
       it "returns InputMediaAudio when message contains an audio file" do
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 1,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
           audio: Tourmaline::Audio.new(
@@ -103,8 +106,9 @@ module PrivateParlorXT
       it "returns InputMediaDocument when message contains a document" do
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 1,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
           document: Tourmaline::Document.new(
@@ -129,8 +133,9 @@ module PrivateParlorXT
       it "returns nil when message does not contain a media group type" do
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 1,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
           animation: Tourmaline::Animation.new(

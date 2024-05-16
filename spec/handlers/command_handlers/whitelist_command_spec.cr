@@ -26,16 +26,19 @@ module PrivateParlorXT
               registration_open: false,
             ),
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = WhitelistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/whitelist 9000",
         )
 
@@ -56,16 +59,19 @@ module PrivateParlorXT
               registration_open: true,
             ),
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = WhitelistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/whitelist 9000",
         )
 
@@ -85,9 +91,7 @@ module PrivateParlorXT
             MockConfig.new(
               registration_open: false,
             ),
-          ),
-          relay: MockRelay.new("", MockClient.new),
-        )
+          ),)
 
         handler = WhitelistCommand.new(MockConfig.new)
 
@@ -99,8 +103,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(20000, false, "beispiel")
 
-        no_arg_message = create_message(
+        no_arg_message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/whitelist",
           from: tourmaline_user
@@ -113,8 +118,9 @@ module PrivateParlorXT
         messages.size.should(eq(1))
         messages[0].data.should(eq(services.replies.missing_args))
 
-        invalid_arg_message = create_message(
+        invalid_arg_message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/whitelist example",
           from: tourmaline_user
@@ -136,7 +142,6 @@ module PrivateParlorXT
               registration_open: false,
             ),
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = WhitelistCommand.new(MockConfig.new)
@@ -149,8 +154,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(20000, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/whitelist 80300",
           from: tourmaline_user
@@ -172,7 +178,6 @@ module PrivateParlorXT
               registration_open: false,
             ),
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = WhitelistCommand.new(MockConfig.new)
@@ -185,8 +190,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(20000, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/whitelist 9000",
           from: tourmaline_user
@@ -210,16 +216,19 @@ module PrivateParlorXT
               default_rank: 10
             ),
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = WhitelistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/whitelist 9000",
         )
 

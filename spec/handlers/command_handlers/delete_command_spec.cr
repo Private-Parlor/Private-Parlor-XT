@@ -19,7 +19,7 @@ module PrivateParlorXT
 
     describe "#do" do
       it "returns early if user is not authorized" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = DeleteCommand.new(MockConfig.new)
 
@@ -29,18 +29,20 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(20000, false, "example")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 10,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/delete detailed reason",
           from: tourmaline_user,
-          reply_to_message: reply_to
+          reply_to_message: reply
         )
 
         handler.do(message, services)
@@ -53,7 +55,7 @@ module PrivateParlorXT
       end
 
       it "returns early with 'no reply' if message has no reply" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = DeleteCommand.new(MockConfig.new)
 
@@ -66,8 +68,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/delete",
           from: tourmaline_user,
@@ -82,7 +85,7 @@ module PrivateParlorXT
       end
 
       it "returns early with 'not in cache' response if reply message does not exist in message history" do 
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = DeleteCommand.new(MockConfig.new)
 
@@ -95,18 +98,20 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 10,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/delete",
           from: tourmaline_user,
-          reply_to_message: reply_to
+          reply_to_message: reply
         )
 
         handler.do(message, services)
@@ -118,7 +123,7 @@ module PrivateParlorXT
       end
 
       it "updates user activity" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = DeleteCommand.new(MockConfig.new)
 
@@ -132,18 +137,20 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 10,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/delete",
           from: tourmaline_user,
-          reply_to_message: reply_to
+          reply_to_message: reply
         )
 
         handler.do(message, services)
@@ -156,7 +163,7 @@ module PrivateParlorXT
       end
 
       it "deletes message group and warns the user" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = DeleteCommand.new(MockConfig.new)
 
@@ -172,18 +179,20 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 10,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/delete detailed reason",
           from: tourmaline_user,
-          reply_to_message: reply_to
+          reply_to_message: reply
         )
 
         handler.do(message, services)

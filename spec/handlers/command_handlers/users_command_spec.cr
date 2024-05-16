@@ -19,7 +19,7 @@ module PrivateParlorXT
 
     describe "#do" do
       it "updates user activity" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UsersCommand.new(MockConfig.new)
 
@@ -31,8 +31,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/users",
           from: tourmaline_user,
@@ -48,7 +49,7 @@ module PrivateParlorXT
       end
 
       it "returns vague user counts if user is not authorized" do 
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UsersCommand.new(MockConfig.new)
 
@@ -60,8 +61,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/users",
           from: tourmaline_user,
@@ -84,7 +86,7 @@ module PrivateParlorXT
       end
 
       it "returns full user counts if user is authorized" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = UsersCommand.new(MockConfig.new)
 
@@ -96,8 +98,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/users",
           from: tourmaline_user,

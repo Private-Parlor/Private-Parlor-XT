@@ -4,7 +4,7 @@ module PrivateParlorXT
   describe HelpCommand do
     describe "#do" do
       it "updates user activity" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = HelpCommand.new(MockConfig.new)
 
@@ -16,8 +16,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/help",
           from: tourmaline_user,
@@ -33,7 +34,7 @@ module PrivateParlorXT
       end
 
       it "returns message containing information about commands avaiable to the user" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = HelpCommand.new(MockConfig.new)
 
@@ -45,8 +46,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/help",
           from: tourmaline_user,

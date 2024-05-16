@@ -4,21 +4,25 @@ module PrivateParlorXT
   describe KarmaSignCommand do
     describe "#do" do
       it "returns early if message is a forward" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = KarmaSignCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ksign   Example text",
           forward_origin: Tourmaline::MessageOriginUser.new(
@@ -37,7 +41,6 @@ module PrivateParlorXT
 
       it "returns early if there are no karma levels" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           config: HandlerConfig.new(
             MockConfig.new(karma_levels: {} of Range(Int32, Int32) => String)
           )
@@ -47,15 +50,19 @@ module PrivateParlorXT
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ksign Karma level sign",
         )
@@ -68,21 +75,25 @@ module PrivateParlorXT
       end
 
       it "returns early if text contains invalid characters" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = KarmaSignCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ksign 𝐀𝐁𝐂",
         )
@@ -96,21 +107,25 @@ module PrivateParlorXT
       end
 
       it "returns early if message has no arguments" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = KarmaSignCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ksign",
         )
@@ -133,22 +148,25 @@ module PrivateParlorXT
             score_line: 5,
             score_character: 1,
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = KarmaSignCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ksign   Example text",
         )
@@ -161,9 +179,13 @@ module PrivateParlorXT
 
         updated_message.preformatted?.should(be_true)
 
-        spammy_message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        spammy_message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/ksign   Example text",
         )
 
@@ -188,22 +210,25 @@ module PrivateParlorXT
             DB.open("sqlite3://%3Amemory%3A"),
             check_media: true,
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = KarmaSignCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ksign   Example text",
         )
@@ -216,15 +241,19 @@ module PrivateParlorXT
 
         updated_message.preformatted?.should(be_true)
 
-        unoriginal_message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        unoriginal_message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ksign   Example text",
         )
@@ -244,26 +273,30 @@ module PrivateParlorXT
       end
 
       it "updates message contents" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = KarmaSignCommand.new(MockConfig.new)
     
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/ksign   Example text",
           entities: [
             Tourmaline::MessageEntity.new(
-              "bot_command",
-              0,
-              6
+              type: "bot_command",
+              offset: 0,
+              length: 6,
             ),
             Tourmaline::MessageEntity.new(
-              "bold",
-              9,
-              7
+              type: "bold",
+              offset: 9,
+              length: 7,
             ),
           ]
         )
@@ -295,7 +328,7 @@ module PrivateParlorXT
 
     describe "#spamming?" do
       it "returns true if user is sign spamming" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = KarmaSignCommand.new(MockConfig.new)
 
@@ -305,9 +338,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/ksign Example",
         )
 
@@ -327,7 +364,7 @@ module PrivateParlorXT
       end
 
       it "returns true if user is spamming text" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = KarmaSignCommand.new(MockConfig.new)
 
@@ -337,9 +374,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/ksign Example",
         )
 
@@ -364,7 +405,7 @@ module PrivateParlorXT
       end
 
       it "returns false if user is not sign spamming" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = KarmaSignCommand.new(MockConfig.new)
 
@@ -374,9 +415,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/ksign Example",
         )
 
@@ -386,7 +431,7 @@ module PrivateParlorXT
       end
 
       it "returns false if no spam handler" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = KarmaSignCommand.new(MockConfig.new)
         
@@ -396,9 +441,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/ksign Example",
         )
 
@@ -410,7 +459,7 @@ module PrivateParlorXT
 
     describe "#get_karma_level" do
       it "returns karma level according to user's karma" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = KarmaSignCommand.new(MockConfig.new)
 

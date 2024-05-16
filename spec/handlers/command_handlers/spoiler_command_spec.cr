@@ -19,29 +19,37 @@ module PrivateParlorXT
 
     describe "#do" do
       it "returns early if user is not authorized" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = SpoilerCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        reply_to = create_message(
-          6,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60,
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/spoiler",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         handler.do(message, services)
@@ -54,7 +62,7 @@ module PrivateParlorXT
       end
 
       it "returns early if message has no reply" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
         
         handler = SpoilerCommand.new(MockConfig.new)
 
@@ -63,8 +71,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/spoiler",
           from: tourmaline_user
@@ -79,7 +88,7 @@ module PrivateParlorXT
       end
 
       it "returns early if reply message is a forward" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
         
         handler = SpoilerCommand.new(MockConfig.new)
 
@@ -89,8 +98,9 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           forward_origin: Tourmaline::MessageOriginUser.new(
             "user",
@@ -99,19 +109,20 @@ module PrivateParlorXT
           ),
           from: bot_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60,
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/spoiler",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -124,7 +135,7 @@ module PrivateParlorXT
       end
 
       it "returns early with 'not in cache' response if reply message does not exist in message history" do 
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
         
         handler = SpoilerCommand.new(MockConfig.new)
 
@@ -134,24 +145,26 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 50,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60,
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/spoiler",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -164,7 +177,7 @@ module PrivateParlorXT
       end
 
       it "returns early if user attempts to spoil own message" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
         
         handler = SpoilerCommand.new(MockConfig.new)
 
@@ -174,24 +187,26 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 1,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60,
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/spoiler",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -204,7 +219,7 @@ module PrivateParlorXT
       end
 
       it "returns early if InputMedia could not be created from reply message" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
         
         handler = SpoilerCommand.new(MockConfig.new)
 
@@ -214,21 +229,23 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
           document: Tourmaline::Document.new(
-            "document_item_one",
-            "unique_document",
+            file_id: "document_item_one",
+            file_unique_id: "unique_document",
           ),
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/spoiler",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -241,7 +258,7 @@ module PrivateParlorXT
       end
 
       it "updates user activity" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
         
         handler = SpoilerCommand.new(MockConfig.new)
 
@@ -255,24 +272,26 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60,
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/spoiler",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -286,7 +305,7 @@ module PrivateParlorXT
       end
 
       it "spoils a message without a spoiler" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
         
         handler = SpoilerCommand.new(MockConfig.new)
 
@@ -296,24 +315,26 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60,
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/spoiler",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -334,7 +355,7 @@ module PrivateParlorXT
       end
 
       it "unspoils a message with a spoiler" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
         
         handler = SpoilerCommand.new(MockConfig.new)
 
@@ -344,26 +365,28 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
           caption: "Animation with a caption",
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60,
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           has_media_spoiler: true
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/spoiler",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -386,27 +409,31 @@ module PrivateParlorXT
 
     describe "#get_message_input" do
       it "returns InputMediaPhoto when message contains a photo" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = SpoilerCommand.new(MockConfig.new)
 
-        message = create_message(
-          1_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 1,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           photo: [
             Tourmaline::PhotoSize.new(
-              "photo_item_one",
-              "unique_photo",
-              1080,
-              1080,
+              file_id: "photo_item_one",
+              file_unique_id: "unique_photo",
+              width: 1080,
+              height: 1080,
             ),
           ],
           caption: "Photo caption",
-          entities: [
+          caption_entities: [
             Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              10,
+              type: "bold",
+              offset: 0,
+              length: 10,
             ),
           ]
         )
@@ -430,26 +457,30 @@ module PrivateParlorXT
       end
 
       it "returns InputMediaVideo when message contains a video" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = SpoilerCommand.new(MockConfig.new)
 
-        message = create_message(
-          1_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 1,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           video: Tourmaline::Video.new(
-            "video_item_one",
-            "unique_video",
-            1080,
-            1080,
-            60,
+            file_id: "video_item_one",
+            file_unique_id: "unique_video",
+            width: 1080,
+            height: 1080,
+            duration: 60,
           ),
           caption: "Video caption",
-          entities: [
+          caption_entities: [
             Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              10,
+              type: "bold",
+              offset: 0,
+              length: 10,
             ),
           ]
         )
@@ -473,26 +504,30 @@ module PrivateParlorXT
       end
 
       it "returns InputMediaAnimation when message contains an animation" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = SpoilerCommand.new(MockConfig.new)
 
-        message = create_message(
-          1_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 1,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60,
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "Animation caption",
-          entities: [
+          caption_entities: [
             Tourmaline::MessageEntity.new(
-              "bold",
-              0,
-              10,
+              type: "bold",
+              offset: 0,
+              length: 10,
             ),
           ]
         )
@@ -516,26 +551,34 @@ module PrivateParlorXT
       end
 
       it "returns nil when message contains a type that can't have a spoiler" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = SpoilerCommand.new(MockConfig.new)
 
-        document_message = create_message(
-          1_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        document_message = Tourmaline::Message.new(
+          message_id: 1,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           document: Tourmaline::Document.new(
-            "document_item_one",
-            "unique_document",
+            file_id: "document_item_one",
+            file_unique_id: "unique_document",
           ),
         )
 
-        audio_message = create_message(
-          1_i64,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        audio_tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        audio_message = Tourmaline::Message.new(
+          message_id: 1,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           audio: Tourmaline::Audio.new(
-            "audio_item_one",
-            "unique_audio",
-            60,
+            file_id: "audio_item_one",
+            file_unique_id: "unique_audio",
+            duration: 60,
           ),
         )
 
@@ -546,7 +589,7 @@ module PrivateParlorXT
 
     describe "#spoil_messages" do
       it "returns early if message does not exist in cache" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = SpoilerCommand.new(MockConfig.new)
 
@@ -558,17 +601,18 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Animation Caption",
           from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60,
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
         )
 
@@ -584,7 +628,7 @@ module PrivateParlorXT
       end
 
       it "spoils a message without a spoiler" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = SpoilerCommand.new(MockConfig.new)
 
@@ -597,17 +641,18 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Animation Caption",
           from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60,
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           has_media_spoiler: false
         )
@@ -630,7 +675,7 @@ module PrivateParlorXT
       end
 
       it "unspoils a message with a spoiler" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = SpoilerCommand.new(MockConfig.new)
 
@@ -643,17 +688,18 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           caption: "Animation Caption",
           from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60,
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           has_media_spoiler: true
         )

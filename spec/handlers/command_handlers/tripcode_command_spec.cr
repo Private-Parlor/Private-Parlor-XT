@@ -4,15 +4,19 @@ module PrivateParlorXT
   describe TripcodeCommand do
     describe "#do" do
       it "returns early if tripcode is invalid" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = TripcodeCommand.new(MockConfig.new)
     
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/tripcode 🦤🦆🕊️#"
         )
 
@@ -35,16 +39,19 @@ module PrivateParlorXT
               flag_signatures: true
             ),
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = TripcodeCommand.new(MockConfig.new)
     
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/tripcode name#password"
         )
 
@@ -61,7 +68,7 @@ module PrivateParlorXT
       end
 
       it "updates user activity" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = TripcodeCommand.new(MockConfig.new)
 
@@ -73,8 +80,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(20000, false, "example")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/tripcode",
           from: tourmaline_user,
@@ -90,15 +98,19 @@ module PrivateParlorXT
       end
 
       it "sets user tripcode" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = TripcodeCommand.new(MockConfig.new)
     
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/tripcode name#password"
         )
 
@@ -134,7 +146,6 @@ module PrivateParlorXT
               flag_signatures: true
             ),
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = TripcodeCommand.new(MockConfig.new)
@@ -147,9 +158,13 @@ module PrivateParlorXT
 
         obfuscated_id = user.get_obfuscated_id
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/tripcode 🦤🦆🕊️"
         )
 
@@ -177,7 +192,7 @@ module PrivateParlorXT
       end
 
       it "returns user's current tripcode in command without arguments" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = TripcodeCommand.new(MockConfig.new)
 
@@ -187,9 +202,13 @@ module PrivateParlorXT
           fail("User 20000 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/tripcode"
         )
 

@@ -7,7 +7,7 @@ module PrivateParlorXT
   describe Relay do
     describe "#reject_blacklisted_messages" do
       it "removes messages sent by and addressed to the given user" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         # 10 messages in the queue; 5 should be removed
         services.relay.send_text(RelayParameters.new(
@@ -48,7 +48,7 @@ module PrivateParlorXT
 
     describe "#reject_inactive_user_messages" do
       it "removes messages addressed to the given user" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         # 10 messages in the queue; 3 should be removed
         services.relay.send_text(RelayParameters.new(
@@ -100,10 +100,11 @@ module PrivateParlorXT
 
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 12,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user
+          from: bot_user,
         )
 
         services.history.new_message(sender_id: 9000, origin: 11)
@@ -129,20 +130,23 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 
         messages = [
-          create_message(
+          Tourmaline::Message.new(
             message_id: 14,
+            date: Time.utc,
             chat: Tourmaline::Chat.new(bot_user.id, "private"),
-            from: bot_user
+            from: bot_user,
           ),
-          create_message(
+          Tourmaline::Message.new(
             message_id: 15,
+            date: Time.utc,
             chat: Tourmaline::Chat.new(bot_user.id, "private"),
-            from: bot_user
+            from: bot_user,
           ),
-          create_message(
+          Tourmaline::Message.new(
             message_id: 16,
+            date: Time.utc,
             chat: Tourmaline::Chat.new(bot_user.id, "private"),
-            from: bot_user
+            from: bot_user,
           ),
         ]
 

@@ -189,7 +189,7 @@ module PrivateParlorXT
     it "kicks inative users" do
       client = MockClient.new
 
-      fresh_services = create_services(client: client)
+      fresh_services = create_services()
 
       generate_users(fresh_services.database)
 

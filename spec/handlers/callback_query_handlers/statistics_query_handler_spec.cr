@@ -5,7 +5,6 @@ module PrivateParlorXT
     describe "#do" do
       it "returns early if callback has no message" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           statistics: MockStatistics.new
         )
 
@@ -31,7 +30,6 @@ module PrivateParlorXT
 
       it "returns early if callback has no data" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           statistics: MockStatistics.new
         )
 
@@ -42,10 +40,11 @@ module PrivateParlorXT
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel", "newname", "@new_username")
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user
+          from: bot_user,
         )
 
         query = Tourmaline::CallbackQuery.new(
@@ -62,9 +61,7 @@ module PrivateParlorXT
       end
 
       it "returns early if there is no Statistics object" do
-        services = create_services(
-          relay: MockRelay.new("", MockClient.new),
-        )
+        services = create_services()
 
         generate_users(services.database)
 
@@ -73,10 +70,11 @@ module PrivateParlorXT
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel", "newname", "@new_username")
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user
+          from: bot_user,
         )
 
         query = Tourmaline::CallbackQuery.new(
@@ -95,7 +93,6 @@ module PrivateParlorXT
 
       it "returns early if there is no query string" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           statistics: MockStatistics.new
         )
 
@@ -106,10 +103,11 @@ module PrivateParlorXT
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel", "newname", "@new_username")
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user
+          from: bot_user,
         )
 
         query = Tourmaline::CallbackQuery.new(
@@ -127,7 +125,6 @@ module PrivateParlorXT
 
       it "returns edited message text for given statistics screen" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           statistics: MockStatistics.new
         )
 
@@ -142,10 +139,11 @@ module PrivateParlorXT
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel", "newname", "@new_username")
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user
+          from: bot_user,
         )
 
         # Get General statistics

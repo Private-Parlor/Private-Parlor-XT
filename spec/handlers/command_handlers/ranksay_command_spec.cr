@@ -21,21 +21,25 @@ module PrivateParlorXT
 
     describe "#do" do
       it "returns early if message is a forward" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = RanksayCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ranksay   Example text",
           forward_origin: Tourmaline::MessageOriginUser.new(
@@ -64,26 +68,28 @@ module PrivateParlorXT
         }
 
         restricted_user_services = create_services(
-          ranks: restricted_ranks,
-          relay: MockRelay.new("", MockClient.new),
-        )
+          ranks: restricted_ranks,)
 
         generate_users(restricted_user_services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(60200, false, "voorbeeld"),
+        tourmaline_user = Tourmaline::User.new(60200, false, "voorbeeld")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/ranksay   Example text",
           entities: [
             Tourmaline::MessageEntity.new(
-              "bot_command",
-              0,
-              6
+              type: "bot_command",
+              offset: 0,
+              length: 6,
             ),
             Tourmaline::MessageEntity.new(
-              "bold",
-              8,
-              7
+              type: "bold",
+              offset: 8,
+              length: 7,
             ),
           ]
         )
@@ -98,21 +104,25 @@ module PrivateParlorXT
       end
 
       it "returns early if text contains invalid characters" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = RanksayCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ranksay 𝐀𝐁𝐂",
         )
@@ -126,21 +136,25 @@ module PrivateParlorXT
       end
 
       it "returns early if message has no arguments" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = RanksayCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ranksay",
         )
@@ -162,16 +176,19 @@ module PrivateParlorXT
             score_line: 2,
             score_character: 1,
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = RanksayCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/ranksay   Example",
         )
 
@@ -183,9 +200,13 @@ module PrivateParlorXT
 
         updated_message.preformatted?.should(be_true)
 
-        spammy_message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        spammy_message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/ranksay   Example text",
         )
 
@@ -210,22 +231,25 @@ module PrivateParlorXT
             DB.open("sqlite3://%3Amemory%3A"),
             check_media: true,
           ),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = RanksayCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ranksay   Example text",
         )
@@ -238,15 +262,19 @@ module PrivateParlorXT
 
         updated_message.preformatted?.should(be_true)
 
-        unoriginal_message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        unoriginal_message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           animation: Tourmaline::Animation.new(
-            "animation_item_one",
-            "unique_animation",
-            1080,
-            1080,
-            60
+            file_id: "animation_item_one",
+            file_unique_id: "unique_animation",
+            width: 1080,
+            height: 1080,
+            duration: 60
           ),
           caption: "/ranksay   Example text",
         )
@@ -266,26 +294,30 @@ module PrivateParlorXT
       end
 
       it "updates message contents" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = RanksayCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/ranksay   Example text",
           entities: [
             Tourmaline::MessageEntity.new(
-              "bot_command",
-              0,
-              8
+              type: "bot_command",
+              offset: 0,
+              length: 8,
             ),
             Tourmaline::MessageEntity.new(
-              "bold",
-              11,
-              7
+              type: "bold",
+              offset: 11,
+              length: 7,
             ),
           ]
         )
@@ -311,26 +343,30 @@ module PrivateParlorXT
       end
 
       it "updates message contents with rank name signature for a lower rank" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = RanksayCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/usersay   Example text",
           entities: [
             Tourmaline::MessageEntity.new(
-              "bot_command",
-              0,
-              8
+              type: "bot_command",
+              offset: 0,
+              length: 8,
             ),
             Tourmaline::MessageEntity.new(
-              "bold",
-              11,
-              7
+              type: "bold",
+              offset: 11,
+              length: 7,
             ),
           ]
         )
@@ -358,7 +394,7 @@ module PrivateParlorXT
 
     describe "#spamming?" do
       it "returns true if user is spamming text" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = RanksayCommand.new(MockConfig.new)
 
@@ -368,9 +404,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/ranksay Example",
         )
 
@@ -395,7 +435,7 @@ module PrivateParlorXT
       end
 
       it "returns false if no spam handler" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = RanksayCommand.new(MockConfig.new)
 
@@ -405,9 +445,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/ranksay Example",
         )
 
@@ -449,13 +493,17 @@ module PrivateParlorXT
       }
 
       it "gets name of user's current rank" do
-        services = create_services(ranks: updated_ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: updated_ranks)
 
         handler = RanksayCommand.new(MockConfig.new)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(9000, false, "user9000"),
+        tourmaline_user = Tourmaline::User.new(9000, false, "user9000")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
         )
 
         text = "/ranksay   Example text"
@@ -472,13 +520,17 @@ module PrivateParlorXT
       end
 
       it "gets name of rank contained in command" do
-        services = create_services(ranks: updated_ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: updated_ranks)
 
         handler = RanksayCommand.new(MockConfig.new)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(9000, false, "user9000"),
+        tourmaline_user = Tourmaline::User.new(9000, false, "user9000")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
         )
 
         text = "/modsay example text"
@@ -495,13 +547,17 @@ module PrivateParlorXT
       end
 
       it "returns nil if given rank cannot ranksay" do
-        services = create_services(ranks: updated_ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: updated_ranks)
 
         handler = RanksayCommand.new(MockConfig.new)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(9000, false, "user9000"),
+        tourmaline_user = Tourmaline::User.new(9000, false, "user9000")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
         )
 
         text = "/usersay example text"

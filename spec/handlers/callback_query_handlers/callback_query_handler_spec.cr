@@ -17,10 +17,11 @@ module PrivateParlorXT
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel", "newname", "@new_username")
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user
+          from: bot_user,
         )
 
         query = Tourmaline::CallbackQuery.new(
@@ -40,7 +41,7 @@ module PrivateParlorXT
       end
 
       it "returns nil if user does not exist and queues 'not_in_chat' reply" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
         handler = MockCallbackHandler.new(MockConfig.new)
 
         generate_users(services.database)
@@ -48,10 +49,11 @@ module PrivateParlorXT
         tourmaline_user = Tourmaline::User.new(9000, false, "not_in_chat")
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user
+          from: bot_user,
         )
 
         query = Tourmaline::CallbackQuery.new(
@@ -78,10 +80,11 @@ module PrivateParlorXT
         tourmaline_user = Tourmaline::User.new(70000, false, "BLACKLISTED")
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user
+          from: bot_user,
         )
 
         query = Tourmaline::CallbackQuery.new(
@@ -97,7 +100,7 @@ module PrivateParlorXT
 
     describe "#deny_user" do
       it "queues blacklisted response when user is blacklisted" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
         handler = MockCallbackHandler.new(MockConfig.new)
 
         user = MockUser.new(9000, rank: -10)

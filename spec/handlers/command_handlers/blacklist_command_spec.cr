@@ -19,23 +19,31 @@ module PrivateParlorXT
 
     describe "#do" do
       it "returns early if user is not authorized" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
 
-        reply_to = create_message(
-          9,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 9,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/blacklist detailed reason",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         handler.do(message, services)
@@ -48,7 +56,7 @@ module PrivateParlorXT
       end
 
       it "returns early if message has no arguments and no reply" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
 
@@ -56,8 +64,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(20000, false, "example")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/blacklist",
           from: tourmaline_user,
@@ -73,7 +82,7 @@ module PrivateParlorXT
       end
 
       it "updates user activity" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
 
@@ -87,18 +96,20 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(20000, false, "example")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 9,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user
+          from: bot_user,
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/blacklist",
           from: tourmaline_user,
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         handler.do(message, services)
@@ -111,7 +122,7 @@ module PrivateParlorXT
       end
 
       it "blacklists a user" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
         
@@ -121,18 +132,20 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(20000, false, "example")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 9,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user
+          from: bot_user,
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/blacklist",
           from: tourmaline_user,
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         handler.do(message, services)
@@ -145,8 +158,9 @@ module PrivateParlorXT
         blacklisted_user.left.should_not(be_nil)
         blacklisted_user.blacklist_reason.should(be_nil)
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 12,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/blacklist 80300 detailed reason",
           from: tourmaline_user,
@@ -166,22 +180,30 @@ module PrivateParlorXT
 
     describe "#blacklist_from_reply" do
       it "returns early with 'not in cache' response if reply message does not exist in message history" do 
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        reply_to = create_message(
-          9,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 9,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/blacklist detailed reason",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         handler.do(message, services)
@@ -193,23 +215,31 @@ module PrivateParlorXT
       end
 
       it "blacklists reply user" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
 
-        reply_to = create_message(
-          9,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 9,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/blacklist detailed reason",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         handler.do(message, services)
@@ -230,15 +260,19 @@ module PrivateParlorXT
 
     describe "#blacklist_from_args" do
       it "returns early with 'no user found' response if user to blacklist does not exist" do 
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/blacklist 9000 detailed reason",
         )
 
@@ -251,15 +285,19 @@ module PrivateParlorXT
       end
 
       it "blacklists user from args" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/blacklist 60200",
         )
 
@@ -279,7 +317,7 @@ module PrivateParlorXT
 
     describe "#blacklist_user" do
       it "returns early if reply user rank is greater than invoker rank" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
 
@@ -309,7 +347,7 @@ module PrivateParlorXT
       end
 
       it "updates user activity" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
 
@@ -339,7 +377,7 @@ module PrivateParlorXT
       end
 
       it "blacklists the given user" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
 
@@ -386,7 +424,7 @@ module PrivateParlorXT
 
     describe "#send_messages" do
       it "sends blacklist messages" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
 
@@ -423,7 +461,7 @@ module PrivateParlorXT
       end
 
       it "sends blacklist messages with reason" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
 

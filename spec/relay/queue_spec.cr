@@ -15,9 +15,9 @@ module PrivateParlorXT
         message_queue.queue.size.should(eq(3))
 
         message_queue.reject_messages do |msg|
-          next unless reply = msg.reply_to
+          next unless reply_to_message = msg.reply_to
 
-          reply.message_id < 3
+          reply_to_message.message_id < 3
         end
 
         message_queue.queue.size.should(eq(1))
@@ -27,10 +27,10 @@ module PrivateParlorXT
         end
 
         message.receiver.should(eq(102))
-        unless reply_to = message.reply_to
-          fail("Message reply_to should not be nil")
+        unless reply_to_message = message.reply_to
+          fail("Message reply should not be nil")
         end
-        reply_to.message_id.should(eq(3))
+        reply_to_message.message_id.should(eq(3))
       end
     end
 
@@ -109,10 +109,10 @@ module PrivateParlorXT
         message_one.origin_msid.should(eq(100))
         message_one.sender.should(eq(9000))
         message_one.receiver.should(eq(1500))
-        unless reply_to = message_one.reply_to
-          fail("Message_one reply_to should not be nil")
+        unless reply_to_message = message_one.reply_to
+          fail("Message_one reply should not be nil")
         end
-        reply_to.message_id.should(eq(97))
+        reply_to_message.message_id.should(eq(97))
 
         message_queue.queue.size.should(eq(2))
 
@@ -123,10 +123,10 @@ module PrivateParlorXT
         message_two.origin_msid.should(eq(100))
         message_two.sender.should(eq(9000))
         message_two.receiver.should(eq(1700))
-        unless reply_to = message_two.reply_to
-          fail("Message_two reply_to should not be nil")
+        unless reply_to_message = message_two.reply_to
+          fail("Message_two reply should not be nil")
         end
-        reply_to.message_id.should(eq(98))
+        reply_to_message.message_id.should(eq(98))
 
         message_queue.queue.size.should(eq(1))
 
@@ -166,10 +166,10 @@ module PrivateParlorXT
         message.origin_msid.should(be_nil)
         message.sender.should(be_nil)
         message.receiver.should(eq(9000))
-        unless reply_to = message.reply_to
-          fail("Message reply_to should not be nil")
+        unless reply_to_message = message.reply_to
+          fail("Message reply should not be nil")
         end
-        reply_to.message_id.should(eq(100))
+        reply_to_message.message_id.should(eq(100))
       end
     end
 

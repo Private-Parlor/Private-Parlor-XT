@@ -19,15 +19,19 @@ module PrivateParlorXT
 
     describe "#do" do
       it "returns early if user is not authorized to set MOTD" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = MotdCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(60200, false, "voorbeeld"),
+        tourmaline_user = Tourmaline::User.new(60200, false, "voorbeeld")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/motd *new* motd",
         )
 
@@ -43,7 +47,7 @@ module PrivateParlorXT
       end
 
       it "updates user activity" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = MotdCommand.new(MockConfig.new)
 
@@ -56,8 +60,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/motd",
           from: tourmaline_user,
@@ -73,15 +78,19 @@ module PrivateParlorXT
       end
 
       it "returns early if MOTD is not set" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = MotdCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(60200, false, "voorbeeld"),
+        tourmaline_user = Tourmaline::User.new(60200, false, "voorbeeld")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/motd",
         )
 
@@ -93,7 +102,7 @@ module PrivateParlorXT
       end
 
       it "queues MOTD message" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = MotdCommand.new(MockConfig.new)
 
@@ -101,9 +110,13 @@ module PrivateParlorXT
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(60200, false, "voorbeeld"),
+        tourmaline_user = Tourmaline::User.new(60200, false, "voorbeeld")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/motd",
         )
 
@@ -117,15 +130,19 @@ module PrivateParlorXT
       end
 
       it "sets MOTD message" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = MotdCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "example"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/motd *new* motd example",
         )
 

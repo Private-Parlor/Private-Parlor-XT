@@ -4,7 +4,7 @@ module PrivateParlorXT
   describe StatsCommand do
     describe "#do" do
       it "returns early if statistics are not enabled" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = StatsCommand.new(MockConfig.new)
 
@@ -12,8 +12,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/stats",
           from: tourmaline_user
@@ -34,7 +35,6 @@ module PrivateParlorXT
         services = create_services(
           database: database,
           statistics: SQLiteStatistics.new(connection),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = StatsCommand.new(MockConfig.new)
@@ -47,8 +47,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/stats",
           from: tourmaline_user
@@ -70,7 +71,6 @@ module PrivateParlorXT
         services = create_services(
           database: database,
           statistics: SQLiteStatistics.new(connection),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         start_time = Time.utc
@@ -81,8 +81,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/stats",
           from: tourmaline_user

@@ -7,15 +7,11 @@ require "./mocks/*"
 HISTORY_LIFESPAN = Time::Span.zero
 
 module PrivateParlorXT
-
-  # TODO: Remove MockClient from parameters
   def self.create_services(
     config : HandlerConfig? = nil,
     database : Database? = nil,
     history : History? = nil,
     ranks : Hash(Int32, Rank)? = nil,
-    relay : Relay? = nil,
-    client : MockClient? = nil,
     spam : SpamHandler? = nil,
     r9k : Robot9000? = nil,
     karma_economy : KarmaHandler? = nil,
@@ -96,9 +92,7 @@ module PrivateParlorXT
       }
     end
 
-    unless relay
-      relay = Relay.new("", client || MockClient.new)
-    end
+    relay = MockRelay.new("", MockClient.new)
 
     localization = Localization.parse_locale(Path["#{__DIR__}/../locales/"], "en-US")
 
@@ -236,147 +230,20 @@ module PrivateParlorXT
   end
 
   def self.generate_history(history : History)
-    history.new_message(80300, 1)
-    history.new_message(20000, 4)
-    history.new_message(60200, 8)
+    history.new_message(sender_id: 80300, origin: 1)
+    history.new_message(sender_id: 20000, origin: 4)
+    history.new_message(sender_id: 60200, origin: 8)
 
-    history.add_to_history(1, 2, 60200)
-    history.add_to_history(1, 3, 20000)
+    history.add_to_history(origin: 1, receiver: 2, receiver_id: 60200)
+    history.add_to_history(origin: 1, receiver: 3, receiver_id: 20000)
 
-    history.add_to_history(4, 5, 20000)
-    history.add_to_history(4, 6, 80300)
-    history.add_to_history(4, 7, 60200)
+    history.add_to_history(origin: 4, receiver: 5, receiver_id: 20000)
+    history.add_to_history(origin: 4, receiver: 6, receiver_id: 80300)
+    history.add_to_history(origin: 4, receiver: 7, receiver_id: 60200)
 
-    history.add_to_history(8, 9, 20000)
-    history.add_to_history(8, 10, 80300)
+    history.add_to_history(origin: 8, receiver: 9, receiver_id: 20000)
+    history.add_to_history(origin: 8, receiver: 10, receiver_id: 80300)
 
-    history.add_rating(2, 60200)
-  end
-
-  def self.create_context(client : MockClient, update : Tourmaline::Update) : Tourmaline::Context
-    Tourmaline::Context.new(client, update)
-  end
-
-  def self.create_update(update_id : Int32 | Int64, message : Tourmaline::Message? = nil) : Tourmaline::Update
-    Tourmaline::Update.new(update_id, message)
-  end
-
-  # TODO: Remove in favor of other function of same name
-  def self.create_message(
-    message_id : Int64,
-    tourmaline_user : Tourmaline::User,
-    reply_to_message : Tourmaline::Message? = nil,
-    media_group_id : String? = nil,
-    text : String? = nil,
-    entities : Array(Tourmaline::MessageEntity) = [] of Tourmaline::MessageEntity,
-    caption : String? = nil,
-    animation : Tourmaline::Animation? = nil,
-    audio : Tourmaline::Audio? = nil,
-    document : Tourmaline::Document? = nil,
-    photo : Array(Tourmaline::PhotoSize) = [] of Tourmaline::PhotoSize,
-    sticker : Tourmaline::Sticker? = nil,
-    video : Tourmaline::Video? = nil,
-    video_note : Tourmaline::VideoNote? = nil,
-    voice : Tourmaline::Voice? = nil,
-    has_media_spoiler : Bool? = nil,
-    contact : Tourmaline::Contact? = nil,
-    poll : Tourmaline::Poll? = nil,
-    venue : Tourmaline::Venue? = nil,
-    location : Tourmaline::Location? = nil,
-    forward_origin : Tourmaline::MessageOrigin? = nil,
-    preformatted : Bool? = nil
-  ) : Tourmaline::Message
-    message = Tourmaline::Message.new(
-      message_id,
-      Time.utc,
-      Tourmaline::Chat.new(tourmaline_user.id, "private"),
-      from: tourmaline_user,
-      reply_to_message: reply_to_message,
-      media_group_id: media_group_id,
-      text: text,
-      entities: entities,
-      caption: caption,
-      caption_entities: entities,
-      animation: animation,
-      audio: audio,
-      document: document,
-      photo: photo,
-      sticker: sticker,
-      video: video,
-      video_note: video_note,
-      voice: voice,
-      has_media_spoiler: has_media_spoiler,
-      contact: contact,
-      poll: poll,
-      venue: venue,
-      location: location,
-      forward_origin: forward_origin,
-    )
-
-    message.preformatted = preformatted
-
-    message
-  end
-
-  def self.create_message(
-    message_id : Int64,
-    chat : Tourmaline::Chat,
-    reply_to_message : Tourmaline::Message? = nil,
-    from : Tourmaline::User? = nil,
-    media_group_id : String? = nil,
-    text : String? = nil,
-    entities : Array(Tourmaline::MessageEntity) = [] of Tourmaline::MessageEntity,
-    caption : String? = nil,
-    animation : Tourmaline::Animation? = nil,
-    audio : Tourmaline::Audio? = nil,
-    document : Tourmaline::Document? = nil,
-    photo : Array(Tourmaline::PhotoSize) = [] of Tourmaline::PhotoSize,
-    sticker : Tourmaline::Sticker? = nil,
-    video : Tourmaline::Video? = nil,
-    video_note : Tourmaline::VideoNote? = nil,
-    voice : Tourmaline::Voice? = nil,
-    has_media_spoiler : Bool? = nil,
-    contact : Tourmaline::Contact? = nil,
-    poll : Tourmaline::Poll? = nil,
-    venue : Tourmaline::Venue? = nil,
-    location : Tourmaline::Location? = nil,
-    forward_origin : Tourmaline::MessageOrigin? = nil,
-    edit_date : Time? = nil,
-    quote : Tourmaline::TextQuote? = nil,
-    preformatted : Bool? = nil
-  ) : Tourmaline::Message
-    message = Tourmaline::Message.new(
-      message_id: message_id,
-      date: Time.utc,
-      chat: chat,
-      from: from,
-      reply_to_message: reply_to_message,
-      media_group_id: media_group_id,
-      text: text,
-      entities: entities,
-      caption: caption,
-      caption_entities: entities,
-      animation: animation,
-      audio: audio,
-      document: document,
-      photo: photo,
-      sticker: sticker,
-      video: video,
-      video_note: video_note,
-      voice: voice,
-      has_media_spoiler: has_media_spoiler,
-      contact: contact,
-      poll: poll,
-      venue: venue,
-      location: location,
-      forward_origin: forward_origin,
-      quote: quote,
-    )
-
-    message.edit_date = edit_date
-
-    message.preformatted = preformatted
-
-    message
+    history.add_rating(message: 2, user: 60200)
   end
 end

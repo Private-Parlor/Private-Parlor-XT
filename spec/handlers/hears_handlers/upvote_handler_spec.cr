@@ -13,7 +13,7 @@ module PrivateParlorXT
               Set(MessagePermissions).new,
             )
           },
-          relay: MockRelay.new("", MockClient.new))
+        )
 
         handler = UpvoteHandler.new(MockConfig.new)
 
@@ -27,16 +27,19 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 50,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -49,7 +52,7 @@ module PrivateParlorXT
       end
 
       it "returns early with 'no reply' if user upvoted without a reply" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
@@ -62,8 +65,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "+1",
           from: tourmaline_user
@@ -78,7 +82,7 @@ module PrivateParlorXT
       end
 
       it "returns early with 'not in cache' response if reply message does not exist in message history" do 
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
@@ -92,16 +96,19 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 50,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -116,7 +123,6 @@ module PrivateParlorXT
       it "returns early with 'spamming' response if user is spamming upvotes" do
         services = create_services(
           spam: SpamHandler.new(),
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = UpvoteHandler.new(MockConfig.new)
@@ -131,16 +137,19 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -150,16 +159,19 @@ module PrivateParlorXT
 
         messages.size.should(eq(2))
 
-        second_reply_to = create_message(
+        second_reply = Tourmaline::Message.new(
           message_id: 10,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        spammy_message = create_message(
+        spammy_message = Tourmaline::Message.new(
           message_id: 14,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "+1",
-          reply_to_message: second_reply_to,
+          reply_to_message: second_reply,
           from: tourmaline_user
         )
 
@@ -173,7 +185,6 @@ module PrivateParlorXT
 
       it "returns early if user already upvoted the message or attempted to upvote his own message" do 
         services = create_services(
-          relay: MockRelay.new("", MockClient.new)
         )
 
         handler = UpvoteHandler.new(MockConfig.new)
@@ -188,16 +199,19 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -215,16 +229,19 @@ module PrivateParlorXT
         messages.size.should(eq(1))
         messages[0].data.should(eq(services.replies.already_voted))
 
-        second_reply_to = create_message(
+        second_reply = Tourmaline::Message.new(
           message_id: 1,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        upvote_own_message = create_message(
+        upvote_own_message = Tourmaline::Message.new(
           message_id: 14,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "+1",
-          reply_to_message: second_reply_to,
+          reply_to_message: second_reply,
           from: tourmaline_user
         )
 
@@ -237,7 +254,7 @@ module PrivateParlorXT
       end
 
       it "updates user activity" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
@@ -251,16 +268,19 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -294,16 +314,19 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -319,7 +342,7 @@ module PrivateParlorXT
       end
 
       it "increments reply user's karma and sends upvote replies" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
@@ -337,16 +360,19 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -384,23 +410,31 @@ module PrivateParlorXT
 
     describe "#get_user_from_message" do
       it "returns user" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
 
-        reply_to = create_message(
-          6,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         unless returned_user = handler.get_user_from_message(message, services)
@@ -411,15 +445,19 @@ module PrivateParlorXT
       end
 
       it "updates user's names" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
         generate_users(services.database)
 
-        new_names_message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel", "spec", "new_username"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel", "spec", "new_username")
+
+        new_names_message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
         )
 
@@ -442,8 +480,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: nil,
         )
@@ -452,15 +491,19 @@ module PrivateParlorXT
       end
 
       it "returns nil if user does not exist" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(12345678, false, "beispiel", "spec", "new_username"),
+        bot_user = Tourmaline::User.new(12345678, false, "beispiel", "spec", "new_username")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
         user = handler.get_user_from_message(message, services)
@@ -469,13 +512,17 @@ module PrivateParlorXT
       end
 
       it "queues not in chat message if user does not exist" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(12345678, false, "beispiel", "spec", "new_username"),
+        bot_user = Tourmaline::User.new(12345678, false, "beispiel", "spec", "new_username")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
         handler.get_user_from_message(message, services)
@@ -487,7 +534,7 @@ module PrivateParlorXT
       end
 
       it "queues 'blacklisted' response if user is blacklisted" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
@@ -497,16 +544,19 @@ module PrivateParlorXT
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(70000, false, "BLACKLISTED")
 
-        reply_to = create_message(
+        reply = Tourmaline::Message.new(
           message_id: 6,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -526,15 +576,19 @@ module PrivateParlorXT
 
     describe "#authorized?" do
       it "returns true if user can upvote" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
         )
 
@@ -546,15 +600,19 @@ module PrivateParlorXT
       end
 
       it "returns false if user can't upvote" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
         )
 
@@ -566,7 +624,7 @@ module PrivateParlorXT
 
     describe "#spamming?" do
       it "returns true if user is upvote spamming" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
@@ -576,9 +634,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
         )
 
@@ -598,7 +660,7 @@ module PrivateParlorXT
       end
 
       it "returns false if user is not upvote spamming" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
@@ -608,9 +670,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
         )
 
@@ -620,7 +686,7 @@ module PrivateParlorXT
       end
 
       it "returns false if no spam handler" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
@@ -630,9 +696,13 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
         )
 
@@ -644,7 +714,7 @@ module PrivateParlorXT
 
     describe "#upvote_message" do
       it "returns true if upvoted successfully" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
@@ -655,25 +725,33 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        reply_to = create_message(
-          6,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
-        unless reply_user = handler.get_reply_user(user, reply_to, services)
+        unless reply_user = handler.get_reply_user(user, reply, services)
           fail("User 20000 should exist in the database")
         end
 
         previous_karma = reply_user.karma
 
-        handler.upvote_message(user, reply_user, message, reply_to, services).should(be_true)
+        handler.upvote_message(user, reply_user, message, reply, services).should(be_true)
 
         unless updated_user = services.database.get_user(reply_user.id)
           fail("User 20000 should exist in the database")
@@ -683,7 +761,7 @@ module PrivateParlorXT
       end
 
       it "returns false if user attempts to upvote own message" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
@@ -694,14 +772,22 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        reply_message = create_message(
-          1,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply_message = Tourmaline::Message.new(
+          message_id: 1,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
           reply_to_message: reply_message,
         )
@@ -714,21 +800,29 @@ module PrivateParlorXT
       end
 
       it "returns false if user already upvoted the message" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
 
-        reply_message = create_message(
-          2,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply_message = Tourmaline::Message.new(
+          message_id: 2,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(60200, false, "voorbeeld"),
+        tourmaline_user = Tourmaline::User.new(60200, false, "voorbeeld")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
           reply_to_message: reply_message,
         )
@@ -771,36 +865,44 @@ module PrivateParlorXT
 
     describe "#send_replies" do
       it "sends reply messages to invoker and receiver" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
 
-        reply_to = create_message(
-          6,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         unless user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
-        unless reply_user = handler.get_reply_user(user, reply_to, services)
+        unless reply_user = handler.get_reply_user(user, reply, services)
           fail("User 20000 should exist in the database")
         end
 
         reply_user.increment_karma
 
-        handler.send_replies(user, reply_user, message, reply_to, services)
+        handler.send_replies(user, reply_user, message, reply, services)
 
         gave_upvote_expected = Format.substitute_reply(services.replies.gave_upvote)
         got_upvote_expected = Format.substitute_reply(services.replies.got_upvote)
@@ -826,36 +928,44 @@ module PrivateParlorXT
       end
 
       it "does not send got upvote message if receiver has disabled notifications" do
-        services = create_services(relay: MockRelay.new("", MockClient.new))
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
 
-        reply_to = create_message(
-          6,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         unless user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
-        unless reply_user = handler.get_reply_user(user, reply_to, services)
+        unless reply_user = handler.get_reply_user(user, reply, services)
           fail("User 20000 should exist in the database")
         end
 
         reply_user.toggle_karma
 
-        handler.send_replies(user, reply_user, message, reply_to, services)
+        handler.send_replies(user, reply_user, message, reply, services)
 
         gave_upvote_expected = Format.substitute_reply(services.replies.gave_upvote)
 
@@ -871,7 +981,6 @@ module PrivateParlorXT
 
       it "queues 'leveled up' response as well when reply user gains a level" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           config: HandlerConfig.new(MockConfig.new(karma_levels: {
             (Int32::MIN...0) => "Junk",
             (0...10) => "Normal",
@@ -888,23 +997,31 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        reply_to = create_message(
-          6,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         unless user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
-        unless reply_user = handler.get_reply_user(user, reply_to, services)
+        unless reply_user = handler.get_reply_user(user, reply, services)
           fail("User 20000 should exist in the database")
         end
 
@@ -912,7 +1029,7 @@ module PrivateParlorXT
 
         reply_user.increment_karma(10)
 
-        handler.send_replies(user, reply_user, message, reply_to, services)
+        handler.send_replies(user, reply_user, message, reply, services)
 
         gave_upvote_expected = Format.substitute_reply(services.replies.gave_upvote)
         got_upvote_expected = Format.substitute_reply(services.replies.got_upvote)
@@ -944,7 +1061,6 @@ module PrivateParlorXT
 
       it "sends reply messages with reasons" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           config: HandlerConfig.new(
             MockConfig.new(
               karma_reasons: true,
@@ -959,29 +1075,37 @@ module PrivateParlorXT
 
         reason = "good post!"
 
-        reply_to = create_message(
-          6,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "+1 #{reason}",
-          reply_to_message: reply_to,
+          reply_to_message: reply,
         )
 
         unless user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
-        unless reply_user = handler.get_reply_user(user, reply_to, services)
+        unless reply_user = handler.get_reply_user(user, reply, services)
           fail("User 20000 should exist in the database")
         end
 
         reply_user.increment_karma
 
-        handler.send_replies(user, reply_user, message, reply_to, services)
+        handler.send_replies(user, reply_user, message, reply, services)
 
         gave_upvote_expected = Format.format_karma_reason_reply(reason, services.replies.gave_upvote, services.replies)
 
@@ -1011,7 +1135,6 @@ module PrivateParlorXT
     describe "#karma_level_up" do
       it "returns early if there are no karma levels" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           config: HandlerConfig.new(
             MockConfig.new(karma_levels: {} of Range(Int32, Int32) => String)
           )
@@ -1030,7 +1153,6 @@ module PrivateParlorXT
 
       it "returns early if reply user has not leveled up" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           config: HandlerConfig.new(MockConfig.new(karma_levels: {
             (Int32::MIN...0) => "Junk",
             (0...10) => "Normal",
@@ -1055,7 +1177,6 @@ module PrivateParlorXT
       
       it "queues 'leveled up' response when reply user has gained a level" do
         services = create_services(
-          relay: MockRelay.new("", MockClient.new),
           config: HandlerConfig.new(MockConfig.new(karma_levels: {
             (Int32::MIN...0) => "Junk",
             (0...10) => "Normal",

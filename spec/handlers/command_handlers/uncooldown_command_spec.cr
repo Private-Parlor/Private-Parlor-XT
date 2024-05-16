@@ -19,7 +19,7 @@ module PrivateParlorXT
 
     describe "#do" do
       it "returns early if user is not authorized" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = UncooldownCommand.new(MockConfig.new)
 
@@ -27,8 +27,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(20000, false, "example")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/uncooldown user",
           from: tourmaline_user,
@@ -44,7 +45,7 @@ module PrivateParlorXT
       end
 
       it "returns early if message has no args" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = UncooldownCommand.new(MockConfig.new)
 
@@ -56,8 +57,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/uncooldown",
           from: tourmaline_user,
@@ -72,7 +74,7 @@ module PrivateParlorXT
       end
 
       it "returns early if no user could be found with args" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = UncooldownCommand.new(MockConfig.new)
 
@@ -84,8 +86,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/uncooldown 9000",
           from: tourmaline_user,
@@ -100,7 +103,7 @@ module PrivateParlorXT
       end
 
       it "returns early if user is not on cooldown" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = UncooldownCommand.new(MockConfig.new)
 
@@ -112,8 +115,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/uncooldown voorb",
           from: tourmaline_user,
@@ -128,7 +132,7 @@ module PrivateParlorXT
       end
 
       it "updates user activity" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = UncooldownCommand.new(MockConfig.new)
 
@@ -150,8 +154,9 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
-        message = create_message(
+        message = Tourmaline::Message.new(
           message_id: 11,
+          date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/uncooldown voorb",
           from: tourmaline_user,
@@ -167,7 +172,7 @@ module PrivateParlorXT
       end
 
       it "uncooldowns the given user by ID" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = UncooldownCommand.new(MockConfig.new)
 
@@ -183,9 +188,13 @@ module PrivateParlorXT
 
         services.database.update_user(cooldowned_user)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/uncooldown 60200",
         )
 
@@ -200,7 +209,7 @@ module PrivateParlorXT
       end
 
       it "uncooldowns the given user by OID" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = UncooldownCommand.new(MockConfig.new)
 
@@ -217,9 +226,13 @@ module PrivateParlorXT
 
         services.database.update_user(cooldowned_user)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/uncooldown #{obfuscated_id}",
         )
 
@@ -234,7 +247,7 @@ module PrivateParlorXT
       end
 
       it "uncooldowns the given user by username" do
-        services = create_services(ranks: ranks, relay: MockRelay.new("", MockClient.new))
+        services = create_services(ranks: ranks)
 
         handler = UncooldownCommand.new(MockConfig.new)
 
@@ -250,9 +263,13 @@ module PrivateParlorXT
 
         services.database.update_user(cooldowned_user)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
           text: "/uncooldown voorb",
         )
 
