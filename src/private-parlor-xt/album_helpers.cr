@@ -6,8 +6,6 @@ module PrivateParlorXT
   module AlbumHelpers
     WAIT_TIME = 500.milliseconds
 
-    alias AlbumMedia = Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo | Tourmaline::InputMediaAudio | Tourmaline::InputMediaDocument
-
     # A set of relay parameters associated with an album
     class AlbumRelayParameters
       getter original_messages : Array(MessageID)

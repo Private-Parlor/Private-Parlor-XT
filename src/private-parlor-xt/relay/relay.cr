@@ -3,9 +3,6 @@ require "./queue.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-  # Simple alias for `Tourmaline::ReplyParameters`
-  alias ReplyParameters = Tourmaline::ReplyParameters
-
   # A container used for storing values necessary for Tourmaline send message methods
   class RelayParameters
     # The message group `MessageID`
