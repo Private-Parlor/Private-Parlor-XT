@@ -403,6 +403,22 @@ module PrivateParlorXT
       )
     end
 
+    def edit_message_text(user : UserID, text : String, markup : Tourmaline::InlineKeyboardMarkup?, message : MessageID)
+      return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
+
+      queue.add_to_queue_priority(
+        user,
+        ReplyParameters.new(message),
+        text,
+        Array(Tourmaline::MessageEntity).new,
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          return false unless reply
+          @client.edit_message_text(text, receiver, reply.message_id, reply_markup: markup)
+          true
+        }
+      )
+    end
+
     def empty_queue : Array(MockQueuedMessage)
       arr = [] of MockQueuedMessage
       while msg = @queue.get_message

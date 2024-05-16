@@ -676,7 +676,7 @@ relay_contact: false
 #sign_limit_interval: 600
 
 ##
-## Limit usage of upvotes  once every interval (seconds)
+## Limit usage of upvotes once every interval (seconds)
 ##
 ## Set to 0 to disable
 ##

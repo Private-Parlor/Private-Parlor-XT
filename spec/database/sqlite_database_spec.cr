@@ -221,6 +221,15 @@ module PrivateParlorXT
     end
 
     describe "#no_users?" do
+      it "returns true if there are no users in the database" do
+        connection = DB.open("sqlite3://%3Amemory%3A")
+        connection.exec("DROP TABLE IF EXISTS USERS")
+
+        db = SQLiteDatabase.new(connection)
+
+        db.no_users?.should(be_true)
+      end
+
       it "returns false if the database contains users" do
         db.no_users?.should(be_false)
       end
@@ -256,6 +265,20 @@ module PrivateParlorXT
 
         user_beisp.warn_expiry.should_not(eq(original_expiration))
         user_beisp.warnings.should(eq(1))
+      end
+    end
+
+    describe "#set_motd" do
+      it "updates the MOTD with the given value" do
+        db.set_motd("An updated *MOTD*")
+
+        motd = db.get_motd
+
+        unless motd
+          fail("MOTD should not have been nil")
+        end
+
+        motd.should(eq("An updated *MOTD*"))
       end
     end
 

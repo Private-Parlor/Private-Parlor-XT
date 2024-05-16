@@ -341,7 +341,7 @@ module PrivateParlorXT
   # 
   # The given `UpdateHandler` will respond to messages of type *update* value of `On`
   macro register_update_handler(update, on)
-    {% if @top_level.has_constant?("ForwardHandler") && @top_level.has_constant?("RegularForwardHandler") && update == ForwardHandler %}
+    {% if @top_level.has_constant?("RegularForwardHandler") && update == ForwardHandler %}
       if config.regular_forwards
         {{handler = (on.id + "_update").id.downcase}} = RegularForwardHandler.new(config)
       else

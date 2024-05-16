@@ -8,7 +8,7 @@ module PrivateParlorXT
   class SQLiteHistory < History
     @connection : DB::Database
 
-    # :inherit:
+    # Initialize a `SQLiteHistory` where messages older than `lifespan` are considered expired
     #
     # Generally this should use the same connection that was used for the database
     def initialize(@lifespan : Time::Span, @connection : DB::Database)

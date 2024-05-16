@@ -3,7 +3,7 @@ require "../history.cr"
 
 module PrivateParlorXT
 
-  # An implementation of `History` storing the messages in RAM
+  # An implementation of `History` storing the messages in RAM as a `Hash`
   class CachedHistory < History
 
     # Represents single message sent and all of its receivers

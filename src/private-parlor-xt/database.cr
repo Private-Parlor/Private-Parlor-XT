@@ -4,11 +4,11 @@ require "./user.cr"
 module PrivateParlorXT
   # A base class for `Database` implementations, used for storing and retrieving data about users
   abstract class Database
-    # Creates a new database
+    # Creates an instance of `Database`
     def initialize
     end
 
-    # Close connection to the database
+    # Close connection to the `Database`
     def close
     end
 
@@ -62,7 +62,7 @@ module PrivateParlorXT
     abstract def get_active_users(exclude : UserID) : Array(UserID)
 
     # Adds a user to the database
-    abstract def add_user(id : UserID, username : String, realname : String, rank : Int32) : User?
+    abstract def add_user(id : UserID, username : String?, realname : String, rank : Int32) : User?
 
     # Updates a user with new data
     abstract def update_user(user : User) : Nil

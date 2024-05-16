@@ -2,17 +2,15 @@ require "../database.cr"
 require "sqlite3"
 
 module PrivateParlorXT
+
+  # An implementation of `Database` that uses a SQLite database for storing information about `SQLiteUser` objects
   class SQLiteDatabase < Database
+    # The path to the SQLite database
     @connection : DB::Database
 
-    # :inherit:
+    # Creates an instance of `SQLiteDatabase` and ensures that the proper tables exist
     def initialize(@connection : DB::Database)
       ensure_schema()
-    end
-
-    # :inherit:
-    def self.instance(connection : DB::Database)
-      @@instance ||= new(connection)
     end
 
     # :inherit:
@@ -171,6 +169,7 @@ module PrivateParlorXT
       @connection.query_one?("SELECT value FROM system_config WHERE name = 'motd'", as: String)
     end
 
+    # Ensures that the SQLite database has both a 'system_config' and a 'users' table
     def ensure_schema : Nil
       write do
         @connection.exec("CREATE TABLE IF NOT EXISTS system_config (
