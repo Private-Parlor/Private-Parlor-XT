@@ -22,7 +22,7 @@ token:
 ## Accepted values: a file path
 ## Default: <none>
 ##
-database: 
+database: private-parlor-xt.db
 
 # --------------------------------
 #  Localization
@@ -113,7 +113,10 @@ locale: en-US
 # --------------------------------
 
 ##
-## Maintain statistics about the bot and allow them to be displayed to users.
+## Maintain statistics about the bot
+##
+## If enabling this, then enable_stats should also be enabled to allow 
+## the statistics to be displayed to users
 ##
 ## Accepted values: true, false
 ## Default: false
@@ -131,6 +134,12 @@ locale: en-US
 ##
 ## Allow users to send photos, videos, or GIFs with a spoiler overlay
 ##
+## If enabling this, any of the following should also be enabled: 
+##   relay_photo
+##   relay_video
+##   relay_animation
+##   relay_media_group
+##
 ## Accepted values: true, false
 ## Default: false
 ##
@@ -138,6 +147,10 @@ locale: en-US
 
 ##
 ## Allow users to attach a reason to their upvote/downvote messages
+##
+## If enabling this, any of the following should also be enabled: 
+##   enable_upvotes
+##   enable_downvotes
 ## 
 ## Accepted values: true, false
 ## Default: false
@@ -203,6 +216,8 @@ locale: en-US
 ## This forces the use of tripcodes for all messages
 ## 
 ## Users will be required to set up a tripcode prior to chatting
+##
+## If enabling this, then enable_tripcode should also be enabled to allow users to set a tripcode
 ##
 ## Accepted values: true, false
 ## Default: false
@@ -334,6 +349,10 @@ locale: en-US
 ##
 ## This will also check regular forwards for originality.
 ##
+## If enabling this, either of the following, or both, should also be enabled: 
+##   toggle_r9k_text
+##   toggle_r9k_media
+##
 ## Accepted values: true, false
 ## Default: false
 ##
@@ -355,7 +374,8 @@ locale: en-US
 ##
 ## Users who send an unoriginal message will be given a warning,
 ## and a cooldown based on the user's current amount of warnings
-## unless r9k_cooldown is enabled.
+## 
+## This option is mutually exclusive with r9k_cooldown
 ##
 ## Accepted values: true, false
 ## Default: false
@@ -398,6 +418,11 @@ locale: en-US
 ##
 ## Accepted values: a integer -> Rank mapping
 ## A rank requires a name, command permissions, and message permissions
+##
+## If adding either Ranksay permission to a rank, the name of the rank
+## will be used to generate a '/[rank name]say' command.
+## As such, any character in the name that is not English, an underscore, or a digit
+## will be removed, and the remaining characters will form the command
 ##
 ## Accepted name values: any string
 ##
@@ -460,26 +485,26 @@ ranks:
     name: "User"
     command_permissions: [Upvote, Downvote, Sign, TSign]
     message_permissions: [Text, Animation, Audio, Document, Video, VideoNote, 
-      Voice, Photo, MediaGroup, Poll, Forward, Sticker, Venue, Location, Contact]
+      Voice, Photo, MediaGroup, Poll, Forward, Sticker]
   10:
     name: "Mod"
     command_permissions: [Upvote, Downvote, Sign, TSign, RankedInfo, Users, 
       Warn, Delete, Ranksay]
     message_permissions: [Text, Animation, Audio, Document, Video, VideoNote, 
-      Voice, Photo, MediaGroup, Poll, Forward, Sticker, Venue, Location, Contact]
+      Voice, Photo, MediaGroup, Poll, Forward, Sticker]
   100:
     name: "Admin"
     command_permissions: [Upvote, Downvote, Sign, TSign, RankedInfo, Users, 
       Warn, Delete, Uncooldown, Remove, Purge, Blacklist, Ranksay]
     message_permissions: [Text, Animation, Audio, Document, Video, VideoNote, 
-      Voice, Photo, MediaGroup, Poll, Forward, Sticker, Venue, Location, Contact]
+      Voice, Photo, MediaGroup, Poll, Forward, Sticker]
   1000:
     name: "Host"
     command_permissions: [Upvote, Downvote, Sign, TSign, RankedInfo, Users, 
       PromoteLower, Demote, Warn, Delete, Uncooldown, Remove, Purge, 
       Blacklist, MotdSet, RanksayLower, Unblacklist]
     message_permissions: [Text, Animation, Audio, Document, Video, VideoNote, 
-      Voice, Photo, MediaGroup, Poll, Forward, Sticker, Venue, Location, Contact]
+      Voice, Photo, MediaGroup, Poll, Forward, Sticker]
 
 ##
 ## Default rank used when adding a new user, 
