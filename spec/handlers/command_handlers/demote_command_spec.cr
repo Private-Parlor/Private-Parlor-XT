@@ -180,7 +180,7 @@ module PrivateParlorXT
         demoted_user.rank.should_not(eq(-50))
 
         expected = Format.substitute_reply(services.replies.no_rank_found, {
-          "ranks" => "[\"Mod\", \"User\", \"Restricted\", \"Blacklisted\"]",
+          "ranks" => "[\"Mod\", \"User\", \"Restricted\"]",
         })
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -251,7 +251,7 @@ module PrivateParlorXT
         reply_user.rank.should(eq(0))
 
         expected = Format.substitute_reply(services.replies.no_rank_found, {
-          "ranks" => "[\"Mod\", \"User\", \"Restricted\", \"Blacklisted\"]",
+          "ranks" => "[\"Mod\", \"User\", \"Restricted\"]",
         })
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -545,7 +545,7 @@ module PrivateParlorXT
         demoted_user.rank.should(eq(0))
 
         expected = Format.substitute_reply(services.replies.no_rank_found, {
-          "ranks" => "[\"Mod\", \"User\", \"Restricted\", \"Blacklisted\"]",
+          "ranks" => "[\"Mod\", \"User\", \"Restricted\"]",
         })
 
         messages = services.relay.as(MockRelay).empty_queue

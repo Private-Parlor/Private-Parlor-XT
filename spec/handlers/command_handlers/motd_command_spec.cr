@@ -46,8 +46,10 @@ module PrivateParlorXT
         services.database.get_motd.should(be_nil)
       end
 
-      it "updates user activity" do
+      it "updates user activity when motd is set" do
         services = create_services(ranks: ranks)
+
+        services.database.set_motd("Example motd")
 
         handler = MotdCommand.new(MockConfig.new)
 

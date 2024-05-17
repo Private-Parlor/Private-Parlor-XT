@@ -558,43 +558,43 @@ module PrivateParlorXT
     private def self.validate_prerequisites(config : Config) : Nil
       if config.media_spoilers
         unless (config.relay_photo || config.relay_video || config.relay_animation || config.relay_media_group)
-          Log.notice {"Media spoilers are enabled, but neither photos nor videos nor animations nor media groups are enabled"}
+          Log.info {"Media spoilers are enabled, but neither photos nor videos nor animations nor media groups are enabled"}
         end
       end
 
       if config.karma_reasons
         unless (config.enable_upvote[0] || config.enable_downvote[0])
-          Log.notice {"Karma reasons are enabled, but neither upvotes nor downvotes are enabled, so karma reasons cannot be used"}
+          Log.info {"Karma reasons are enabled, but neither upvotes nor downvotes are enabled, so karma reasons cannot be used"}
         end
       end
 
       if config.regular_forwards
         unless config.relay_forwarded_message
-          Log.notice {"Regular forwards are enabled, but forwarded messages are not, so the bot cannot relay regular forwards"}
+          Log.info {"Regular forwards are enabled, but forwarded messages are not, so the bot cannot relay regular forwards"}
         end
       end
 
       if config.toggle_r9k_forwards
         unless (config.toggle_r9k_text || config.toggle_r9k_media)
-          Log.notice {"R9K forwards are enabled, but neither R9K text nor R9K media are enabled, so ROBOT9000 is not enbaled"}
+          Log.info {"R9K forwards are enabled, but neither R9K text nor R9K media are enabled, so ROBOT9000 is not enbaled"}
         end
       end
 
       if config.enable_whitelist[0]
         if config.registration_open
-          Log.debug {"The whitelist command is enabled, but registration is open; the command is unecessary"}
+          Log.info {"The whitelist command is enabled, but registration is open; the command is unecessary"}
         end
       end
 
       if config.pseudonymous
         unless config.enable_tripcode[0]
-          Log.notice {"Pseudonymous mode is enabled, but the tripcode command is disabled. It will not be possible to set a tripcode"}
+          Log.info {"Pseudonymous mode is enabled, but the tripcode command is disabled. It will not be possible to set a tripcode"}
         end
       end
 
       if config.statistics
         unless config.enable_stats[0]
-          Log.notice {"Statistics are enabled, but the stats command is disabled. It will not be possible to view the statisitics"}
+          Log.info {"Statistics are enabled, but the stats command is disabled. It will not be possible to view the statisitics"}
         end
       end
     end
@@ -673,7 +673,7 @@ module PrivateParlorXT
         rescue ex : YAML::ParseException
           Log.error(exception: ex) { "Could not parse the given value at row #{ex.line_number}. Check that \"linked_network\" is a valid dictionary." }
         rescue ex : File::NotFoundError | File::AccessDeniedError
-          Log.notice(exception: ex) { "Could not open linked network file, \"#{links}\"" }
+          Log.error(exception: ex) { "Could not open linked network file, \"#{links}\"" }
         end
       elsif links.is_a?(Hash(String, String))
         config.linked_network.merge!(links)

@@ -10,8 +10,6 @@ module PrivateParlorXT
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = get_user_from_message(message, services)
 
-      update_user_activity(user, services)
-
       if arg = Format.get_arg(message.text)
         return unless authorized?(user, message, :MotdSet, services)
 
@@ -31,6 +29,8 @@ module PrivateParlorXT
 
         response = motd
       end
+
+      update_user_activity(user, services)
 
       services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
     end

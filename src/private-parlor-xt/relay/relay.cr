@@ -508,7 +508,7 @@ module PrivateParlorXT
 
     # Prints *text* to the log and send it to the `log_channel` if it is set
     def log_output(text : String) : Nil
-      Log.info { text }
+      Log.notice { text }
       unless @log_channel.empty?
         send_to_channel(nil, @log_channel, text)
       end

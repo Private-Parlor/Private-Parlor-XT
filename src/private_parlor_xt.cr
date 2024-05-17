@@ -54,7 +54,7 @@ module PrivateParlorXT
     rescue
       nil
     end
-    Log.info { "Sent last messages in queue. Shutting down..." }
+    Log.notice { "Sent last messages in queue. Shutting down..." }
     exit
   end
 end

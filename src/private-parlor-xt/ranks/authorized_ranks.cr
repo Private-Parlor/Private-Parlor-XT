@@ -123,10 +123,10 @@ module PrivateParlorXT
       end
     end
 
-    # Returns an array of all the rank names in the ranks hash, up to a rank value limit.
+    # Returns an array of all the rank names in the ranks hash, up to a rank value limit and excluding the blacklisted (-10) rank
     def rank_names(limit : Int32) : Array(String)
       @ranks.compact_map do |k, v|
-        v.name if k <= limit
+        v.name if k <= limit && k != -10
       end
     end
   end
