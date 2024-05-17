@@ -1,11 +1,13 @@
-require "../../command_handler.cr"
+require "../command_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: ["tripcode", "signature"], config: "enable_tripcode")]
+  # A command used to set the user's tripcode, so that it can be used for tripcode signatures
   class TripcodeCommand < CommandHandler
+    # Sets the user's tripcode or returns the user's tripcode if set when the message meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       if arg = Format.get_arg(message.text)
         if services.config.flag_signatures
@@ -18,16 +20,16 @@ module PrivateParlorXT
 
           # Append with a pound sign and the user's obfuscated ID to make
           # the flag signature still compatible with tripcode generations
-          tripcode = arg + '#' + user.get_obfuscated_id
+          tripcode = arg + '#' + user.obfuscated_id
           user.set_tripcode(tripcode)
 
           name, _ = Format.generate_tripcode(tripcode, services)
 
-          response = Format.format_tripcode_set_reply(
+          response = tripcode_set(
             services.replies.flag_sign_set_format,
             name,
             "",
-            services.replies
+            services
           )
         else
           unless valid_tripcode?(arg)
@@ -41,11 +43,11 @@ module PrivateParlorXT
 
           name, tripcode = Format.generate_tripcode(arg, services)
 
-          response = Format.format_tripcode_set_reply(
+          response = tripcode_set(
             services.replies.tripcode_set_format,
             name,
             tripcode,
-            services.replies
+            services
           )
         end
       else
@@ -59,10 +61,13 @@ module PrivateParlorXT
       services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
     end
 
+    # Returns `true` if the given *arg* is a valid tripcode
+    #
+    # Returns false otherwise
     def valid_tripcode?(arg : String) : Bool
-      return false unless pound_index = arg.index('#')
+      return false if (count = arg.count('#')) && count == 0
 
-      return false if pound_index == arg.size - 1
+      return false if count == 1 && arg.ends_with?("#")
 
       return false if arg.size > 30
 
@@ -71,6 +76,9 @@ module PrivateParlorXT
       true
     end
 
+    # Returns `true` if the given *arg* is a valid flag signature
+    #
+    # Returns `false` otherwise
     def valid_signature?(arg : String) : Bool?
       return false if arg.graphemes.size > 5
       return false if arg.includes?("\n")
@@ -94,6 +102,15 @@ module PrivateParlorXT
                       end
 
       true
+    end
+
+    # Format the tripcode set reply
+    def tripcode_set(set_format : String, name : String, tripcode : String, services : Services) : String
+      set_format = set_format.gsub("{name}", Format.escape_mdv2(name))
+
+      set_format = set_format.gsub("{tripcode}", Format.escape_mdv2(tripcode))
+
+      services.replies.tripcode_set.gsub("{set_format}", set_format)
     end
   end
 end

@@ -2,8 +2,6 @@ require "../../spec_helper.cr"
 
 module PrivateParlorXT
   describe DeleteCommand do
-    client = MockClient.new
-
     ranks = {
       10 => Rank.new(
         "Mod",
@@ -19,32 +17,32 @@ module PrivateParlorXT
       ),
     }
 
-    services = create_services(ranks: ranks, relay: MockRelay.new("", client))
-
-    handler = DeleteCommand.new(MockConfig.new)
-
-    around_each do |test|
-      services = create_services(ranks: ranks, relay: MockRelay.new("", client))
-
-      test.run
-
-      services.database.close
-    end
-
     describe "#do" do
       it "returns early if user is not authorized" do
-        generate_users(services.database)
+        services = create_services(ranks: ranks)
 
-        reply_to = create_message(
-          10,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        handler = DeleteCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+        generate_history(services.history)
+
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        reply = Tourmaline::Message.new(
+          message_id: 10,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "beispiel"),
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/delete detailed reason",
-          reply_to_message: reply_to,
+          from: tourmaline_user,
+          reply_to_message: reply
         )
 
         handler.do(message, services)
@@ -56,7 +54,119 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.command_disabled))
       end
 
+      it "returns early with 'no reply' if message has no reply" do
+        services = create_services(ranks: ranks)
+
+        handler = DeleteCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+        generate_history(services.history)
+
+        unless services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "/delete",
+          from: tourmaline_user,
+        )
+
+        handler.do(message, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+        messages.size.should(eq(1))
+
+        messages[0].data.should(eq(services.replies.no_reply))
+      end
+
+      it "returns early with 'not in cache' response if reply message does not exist in message history" do
+        services = create_services(ranks: ranks)
+
+        handler = DeleteCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        unless services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        reply = Tourmaline::Message.new(
+          message_id: 10,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
+        )
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "/delete",
+          from: tourmaline_user,
+          reply_to_message: reply
+        )
+
+        handler.do(message, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+        messages.size.should(eq(1))
+
+        messages[0].data.should(eq(services.replies.not_in_cache))
+      end
+
+      it "updates user activity" do
+        services = create_services(ranks: ranks)
+
+        handler = DeleteCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+        generate_history(services.history)
+
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        reply = Tourmaline::Message.new(
+          message_id: 10,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
+        )
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "/delete",
+          from: tourmaline_user,
+          reply_to_message: reply
+        )
+
+        handler.do(message, services)
+
+        unless updated_user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        user.last_active.should(be < updated_user.last_active)
+      end
+
       it "deletes message group and warns the user" do
+        services = create_services(ranks: ranks)
+
+        handler = DeleteCommand.new(MockConfig.new)
+
         generate_users(services.database)
         generate_history(services.history)
 
@@ -66,21 +176,47 @@ module PrivateParlorXT
 
         prior_warnings = reply_user.warnings
 
-        reply_to = create_message(
-          10,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        reply = Tourmaline::Message.new(
+          message_id: 10,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(bot_user.id, "private"),
+          from: bot_user,
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/delete detailed reason",
-          reply_to_message: reply_to,
+          from: tourmaline_user,
+          reply_to_message: reply
         )
 
         handler.do(message, services)
 
-        services.history.get_origin_message(10).should(be_nil)
+        # Get cooldown for a user with 1 warnings
+        temp_user = MockUser.new(9000, warnings: 1)
+        duration = temp_user.cooldown(services.config.cooldown_base)
+
+        expected = Format.substitute_reply(services.replies.message_deleted, {
+          "reason"   => Format.reason("detailed reason", services.replies),
+          "duration" => Format.time_span(duration, services.locale),
+        })
+
+        messages = services.relay.as(MockRelay).empty_queue
+        messages.size.should(eq(2))
+
+        responses = [services.replies.success, expected]
+
+        messages.each do |msg|
+          msg.data.in?(responses).should(be_true)
+          responses = responses - [msg.data]
+        end
+
+        services.history.origin_message(10).should(be_nil)
 
         unless updated_reply_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")

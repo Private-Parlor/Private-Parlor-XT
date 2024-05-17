@@ -1,11 +1,13 @@
-require "../../command_handler.cr"
+require "../command_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "whitelist", config: "enable_whitelist")]
+  # A command used to whitelist users through the Telegram bot
   class WhitelistCommand < CommandHandler
+    # Whitelists a user, allowing them to join the chat, if the given *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return unless authorized?(user, message, :Whitelist, services)
 
@@ -31,7 +33,7 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.whitelisted, {
         "id"      => arg.to_s,
-        "invoker" => user.get_formatted_name,
+        "invoker" => user.formatted_name,
       })
 
       services.relay.log_output(log)

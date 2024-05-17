@@ -1,9 +1,11 @@
-require "../../command_handler.cr"
+require "../command_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "stop", config: "enable_stop")]
+  # A command used to leave the bot and stop receiving messages
   class StopCommand < CommandHandler
+    # Sets the user to left, preventing the user from receiving any further messages until the user rejoins
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless info = message.from
 
@@ -28,7 +30,7 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.left, {
         "id"   => user.id.to_s,
-        "name" => user.get_formatted_name,
+        "name" => user.formatted_name,
       })
 
       services.relay.log_output(log)

@@ -3,9 +3,12 @@ require "./command_permissions.cr"
 require "./message_permissions.cr"
 
 module PrivateParlorXT
+  # A handler for `Rank` and determines if a `Rank` has access to certain commands and message types
   class AuthorizedRanks
+    # A hash of `Int32` to `Rank`, where each value represents a `Rank`
     getter ranks : Hash(Int32, Rank)
 
+    # Creates an instance of `AuthorizedRanks`
     def initialize(@ranks : Hash(Int32, Rank))
     end
 
@@ -50,7 +53,7 @@ module PrivateParlorXT
       end
     end
 
-    # Return an array of rank names that have a ranksay permission
+    # Return an array of rank names that have a `CommandPermissions::Ranksay` or `CommandPermissions::RanksayLower` permission
     def ranksay_ranks : Array(String)
       names = [] of String
 
@@ -78,7 +81,7 @@ module PrivateParlorXT
         {value, @ranks[value]}
       else
         @ranks.find do |k, v|
-          v.name.downcase == name || k == value
+          ranksay(v.name) == name || k == value
         end
       end
     end
@@ -119,11 +122,21 @@ module PrivateParlorXT
       end
     end
 
-    # Returns an array of all the rank names in the ranks hash, up to a rank value limit.
+    # Returns an array of all the rank names in the ranks hash, up to a rank value limit and excluding the blacklisted (-10) rank
     def rank_names(limit : Int32) : Array(String)
       @ranks.compact_map do |k, v|
-        v.name if k <= limit
+        v.name if k <= limit && k != -10
       end
+    end
+
+    # Converts the given *rank* string into a string that can be used for a `RanksayCommand`, preceding the '-say' substring
+    def ranksay(rank : String) : String
+      # Bot commands can only have English text, underscores, and digits
+      rank = rank.gsub("_", " ")
+      rank = rank.gsub(/[[:punct:]]|[^[:ascii:]]/, "")
+      rank = rank.gsub(/\s{1,}/, "_")
+
+      rank.downcase
     end
   end
 end

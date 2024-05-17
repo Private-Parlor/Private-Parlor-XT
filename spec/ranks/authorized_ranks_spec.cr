@@ -233,10 +233,20 @@ module PrivateParlorXT
         authorized_ranks.rank_names.sort.should(eq(expected))
       end
 
-      it "returns the names of all ranks up to a given value" do
-        expected = ["Blacklisted", "User", "Mod"].sort
+      it "returns the names of all ranks up to a given value and excluding the blacklisted (-10) rank" do
+        expected = ["User", "Mod"].sort
 
         authorized_ranks.rank_names(10).sort.should(eq(expected))
+      end
+    end
+
+    describe "#ranksay" do
+      it "returns rank name without non-ASCII characters and punctuation" do
+        authorized_ranks.ranksay("User").should(eq("user"))
+        authorized_ranks.ranksay("Restricted_user").should(eq("restricted_user"))
+        authorized_ranks.ranksay("An ordinary user :)").should(eq("an_ordinary_user_"))
+        authorized_ranks.ranksay("User オオカミ, *restricted* ").should(eq("user_restricted_"))
+        authorized_ranks.ranksay("オオカミ").should(eq(""))
       end
     end
   end

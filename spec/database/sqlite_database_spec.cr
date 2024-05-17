@@ -37,9 +37,9 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_user_counts" do
+    describe "#user_counts" do
       it "returns total number of users, inactive, and blacklisted" do
-        tuple = db.get_user_counts
+        tuple = db.user_counts
 
         tuple[:total].should(eq(5))
         tuple[:left].should(eq(2))
@@ -47,9 +47,9 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_blacklisted_users" do
+    describe "#blacklisted_users" do
       it "returns all blacklisted users" do
-        users = db.get_blacklisted_users
+        users = db.blacklisted_users
 
         users[0].id.should(eq(70000))
       end
@@ -59,15 +59,15 @@ module PrivateParlorXT
         new_user.set_left
         db.update_user(new_user)
 
-        users = db.get_blacklisted_users(1.hours)
+        users = db.blacklisted_users(1.hours)
 
         users[0].id.should(eq(new_user.id))
       end
     end
 
-    describe "#get_warned_users" do
+    describe "#warned_users" do
       it "returns all warned users" do
-        users = db.get_warned_users
+        users = db.warned_users
 
         if users.size > 2
           fail("There should have been only 2 users with warnings")
@@ -83,20 +83,20 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_invalid_rank_users" do
+    describe "#invalid_rank_users" do
       it "returns all users with invalid ranks" do
-        users = db.get_invalid_rank_users([1000, 0, -10])
+        users = db.invalid_rank_users([1000, 0, -10])
 
         users[0].rank.should(eq(10))
         users[0].id.should(eq(80300))
       end
     end
 
-    describe "#get_inactive_users" do
+    describe "#inactive_users" do
       it "returns all inactive users" do
         db.add_user(12345, "", "Active", 0)
 
-        users = db.get_inactive_users(1.days)
+        users = db.inactive_users(1.days)
 
         users.size.should(eq(3))
       end
@@ -122,7 +122,7 @@ module PrivateParlorXT
 
     describe "#get_user_by_oid" do
       it "returns a user with the given OID" do
-        oid = MockUser.new(20000).get_obfuscated_id
+        oid = MockUser.new(20000).obfuscated_id
 
         user = db.get_user_by_oid(oid)
 
@@ -134,7 +134,7 @@ module PrivateParlorXT
       end
 
       it "returns nil if the user does not exist" do
-        oid = MockUser.new(12345).get_obfuscated_id
+        oid = MockUser.new(12345).obfuscated_id
 
         user = db.get_user_by_oid(oid)
 
@@ -154,7 +154,7 @@ module PrivateParlorXT
       end
 
       it "returns a user with the oid" do
-        oid = MockUser.new(20000).get_obfuscated_id
+        oid = MockUser.new(20000).obfuscated_id
 
         user = db.get_user_by_arg(oid)
 
@@ -176,9 +176,9 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_active_users" do
+    describe "#active_users" do
       it "returns recently active users, ordered first by rank" do
-        arr = db.get_active_users
+        arr = db.active_users
 
         arr[0].should(eq(20000))
         arr[1].should(eq(80300))
@@ -186,7 +186,7 @@ module PrivateParlorXT
       end
 
       it "excludes user from result if given a user ID" do
-        arr = db.get_active_users(exclude: 80300)
+        arr = db.active_users(exclude: 80300)
 
         arr[0].should(eq(20000))
         arr[1].should(eq(60200))
@@ -221,6 +221,15 @@ module PrivateParlorXT
     end
 
     describe "#no_users?" do
+      it "returns true if there are no users in the database" do
+        connection = DB.open("sqlite3://%3Amemory%3A")
+        connection.exec("DROP TABLE IF EXISTS USERS")
+
+        db = SQLiteDatabase.new(connection)
+
+        db.no_users?.should(be_true)
+      end
+
       it "returns false if the database contains users" do
         db.no_users?.should(be_false)
       end
@@ -259,9 +268,23 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_motd" do
+    describe "#set_motd" do
+      it "updates the MOTD with the given value" do
+        db.set_motd("An updated *MOTD*")
+
+        motd = db.motd
+
+        unless motd
+          fail("MOTD should not have been nil")
+        end
+
+        motd.should(eq("An updated *MOTD*"))
+      end
+    end
+
+    describe "#motd" do
       it "returns nil if there is no MOTD" do
-        motd = db.get_motd
+        motd = db.motd
 
         motd.should(be_nil)
       end
@@ -270,7 +293,7 @@ module PrivateParlorXT
     it "returns the MOTD if set" do
       db.set_motd("test")
 
-      motd = db.get_motd
+      motd = db.motd
 
       unless motd
         fail("MOTD should not have been nil")

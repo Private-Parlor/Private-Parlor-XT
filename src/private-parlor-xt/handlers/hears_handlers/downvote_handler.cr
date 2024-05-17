@@ -1,18 +1,20 @@
-require "../../hears_handler.cr"
+require "../hears_handler.cr"
 require "../../services.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-  @[Hears(text: /^\-1/, config: "enable_downvote")]
+  @[Hears(pattern: /^-1/, config: "enable_downvote", command: true)]
+  # A command-like `HearsHandler` used for downvote messages sent by other users.
   class DownvoteHandler < HearsHandler
-    def do(message : Tourmaline::Message, services : Services)
-      return unless user = get_user_from_message(message, services)
+    # Downvotes the message that the given *message* replies to if it meets requirements
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      return unless user = user_from_message(message, services)
 
       return unless authorized?(user, message, :Downvote, services)
 
-      return unless reply = get_reply_message(user, message, services)
+      return unless reply = reply_message(user, message, services)
 
-      return unless reply_user = get_reply_user(user, reply, services)
+      return unless reply_user = reply_user(user, reply, services)
 
       return if spamming?(user, message, services)
 
@@ -25,7 +27,14 @@ module PrivateParlorXT
       send_replies(user, reply_user, message, reply, services)
     end
 
-    def get_user_from_message(message : Tourmaline::Message, services : Services) : User?
+    # Returns the `User` associated with the message if the `User` could be found in the `Database`.
+    # This will also update the `User`'s username and realname if they have changed since the last message.
+    #
+    # Returns `nil`  if:
+    #   - Message has no sender
+    #   - `User` does not exist in the `Database`
+    #   - `User` cannot use a command due to being blacklisted
+    def user_from_message(message : Tourmaline::Message, services : Services) : User?
       return unless info = message.from
 
       unless user = services.database.get_user(info.id.to_i64)
@@ -39,6 +48,9 @@ module PrivateParlorXT
       user
     end
 
+    # Checks if the user is authorized to downvote a message
+    #
+    # Returns `true` if so, `false` otherwise
     def authorized?(user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, authority)
         services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
@@ -48,6 +60,9 @@ module PrivateParlorXT
       true
     end
 
+    # Checks if the user is spamming downvotes
+    #
+    # Returns `true` if the user is spamming downvotes, `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
@@ -78,33 +93,37 @@ module PrivateParlorXT
       true
     end
 
-    def record_message_statistics(services : Services)
+    # Records message statistics about downvotes if the `Statistics` module is enabled
+    def record_message_statistics(services : Services) : Nil
       return unless stats = services.stats
 
-      stats.increment_downvote_count
+      stats.increment_downvotes
     end
 
+    # Queues 'gave downvote' and 'got downvoted' replies for the *user* and *reply_user*, respectively
+    #
+    # Includes a reason for the downvote if karma reasons are enabled.
     def send_replies(user : User, reply_user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services) : Nil
       if services.config.karma_reasons
         reason = Format.get_arg(message.text)
 
         if reason
-          reason = Format.truncate_karma_reason(reason)
+          reason = truncate_karma_reason(reason)
           services.relay.log_output(Format.substitute_message(services.logs.downvoted, {
             "id"     => user.id.to_s,
-            "name"   => user.get_formatted_name,
-            "oid"    => reply_user.get_obfuscated_id,
+            "name"   => user.formatted_name,
+            "oid"    => reply_user.obfuscated_id,
             "reason" => reason,
           }))
         end
       end
 
-      gave_downvote_reply = Format.format_karma_reason_reply(reason, services.replies.gave_downvote, services.replies)
+      gave_downvote_reply = karma_reason(reason, services.replies.gave_downvote, services)
 
       services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, gave_downvote_reply)
 
       unless reply_user.hide_karma
-        reply_msid = services.history.get_receiver_message(reply.message_id.to_i64, reply_user.id)
+        reply_msid = services.history.receiver_message(reply.message_id.to_i64, reply_user.id)
 
         if reply_msid
           reply_parameters = ReplyParameters.new(reply_msid)
@@ -112,7 +131,7 @@ module PrivateParlorXT
 
         karma_level_down(reply_user, reply_parameters, services)
 
-        got_downvote_reply = Format.format_karma_reason_reply(reason, services.replies.got_downvote, services.replies)
+        got_downvote_reply = karma_reason(reason, services.replies.got_downvote, services)
 
         services.relay.send_to_user(
           reply_parameters,
@@ -122,23 +141,20 @@ module PrivateParlorXT
       end
     end
 
-    def karma_level_down(reply_user : User, reply_parameters : ReplyParameters?, services : Services)
+    # Checks if the user has lost a karma level when karma levels are set, and if so, queues a 'leveled down' response
+    def karma_level_down(reply_user : User, reply_parameters : ReplyParameters?, services : Services) : Nil
       return if services.config.karma_levels.empty?
 
-      return unless services.config.karma_levels[reply_user.karma + 1]?
+      last_level = services.config.karma_levels.find({(..), ""}) { |range, _| range === reply_user.karma + 1 }[1]
+      current_level = services.config.karma_levels.find({(..), ""}) { |range, _| range === reply_user.karma }[1]
 
-      karma_level_key = services.config.karma_levels.keys.max_of do |val|
-        if val < reply_user.karma
-          next val
-        end
-        Int32::MIN
-      end
+      return if last_level == current_level
 
       services.relay.send_to_user(
         reply_parameters,
         reply_user.id,
         Format.substitute_message(services.replies.karma_level_down, {
-          "level" => services.config.karma_levels[karma_level_key]?,
+          "level" => current_level,
         })
       )
     end

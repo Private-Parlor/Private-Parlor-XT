@@ -1,10 +1,12 @@
-require "../../command_handler.cr"
+require "../command_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "start", config: "enable_start")]
+  # A command used to join the bot and start receiving messages
   class StartCommand < CommandHandler
-    def do(message : Tourmaline::Message, services : Services)
+    # Adds the user from the given *message* to the bot if he is not in the database; rejoins users who have previously joined the chat.
+    def do(message : Tourmaline::Message, services : Services) : Nil
       return unless info = message.from
 
       if text = message.text || message.caption
@@ -18,11 +20,12 @@ module PrivateParlorXT
       end
     end
 
-    def existing_user(user : User, username : String?, fullname : String, message_id : MessageID, services : Services)
+    # Handles users attempting to rejoin if they are already in the database
+    def existing_user(user : User, username : String?, fullname : String, message_id : MessageID, services : Services) : Nil
       if user.blacklisted?
         response = Format.substitute_reply(services.replies.blacklisted, {
-          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
-          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.replies),
+          "contact" => Format.contact(services.config.blacklist_contact, services.replies),
+          "reason"  => Format.reason(user.blacklist_reason, services.replies),
         })
 
         services.relay.send_to_user(nil, user.id, response)
@@ -34,7 +37,7 @@ module PrivateParlorXT
 
         services.relay.send_to_user(ReplyParameters.new(message_id), user.id, services.replies.rejoined)
 
-        log = Format.substitute_message(services.logs.rejoined, {"id" => user.id.to_s, "name" => user.get_formatted_name})
+        log = Format.substitute_message(services.logs.rejoined, {"id" => user.id.to_s, "name" => user.formatted_name})
 
         services.relay.log_output(log)
       else
@@ -46,7 +49,8 @@ module PrivateParlorXT
       end
     end
 
-    def new_user(id : UserID, username : String?, fullname : String, message_id : MessageID, services : Services)
+    # Adds the user with the given *id* to the database if registration is open.
+    def new_user(id : UserID, username : String?, fullname : String, message_id : MessageID, services : Services) : Nil
       unless services.config.registration_open
         return services.relay.send_to_user(nil, id, services.replies.registration_closed)
       end
@@ -57,7 +61,7 @@ module PrivateParlorXT
         user = services.database.add_user(id, username, fullname, services.config.default_rank)
       end
 
-      if motd = services.database.get_motd
+      if motd = services.database.motd
         services.relay.send_to_user(nil, id, motd)
       end
 
@@ -69,7 +73,7 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.joined, {
         "id"   => id.to_s,
-        "name" => user.get_formatted_name,
+        "name" => user.formatted_name,
       })
 
       services.relay.log_output(log)

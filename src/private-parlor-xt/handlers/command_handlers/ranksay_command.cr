@@ -1,14 +1,16 @@
-require "../../command_handler.cr"
+require "../command_handler.cr"
 require "../../services.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "ranksay", config: "enable_ranksay")]
-  # Processes ranksay messages before the update handler gets them
+  # Processes ranksay messages before an `UpdateHandler` gets them
+  #
   # This handler expects the command handlers to be registered before the update handlers
   class RanksayCommand < CommandHandler
-    def do(message : Tourmaline::Message, services : Services)
-      return unless user = get_user_from_message(message, services)
+    # Preformats the given *message* with a rank name signature if the *message* meets requirements
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      return unless user = user_from_message(message, services)
 
       return if message.forward_origin
 
@@ -19,7 +21,7 @@ module PrivateParlorXT
                       :Ranksay, :RanksayLower
                     )
 
-      text, entities = Format.valid_text_and_entities(message, user, services)
+      text, entities = Format.validate_text_and_entities(message, user, services)
       return unless text
 
       unless arg = Format.get_arg(text)
@@ -30,13 +32,13 @@ module PrivateParlorXT
 
       return unless rank_name = get_rank_name(text, user, message, authority, services)
 
-      return unless Robot9000.checks(user, message, services, arg)
+      return unless unique?(user, message, services, arg)
 
       text, entities = Format.format_text(text, entities, false, services)
 
-      entities = update_entities(text, entities, arg, message)
+      entities = remove_command_entity(text, entities, arg)
 
-      text, entities = Format.format_ranksay(rank_name, arg, entities)
+      text, entities = ranksay(rank_name, arg, entities)
 
       if message.text
         message.text = text
@@ -51,13 +53,16 @@ module PrivateParlorXT
       services.relay.log_output(
         Format.substitute_message(services.logs.ranked_message, {
           "id"   => user.id.to_s,
-          "name" => user.get_formatted_name,
+          "name" => user.formatted_name,
           "rank" => rank_name,
           "text" => arg,
         })
       )
     end
 
+    # Checks if the user is spamming rank signatures
+    #
+    # Returns `true` if the user is spamming rank signatures or unformatted text is spammy, returns `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, arg : String, services : Services) : Bool
       return false unless spam = services.spam
 
@@ -69,6 +74,11 @@ module PrivateParlorXT
       false
     end
 
+    # For ranksay commands that are not initiated using "/ranksay" and instead uses the name of the rank followed by "-say"
+    #
+    # Returns the name of the `Rank` if the rank in the given *text* can ranksay
+    #
+    # Returns `nil` otherwise
     def get_rank_name(text : String, user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services) : String?
       return unless rank = text.match(/^\/(.+?)say\s/).try(&.[1])
 
@@ -93,12 +103,17 @@ module PrivateParlorXT
       parsed_rank[1].name
     end
 
-    def authorized?(user : User, message : Tourmaline::Message, services : Services, *permissions : CommandPermissions) : CommandPermissions?
-      if authority = services.access.authorized?(user.rank, *permissions)
-        authority
-      else
-        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.command_disabled)
-      end
+    # Format ranksay signature for the given *rank*, appending it to the given *arg*
+    def ranksay(rank : String, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      signature = "~~#{rank}"
+
+      signature_size = signature.to_utf16.size
+
+      entities.concat([
+        Tourmaline::MessageEntity.new("bold", arg.to_utf16.size + 1, signature_size),
+      ])
+
+      return "#{arg} #{signature}", entities
     end
   end
 end

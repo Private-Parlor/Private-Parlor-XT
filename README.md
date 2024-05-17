@@ -32,7 +32,7 @@ Using the [Tourmaline](https://github.com/protoncr/tourmaline) Telegram bot libr
 - Enable or disable commands and relaying of certain types of messages using the config file.
 - Give users a level based on how much karma they have; user's can sign messages with their level using the `/ksign` command.
 - Reduce noise and enforce original messages using the Robot 9000 auto moderator.
-- *And more!*
+- *[And more!](https://github.com/Private-Parlor/Private-Parlor-XT/wiki/Features)*
 ## Installation
 Compiling PrivateParlor XT requires having both `crystal` and `shards` installed.
 

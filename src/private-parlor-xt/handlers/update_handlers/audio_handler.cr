@@ -1,31 +1,33 @@
-require "../../update_handler.cr"
+require "../update_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[On(update: :Audio, config: "relay_audio")]
+  # A handler for audio message updates
   class AudioHandler < UpdateHandler
-    def do(message : Tourmaline::Message, services : Services)
-      return unless user = get_user_from_message(message, services)
+    # Checks if the audio message meets requirements and relays it
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      return unless user = user_from_message(message, services)
 
       return unless meets_requirements?(message)
 
       return unless authorized?(user, message, :Audio, services)
 
-      return unless has_sufficient_karma?(user, message, services)
+      return unless sufficient_karma?(user, message, services)
 
       return if spamming?(user, message, services)
 
       return unless audio = message.audio
 
-      caption, entities = Format.get_text_and_entities(message, user, services)
+      caption, entities = Format.text_and_entities(message, user, services)
       return unless caption
 
-      reply_messages = get_reply_receivers(message, user, services)
-      return unless reply_exists?(message, reply_messages, user, services)
+      reply_messages = reply_receivers(message, user, services)
+      return unless reply_messages
 
-      return unless Robot9000.checks(user, message, services)
+      return unless unique?(user, message, services)
 
-      record_message_statistics(Statistics::MessageCounts::Audio, services)
+      record_message_statistics(Statistics::Messages::Audio, services)
 
       user = spend_karma(user, services)
 
@@ -33,20 +35,24 @@ module PrivateParlorXT
 
       update_user_activity(user, services)
 
-      receivers = get_message_receivers(user, services)
+      receivers = message_receivers(user, services)
 
-      services.relay.send_audio(RelayParameters.new(
-        original_message: new_message,
-        sender: user.id,
-        receivers: receivers,
-        replies: reply_messages,
-        media: audio.file_id,
-        text: caption,
-        entities: entities,
-      )
+      services.relay.send_audio(
+        RelayParameters.new(
+          original_message: new_message,
+          sender: user.id,
+          receivers: receivers,
+          replies: reply_messages,
+          media: audio.file_id,
+          text: caption,
+          entities: entities,
+        )
       )
     end
 
+    # Checks if the user is spamming audio messages
+    #
+    # Returns `true` if the user is spamming audio messages, `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
 
@@ -58,7 +64,16 @@ module PrivateParlorXT
       false
     end
 
-    def has_sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
+    # Checks if the user has sufficient karma to send a audio message when `KarmaHandler` is enabled
+    #
+    # Returns `true` if:
+    #   - `KarmaHandler` is not enabled
+    #   - The price for audio messages is less than 0
+    #   - The *user's* `Rank` is equal to or greater than the cutoff `Rank`
+    #   - User has sufficient karma
+    #
+    # Returns `nil` if the user does not have sufficient karma
+    def sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
       return true unless karma = services.karma
 
       return true unless karma.karma_audio >= 0
@@ -79,6 +94,8 @@ module PrivateParlorXT
       true
     end
 
+    # Returns the `User` with decremented karma when `KarmaHandler` is enabled and
+    # *user* has sufficient karma for a audio message
     def spend_karma(user : User, services : Services) : User
       return user unless karma = services.karma
 

@@ -13,6 +13,18 @@ locale:
    # Values for the loading bar, from empty, to partially full, to full
    loading_bar: ["○", "◐", "●"]
 
+   # Symbols for increasing and decreasing change
+   change : ["📉", "📈"]
+
+   # The available statistics screens, used for /stats InlineKeyboard button names 
+   statistics_screens:
+      general: "Info"
+      messages: "Nachrichten"
+      users: "Nutzer"
+      karma: "Karma"
+      karma_levels: "Karmaniveaus"
+      robot9000: "Robot9000"
+
 # Parameters are enclosed by a placeholder, {text}, where text is any of the parameters next to the comment
 # Placeholders should not be escaped
 # Special characters in MarkdownV2 must be escaped
@@ -224,7 +236,7 @@ replies:
       Du wurdest bis {duration} einen Cooldown gegeben\._
 
    # Available placeholders: total
-   media_limit: "_Du kannst jetzt keine Medien oder weitergeleitete Nachrichten schicken\\. Du kannst in {total} Stunden wieder versuchen\\._"
+   media_limit: "_Du kannst jetzt keine Medien oder weitergeleitete Nachrichten schicken\\. Du kannst in {total} wieder versuchen\\._"
 
    # Available placeholders: reason
    blacklisted: |-
@@ -234,6 +246,8 @@ replies:
    # Available placeholders: contact
    blacklist_contact: "Kontakt: {contact}"
 
+   unblacklisted: "_Deine Verbot wurde aufgehoben\\!_"
+
    # Available placeholders: msgs_deleted
    purge_complete: "_{msgs_deleted} Nachrichten war gefunden und gelöscht\\._"
 
@@ -241,6 +255,127 @@ replies:
    inactive: |- 
       _Weil du untätig warst, du wurdest von hier entfernt \(AFK für {time} Tage\)\.
       Benutzt den /start Befehl zu Nachrichten wieder bekommen anfangen\!_"
+
+   # Available placeholders: start_date, days, hours, minutes, seconds, registration_toggle, 
+   #                         media_limit_period, message_lifespan, pseudonymous_toggle,
+   #                         spoilers_toggle, karma_reasons_toggle, robot9000_toggle, 
+   #                         karma_economy_toggle
+   config_stats: |-
+      *In Betrieb seit {start_date}*
+      *Betriebszeit: {days} Tage, {hours} Stunden, {minutes} Minuten, {seconds} Sekunden*
+
+      Registrierung: {registration_toggle}
+      Nur Text Zeitraum {media_limit_period}
+      Lebensdauer der Nachricht: {message_lifespan}
+      Pseudonym Modus: {pseudonymous_toggle}
+      Medien Spoiler: {spoilers_toggle}
+      Karma Gründe: {karma_reasons_toggle}
+      Robot9000: {robot9000_toggle}
+      Karma Wirtschaft: {karma_economy_toggle}
+
+   # Available placeholders: total, album_total, animation_total, audio_total,
+   #                         contact_total, document_total, forward_total, location_total,
+   #                         photo_total, poll_total, sticker_total, text_total, 
+   #                         venue_total, video_total, video_note_total, voice_total,
+   #                         daily_total, daily_change, change_today, weekly_total, 
+   #                         weekly_change, change_this_week, monthly_total,
+   #                         monthly_change, change_this_month
+   message_stats: |-
+      *Nachrichten insgesamt: {total}*
+
+      Mediengruppen: {album_total}
+      GIFs: {animation_total}
+      Musik: {audio_total}
+      Kontakte: {contact_total}
+      Dateien: {document_total}
+      Weitergeleitete Nachrichten: {forward_total}
+      Standorte: {location_total}
+      Bilder: {photo_total}
+      Umfragen: {poll_total}
+      Aufkleber: {sticker_total}
+      Texte: {text_total}
+      Veranstaltungsorte: {venue_total}
+      Videos: {video_total}
+      Videonotizen: {video_note_total}
+      Sprache: {voice_total}
+
+      Heute geschickt: {daily_total} \({daily_change}% {change_today} seit gestern\)
+      Dieser Woche geschickt: {weekly_total} \({weekly_change}% {change_this_week} seit letzter Woche\)
+      Diesen Monat geschickt: {monthly_total} \({monthly_change}% {change_this_month} seit letztem Monat\)
+
+   # Available placeholders: total_users, joined_users, left_users, blacklisted_users, 
+   #                         blacklisted_users, joined_daily_change, joined_change_today, 
+   #                         joined_weekly_total, joined_weekly_change, joined_change_this_week, 
+   #                         joined_monthly_total, joined_monthly_change, joined_change_this_month, 
+   #                         left_daily_total, left_daily_change, left_change_today, 
+   #                         left_weekly_total, left_weekly_change, left_change_this_week, 
+   #                         left_monthly_total, left_monthly_change, left_change_this_month, 
+   #                         net_daily, net_weekly, net_monthly
+   full_user_stats: |-
+      *Nutzer insgesamt: {total_users}*
+
+      Sind beigetreten: {joined_users}
+      Verlassen haben: {left_users}
+      Lokalverbot: {blacklisted_users}
+
+      Heute beigetreten: {joined_daily_total} \({joined_daily_change}% {joined_change_today} seit gestern\)
+      Diese Woche beigetreten: {joined_weekly_total} \({joined_weekly_change}% {joined_change_this_week} seit letzter Woche\)
+      Diesen Monat beigetreten: {joined_monthly_total} \({joined_monthly_change}% {joined_change_this_month} seit letztem Monat\)
+
+      Heute verlassen: {left_daily_total} \({left_daily_change}% {left_change_today} seit gestern\)
+      Diese Woche verlassen: {left_weekly_total} \({left_weekly_change}% {left_change_this_week} seit letzter Woche\)
+      Diesen Monat verlassen: {left_monthly_total} \({left_monthly_change}% {left_change_this_month} seit letztem Monat\)
+
+      Nettoveränderung heute: {net_daily} Nutzer
+      Nettoveränderung diese Woche: {net_weekly} Nutzer
+      Nettoveränderung in diesem Monat: {net_monthly} Nutzer
+
+   # Available placeholders: total_users, net_daily, net_weekly, net_monthly
+   user_stats: |-
+      *Nutzer insgesamt: {total_users}*
+
+      Nettoveränderung heute: {net_daily} Nutzer
+      Nettoveränderung diese Woche: {net_weekly} Nutzer
+      Nettoveränderung in diesem Monat: {net_monthly} Nutzer
+
+   # Available placeholders: upvotes, downvotes, upvote_daily_total, upvote_daily_change,
+   #                         upvote_change_today, upvote_weekly_total, upvote_weekly_change,
+   #                         upvote_change_this_week, upvote_monthly_total, upvote_monthly_change,
+   #                         upvote_change_this_month, downvote_daily_total, downvote_daily_change, 
+   #                         downvote_change_today, downvote_weekly_total, downvote_weekly_change, 
+   #                         downvote_change_this_week, downvote_monthly_total, 
+   #                         downvote_monthly_change, downvote_change_this_month
+   karma_stats: |-
+      *Insgesamt gegebenes Karma: {upvotes}*
+      *Insgesamt entferntes Karma: {downvotes}*
+
+      Karma Heute gegeben: {upvote_daily_total} \({upvote_daily_change}% {upvote_change_today} seit gestern\)
+      Karma in dieser Woche gegeben: {upvote_weekly_total} \({upvote_weekly_change}% {upvote_change_this_week} seit letzter Woche\)
+      Karma in diesem Monat gegeben: {upvote_monthly_total} \({upvote_monthly_change}% {upvote_change_this_month} seit letztem Monat\)
+
+      Karma Heute entfernen: {downvote_daily_total} \({downvote_daily_change}% {downvote_change_today} seit gestern\)
+      Karma in dieser Woche entfernen: {downvote_weekly_total} \({downvote_weekly_change}% {downvote_change_this_week} seit letzter Woche\)
+      Karma in diesem Monat entfernen: {downvote_monthly_total} \({downvote_monthly_change}% {downvote_change_this_month} seit letztem Monat\)
+
+   # Available placeholders: karma_levels
+   karma_level_stats: |-
+      *Nutzer insgesamt für jede Karmaniveau*
+
+      {karma_levels}
+
+   # Available placeholders: total_unique, unique_text, unique_media, total_unoriginal, unoriginal_text, unoriginal_media
+   robot9000_stats: |-
+      *Einzigartige Nachrichten insgesamt: {total_unique}*
+
+      Einzigartige Texte: {unique_text}
+      Einzigartige Media: {unique_media}
+      
+      *Wiederholte Nachrichten insgesamt: {total_unoriginal}*
+
+      Wiederholte Texte: {unoriginal_text}
+      Wiederholte Medien: {unoriginal_media}
+
+   no_stats_available: "Es gibt keine Statistiken\\."
 
    success: "✅" 
 
@@ -299,7 +434,11 @@ command_descriptions:
 
    unpin: Die neueste Nachricht loslösen
 
+   stats: Statistiken über den Bot bekommen
+
    blacklist: Ein Nutzer aus dem Chat sperren
+
+   unblacklist: Ein Nutzer aus dem Chat entsperren
 
    whitelist: Ein Nutzer hier eintreten zu erlauben
 
@@ -345,6 +484,9 @@ logs:
 
    # Available placeholders: id, name, invoker, reason
    blacklisted: "Nutzer {id}, alias {name}, hat durch {invoker} gesperrt {reason}"
+
+   # Available placeholders: id, name, invoker
+   unblacklisted: "Nutzer {id}, alias {name}, hat durch {invoker} entsperrt"
 
    # Available placeholders: id, invoker
    whitelisted: "{invoker} hat Nutzer {id} eingeladen"

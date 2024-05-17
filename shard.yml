@@ -5,7 +5,7 @@ authors:
   - Charybdis
 
 dependencies:
-  # Using fork to for some custom methods and nil for parse mode parameters
+  # Using fork to use some custom methods and nil for parse mode parameters
   tourmaline:
     github: Charibdys/tourmaline
     branch: none-parsemode
@@ -22,8 +22,8 @@ development_dependencies:
 
 targets:
   private-parlor-xt:
-    main: src/private-parlor-xt.cr
+    main: src/private_parlor_xt.cr
 
-crystal: 1.12.0
+crystal: 1.12.1
 
 license: LGPL-3.0-or-later

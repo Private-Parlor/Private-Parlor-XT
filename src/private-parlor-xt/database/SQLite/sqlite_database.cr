@@ -2,17 +2,14 @@ require "../database.cr"
 require "sqlite3"
 
 module PrivateParlorXT
+  # An implementation of `Database` that uses a SQLite database for storing information about `SQLiteUser` objects
   class SQLiteDatabase < Database
+    # The path to the SQLite database
     @connection : DB::Database
 
-    # :inherit:
+    # Creates an instance of `SQLiteDatabase` and ensures that the proper tables exist
     def initialize(@connection : DB::Database)
       ensure_schema()
-    end
-
-    # :inherit:
-    def self.instance(connection : DB::Database)
-      @@instance ||= new(connection)
     end
 
     # :inherit:
@@ -36,7 +33,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_user_counts : NamedTuple(total: Int32, left: Int32, blacklisted: Int32)
+    def user_counts : NamedTuple(total: Int32, left: Int32, blacklisted: Int32)
       @connection.query_one(
         "SELECT COUNT(id), COUNT(left), (SELECT COUNT(id) FROM users WHERE rank = -10) FROM users",
         as: {total: Int32, left: Int32, blacklisted: Int32}
@@ -44,30 +41,30 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_blacklisted_users : Array(User)
+    def blacklisted_users : Array(User)
       arr = [] of User
       arr = arr.concat(@connection.query_all("SELECT * FROM users WHERE rank = -10", as: SQLiteUser))
     end
 
-    def get_blacklisted_users(time_limit : Time::Span) : Array(User)
+    def blacklisted_users(time_limit : Time::Span) : Array(User)
       arr = [] of User
       arr.concat(@connection.query_all("SELECT * FROM users WHERE rank = -10 AND left > (?)", (Time.utc - time_limit), as: SQLiteUser))
     end
 
     # :inherit:
-    def get_warned_users : Array(User)
+    def warned_users : Array(User)
       arr = [] of User
       arr.concat(@connection.query_all("SELECT * FROM users WHERE warnings > 0 AND left is NULL", as: SQLiteUser))
     end
 
     # :inherit:
-    def get_invalid_rank_users(valid_ranks : Array(Int32)) : Array(User)
+    def invalid_rank_users(valid_ranks : Array(Int32)) : Array(User)
       arr = [] of User
       arr.concat(@connection.query_all("SELECT * FROM users WHERE rank NOT IN (#{valid_ranks.join(", ") { "?" }})", args: valid_ranks, as: SQLiteUser))
     end
 
     # :inherit:
-    def get_inactive_users(time_limit : Time::Span) : Array(User)
+    def inactive_users(time_limit : Time::Span) : Array(User)
       arr = [] of User
       arr.concat(@connection.query_all("SELECT * FROM users WHERE left is NULL AND lastActive < ?", (Time.utc - time_limit), as: SQLiteUser))
     end
@@ -83,19 +80,19 @@ module PrivateParlorXT
     # :inherit:
     def get_user_by_oid(oid : String) : User?
       @connection.query_all("SELECT * FROM users WHERE left IS NULL ORDER BY lastActive DESC", as: SQLiteUser).each do |user|
-        if user.get_obfuscated_id == oid
+        if user.obfuscated_id == oid
           return user
         end
       end
     end
 
     # :inherit:
-    def get_active_users : Array(UserID)
+    def active_users : Array(UserID)
       @connection.query_all("SELECT id FROM users WHERE left IS NULL ORDER BY rank DESC, lastActive DESC", &.read(Int64))
     end
 
     # :inherit:
-    def get_active_users(exclude : UserID) : Array(UserID)
+    def active_users(exclude : UserID) : Array(UserID)
       @connection.query_all("SELECT id
         FROM users
         WHERE left IS NULL AND id IS NOT ?
@@ -118,7 +115,7 @@ module PrivateParlorXT
 
         # Add user to database
         write do
-          @connection.exec("INSERT INTO users VALUES (#{{{arr}}})", args: user.to_array)
+          @connection.exec("INSERT INTO users VALUES (#{{{arr}}})", args: user.to_a)
         end
       {% end %}
 
@@ -135,7 +132,7 @@ module PrivateParlorXT
         {% arr = arr.join(", ") %}
         # Modify user
         write do
-          @connection.exec("UPDATE users SET #{{{arr}}} WHERE id = ?", args: user.to_array.rotate)
+          @connection.exec("UPDATE users SET #{{{arr}}} WHERE id = ?", args: user.to_a.rotate)
         end
       {% end %}
     end
@@ -148,8 +145,8 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def expire_warnings(warn_lifespan : Time::Span)
-      get_warned_users.each do |user|
+    def expire_warnings(warn_lifespan : Time::Span) : Nil
+      warned_users.each do |user|
         if expiry = user.warn_expiry
           if expiry <= Time.utc
             user.remove_warning(1, warn_lifespan)
@@ -167,10 +164,11 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_motd : String?
+    def motd : String?
       @connection.query_one?("SELECT value FROM system_config WHERE name = 'motd'", as: String)
     end
 
+    # Ensures that the SQLite database has both a 'system_config' and a 'users' table
     def ensure_schema : Nil
       write do
         @connection.exec("CREATE TABLE IF NOT EXISTS system_config (

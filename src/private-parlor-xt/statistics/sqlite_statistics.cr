@@ -1,8 +1,9 @@
 require "../constants.cr"
-require "../statistics.cr"
+require "./statistics.cr"
 require "db"
 
 module PrivateParlorXT
+  # An implementation of `Statistics` using the `Database` for storing message data
   class SQLiteStatistics < Statistics
     # Generally this should use the same connection that was used for the database
     def initialize(@connection : DB::Database)
@@ -20,7 +21,8 @@ module PrivateParlorXT
       end
     end
 
-    def get_start_date : String
+    # :inherit:
+    def start_date : String
       @connection.query_one("
         SELECT value
         FROM system_config
@@ -29,7 +31,8 @@ module PrivateParlorXT
       )
     end
 
-    def increment_message_count(type : MessageCounts) : Nil
+    # :inherit:
+    def increment_messages(type : Messages) : Nil
       column = type.to_s.downcase
 
       write do
@@ -41,7 +44,8 @@ module PrivateParlorXT
       end
     end
 
-    def increment_upvote_count
+    # :inherit:
+    def increment_upvotes : Nil
       write do
         @connection.exec("
           INSERT INTO message_stats (date, upvotes)
@@ -51,7 +55,8 @@ module PrivateParlorXT
       end
     end
 
-    def increment_downvote_count
+    # :inherit:
+    def increment_downvotes : Nil
       write do
         @connection.exec("
           INSERT INTO message_stats (date, downvotes)
@@ -61,7 +66,8 @@ module PrivateParlorXT
       end
     end
 
-    def increment_unoriginal_text_count
+    # :inherit:
+    def increment_unoriginal_text : Nil
       write do
         @connection.exec("
           INSERT INTO message_stats (date, unoriginal_text)
@@ -71,7 +77,8 @@ module PrivateParlorXT
       end
     end
 
-    def increment_unoriginal_media_count
+    # :inherit:
+    def increment_unoriginal_media : Nil
       write do
         @connection.exec("
           INSERT INTO message_stats (date, unoriginal_media)
@@ -81,7 +88,8 @@ module PrivateParlorXT
       end
     end
 
-    def get_total_messages : Hash(MessageCounts, Int32)
+    # :inherit:
+    def message_counts : Hash(Messages, Int32)
       totals = @connection.query_one("
         SELECT
           coalesce(sum(total_messages), 0) as total_messages,
@@ -103,9 +111,9 @@ module PrivateParlorXT
           (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date = date('now')) as messages_daily,
           (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date = date('now','-1 day')) as messages_yesterday,
           (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date > date('now','-7 days')) as messages_weekly,
-          (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date < date('now','-7 days') AND date > date('now','-14 days')) as messages_yesterweek,
+          (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date <= date('now','-7 days') AND date > date('now','-14 days')) as messages_yesterweek,
           (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date > date('now','-1 month')) as messages_monthly,
-          (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date < date('now','-1 month') AND date > date('now','-2 months')) as messages_yestermonth
+          (select coalesce(sum(total_messages), 0) FROM message_stats WHERE date <= date('now','-1 month') AND date > date('now','-2 months')) as messages_yestermonth
         FROM message_stats",
         as: {
           Int32, Int32, Int32, Int32, Int32,
@@ -116,10 +124,11 @@ module PrivateParlorXT
         }
       )
 
-      Hash.zip(MessageCounts.values, totals.to_a)
+      Hash.zip(Messages.values, totals.to_a)
     end
 
-    def get_user_counts : Hash(UserCounts, Int32)
+    # :inherit:
+    def user_counts : Hash(Users, Int32)
       totals = @connection.query_one("
         SELECT
           count(id) as total_users,
@@ -135,9 +144,9 @@ module PrivateParlorXT
           (SELECT count(id) FROM users WHERE date(left) = date('now')) as left_daily,
           (SELECT count(id) FROM users WHERE date(left) = date('now','-1 day')) as left_yesterday,
           (select count(id) FROM users WHERE date(left) > date('now','-7 days')) as left_weekly,
-          (select count(id) FROM users WHERE date(left) < date('now','-7 days') AND date(left) > date('now','-14 days')) as left_yesterweek,
+          (select count(id) FROM users WHERE date(left) <= date('now','-7 days') AND date(left) > date('now','-14 days')) as left_yesterweek,
           (select count(id) FROM users WHERE date(left) > date('now','-1 month')) as left_monthly,
-          (select count(id) FROM users WHERE date(left) < date('now','-1 month') AND date(left) > date('now','-2 months')) as left_yestermonth
+          (select count(id) FROM users WHERE date(left) <= date('now','-1 month') AND date(left) > date('now','-2 months')) as left_yestermonth
         FROM users",
         as: {
           Int32, Int32, Int32, Int32, Int32,
@@ -147,10 +156,11 @@ module PrivateParlorXT
         }
       )
 
-      Hash.zip(UserCounts.values, totals.to_a)
+      Hash.zip(Users.values, totals.to_a)
     end
 
-    def get_karma_counts : Hash(KarmaCounts, Int32)
+    # :inherit:
+    def karma_counts : Hash(Karma, Int32)
       totals = @connection.query_one("
         SELECT
           coalesce(sum(upvotes), 0) as total_upvotes,
@@ -164,9 +174,9 @@ module PrivateParlorXT
           (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date = date('now')) as downvotes_daily,
           (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date = date('now','-1 day')) as downvotes_yesterday,
           (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date > date('now','-7 days')) as downvotes_weekly,
-          (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date < date('now','-7 days') AND date > date('now','-14 days')) as downvotes_yesterweek,
+          (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date <= date('now','-7 days') AND date > date('now','-14 days')) as downvotes_yesterweek,
           (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date > date('now','-1 month')) as downvotes_monthly,
-          (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date < date('now','-1 month') AND date > date('now','-2 months')) as downvotes_yestermonth
+          (select coalesce(sum(downvotes), 0) FROM message_stats WHERE date <= date('now','-1 month') AND date > date('now','-2 months')) as downvotes_yestermonth
         FROM message_stats",
         as: {
           Int32, Int32, Int32, Int32, Int32,
@@ -175,10 +185,11 @@ module PrivateParlorXT
         }
       )
 
-      Hash.zip(KarmaCounts.values, totals.to_a)
+      Hash.zip(Karma.values, totals.to_a)
     end
 
-    def get_karma_level_count(start_value : Int32, end_value : Int32) : Int32
+    # :inherit:
+    def karma_level_count(start_value : Int32, end_value : Int32) : Int32
       @connection.query_one("
         SELECT count(id)
         FROM users
@@ -188,7 +199,8 @@ module PrivateParlorXT
       )
     end
 
-    def get_robot9000_counts : Hash(Robot9000Counts, Int32)
+    # :inherit:
+    def robot9000_counts : Hash(Robot9000, Int32)
       totals = @connection.query_one("
         SELECT
           (SELECT count(id) FROM (SELECT * FROM file_id UNION SELECT * FROM text)) as total_unique,
@@ -203,9 +215,10 @@ module PrivateParlorXT
         }
       )
 
-      Hash.zip(Robot9000Counts.values, totals.to_a)
+      Hash.zip(Robot9000.values, totals.to_a)
     end
 
+    # Ensures that there is a 'message_stats' table in the database
     def ensure_schema : Nil
       write do
         @connection.exec("CREATE TABLE IF NOT EXISTS message_stats (
@@ -235,6 +248,7 @@ module PrivateParlorXT
       end
     end
 
+    # Ensures that there is a date value for the 'start_date' key in the 'system_config' table
     def ensure_start_date : Nil
       return if @connection.query_one?("SELECT value FROM system_config WHERE name = 'start_date'", as: String)
 

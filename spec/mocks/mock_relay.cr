@@ -4,10 +4,10 @@ module PrivateParlorXT
   class MockRelay < Relay
     @queue : MessageQueue = MockMessageQueue.new
 
-    def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String)
+    def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String, reply_markup : Tourmaline::InlineKeyboardMarkup? = nil) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue_priority(
+      queue.enqueue_priority(
         user,
         reply_message,
         text,
@@ -23,10 +23,10 @@ module PrivateParlorXT
       )
     end
 
-    def send_text(params : PrivateParlorXT::RelayParameters)
+    def send_text(params : PrivateParlorXT::RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -46,10 +46,10 @@ module PrivateParlorXT
       )
     end
 
-    def send_photo(params : RelayParameters)
+    def send_photo(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -70,10 +70,10 @@ module PrivateParlorXT
       )
     end
 
-    def send_animation(params : RelayParameters)
+    def send_animation(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -94,10 +94,10 @@ module PrivateParlorXT
       )
     end
 
-    def send_video(params : RelayParameters)
+    def send_video(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -118,10 +118,10 @@ module PrivateParlorXT
       )
     end
 
-    def send_audio(params : RelayParameters)
+    def send_audio(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -141,10 +141,10 @@ module PrivateParlorXT
       )
     end
 
-    def send_voice(params : RelayParameters)
+    def send_voice(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -164,10 +164,10 @@ module PrivateParlorXT
       )
     end
 
-    def send_document(params : RelayParameters)
+    def send_document(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -187,18 +187,22 @@ module PrivateParlorXT
       )
     end
 
-    def send_poll_copy(reply : MessageID?, user : User, poll : Tourmaline::Poll)
-      PrivateParlorXT.create_message(
-        reply + 1,
-        Tourmaline::User.new(12345678, true, "spec"),
+    def send_poll_copy(reply : MessageID?, user : User, poll : Tourmaline::Poll) : Tourmaline::Message
+      bot_user = Tourmaline::User.new(12345678, true, "spec")
+
+      Tourmaline::Message.new(
+        message_id: reply + 1,
+        date: Time.utc,
+        chat: Tourmaline::Chat.new(bot_user.id, "private"),
         poll: poll,
+        from: bot_user
       )
     end
 
-    def send_forward(params : RelayParameters, message : MessageID)
+    def send_forward(params : RelayParameters, message : MessageID) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -215,10 +219,10 @@ module PrivateParlorXT
       )
     end
 
-    def send_video_note(params : RelayParameters)
+    def send_video_note(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -235,10 +239,10 @@ module PrivateParlorXT
       )
     end
 
-    def send_sticker(params : RelayParameters)
+    def send_sticker(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -255,11 +259,11 @@ module PrivateParlorXT
       )
     end
 
-    def send_album(params : AlbumHelpers::AlbumRelayParameters)
+    def send_album(params : AlbumHelpers::AlbumRelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
-        params.original_messages,
+      queue.enqueue(
+        params.origins,
         params.sender,
         params.receivers,
         params.replies,
@@ -275,10 +279,10 @@ module PrivateParlorXT
       )
     end
 
-    def send_venue(params : RelayParameters, venue : Tourmaline::Venue)
+    def send_venue(params : RelayParameters, venue : Tourmaline::Venue) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -302,10 +306,10 @@ module PrivateParlorXT
       )
     end
 
-    def send_location(params : RelayParameters, location : Tourmaline::Location)
+    def send_location(params : RelayParameters, location : Tourmaline::Location) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -323,10 +327,10 @@ module PrivateParlorXT
       )
     end
 
-    def send_contact(params : RelayParameters, contact : Tourmaline::Contact)
+    def send_contact(params : RelayParameters, contact : Tourmaline::Contact) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
-      queue.add_to_queue(
+      queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -342,6 +346,79 @@ module PrivateParlorXT
             vcard: contact.vcard,
             reply_parameters: reply,
           )
+        }
+      )
+    end
+
+    def pin_message(user : UserID, message : MessageID) : Nil
+      return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
+
+      queue.enqueue_priority(
+        user,
+        ReplyParameters.new(message),
+        "",
+        Array(Tourmaline::MessageEntity).new,
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          return false unless reply
+          @client.pin_chat_message(receiver, reply.message_id)
+        }
+      )
+    end
+
+    def unpin_message(user : UserID, message : MessageID? = nil) : Nil
+      return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
+
+      if message
+        message = ReplyParameters.new(message)
+      else
+        message = nil
+      end
+
+      queue.enqueue_priority(
+        user,
+        message,
+        "",
+        Array(Tourmaline::MessageEntity).new,
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          if reply
+            @client.unpin_chat_message(receiver, reply.message_id)
+          else
+            @client.unpin_chat_message(receiver, nil)
+          end
+        }
+      )
+    end
+
+    def edit_message_media(user : UserID, media : Tourmaline::InputMedia, message : MessageID) : Nil
+      return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
+
+      queue.enqueue_priority(
+        user,
+        ReplyParameters.new(message),
+        "#{media.media};#{media.type};#{media.caption};#{media.has_spoiler?}",
+        Array(Tourmaline::MessageEntity).new,
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          return false unless reply
+          @client.edit_message_media(media, receiver, reply.message_id)
+          # We don't care about the result, so return a boolean
+          # to satisfy type requirements
+          true
+        }
+      )
+    end
+
+    def edit_message_text(user : UserID, text : String, markup : Tourmaline::InlineKeyboardMarkup?, message : MessageID) : Nil
+      return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
+
+      queue.enqueue_priority(
+        user,
+        ReplyParameters.new(message),
+        text,
+        Array(Tourmaline::MessageEntity).new,
+        ->(receiver : UserID, reply : ReplyParameters?) {
+          return false unless reply
+          @client.edit_message_text(text, receiver, reply.message_id, reply_markup: markup)
+          true
         }
       )
     end

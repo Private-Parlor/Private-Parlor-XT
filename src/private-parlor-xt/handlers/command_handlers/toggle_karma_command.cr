@@ -1,11 +1,13 @@
-require "../../command_handler.cr"
+require "../command_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: ["toggle_karma", "togglekarma"], config: "enable_toggle_karma")]
+  # A command used to disable or enable karma notifications for a user
   class ToggleKarmaCommand < CommandHandler
+    # Hides karma notifications for user or enabled them, depending on the user's hide_karma value
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       user.toggle_karma
 

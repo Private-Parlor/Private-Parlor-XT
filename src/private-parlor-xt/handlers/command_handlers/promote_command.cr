@@ -1,11 +1,13 @@
-require "../../command_handler.cr"
+require "../command_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "promote", config: "enable_promote")]
+  # A command used to promote a user to a given rank
   class PromoteCommand < CommandHandler
-    def do(message : Tourmaline::Message, services : Services)
-      return unless user = get_user_from_message(message, services)
+    # Promotes the user described in the *message* text or promotes the sender of the message it replies to, if *message* meets requirements
+    def do(message : Tourmaline::Message, services : Services) : Nil
+      return unless user = user_from_message(message, services)
 
       return unless authority = authorized?(
                       user,
@@ -25,12 +27,8 @@ module PrivateParlorXT
           services,
         )
       else
-        unless args = Format.get_args(message.text, count: 2)
-          return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.missing_args)
-        end
-
         promote_from_args(
-          args,
+          message.text,
           authority,
           user,
           message.message_id.to_i64,
@@ -39,7 +37,10 @@ module PrivateParlorXT
       end
     end
 
-    def promote_from_reply(arg : String?, authority : CommandPermissions, user : User, message : MessageID, reply : Tourmaline::Message, services : Services)
+    # Promotes a user who sent the *reply* message to the *user's* current rank if the rank has the `CommandPermissions::Promote` or `CommandPermissions::PromoteSame` permission
+    # and no *arg* was given, or promotes to the given rank in *arg* if the *user's* rank has the `CommandPermissions::Promote` or `CommandPermissions::PromoteLower` permission
+    # and one argument (name/value of rank) was given
+    def promote_from_reply(arg : String?, authority : CommandPermissions, user : User, message : MessageID, reply : Tourmaline::Message, services : Services) : Nil
       if arg
         tuple = services.access.find_rank(arg.downcase, arg.to_i?)
       else
@@ -56,7 +57,7 @@ module PrivateParlorXT
         }))
       end
 
-      return unless promoted_user = get_reply_user(user, reply, services)
+      return unless promoted_user = reply_user(user, reply, services)
 
       unless services.access.can_promote?(tuple[0], user.rank, promoted_user.rank, authority)
         return services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.fail)
@@ -73,9 +74,9 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.promoted, {
         "id"      => promoted_user.id.to_s,
-        "name"    => promoted_user.get_formatted_name,
+        "name"    => promoted_user.formatted_name,
         "rank"    => tuple[1].name,
-        "invoker" => user.get_formatted_name,
+        "invoker" => user.formatted_name,
       })
 
       services.relay.log_output(log)
@@ -83,7 +84,14 @@ module PrivateParlorXT
       services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.success)
     end
 
-    def promote_from_args(args : Array(String), authority : CommandPermissions, user : User, message : MessageID, services : Services)
+    # Promotes a user given in the *text* to the *user's* current rank if the rank has the `CommandPermissions::Promote` or `CommandPermissions::PromoteSame` permission
+    # and only one argument (the user's identifier) was given, or promotes to the given rank if the *user's* rank has the `CommandPermissions::Promote` or `CommandPermissions::PromoteLower` permission
+    # and two arguments (the user's identifier and name/value of rank) was given
+    def promote_from_args(text : String?, authority : CommandPermissions, user : User, message : MessageID, services : Services) : Nil
+      unless (args = Format.get_args(text, count: 2)) && args.size > 0
+        return services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.missing_args)
+      end
+
       if args.size == 1 && authority.in?(CommandPermissions::Promote, CommandPermissions::PromoteSame)
         tuple = {user.rank, services.access.ranks[user.rank]}
       elsif args.size == 2
@@ -113,9 +121,9 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.promoted, {
         "id"      => promoted_user.id.to_s,
-        "name"    => promoted_user.get_formatted_name,
+        "name"    => promoted_user.formatted_name,
         "rank"    => tuple[1].name,
-        "invoker" => user.get_formatted_name,
+        "invoker" => user.formatted_name,
       })
 
       services.relay.log_output(log)

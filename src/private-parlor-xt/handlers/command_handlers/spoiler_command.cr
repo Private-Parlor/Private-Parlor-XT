@@ -1,40 +1,46 @@
-require "../../command_handler.cr"
+require "../command_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "spoiler", config: "enable_spoiler")]
+  # A command used to add or remove a spoiler on a message after it has been sent.
   class SpoilerCommand < CommandHandler
+    # Adds a spoiler to the given *message* if it does not have one, or removes it if it does, and *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return unless authorized?(user, message, :Spoiler, services)
 
-      return unless reply = get_reply_message(user, message, services)
+      return unless reply = reply_message(user, message, services)
 
       if reply.forward_origin
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
-      unless services.history.get_sender(reply.message_id.to_i64)
+
+      unless services.history.sender(reply.message_id.to_i64)
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.not_in_cache)
       end
 
-      # Prevent spoiling messages that were not sent from the bot
-      unless (from = reply.from) && from.id == services.relay.get_client_user.id
+      # Prevent spoiling messages that were not sent by the bot
+      if (from = reply.from) && from.id == user.id
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
 
-      update_user_activity(user, services)
-
-      unless input = get_message_input(reply)
+      unless input = message_input(reply)
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
       end
 
       spoil_messages(reply, user, input, services)
 
+      update_user_activity(user, services)
+
       services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
     end
 
-    def get_message_input(message : Tourmaline::Message) : Tourmaline::InputMedia?
+    # Returns a `Tourmaline::InputMedia` from the media contents of the given *message*
+    #
+    # Returns `nil` unless message contains a photo, video, or animation/GIF
+    def message_input(message : Tourmaline::Message) : Tourmaline::InputMedia?
       if media = message.photo.last?
         Tourmaline::InputMediaPhoto.new(media.file_id, caption: message.caption, caption_entities: message.caption_entities)
       elsif media = message.video
@@ -46,12 +52,12 @@ module PrivateParlorXT
 
     # Spoils the given media message for all receivers by editing the media with the given input.
     def spoil_messages(reply : Tourmaline::Message, user : User, input : Tourmaline::InputMedia, services : Services) : Nil
-      return unless reply_msids = services.history.get_all_receivers(reply.message_id.to_i64)
+      return unless reply_msids = services.history.receivers(reply.message_id.to_i64)
 
       if reply.has_media_spoiler?
         log = Format.substitute_message(services.logs.unspoiled, {
           "id"   => user.id.to_s,
-          "name" => user.get_formatted_name,
+          "name" => user.formatted_name,
           "msid" => reply.message_id.to_s,
         })
       else
@@ -59,7 +65,7 @@ module PrivateParlorXT
 
         log = Format.substitute_message(services.logs.spoiled, {
           "id"   => user.id.to_s,
-          "name" => user.get_formatted_name,
+          "name" => user.formatted_name,
           "msid" => reply.message_id.to_s,
         })
       end

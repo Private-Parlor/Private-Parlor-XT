@@ -1,38 +1,142 @@
 require "../../spec_helper.cr"
 
 module PrivateParlorXT
-  describe MockUpdateHandler do
-    client = MockClient.new
-
-    services = create_services(client: client)
-
-    handler = MockUpdateHandler.new(MockConfig.new)
-
-    around_each do |test|
-      services = create_services(client: client)
-
-      generate_users(services.database)
-      generate_history(services.history)
-
-      test.run
-
-      services.database.close
+  @[Hears(pattern: /UPDATEHANDLER/, command: true)]
+  class ExampleContainsCommand < HearsHandler
+    def do(message : Tourmaline::Message, services : Services) : Nil
     end
+  end
 
-    describe "#get_user_from_message" do
+  @[Hears(pattern: "starts_with_UpdateHandler", command: true)]
+  class ExampleStartsWithCommand < HearsHandler
+    def do(message : Tourmaline::Message, services : Services) : Nil
+    end
+  end
+
+  @[Hears(pattern: "example_hears_UpdateHandler")]
+  class ExampleHearshandler < HearsHandler
+    def do(message : Tourmaline::Message, services : Services) : Nil
+    end
+  end
+
+  describe MockUpdateHandler do
+    describe "#user_from_message" do
+      it "returns nil if message has no sender" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: nil,
+        )
+
+        handler.user_from_message(message, services).should(be_nil)
+      end
+
+      it "returns nil if message text is a command" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        command_message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "/test",
+        )
+
+        upvote_message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "+1",
+        )
+
+        downvote_message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "-1",
+        )
+
+        example_contains_message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "This is a message where \"UPDATEHANDLER\" is in the text",
+        )
+
+        example_starts_with_message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "starts_with_UpdateHandler This is a command",
+        )
+
+        handler.user_from_message(command_message, services).should(be_nil)
+        handler.user_from_message(upvote_message, services).should(be_nil)
+        handler.user_from_message(downvote_message, services).should(be_nil)
+        handler.user_from_message(example_contains_message, services).should(be_nil)
+        handler.user_from_message(example_starts_with_message, services).should(be_nil)
+      end
+
       it "returns user" do
-        reply_to = create_message(
-          6,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        reply_tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(reply_tourmaline_user.id, "private"),
+          from: reply_tourmaline_user
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          reply_to_message: reply_to,
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          reply_to_message: reply,
+          from: tourmaline_user
         )
 
-        unless returned_user = handler.get_user_from_message(message, services)
+        unless returned_user = handler.user_from_message(message, services)
+          fail("Did not get a user from method")
+        end
+
+        returned_user.id.should(eq(80300))
+      end
+
+      it "returns user even if non-command HearsHandler matches text" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "example_hears_UpdateHandler This is not a command, but it matches a hears handler",
+          from: tourmaline_user
+        )
+
+        unless returned_user = handler.user_from_message(message, services)
           fail("Did not get a user from method")
         end
 
@@ -40,12 +144,21 @@ module PrivateParlorXT
       end
 
       it "updates user's names" do
-        new_names_message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel", "spec", "new_username"),
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel", "spec", "new_username")
+
+        new_names_message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user
         )
 
-        unless returned_user = handler.get_user_from_message(new_names_message, services)
+        unless returned_user = handler.user_from_message(new_names_message, services)
           fail("Did not get a user from method")
         end
 
@@ -55,98 +168,116 @@ module PrivateParlorXT
         returned_user.realname.should(eq("beispiel spec"))
       end
 
-      it "returns nil if user does not exist" do
-        message = create_message(
-          11,
-          Tourmaline::User.new(12345678, false, "beispiel", "spec", "new_username"),
+      it "returns nil if user does not exist and queues 'not_in_chat' reply" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        tourmaline_user = Tourmaline::User.new(12345678, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user
         )
 
-        user = handler.get_user_from_message(message, services)
+        handler.user_from_message(message, services).should(be_nil)
 
-        user.should(be_nil)
-      end
-
-      it "returns nil if message text starts with a command" do
-        command_message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          text: "/test",
-        )
-
-        upvote_message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          text: "+1",
-        )
-
-        downvote_message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          text: "-1",
-        )
-
-        handler.get_user_from_message(command_message, services).should(be_nil)
-        handler.get_user_from_message(upvote_message, services).should(be_nil)
-        handler.get_user_from_message(downvote_message, services).should(be_nil)
-      end
-
-      it "queues not in chat message if user does not exist" do
-        mock_services = create_services(relay: MockRelay.new("", client))
-
-        message = create_message(
-          11,
-          Tourmaline::User.new(12345678, false, "beispiel", "spec", "new_username"),
-        )
-
-        handler.get_user_from_message(message, mock_services)
-
-        messages = mock_services.relay.as(MockRelay).empty_queue
+        messages = services.relay.as(MockRelay).empty_queue
 
         messages.size.should(eq(1))
-        messages[0].data.should(eq(mock_services.replies.not_in_chat))
+        messages[0].data.should(eq(services.replies.not_in_chat))
+      end
+
+      it "returns nil if user cannot chat at this time" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        tourmaline_user = Tourmaline::User.new(40000, false, "esimerkki")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user
+        )
+
+        handler.user_from_message(message, services).should(be_nil)
       end
     end
 
     describe "#authorized?" do
-      it "returns true if user can send update" do
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+      it "returns true if user can send the given update type" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
         )
 
-        unless beispiel = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
+        authorized_user = MockUser.new(80300, rank: 0)
 
-        handler.authorized?(beispiel, message, :Text, services).should(be_true)
+        handler.authorized?(authorized_user, message, :Text, services).should(be_true)
       end
 
-      it "returns false if user can't send update" do
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
+      it "returns false and queues 'media_disabled' reply if user can't send the given update type" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(70000, false, "BLACKLISTED")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
         )
 
-        unauthorized_user = MockUser.new(9000, rank: -10)
+        unauthorized_user = MockUser.new(70000, rank: -10)
 
         handler.authorized?(unauthorized_user, message, :Text, services).should(be_false)
+
+        messages = services.relay.as(MockRelay).empty_queue
+        messages.size.should(eq(1))
+
+        expected = Format.substitute_reply(services.replies.media_disabled, {"type" => :Text.to_s})
+
+        messages[0].data.should(eq(expected))
       end
     end
 
     describe "#meets_requirements?" do
       it "returns true if message is not a forward or an album" do
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
         )
 
         handler.meets_requirements?(message).should(be_true)
       end
 
       it "returns false if message is a forward" do
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           forward_origin: Tourmaline::MessageOriginUser.new(
             "user",
             Time.utc,
@@ -158,9 +289,14 @@ module PrivateParlorXT
       end
 
       it "returns false if message is an album" do
-        message = create_message(
-          6_i64,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot"),
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           media_group_id: "10000"
         )
 
@@ -170,15 +306,16 @@ module PrivateParlorXT
 
     describe "#deny_user" do
       it "queues blacklisted response when user is blacklisted" do
-        mock_services = create_services(relay: MockRelay.new("", client))
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
 
         user = MockUser.new(9000, rank: -10)
 
-        handler.deny_user(user, mock_services)
+        handler.deny_user(user, services)
 
-        messages = mock_services.relay.as(MockRelay).empty_queue
+        messages = services.relay.as(MockRelay).empty_queue
 
-        expected = Format.substitute_reply(mock_services.replies.blacklisted, {
+        expected = Format.substitute_reply(services.replies.blacklisted, {
           "contact" => "",
           "reason"  => "",
         })
@@ -188,18 +325,19 @@ module PrivateParlorXT
       end
 
       it "queues cooldowned response when user is cooldowned" do
-        mock_services = create_services(relay: MockRelay.new("", client))
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
 
         user = MockUser.new(9000, rank: 0)
 
         user.cooldown(30.minutes)
 
-        handler.deny_user(user, mock_services)
+        handler.deny_user(user, services)
 
-        messages = mock_services.relay.as(MockRelay).empty_queue
+        messages = services.relay.as(MockRelay).empty_queue
 
-        expected = Format.substitute_reply(mock_services.replies.on_cooldown, {
-          "time" => Format.format_time(user.cooldown_until, mock_services.locale.time_format),
+        expected = Format.substitute_reply(services.replies.on_cooldown, {
+          "time" => Format.time(user.cooldown_until, services.locale.time_format),
         })
 
         messages.size.should(eq(1))
@@ -207,8 +345,7 @@ module PrivateParlorXT
       end
 
       it "queues media limit response when user can't send media" do
-        mock_services = create_services(
-          relay: MockRelay.new("", client),
+        services = create_services(
           config: HandlerConfig.new(
             MockConfig.new(
               media_limit_period: 5,
@@ -216,30 +353,31 @@ module PrivateParlorXT
           )
         )
 
+        handler = MockUpdateHandler.new(MockConfig.new)
+
         user = MockUser.new(9000, joined: Time.utc, rank: 0)
 
-        handler.deny_user(user, mock_services)
+        handler.deny_user(user, services)
 
-        messages = mock_services.relay.as(MockRelay).empty_queue
+        messages = services.relay.as(MockRelay).empty_queue
 
-        blacklisted_message = Format.substitute_reply(mock_services.replies.blacklisted, {
+        blacklisted_message = Format.substitute_reply(services.replies.blacklisted, {
           "contact" => "",
           "reason"  => "",
         })
 
-        cooldown_message = Format.substitute_reply(mock_services.replies.on_cooldown, {
-          "time" => Format.format_time(user.cooldown_until, mock_services.locale.time_format),
+        cooldown_message = Format.substitute_reply(services.replies.on_cooldown, {
+          "time" => Format.time(user.cooldown_until, services.locale.time_format),
         })
 
         messages.size.should(eq(1))
         messages[0].data.should_not(eq(blacklisted_message))
         messages[0].data.should_not(eq(cooldown_message))
-        messages[0].data.should_not(eq(mock_services.replies.not_in_chat))
+        messages[0].data.should_not(eq(services.replies.not_in_chat))
       end
 
       it "queues not in chat message when user still can't chat" do
-        mock_services = create_services(
-          relay: MockRelay.new("", client),
+        services = create_services(
           config: HandlerConfig.new(
             MockConfig.new(
               media_limit_period: 0,
@@ -247,33 +385,47 @@ module PrivateParlorXT
           )
         )
 
+        handler = MockUpdateHandler.new(MockConfig.new)
+
         user = MockUser.new(9000, rank: 0)
 
-        handler.deny_user(user, mock_services)
+        handler.deny_user(user, services)
 
-        messages = mock_services.relay.as(MockRelay).empty_queue
+        messages = services.relay.as(MockRelay).empty_queue
 
         messages.size.should(eq(1))
-        messages[0].data.should(eq(mock_services.replies.not_in_chat))
+        messages[0].data.should(eq(services.replies.not_in_chat))
       end
     end
 
-    describe "#get_reply_receivers" do
+    describe "#reply_receivers" do
       it "returns hash of reply message receivers if reply exists" do
-        reply_to = create_message(
-          6,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+        generate_history(services.history)
+
+        reply_tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(reply_tourmaline_user.id, "private"),
+          from: reply_tourmaline_user,
         )
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          reply_to_message: reply_to,
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          reply_to_message: reply,
         )
 
         user = MockUser.new(80300, rank: 10)
 
-        unless hash = handler.get_reply_receivers(message, user, services)
+        unless hash = handler.reply_receivers(message, user, services)
           fail("Handler method should have returned a hash of reply message receivers")
         end
 
@@ -281,37 +433,237 @@ module PrivateParlorXT
         hash[60200].message_id.should(eq(7))
       end
 
-      it "returns an empty hash if reply does not exist in cache" do
-        reply_to = create_message(
-          10000,
-          Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
-        )
+      it "returns an empty hash if message did not contain a reply" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          reply_to_message: reply_to,
+        generate_users(services.database)
+        generate_history(services.history)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
         )
 
         user = MockUser.new(80300, rank: 10)
 
-        handler.get_reply_receivers(message, user, services).should(be_empty)
+        unless hash = handler.reply_receivers(message, user, services)
+          fail("Handler method should have returned an empty hash of reply message receivers")
+        end
+
+        hash.should(be_empty)
+      end
+
+      it "returns hash of reply message receivers if self-quoted message has stripped entities" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+        generate_history(services.history)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        reply = Tourmaline::Message.new(
+          message_id: 1,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          text: "Example text with entities",
+          entities: [Tourmaline::MessageEntity.new(type: "bold", offset: 0, length: 7)]
+        )
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          reply_to_message: reply,
+          quote: Tourmaline::TextQuote.new(
+            text: "Example text with entities",
+            position: 0,
+            entities: [Tourmaline::MessageEntity.new(type: "bold", offset: 0, length: 7)]
+          )
+        )
+
+        user = MockUser.new(80300, rank: 10)
+
+        unless hash = handler.reply_receivers(message, user, services)
+          fail("Handler method should have returned a hash of reply message receivers")
+        end
+
+        hash[60200].message_id.should(eq(2))
+        hash[60200].quote.should(be_nil)
+        hash[20000].message_id.should(eq(3))
+        hash[20000].quote.should(be_nil)
+      end
+
+      it "returns hash of reply message receivers if self-quoted message is edited" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+        generate_history(services.history)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        reply = Tourmaline::Message.new(
+          message_id: 1,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          text: "Example text with entities",
+        )
+
+        reply.edit_date = Time.utc
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          reply_to_message: reply,
+          quote: Tourmaline::TextQuote.new(
+            text: "Example text with entities",
+            position: 0,
+          )
+        )
+
+        user = MockUser.new(80300, rank: 10)
+
+        unless hash = handler.reply_receivers(message, user, services)
+          fail("Handler method should have returned a hash of reply message receivers")
+        end
+
+        hash[60200].message_id.should(eq(2))
+        hash[60200].quote.should(be_nil)
+        hash[20000].message_id.should(eq(3))
+        hash[20000].quote.should(be_nil)
+      end
+
+      it "returns hash of reply message receivers with quotes" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+        generate_history(services.history)
+
+        reply_tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        reply = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(reply_tourmaline_user.id, "private"),
+          from: reply_tourmaline_user,
+          text: "Example text with entities",
+        )
+
+        reply.edit_date = Time.utc
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          reply_to_message: reply,
+          quote: Tourmaline::TextQuote.new(
+            text: "Example text with entities",
+            position: 0,
+            entities: [Tourmaline::MessageEntity.new(type: "bold", offset: 0, length: 7)]
+          )
+        )
+
+        user = MockUser.new(80300, rank: 10)
+
+        unless hash = handler.reply_receivers(message, user, services)
+          fail("Handler method should have returned a hash of reply message receivers")
+        end
+
+        hash[20000].message_id.should(eq(5))
+        hash[20000].quote.should(eq("Example text with entities"))
+        hash[20000].quote_entities.size.should(eq(1))
+        hash[20000].quote_entities[0].type.should(eq("bold"))
+        hash[20000].quote_position.should(eq(0))
+
+        hash[60200].message_id.should(eq(7))
+        hash[60200].quote.should(eq("Example text with entities"))
+        hash[60200].quote_entities.size.should(eq(1))
+        hash[60200].quote_entities[0].type.should(eq("bold"))
+        hash[60200].quote_position.should(eq(0))
+      end
+
+      it "returns nil and queues 'not_in_cache' reply if message has a reply but it is not cached" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        reply_tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        reply = Tourmaline::Message.new(
+          message_id: 100,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(reply_tourmaline_user.id, "private"),
+          from: reply_tourmaline_user
+        )
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          reply_to_message: reply,
+        )
+
+        user = MockUser.new(80300, rank: 10)
+
+        handler.reply_receivers(message, user, services).should(be_nil)
+
+        messages = services.relay.as(MockRelay).empty_queue
+        messages.size.should(eq(1))
+        messages[0].data.should(eq(services.replies.not_in_cache))
       end
     end
 
-    describe "#get_message_receivers" do
+    describe "#message_receivers" do
       it "returns array of user IDs without given user ID" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+
         user = MockUser.new(80300, rank: 10)
 
-        handler.get_message_receivers(user, services).should_not(contain(user.id))
+        handler.message_receivers(user, services).should_not(contain(user.id))
       end
 
       it "returns array of user IDs including given user if debug is enabled" do
+        services = create_services()
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        generate_users(services.database)
+
         user = MockUser.new(80300, rank: 10)
 
         user.toggle_debug
 
-        handler.get_message_receivers(user, services).should(contain(user.id))
+        handler.message_receivers(user, services).should(contain(user.id))
+      end
+    end
+
+    describe "#record_message_statistics" do
+      it "increments message count and total message counts based on given type" do
+        connection = DB.open("sqlite3://%3Amemory%3A")
+        SQLiteDatabase.new(connection)
+        stats = SQLiteStatistics.new(connection)
+
+        services = create_services(statistics: stats)
+        handler = MockUpdateHandler.new(MockConfig.new)
+
+        handler.record_message_statistics(:Audio, services)
+
+        stats.message_counts[Statistics::Messages::Audio].should(eq(1))
+        stats.message_counts[Statistics::Messages::TotalMessages].should(eq(1))
       end
     end
   end

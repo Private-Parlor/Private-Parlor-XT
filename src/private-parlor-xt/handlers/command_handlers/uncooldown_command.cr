@@ -1,11 +1,13 @@
-require "../../command_handler.cr"
+require "../command_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
   @[RespondsTo(command: "uncooldown", config: "enable_uncooldown")]
+  # A command used for removing cooldowns from users via a username, OID, or unique ID argument
   class UncooldownCommand < CommandHandler
+    # Removes a cooldown and warning from a user if the user is currently cooldowned.
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return unless authorized?(user, message, :Uncooldown, services)
 
@@ -29,8 +31,8 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.removed_cooldown, {
         "id"             => user.id.to_s,
-        "name"           => user.get_formatted_name,
-        "oid"            => uncooldown_user.get_obfuscated_id,
+        "name"           => user.formatted_name,
+        "oid"            => uncooldown_user.obfuscated_id,
         "cooldown_until" => cooldown_until.to_s,
       })
 

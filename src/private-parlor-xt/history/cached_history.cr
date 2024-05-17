@@ -1,31 +1,40 @@
 require "../constants.cr"
-require "../history.cr"
+require "./history.cr"
 
 module PrivateParlorXT
+  # An implementation of `History` storing the messages in RAM as a `Hash`
   class CachedHistory < History
+    # Represents single message sent and all of its receivers
     class MessageGroup
+      # User who sent this message
       getter sender : UserID = 0
+
+      # The original message ID of this message
       getter origin : MessageID = 0
+
+      # The time at which this message was sent
       getter sent : Time = Time.utc
+
+      # Users who received this message and their corresponding `MessageID`
       property receivers : Hash(UserID, MessageID) = {} of UserID => MessageID
-      property ratings : Set(Int64) = Set(Int64).new
+
+      # Set of users who upvoted or downvoted this message
+      property ratings : Set(UserID) = Set(UserID).new
+
+      # Whether or not this message has been warned
+      #
+      # If `true`, a warning has been given to the user who sent this message, `false` otherwise
       property warned : Bool? = false
 
       # Creates an instance of `MessageGroup`
-      #
-      # ## Arguments:
-      #
-      # `sender`
-      # :     the id of the user who sent this message
-      #
-      # `msid`
-      # :     the message ID returned when the message was sent successfully
       def initialize(@sender : UserID, @origin : MessageID)
       end
     end
 
+    # A hash of `MessageID` to `MessageGroup`
     getter message_map : Hash(MessageID, MessageGroup) = {} of MessageID => MessageGroup
 
+    # :inherit:
     def close
     end
 
@@ -43,14 +52,14 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_origin_message(message : MessageID) : MessageID?
+    def origin_message(message : MessageID) : MessageID?
       if msg = @message_map[message]?
         msg.origin
       end
     end
 
     # :inherit:
-    def get_all_receivers(message : MessageID) : Hash(UserID, MessageID)
+    def receivers(message : MessageID) : Hash(UserID, MessageID)
       if msg = @message_map[message]?
         {msg.sender => msg.origin}.merge!(msg.receivers)
       else
@@ -59,19 +68,19 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_receiver_message(message : MessageID, receiver : UserID) : MessageID?
-      get_all_receivers(message)[receiver]?
+    def receiver_message(message : MessageID, receiver : UserID) : MessageID?
+      receivers(message)[receiver]?
     end
 
     # :inherit:
-    def get_sender(message : MessageID) : UserID?
+    def sender(message : MessageID) : UserID?
       if msg = @message_map[message]?
         msg.sender
       end
     end
 
     # :inherit:
-    def get_messages_from_user(user : UserID) : Set(MessageID)
+    def messages_from_user(user : UserID) : Set(MessageID)
       user_msgs = Set(MessageID).new
       @message_map.each_value do |msg|
         next unless msg.sender == user
@@ -97,14 +106,14 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_warning(message : MessageID) : Bool?
+    def warned?(message : MessageID) : Bool?
       if msg = @message_map[message]
         msg.warned
       end
     end
 
     # :inherit:
-    def get_purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
+    def purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
       hash = {} of UserID => Array(MessageID)
 
       messages = messages.to_a.sort { |a, b| b <=> a }
@@ -122,7 +131,7 @@ module PrivateParlorXT
       hash
     end
 
-    # Deletes a `MessageGroup` from the `message_map`
+    # :inherit:
     def delete_message_group(message : MessageID) : MessageID?
       message = @message_map[message]
 
@@ -134,8 +143,9 @@ module PrivateParlorXT
       message.origin
     end
 
-    # Returns true if the given message group is older than `lifespan`
-    # Returns false otherwise
+    # Returns `true` if the given message group is older than `lifespan`
+    #
+    # Returns `false` otherwise
     private def expired?(message : MessageGroup) : Bool
       message.sent <= Time.utc - @lifespan
     end

@@ -2,34 +2,97 @@ require "../spec_helper.cr"
 
 module PrivateParlorXT
   describe MockUser do
-    describe "#to_array" do
+    describe "#to_a" do
+      it "returns an array of all user object values" do
+        joined = Time.utc
+        last_active = Time.utc
+
+        user = MockUser.new(
+          id: 9000,
+          username: "UserNineThousand",
+          realname: "User9000",
+          rank: 0,
+          joined: joined,
+          left: nil,
+          last_active: last_active,
+          cooldown_until: nil,
+          blacklist_reason: nil,
+          warnings: 2,
+          warn_expiry: nil,
+          karma: 25,
+          hide_karma: false,
+          debug_enabled: true,
+          tripcode: "Test#TEST"
+        )
+
+        expected = [
+          9000,
+          "UserNineThousand",
+          "User9000",
+          0,
+          joined,
+          nil,
+          last_active,
+          nil,
+          nil,
+          2,
+          nil,
+          25,
+          false,
+          true,
+          "Test#TEST",
+        ]
+
+        arr = user.to_a
+
+        arr.should(eq(expected))
+      end
     end
 
-    describe "#get_formatted_name" do
+    describe "#formatted_name" do
       it "returns username if user has a username" do
         user = MockUser.new(9000, "new_user")
 
-        user.get_formatted_name.should(eq("@new_user"))
+        user.formatted_name.should(eq("@new_user"))
       end
 
       it "returns real name if user does not have a username" do
         user = MockUser.new(9000, nil, "New User")
 
-        user.get_formatted_name.should(eq("New User"))
+        user.formatted_name.should(eq("New User"))
       end
     end
 
-    describe "#get_obfuscated_id" do
+    describe "#obfuscated_id" do
       it "generates obfuscated id" do
         expected = Random.new(9000 + Time.utc.at_beginning_of_day.to_unix).base64(3)
 
         user = MockUser.new(9000)
 
-        user.get_obfuscated_id.should(eq(expected))
+        user.obfuscated_id.should(eq(expected))
+      end
+
+      it "generates generally unique obfuscated ids" do
+        oids = Set(String).new
+
+        iterations = 1000
+        repeats = 0
+
+        iterations.times do |id|
+          user = MockUser.new(id)
+
+          user_oid = user.obfuscated_id
+
+          unless oids.add?(user_oid)
+            repeats += 1
+          end
+        end
+
+        repeats.should(be < 5)
       end
     end
 
-    describe "#get_obfuscated_karma" do
+    describe "#obfuscated_karma" do
       it "generates obfuscated karma" do
         user_one = MockUser.new(5000, karma: 25)
 
@@ -37,11 +100,11 @@ module PrivateParlorXT
 
         user_three = MockUser.new(9000, karma: -25)
 
-        user_one.get_obfuscated_karma.should(be_close(25, 7))
+        user_one.obfuscated_karma.should(be_close(25, 7))
 
-        user_two.get_obfuscated_karma.should(be_close(0, 2))
+        user_two.obfuscated_karma.should(be_close(0, 2))
 
-        user_three.get_obfuscated_karma.should(be_close(-25, 7))
+        user_three.obfuscated_karma.should(be_close(-25, 7))
       end
     end
 
@@ -139,6 +202,20 @@ module PrivateParlorXT
 
         user.karma.should(eq(50))
       end
+
+      it "handles overflow error; keeps karma at max value" do
+        user = MockUser.new(9000, karma: Int32::MAX)
+
+        user.increment_karma
+
+        user.karma.should(eq(Int32::MAX))
+
+        user2 = MockUser.new(9001, karma: Int32::MAX - 10)
+
+        user2.increment_karma(25)
+
+        user2.karma.should(eq(Int32::MAX))
+      end
     end
 
     describe "#decrement_karma" do
@@ -148,6 +225,20 @@ module PrivateParlorXT
         user.decrement_karma(25)
 
         user.karma.should(eq(0))
+      end
+
+      it "handles overflow error; keeps karma at min value" do
+        user = MockUser.new(9000, karma: Int32::MIN)
+
+        user.decrement_karma
+
+        user.karma.should(eq(Int32::MIN))
+
+        user2 = MockUser.new(9001, karma: Int32::MIN + 10)
+
+        user2.decrement_karma(25)
+
+        user2.karma.should(eq(Int32::MIN))
       end
     end
 
@@ -216,22 +307,28 @@ module PrivateParlorXT
       it "removes cooldown if cooldown has expired" do
         user = MockUser.new(9000, cooldown_until: Time.utc(2023, 1, 1))
 
-        user.remove_cooldown
+        user.remove_cooldown.should(be_true)
 
         user.cooldown_until.should(be_nil)
       end
 
-      it "removes cooldown if given a true value" do
+      it "removes cooldown if given a true value override" do
         cooldown_year = Time.utc.year + 1
         user = MockUser.new(9000, cooldown_until: Time.utc(cooldown_year, 1, 1))
 
-        user.remove_cooldown
+        user.remove_cooldown.should(be_false)
 
         user.cooldown_until.should_not(be_nil)
 
         user.remove_cooldown(true)
 
         user.cooldown_until.should(be_nil)
+      end
+
+      it "returns true if user is not in cooldown" do
+        user = MockUser.new(9000)
+
+        user.remove_cooldown.should(be_true)
       end
     end
 
@@ -289,16 +386,30 @@ module PrivateParlorXT
     end
 
     describe "#can_chat?" do
-      it "returns true if user is not on cooldown, left, blacklisted, or media limited" do
-        user = MockUser.new(9000, joined: Time.utc(2023, 1, 1))
+      it "ranked; returns true if user is not cooldowned, not blacklisted, and not left (user can chat)" do
+        user = MockUser.new(9000, rank: 10, joined: Time.utc(2023, 1, 1))
 
         user.can_chat?(24.hours).should(be_true)
       end
 
-      it "returns true if user is not on cooldown, left, blacklisted, or media limited; user has a rank" do
-        user = MockUser.new(9000, rank: 10)
+      it "ranked; returns false if user is on cooldown, but is not blacklisted and not left" do
+        cooldown_year = Time.utc.year + 1
+        user = MockUser.new(9000, rank: 10, cooldown_until: Time.utc(cooldown_year, 1, 1))
 
-        user.can_chat?(24.hours).should(be_true)
+        user.can_chat?(24.hours).should(be_false)
+      end
+
+      it "ranked; returns false if user is not cooldowned, but is blacklisted or left" do
+        user = MockUser.new(9000, rank: 10, left: Time.utc)
+
+        user.can_chat?(24.hours).should(be_false)
+      end
+
+      it "ranked; returns false if user is on cooldown and is blacklisted or left" do
+        cooldown_year = Time.utc.year + 1
+        user = MockUser.new(9000, rank: 10, left: Time.utc, cooldown_until: Time.utc(cooldown_year, 1, 1))
+
+        user.can_chat?(24.hours).should(be_false)
       end
 
       it "returns true if user is not on cooldown, left, or blacklisted; media limit is 0" do
@@ -307,27 +418,54 @@ module PrivateParlorXT
         user.can_chat?(0.hours).should(be_true)
       end
 
-      it "returns false if user is on cooldown" do
+      it "returns true if user is not on cooldown, not left or blacklisted, or media limited" do
+        user = MockUser.new(9000, joined: Time.utc(2023, 1, 1))
+
+        user.can_chat?(24.hours).should(be_true)
+      end
+
+      it "returns false if user is not on cooldown, not left or blacklisted, but is media limited" do
+        user = MockUser.new(9000, joined: Time.utc)
+
+        user.can_chat?(24.hours).should(be_false)
+      end
+
+      it "returns false if user is not on cooldown, not media limited, but is left or blacklisted" do
+        user = MockUser.new(9000, rank: -10, joined: Time.utc(2023, 1, 1))
+
+        user.can_chat?(24.hours).should(be_false)
+      end
+
+      it "returns false if user is not left or blacklisted, not media limited, but is on cooldown" do
         cooldown_year = Time.utc.year + 1
-        user = MockUser.new(9000, cooldown_until: Time.utc(cooldown_year, 1, 1))
+        user = MockUser.new(9000, joined: Time.utc(2023, 1, 1), cooldown_until: Time.utc(cooldown_year, 1, 1))
 
-        user.can_chat?(0.hours).should(be_false)
+        user.can_chat?(24.hours).should(be_false)
       end
 
-      it "returns false if user is blacklisted" do
-        user = MockUser.new(9000, rank: -10)
+      it "returns false if user is not on cooldown, but is media limited and left or blacklisted" do
+        user = MockUser.new(9000, joined: Time.utc, left: Time.utc)
 
-        user.can_chat?(0.hours).should(be_false)
+        user.can_chat?(24.hours).should(be_false)
       end
 
-      it "returns false if user has left the chat" do
-        user = MockUser.new(9000, left: Time.utc)
+      it "returns false if user is on cooldown and left or blacklisted, but is not media limited" do
+        cooldown_year = Time.utc.year + 1
+        user = MockUser.new(9000, rank: -10, joined: Time.utc(2023, 1, 1), cooldown_until: Time.utc(cooldown_year, 1, 1))
 
-        user.can_chat?(0.hours).should(be_false)
+        user.can_chat?(24.hours).should(be_false)
       end
 
-      it "returns false if user is media limited" do
-        user = MockUser.new(9000)
+      it "returns false if user is on cooldown and media limited, but is not left or blacklisted" do
+        cooldown_year = Time.utc.year + 1
+        user = MockUser.new(9000, joined: Time.utc, cooldown_until: Time.utc(cooldown_year, 1, 1))
+
+        user.can_chat?(24.hours).should(be_false)
+      end
+
+      it "returns false if user is on cooldown, media limited, and left or blacklisted" do
+        cooldown_year = Time.utc.year + 1
+        user = MockUser.new(9000, left: Time.utc, joined: Time.utc, cooldown_until: Time.utc(cooldown_year, 1, 1))
 
         user.can_chat?(24.hours).should(be_false)
       end
@@ -348,6 +486,12 @@ module PrivateParlorXT
 
       it "returns false if user has left the chat" do
         user = MockUser.new(9000, left: Time.utc)
+
+        user.can_use_command?.should(be_false)
+      end
+
+      it "returns false if user is blacklisted and has left the chat" do
+        user = MockUser.new(9000, rank: -10, left: Time.utc)
 
         user.can_use_command?.should(be_false)
       end

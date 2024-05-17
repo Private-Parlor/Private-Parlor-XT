@@ -1,11 +1,12 @@
-require "../../callback_query_handler.cr"
-require "../../services.cr"
+require "../callback_query_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
+  # A `CallbackHandler` that responds to callback queries originating from the inline keyboard buttons found on the message produced by `StatsCommand`
   class StatisticsQueryHandler < CallbackHandler
-    def do(callback : Tourmaline::CallbackQuery, services : Services)
-      return unless user = get_user_from_callback(callback, services)
+    # Parses the query found in *callback* and returns the associated statistics screen if *callback* meets requirements
+    def do(callback : Tourmaline::CallbackQuery, services : Services) : Nil
+      return unless user = user_from_callback(callback, services)
 
       return unless message = callback.message
 
@@ -17,7 +18,11 @@ module PrivateParlorXT
 
       next_screen = Statistics::StatScreens.parse(split[1])
 
-      response = stats.get_statistic_screen(next_screen, services)
+      if next_screen == Statistics::StatScreens::Users && !services.access.authorized?(user.rank, CommandPermissions::Users)
+        response = stats.users_screen(services)
+      else
+        response = stats.statistic_screen(next_screen, services)
+      end
 
       reply_markup = stats.keyboard_markup(next_screen, services)
 

@@ -2,8 +2,6 @@ require "../../spec_helper.cr"
 
 module PrivateParlorXT
   describe UncooldownCommand do
-    client = MockClient.new
-
     ranks = {
       10 => Rank.new(
         "Mod",
@@ -19,26 +17,22 @@ module PrivateParlorXT
       ),
     }
 
-    services = create_services(ranks: ranks, relay: MockRelay.new("", client))
-
-    handler = UncooldownCommand.new(MockConfig.new)
-
-    around_each do |test|
-      services = create_services(ranks: ranks, relay: MockRelay.new("", client))
-
-      test.run
-
-      services.database.close
-    end
-
     describe "#do" do
       it "returns early if user is not authorized" do
+        services = create_services(ranks: ranks)
+
+        handler = UncooldownCommand.new(MockConfig.new)
+
         generate_users(services.database)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(20000, false, "beispiel"),
+        tourmaline_user = Tourmaline::User.new(20000, false, "example")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/uncooldown user",
+          from: tourmaline_user,
         )
 
         handler.do(message, services)
@@ -50,23 +44,156 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.command_disabled))
       end
 
-      it "uncooldowns the given user by ID" do
+      it "returns early if message has no args" do
+        services = create_services(ranks: ranks)
+
+        handler = UncooldownCommand.new(MockConfig.new)
+
         generate_users(services.database)
 
-        unless reply_user = services.database.get_user(60200)
+        unless services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "/uncooldown",
+          from: tourmaline_user,
+        )
+
+        handler.do(message, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+        messages.size.should(eq(1))
+
+        messages[0].data.should(eq(services.replies.missing_args))
+      end
+
+      it "returns early if no user could be found with args" do
+        services = create_services(ranks: ranks)
+
+        handler = UncooldownCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        unless services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "/uncooldown 9000",
+          from: tourmaline_user,
+        )
+
+        handler.do(message, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+        messages.size.should(eq(1))
+
+        messages[0].data.should(eq(services.replies.no_user_found))
+      end
+
+      it "returns early if user is not on cooldown" do
+        services = create_services(ranks: ranks)
+
+        handler = UncooldownCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        unless services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "/uncooldown voorb",
+          from: tourmaline_user,
+        )
+
+        handler.do(message, services)
+
+        messages = services.relay.as(MockRelay).empty_queue
+        messages.size.should(eq(1))
+
+        messages[0].data.should(eq(services.replies.not_in_cooldown))
+      end
+
+      it "updates user activity" do
+        services = create_services(ranks: ranks)
+
+        handler = UncooldownCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        unless cooldowned_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
         end
 
-        prior_warnings = reply_user.warnings
+        cooldowned_user.cooldown(10.minutes)
 
-        reply_user.cooldown(10.minutes)
+        services.database.update_user(cooldowned_user)
 
-        services.database.update_user(reply_user)
+        unless user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          text: "/uncoodown 60200",
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "/uncooldown voorb",
+          from: tourmaline_user,
+        )
+
+        handler.do(message, services)
+
+        unless updated_user = services.database.get_user(80300)
+          fail("User 80300 should exist in the database")
+        end
+
+        user.last_active.should(be < updated_user.last_active)
+      end
+
+      it "uncooldowns the given user by ID" do
+        services = create_services(ranks: ranks)
+
+        handler = UncooldownCommand.new(MockConfig.new)
+
+        generate_users(services.database)
+
+        unless cooldowned_user = services.database.get_user(60200)
+          fail("User 60200 should exist in the database")
+        end
+
+        prior_warnings = cooldowned_user.warnings
+
+        cooldowned_user.cooldown(10.minutes)
+
+        services.database.update_user(cooldowned_user)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          text: "/uncooldown 60200",
         )
 
         handler.do(message, services)
@@ -80,23 +207,31 @@ module PrivateParlorXT
       end
 
       it "uncooldowns the given user by OID" do
+        services = create_services(ranks: ranks)
+
+        handler = UncooldownCommand.new(MockConfig.new)
+
         generate_users(services.database)
 
-        unless reply_user = services.database.get_user(60200)
+        unless cooldowned_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
         end
 
-        prior_warnings = reply_user.warnings
-        obfuscated_id = reply_user.get_obfuscated_id
+        prior_warnings = cooldowned_user.warnings
+        obfuscated_id = cooldowned_user.obfuscated_id
 
-        reply_user.cooldown(10.minutes)
+        cooldowned_user.cooldown(10.minutes)
 
-        services.database.update_user(reply_user)
+        services.database.update_user(cooldowned_user)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          text: "/uncoodown #{obfuscated_id}",
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          text: "/uncooldown #{obfuscated_id}",
         )
 
         handler.do(message, services)
@@ -110,22 +245,30 @@ module PrivateParlorXT
       end
 
       it "uncooldowns the given user by username" do
+        services = create_services(ranks: ranks)
+
+        handler = UncooldownCommand.new(MockConfig.new)
+
         generate_users(services.database)
 
-        unless reply_user = services.database.get_user(60200)
+        unless cooldowned_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
         end
 
-        prior_warnings = reply_user.warnings
+        prior_warnings = cooldowned_user.warnings
 
-        reply_user.cooldown(10.minutes)
+        cooldowned_user.cooldown(10.minutes)
 
-        services.database.update_user(reply_user)
+        services.database.update_user(cooldowned_user)
 
-        message = create_message(
-          11,
-          Tourmaline::User.new(80300, false, "beispiel"),
-          text: "/uncoodown voorb",
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          text: "/uncooldown voorb",
         )
 
         handler.do(message, services)
