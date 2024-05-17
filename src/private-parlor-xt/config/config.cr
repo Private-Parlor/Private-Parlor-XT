@@ -597,6 +597,12 @@ module PrivateParlorXT
           Log.info {"Statistics are enabled, but the stats command is disabled. It will not be possible to view the statisitics"}
         end
       end
+
+      if config.r9k_warn 
+        if config.r9k_cooldown > 0
+          Log.info {"R9K Warn and R9K Cooldown are both enabled; only R9K Cooldown will apply if ROBOT9000 is enabled"}
+        end
+      end
     end
 
     # Validate `intermediate_karma_levels` and set `karma_levels`
