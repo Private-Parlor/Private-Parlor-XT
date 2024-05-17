@@ -4,7 +4,7 @@ module PrivateParlorXT
   class MockRelay < Relay
     @queue : MessageQueue = MockMessageQueue.new
 
-    def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String, reply_markup : Tourmaline::InlineKeyboardMarkup? = nil)
+    def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String, reply_markup : Tourmaline::InlineKeyboardMarkup? = nil) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue_priority(
@@ -23,7 +23,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_text(params : PrivateParlorXT::RelayParameters)
+    def send_text(params : PrivateParlorXT::RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -46,7 +46,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_photo(params : RelayParameters)
+    def send_photo(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -70,7 +70,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_animation(params : RelayParameters)
+    def send_animation(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -94,7 +94,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_video(params : RelayParameters)
+    def send_video(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -118,7 +118,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_audio(params : RelayParameters)
+    def send_audio(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -141,7 +141,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_voice(params : RelayParameters)
+    def send_voice(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -164,7 +164,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_document(params : RelayParameters)
+    def send_document(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -187,7 +187,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_poll_copy(reply : MessageID?, user : User, poll : Tourmaline::Poll)
+    def send_poll_copy(reply : MessageID?, user : User, poll : Tourmaline::Poll) : Tourmaline::Message
       bot_user = Tourmaline::User.new(12345678, true, "spec")
 
       Tourmaline::Message.new(
@@ -199,7 +199,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_forward(params : RelayParameters, message : MessageID)
+    def send_forward(params : RelayParameters, message : MessageID) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -219,7 +219,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_video_note(params : RelayParameters)
+    def send_video_note(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -239,7 +239,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_sticker(params : RelayParameters)
+    def send_sticker(params : RelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -259,7 +259,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_album(params : AlbumHelpers::AlbumRelayParameters)
+    def send_album(params : AlbumHelpers::AlbumRelayParameters) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -279,7 +279,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_venue(params : RelayParameters, venue : Tourmaline::Venue)
+    def send_venue(params : RelayParameters, venue : Tourmaline::Venue) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -306,7 +306,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_location(params : RelayParameters, location : Tourmaline::Location)
+    def send_location(params : RelayParameters, location : Tourmaline::Location) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -327,7 +327,7 @@ module PrivateParlorXT
       )
     end
 
-    def send_contact(params : RelayParameters, contact : Tourmaline::Contact)
+    def send_contact(params : RelayParameters, contact : Tourmaline::Contact) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue(
@@ -350,7 +350,7 @@ module PrivateParlorXT
       )
     end
 
-    def pin_message(user : UserID, message : MessageID)
+    def pin_message(user : UserID, message : MessageID) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue_priority(
@@ -365,7 +365,7 @@ module PrivateParlorXT
       )
     end
 
-    def unpin_message(user : UserID, message : MessageID? = nil)
+    def unpin_message(user : UserID, message : MessageID? = nil) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       if message
@@ -389,7 +389,7 @@ module PrivateParlorXT
       )
     end
 
-    def edit_message_media(user : UserID, media : Tourmaline::InputMedia, message : MessageID)
+    def edit_message_media(user : UserID, media : Tourmaline::InputMedia, message : MessageID) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
       
       queue.add_to_queue_priority(
@@ -407,7 +407,7 @@ module PrivateParlorXT
       )
     end
 
-    def edit_message_text(user : UserID, text : String, markup : Tourmaline::InlineKeyboardMarkup?, message : MessageID)
+    def edit_message_text(user : UserID, text : String, markup : Tourmaline::InlineKeyboardMarkup?, message : MessageID) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
 
       queue.add_to_queue_priority(

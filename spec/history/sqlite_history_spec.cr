@@ -1,7 +1,7 @@
 require "../spec_helper.cr"
 
 module PrivateParlorXT
-  def self.sqlite_history_messages(connection : DB::Database)
+  def self.sqlite_history_messages(connection : DB::Database) : Nil
     # Add message groups
     connection.exec("INSERT INTO message_groups VALUES (1,80300,'2023-01-02 06:00:00.000',0)")
     connection.exec("INSERT INTO message_groups VALUES (4,20000,'2023-01-02 06:00:00.000',0)")

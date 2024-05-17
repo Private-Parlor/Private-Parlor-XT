@@ -163,7 +163,7 @@ module PrivateParlorXT
     end
 
     # Relays the forwarded message as though it were a text message, album, photo, or similar media type
-    def relay_regular_forward(message : Tourmaline::Message, text : String, entities : Array(Tourmaline::MessageEntity), cached_message : MessageID, user : User, receivers : Array(UserID), services : Services)
+    def relay_regular_forward(message : Tourmaline::Message, text : String, entities : Array(Tourmaline::MessageEntity), cached_message : MessageID, user : User, receivers : Array(UserID), services : Services) : Nil
       if message.text
         services.relay.send_text(
           RelayParameters.new(

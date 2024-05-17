@@ -37,7 +37,7 @@ module PrivateParlorXT
 
   # Stop the message sending routine, send remaining messages in the queue
   # and terminate the program
-  def self.terminate_program(routine : Tasker::Task, services : Services)
+  def self.terminate_program(routine : Tasker::Task, services : Services) : Nil
     services.relay.stop_polling
 
     routine.cancel

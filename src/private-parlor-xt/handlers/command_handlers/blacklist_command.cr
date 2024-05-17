@@ -24,7 +24,7 @@ module PrivateParlorXT
     end
 
     # Blacklists the sender of *reply* if the message still exists in the cache
-    def blacklist_from_reply(reason : String?, user : User, message : MessageID, reply : Tourmaline::Message, services : Services)
+    def blacklist_from_reply(reason : String?, user : User, message : MessageID, reply : Tourmaline::Message, services : Services) : Nil
       return unless reply_user = get_reply_user(user, reply, services)
 
       return unless blacklist_user(reply_user, user, message, reason, services)
@@ -44,7 +44,7 @@ module PrivateParlorXT
     end
 
     # Blacklists a user described in *args* from the chat if the user exists
-    def blacklist_from_args(args : Array(String), user : User, message : MessageID, services : Services)
+    def blacklist_from_args(args : Array(String), user : User, message : MessageID, services : Services) : Nil
       unless blacklisted_user = services.database.get_user_by_arg(args[0])
         return services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.no_user_found)
       end

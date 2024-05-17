@@ -21,7 +21,7 @@ module PrivateParlorXT
     end
 
     # Handles users attempting to rejoin if they are already in the database
-    def existing_user(user : User, username : String?, fullname : String, message_id : MessageID, services : Services)
+    def existing_user(user : User, username : String?, fullname : String, message_id : MessageID, services : Services) : Nil
       if user.blacklisted?
         response = Format.substitute_reply(services.replies.blacklisted, {
           "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
@@ -50,7 +50,7 @@ module PrivateParlorXT
     end
 
     # Adds the user with the given *id* to the database if registration is open.
-    def new_user(id : UserID, username : String?, fullname : String, message_id : MessageID, services : Services)
+    def new_user(id : UserID, username : String?, fullname : String, message_id : MessageID, services : Services) : Nil
       unless services.config.registration_open
         return services.relay.send_to_user(nil, id, services.replies.registration_closed)
       end

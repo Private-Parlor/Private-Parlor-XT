@@ -113,7 +113,7 @@ module PrivateParlorXT
     )
   end
 
-  def self.generate_users(database : Database)
+  def self.generate_users(database : Database) : Nil
     database.add_user(20000_i64, nil, "example", 1000)
     database.update_user(MockUser.new(
       id: 20000_i64,
@@ -229,7 +229,7 @@ module PrivateParlorXT
     ))
   end
 
-  def self.generate_history(history : History)
+  def self.generate_history(history : History) : Nil
     history.new_message(sender_id: 80300, origin: 1)
     history.new_message(sender_id: 20000, origin: 4)
     history.new_message(sender_id: 60200, origin: 8)

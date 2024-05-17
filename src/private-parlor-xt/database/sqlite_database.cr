@@ -146,7 +146,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def expire_warnings(warn_lifespan : Time::Span)
+    def expire_warnings(warn_lifespan : Time::Span) : Nil
       get_warned_users.each do |user|
         if expiry = user.warn_expiry
           if expiry <= Time.utc

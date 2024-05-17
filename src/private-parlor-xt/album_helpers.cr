@@ -64,7 +64,7 @@ module PrivateParlorXT
     # Relays the given *album* after an arbitrary amount of time, waiting for the rest of the media group updates to come in
     # 
     # Returns early if the album is already queued for relaying, and adds the *input* to the Album object.
-    def relay_album(albums : Hash(String, Album), album : String, message_id : MessageID, input : AlbumMedia, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, ReplyParameters), services : Services)
+    def relay_album(albums : Hash(String, Album), album : String, message_id : MessageID, input : AlbumMedia, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, ReplyParameters), services : Services) : Nil
       if albums[album]?
         albums[album].message_ids << message_id
         albums[album].media << input

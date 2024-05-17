@@ -77,7 +77,7 @@ module PrivateParlorXT
     # be the current time plus the value of *warn_lifespan*
     #
     # This should be invoked as a recurring task
-    abstract def expire_warnings(warn_lifespan : Time::Span)
+    abstract def expire_warnings(warn_lifespan : Time::Span)  : Nil
 
     # Sets the MOTD/rules to the given string
     abstract def set_motd(text : String) : Nil

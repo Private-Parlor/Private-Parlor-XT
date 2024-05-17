@@ -21,7 +21,7 @@ module PrivateParlorXT
 
     # Demotes a user who sent the *reply* message to the default rank if no *arg* was given, 
     # or demotes to the given rank in *arg* if one argument (name/value of rank) was given
-    def demote_from_reply(arg : String?, user : User, message : MessageID, reply : Tourmaline::Message, services : Services)
+    def demote_from_reply(arg : String?, user : User, message : MessageID, reply : Tourmaline::Message, services : Services) : Nil
       if arg
         tuple = services.access.find_rank(arg.downcase, arg.to_i?)
       else
@@ -59,7 +59,7 @@ module PrivateParlorXT
 
     # Demotes a user given in the *text* to the default rank if only one argument (the user's identifier) was given,
     # or demotes to the given rank if two arguments (the user's identifier and name/value of rank) was given
-    def demote_from_args(text : String?, user : User, message : MessageID, services : Services)
+    def demote_from_args(text : String?, user : User, message : MessageID, services : Services) : Nil
       unless (args = Format.get_args(text, count: 2)) && args.size > 0
         return services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.missing_args)
       end

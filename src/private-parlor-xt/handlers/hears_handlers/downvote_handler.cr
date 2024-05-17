@@ -94,7 +94,7 @@ module PrivateParlorXT
     end
 
     # Records message statistics about downvotes if the `Statistics` module is enabled
-    def record_message_statistics(services : Services)
+    def record_message_statistics(services : Services) : Nil
       return unless stats = services.stats
 
       stats.increment_downvote_count
@@ -142,7 +142,7 @@ module PrivateParlorXT
     end
 
     # Checks if the user has lost a karma level when karma levels are set, and if so, queues a 'leveled down' response
-    def karma_level_down(reply_user : User, reply_parameters : ReplyParameters?, services : Services)
+    def karma_level_down(reply_user : User, reply_parameters : ReplyParameters?, services : Services) : Nil
       return if services.config.karma_levels.empty?
 
       last_level = services.config.karma_levels.find({(..), ""}) {|range, level| range === reply_user.karma + 1}[1]

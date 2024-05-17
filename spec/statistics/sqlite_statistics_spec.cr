@@ -1,7 +1,7 @@
 require "../spec_helper.cr"
 
 module PrivateParlorXT
-  def self.generate_message_stats(connection : DB::Database)
+  def self.generate_message_stats(connection : DB::Database) : Nil
     connection.exec("INSERT INTO message_stats 
       VALUES (date('now'), '0', '1', '3', '0', '0', '0', '4', '5', '0', '0', '1', '0', '0', '4', '0', '0', '2', '0', '0', '22');
     ")
@@ -40,7 +40,7 @@ module PrivateParlorXT
     ")
   end
 
-  def self.generate_user_stats(connection : DB::Database)
+  def self.generate_user_stats(connection : DB::Database) : Nil
     connection.exec("INSERT INTO users
       VALUES ('5000', 'user1', 'User One', '1000', datetime('now', '-2 month'), NULL, datetime('now', '-30 seconds'), NULL, NULL, '0', NULL, '10', '1', '1', NULL);
     ")
@@ -79,7 +79,7 @@ module PrivateParlorXT
     ")
   end
 
-  def self.generate_original_messages(connection : DB::Database)
+  def self.generate_original_messages(connection : DB::Database) : Nil
     connection.exec("INSERT INTO text VALUES('test')")
     connection.exec("INSERT INTO text VALUES('test two')")
     connection.exec("INSERT INTO text VALUES('test three')")

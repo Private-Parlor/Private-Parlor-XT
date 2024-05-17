@@ -376,7 +376,7 @@ module PrivateParlorXT
   end
 
   # Queues a media_disabled system reply when the `UpdateHandler` was disabled
-  def self.media_disabled(message : Tourmaline::Message, type : Tourmaline::UpdateAction, services : Services)
+  def self.media_disabled(message : Tourmaline::Message, type : Tourmaline::UpdateAction, services : Services) : Nil
     return unless info = message.from
 
     response = Format.substitute_reply(services.replies.media_disabled, {
@@ -391,14 +391,14 @@ module PrivateParlorXT
   end
 
   # Queues a command_disabled system reply when the `CommandHandler` was disabled
-  def self.command_disabled(message : Tourmaline::Message, services : Services)
+  def self.command_disabled(message : Tourmaline::Message, services : Services) : Nil
     return unless info = message.from
 
     services.relay.send_to_user(ReplyParameters.new(message.message_id), info.id.to_i64, services.replies.command_disabled)
   end
 
   # Force-leave users whose last active time is creater than the given `Time::Span` *limit*
-  def self.kick_inactive_users(limit : Time::Span, services : Services)
+  def self.kick_inactive_users(limit : Time::Span, services : Services) : Nil
     services.database.get_inactive_users(limit).each do |user|
       user.set_left
       services.database.update_user(user)
