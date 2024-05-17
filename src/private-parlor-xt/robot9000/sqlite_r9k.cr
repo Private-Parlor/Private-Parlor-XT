@@ -59,27 +59,21 @@ module PrivateParlorXT
       end
     end
 
-    # Ensures that the text table, file_id table, or both are created in the `Database`, according to the values of `check_text` and `check_media`
+    # Ensures that both the text table and file_id table are created in the `Database`, according to the values of `check_text` and `check_media`
     def ensure_schema : Nil
-      if @check_text
-        write do
-          @connection.exec("
-            CREATE TABLE IF NOT EXISTS text (
-              line TEXT NOT NULL,
-              PRIMARY KEY (line)
-            )
-          ")
-        end
-      end
-      if @check_media
-        write do
-          @connection.exec("
-            CREATE TABLE IF NOT EXISTS file_id (
-              id TEXT NOT NULL,
-              PRIMARY KEY (id)
-            )
-          ")
-        end
+      write do
+        @connection.exec("
+          CREATE TABLE IF NOT EXISTS text (
+            line TEXT NOT NULL,
+            PRIMARY KEY (line)
+          )
+        ")
+        @connection.exec("
+          CREATE TABLE IF NOT EXISTS file_id (
+            id TEXT NOT NULL,
+            PRIMARY KEY (id)
+          )
+        ")
       end
     end
   end

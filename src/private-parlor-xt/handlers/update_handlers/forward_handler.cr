@@ -17,7 +17,7 @@ module PrivateParlorXT
 
       return if spamming?(user, message, services)
 
-      return unless Robot9000.forward_checks(user, message, services)
+      return unless unique?(user, message, services)
 
       record_message_statistics(Statistics::MessageCounts::Forwards, services)
 

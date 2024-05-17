@@ -40,5 +40,14 @@ module PrivateParlorXT
 
       reply_user
     end
+
+    # Checks the given *message* for uniqueness and returns `true` if the message is unique
+    # 
+    # Returns `false` if the message is unoriginal
+    def unique?(user : User, message : Tourmaline::Message, services : Services, text : String? = nil) : Bool
+      return true unless r9k = services.robot9000
+
+      r9k.unique_message?(user, message, services, text)
+    end
   end
 end

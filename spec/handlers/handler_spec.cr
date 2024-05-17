@@ -31,7 +31,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "get_reply_message" do
+    describe "#get_reply_message" do
       it "returns reply message if it exists" do
         services = create_services()
 
@@ -100,7 +100,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "get_reply_user" do
+    describe "#get_reply_user" do
       it "returns reply user if message is in cache and user exists in database" do
         services = create_services()
 
@@ -192,6 +192,94 @@ module PrivateParlorXT
 
         messages.size.should(eq(1))
         messages[0].data.should(eq(services.replies.not_in_cache))
+      end
+    end
+
+    describe "#unique?" do
+      it "returns true if Services does not have an Robot9000 object" do
+        services = create_services()
+
+        handler = MockHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        user = MockUser.new(80300, cooldown_until: nil)
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          caption: "Example Text",
+        )
+
+        handler.unique?(user, message, services).should(be_true)
+
+        handler.unique?(user, message, services).should(be_true)
+      end
+
+      it "returns true if the message is unique" do
+        services = create_services(
+          r9k: MockRobot9000.new(
+            check_text: true,
+            check_media: true,
+          )
+        )
+
+        handler = MockHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        user = MockUser.new(80300, cooldown_until: nil)
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          caption: "Example Text",
+        )
+
+        handler.unique?(user, message, services).should(be_true)
+      end
+
+      it "returns false if the message is not unique" do
+        services = create_services(
+          r9k: MockRobot9000.new(
+            check_text: true,
+            check_media: true,
+          )
+        )
+
+        handler = MockHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        user = MockUser.new(80300, cooldown_until: nil)
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          caption: "Example Text",
+          photo: [
+            Tourmaline::PhotoSize.new(
+              file_id: "photo_item_one",
+              file_unique_id: "unique_photo",
+              width: 1080,
+              height: 1080,
+            ),
+          ]
+        )
+
+        handler.unique?(user, message, services).should(be_true)
+
+        message = Tourmaline::Message.new(
+          message_id: 6,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          text: "Example    text.",
+        )
+
+        handler.unique?(user, message, services).should(be_false)
       end
     end
   end

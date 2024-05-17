@@ -23,7 +23,7 @@ module PrivateParlorXT
       reply_messages = get_reply_receivers(message, user, services)
       return unless reply_messages
 
-      return unless Robot9000.text_check(user, message, services)
+      return unless unique?(user, message, services)
 
       record_message_statistics(Statistics::MessageCounts::Text, services)
 

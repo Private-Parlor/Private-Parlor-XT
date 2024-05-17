@@ -26,7 +26,7 @@ module PrivateParlorXT
 
       return if spamming?(user, message, arg, services)
 
-      return unless Robot9000.checks(user, message, services, arg)
+      return unless unique?(user, message, services, arg)
 
       text, entities = Format.format_text(text, entities, false, services)
 

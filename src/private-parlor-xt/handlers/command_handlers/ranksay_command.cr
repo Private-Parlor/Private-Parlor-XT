@@ -32,7 +32,7 @@ module PrivateParlorXT
 
       return unless rank_name = get_rank_name(text, user, message, authority, services)
 
-      return unless Robot9000.checks(user, message, services, arg)
+      return unless unique?(user, message, services, arg)
 
       text, entities = Format.format_text(text, entities, false, services)
 

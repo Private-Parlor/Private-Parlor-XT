@@ -97,53 +97,11 @@ module PrivateParlorXT
     end
 
     describe "#ensure_schema" do
-      it "creates text table if check_text member is true" do
+      it "creates text and file_id tables" do
         connection = DB.open("sqlite3://%3Amemory%3A")
 
         r9k = SQLiteRobot9000.new(
           connection: connection,
-          check_text: true,
-        )
-
-        r9k.ensure_schema
-
-        result = connection.query_one?("
-          SELECT EXISTS (
-            SELECT name FROM sqlite_schema WHERE type='table' AND name='text'
-          )", 
-          as: Int32
-        )
-
-        result.should(eq(1))
-      end
-
-      it "creates file_id table if check_media member is true" do
-        connection = DB.open("sqlite3://%3Amemory%3A")
-
-        r9k = SQLiteRobot9000.new(
-          connection: connection,
-          check_media: true,
-        )
-
-        r9k.ensure_schema
-
-        result = connection.query_one?("
-          SELECT EXISTS (
-            SELECT name FROM sqlite_schema WHERE type='table' AND name='file_id'
-          )", 
-          as: Int32
-        )
-
-        result.should(eq(1))
-      end
-
-      it "creates text and file_id table if both check_text and check_media are true" do
-        connection = DB.open("sqlite3://%3Amemory%3A")
-
-        r9k = SQLiteRobot9000.new(
-          connection: connection,
-          check_text: true,
-          check_media: true,
         )
 
         r9k.ensure_schema

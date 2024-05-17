@@ -29,7 +29,7 @@ module PrivateParlorXT
       text = message.text || message.caption || ""
       entities = message.entities.empty? ? message.caption_entities : message.entities
 
-      return unless Robot9000.forward_checks(user, message, services)
+      return unless unique?(user, message, services)
 
       user = spend_karma(user, message, services)
 

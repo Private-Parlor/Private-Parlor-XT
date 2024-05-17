@@ -33,7 +33,7 @@ module PrivateParlorXT
       reply_messages = get_reply_receivers(message, user, services)
       return unless reply_messages
 
-      return unless Robot9000.checks(user, message, services)
+      return unless unique?(user, message, services)
 
       return unless input = get_album_input(message, caption, entities, services.config.allow_spoilers)
 

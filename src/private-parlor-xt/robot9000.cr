@@ -1,9 +1,6 @@
 require "./constants.cr"
 
 module PrivateParlorXT
-
-  # TODO: Remove class methods and move cooldown functionality to its own function
-
   # A base class for ROBOT9000 implementations
   # 
   # ROBOT9000 is an algorithm by Randall Munroe designed to reduce noise in large chats and
@@ -144,126 +141,100 @@ module PrivateParlorXT
     # Stores the file *id* to be referenced later
     abstract def add_file_id(id : String) : Nil
 
-    # Checks the message for uniqueness and returns `true` if the message is preformatted (message already checked) or if it passes the checks
+    # Checks the *message* for uniqueness and returns `true` if:
+    #   - Message is preformatted (message already checked)
+    #   - Message is a forward, but this `Robot9000` is not configured to check forwards for uniqueness
+    #   - No media file ID could be found when checking message media
+    #   - Message is unique
     # 
-    # Returns `false` if the message does not pass the `text_check` or the `media_check`
-    def self.checks(user : User, message : Tourmaline::Message, services : Services, text : String? = nil) : Bool
+    # Returns `false` if the message does not pass the `text_check` or the `media_check`; *message* is unoriginal
+    # 
+    # The unique text and/or file_id will be stored to flag future messages of the same kind as unoriginal
+    def unique_message?(user : User, message : Tourmaline::Message, services : Services, text : String? = nil) : Bool
       return true if message.preformatted?
+      return true if message.forward_origin && !@check_forwards
 
-      return false unless text_check(user, message, services, text)
-      return false unless media_check(user, message, services)
-
-      true
-    end
-
-    # Checks the forwarded message for uniqueness and returns `true` if:
-    #   - Services does not have a `Robot9000` object
-    #   - This module does not check forwards for uniqueness
-    #   - Forward passes `text_check` and `media_check`
-    # 
-    # Returns `false` if the message does not pass the `text_check` or the `media_check`
-    def self.forward_checks(user : User, message : Tourmaline::Message, services : Services) : Bool
-      return true unless r9k = services.robot9000
-      return true unless r9k.check_forwards?
-
-      return false unless text_check(user, message, services)
-      return false unless media_check(user, message, services)
-
-      true
-    end
-
-    # Returns `true` if the *message*'s text or caption is unique, and stores the text/caption for later
-    # 
-    # Returns `false` if the *message`'s text or caption is not unique, and cooldowns the sender if configured to do so
-    def self.text_check(user : User, message : Tourmaline::Message, services : Services, text : String? = nil) : Bool
-      unless (r9k = services.robot9000) && r9k.check_text?
-        return true
-      end
-
-      unless text
-        text = message.text || message.caption || ""
-      end
-
-      entities = message.caption_entities.empty? ? message.entities : message.caption_entities
-
-      stripped_text = r9k.strip_text(text, entities)
-
-      if r9k.unoriginal_text?(stripped_text)
-        if r9k.cooldown > 0
-          duration = user.cooldown(r9k.cooldown.seconds)
-          services.database.update_user(user)
-
-          response = Format.substitute_reply(services.replies.r9k_cooldown, {
-            "duration" => Format.format_time_span(duration, services.locale),
-          })
-        elsif r9k.warn_user?
-          duration = user.cooldown(services.config.cooldown_base)
-          user.warn(services.config.warn_lifespan)
-          services.database.update_user(user)
-
-          response = Format.substitute_reply(services.replies.r9k_cooldown, {
-            "duration" => Format.format_time_span(duration, services.locale),
-          })
-        else
-          response = services.replies.unoriginal_message
+      if @check_text
+        unless text
+          text = message.text || message.caption || ""
         end
+  
+        entities = message.caption_entities.empty? ? message.entities : message.caption_entities
+  
+        stripped_text = strip_text(text, entities)
 
+        return false unless unique_text = unique_text(user, message, services, stripped_text)
+      end
+
+      if @check_media
+        return true unless file_id = get_media_file_id(message)
+
+        return false unless unique_media = unique_media(user, message, services, file_id)
+      end
+
+      if unique_text
+        add_line(unique_text)
+      end
+
+      if unique_media
+        add_file_id(unique_media)
+      end
+
+      true
+    end
+
+    # Returns the *text* if the *message*'s text or caption is unique
+    # 
+    # Returns `nil` if the *message*'s text or caption is not unique, and cooldowns the sender if configured to do so
+    def unique_text(user : User, message : Tourmaline::Message, services : Services, text : String) : String?
+      if unoriginal_text?(text)
         if stats = services.stats
           stats.increment_unoriginal_text_count
         end
 
-        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
-
-        return false
+        return unoriginal_message(user, message, services)
       end
 
-      r9k.add_line(stripped_text)
-
-      true
+     text
     end
 
-    # Returns `true` if the *message*'s media is unique, and stores its file ID for later
+    # Returns the *file_id* if the *message*'s media is unique
     # 
-    # Returns `false` if the *message`'s media is not unique, and cooldowns the sender if configured to do so
-    def self.media_check(user : User, message : Tourmaline::Message, services : Services) : Bool
-      unless (r9k = services.robot9000) && r9k.check_media?
-        return true
-      end
-      
-      return true unless file_id = r9k.get_media_file_id(message)
-
-      if r9k.unoriginal_media?(file_id)
-        if r9k.cooldown > 0
-          duration = user.cooldown(r9k.cooldown.seconds)
-          services.database.update_user(user)
-
-          response = Format.substitute_reply(services.replies.r9k_cooldown, {
-            "duration" => Format.format_time_span(duration, services.locale),
-          })
-        elsif r9k.warn_user?
-          duration = user.cooldown(services.config.cooldown_base)
-          user.warn(services.config.warn_lifespan)
-          services.database.update_user(user)
-
-          response = Format.substitute_reply(services.replies.r9k_cooldown, {
-            "duration" => Format.format_time_span(duration, services.locale),
-          })
-        else
-          response = services.replies.unoriginal_message
-        end
-
+    # Returns `nil` if the *message*'s media is not unique, and cooldowns the sender if configured to do so
+    def unique_media(user : User, message : Tourmaline::Message, services : Services, file_id : String) : String?
+      if unoriginal_media?(file_id)
         if stats = services.stats
           stats.increment_unoriginal_media_count
         end
 
-        services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
-
-        return false
+        return unoriginal_message(user, message, services)
       end
 
-      r9k.add_file_id(file_id)
+      file_id
+    end
 
-      true
+    # Queues a message telling the *user* that the *message* was unoriginal, and cooldowns the *user* if configured to do so
+    def unoriginal_message(user : User, message : Tourmaline::Message, services : Services) : Nil
+      if @cooldown > 0
+        duration = user.cooldown(@cooldown.seconds)
+        services.database.update_user(user)
+
+        response = Format.substitute_reply(services.replies.r9k_cooldown, {
+          "duration" => Format.format_time_span(duration, services.locale),
+        })
+      elsif @warn_user
+        duration = user.cooldown(services.config.cooldown_base)
+        user.warn(services.config.warn_lifespan)
+        services.database.update_user(user)
+
+        response = Format.substitute_reply(services.replies.r9k_cooldown, {
+          "duration" => Format.format_time_span(duration, services.locale),
+        })
+      else
+        response = services.replies.unoriginal_message
+      end
+
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
     end
   end
 end
