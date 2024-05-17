@@ -11,7 +11,14 @@ module PrivateParlorXT
 
       update_user_activity(user, services)
 
-      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, Format.version)
+      services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, version)
+    end
+
+    # Returns a message containing the program version and a link to its Git repo.
+    #
+    # Feel free to edit this if you fork the code.
+    def version : String
+      "Private Parlor XT v#{Format.escape_mdv2(VERSION)} \\~ [\\[Source\\]](https://github.com/Private-Parlor/Private-Parlor-XT)"
     end
   end
 end

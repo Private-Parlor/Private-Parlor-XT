@@ -1107,9 +1107,9 @@ module PrivateParlorXT
 
         handler.send_replies(user, reply_user, message, reply, services)
 
-        gave_upvote_expected = Format.karma_reason(reason, services.replies.gave_upvote, services.replies)
+        gave_upvote_expected = handler.karma_reason(reason, services.replies.gave_upvote, services)
 
-        got_upvote_expected = Format.karma_reason(reason, services.replies.got_upvote, services.replies)
+        got_upvote_expected = handler.karma_reason(reason, services.replies.got_upvote, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 

@@ -1454,5 +1454,403 @@ module PrivateParlorXT
         result.karma.should(eq(0))
       end
     end
+
+    describe "#regular_forward?" do
+      it "returns true if message is a regular forward" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+
+        text = "Forwarded from User"
+
+        entities = [
+          Tourmaline::MessageEntity.new(
+            type: "bold",
+            offset: 0,
+            length: 19,
+          ),
+        ]
+
+        handler.regular_forward?(text, entities).should(be_true)
+      end
+
+      it "returns false if message is not a regular forward" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+
+        text = "Forwarded from User"
+
+        entities = [
+          Tourmaline::MessageEntity.new(
+            type: "italic",
+            offset: 0,
+            length: 19,
+          ),
+        ]
+
+        handler.regular_forward?(text, entities).should(be_false)
+      end
+
+      it "returns nil if given no entities" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+
+        text = "Forwarded from User"
+
+        handler.regular_forward?(text, [] of Tourmaline::MessageEntity).should(be_nil)
+      end
+
+      it "returns nil if given no text" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+        
+        handler.regular_forward?(nil, [] of Tourmaline::MessageEntity).should(be_nil)
+      end
+    end
+
+    describe "#forward_header" do
+      it "returns header and entities for forwards from users with public forwards" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 100,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(
+              9000,
+              is_bot: false,
+              first_name: "example",
+              last_name: nil,
+            )
+          )
+        )
+
+        header, entities = handler.forward_header(message, [] of Tourmaline::MessageEntity)
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from example\n\n"))
+
+        entities.size.should(eq(2))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(22))
+
+        entities[1].type.should(eq("text_link"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(7))
+        entities[1].url.should(eq("tg://user?id=9000"))
+      end
+
+      it "returns header and entities for forwards from Telegram bots" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 100,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          forward_origin: Tourmaline::MessageOriginUser.new(
+            "user",
+            Time.utc,
+            Tourmaline::User.new(
+              9000,
+              is_bot: true,
+              first_name: "ExampleBot",
+              last_name: nil,
+              username: "example_bot"
+            )
+          )
+        )
+
+        header, entities = handler.forward_header(message, [] of Tourmaline::MessageEntity)
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from ExampleBot\n\n"))
+
+        entities.size.should(eq(2))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(25))
+
+        entities[1].type.should(eq("text_link"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(10))
+        entities[1].url.should(eq("tg://resolve?domain=example_bot"))
+      end
+
+      it "returns header and entities for forwards from public channels" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 100,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          forward_origin: Tourmaline::MessageOriginChannel.new(
+            "channel",
+            Time.utc,
+            Tourmaline::Chat.new(
+              9000,
+              type: "channel",
+              title: "Example Channel",
+              username: "ExamplesChannel"
+            ),
+            200_i64,
+          )
+        )
+
+        header, entities = handler.forward_header(message, [] of Tourmaline::MessageEntity)
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from Example Channel\n\n"))
+
+        entities.size.should(eq(2))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(30))
+
+        entities[1].type.should(eq("text_link"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(15))
+        entities[1].url.should(eq("tg://resolve?domain=ExamplesChannel&post=200"))
+      end
+
+      it "returns header and entities for forwards from private channels" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 100,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          forward_origin: Tourmaline::MessageOriginChannel.new(
+            "channel",
+            Time.utc,
+            Tourmaline::Chat.new(
+              -1009000,
+              type: "private",
+              title: "Private Example Channel",
+            ),
+            200_i64,
+          )
+        )
+
+        header, entities = handler.forward_header(message, [] of Tourmaline::MessageEntity)
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from Private Example Channel\n\n"))
+
+        entities.size.should(eq(2))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(38))
+
+        entities[1].type.should(eq("text_link"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(23))
+        entities[1].url.should(eq("tg://privatepost?channel=9000&post=200"))
+      end
+
+      it "returns header and entities in italics for forwards from users with private forwards" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
+
+        message = Tourmaline::Message.new(
+          message_id: 100,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          forward_origin: Tourmaline::MessageOriginHiddenUser.new(
+            "hidden_user",
+            Time.utc,
+            "Private User"
+          )
+        )
+
+        header, entities = handler.forward_header(message, [] of Tourmaline::MessageEntity)
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from Private User\n\n"))
+
+        entities.size.should(eq(2))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(27))
+
+        entities[1].type.should(eq("italic"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(12))
+      end
+    end
+
+    describe "#user_forward" do
+      it "handles UTF-16 code units in given name and updates entities" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+
+        header, entities = handler.user_forward(
+          "Dodo 🦤🏝🍽",
+          9000,
+          [
+            Tourmaline::MessageEntity.new(
+              type: "underline",
+              offset: 0,
+              length: 10,
+            ),
+          ]
+        )
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from Dodo 🦤🏝🍽\n\n"))
+
+        entities.size.should(eq(3))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(26))
+
+        entities[1].type.should(eq("text_link"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(11))
+
+        entities[2].type.should(eq("underline"))
+        entities[2].offset.should(eq(28))
+        entities[2].length.should(eq(10))
+      end
+    end
+
+    describe "#private_user_forward" do
+      it "handles UTF-16 code units in given name and updates entities" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+
+        header, entities = handler.private_user_forward(
+          "Private 🔒🦤 Dodo",
+          [
+            Tourmaline::MessageEntity.new(
+              type: "underline",
+              offset: 0,
+              length: 10,
+            ),
+          ]
+        )
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from Private 🔒🦤 Dodo\n\n"))
+
+        entities.size.should(eq(3))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(32))
+
+        entities[1].type.should(eq("italic"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(17))
+
+        entities[2].type.should(eq("underline"))
+        entities[2].offset.should(eq(34))
+        entities[2].length.should(eq(10))
+      end
+    end
+
+    describe "#username_forward" do
+      it "handles UTF-16 code units in given name and updates entities" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+
+        header, entities = handler.username_forward(
+          "🤖 Dodo Bot 🦤",
+          "dodobot",
+          [
+            Tourmaline::MessageEntity.new(
+              type: "underline",
+              offset: 0,
+              length: 10,
+            ),
+          ]
+        )
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from 🤖 Dodo Bot 🦤\n\n"))
+
+        entities.size.should(eq(3))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(29))
+
+        entities[1].type.should(eq("text_link"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(14))
+
+        entities[2].type.should(eq("underline"))
+        entities[2].offset.should(eq(31))
+        entities[2].length.should(eq(10))
+      end
+    end
+
+    describe "#private_channel_forward" do
+      it "handles UTF-16 code units in given name and updates entities" do
+        handler = RegularForwardHandler.new(MockConfig.new)
+
+        header, entities = handler.private_channel_forward(
+          "🦤 Private 🔒 Dodo 📣",
+          9000,
+          [
+            Tourmaline::MessageEntity.new(
+              type: "underline",
+              offset: 0,
+              length: 10,
+            ),
+          ]
+        )
+
+        unless header
+          fail("Header should not be nil")
+        end
+
+        header.should(eq("Forwarded from 🦤 Private 🔒 Dodo 📣\n\n"))
+
+        entities.size.should(eq(3))
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(0))
+        entities[0].length.should(eq(36))
+
+        entities[1].type.should(eq("text_link"))
+        entities[1].offset.should(eq(15))
+        entities[1].length.should(eq(21))
+
+        entities[2].type.should(eq("underline"))
+        entities[2].offset.should(eq(38))
+        entities[2].length.should(eq(10))
+      end
+    end
   end
 end

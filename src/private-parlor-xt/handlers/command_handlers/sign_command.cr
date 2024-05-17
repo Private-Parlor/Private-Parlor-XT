@@ -34,7 +34,7 @@ module PrivateParlorXT
 
       entities = remove_command_entity(text, entities, arg)
 
-      text, entities = Format.user_sign(user.formatted_name, user.id, arg, entities)
+      text, entities = user_sign(user.formatted_name, user.id, arg, entities)
 
       if message.text
         message.text = text
@@ -64,6 +64,24 @@ module PrivateParlorXT
       end
 
       false
+    end
+
+    # Format the user sign based on the given *name*, appending the signature to *arg* as a text link to the user's ID
+    def user_sign(name : String, id : UserID, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      signature = "~~#{name}"
+
+      signature_size = signature.to_utf16.size
+
+      entities.concat([
+        Tourmaline::MessageEntity.new(
+          "text_link",
+          arg.to_utf16.size + 1,
+          signature_size,
+          url: "tg://user?id=#{id}"
+        ),
+      ])
+
+      return "#{arg} #{signature}", entities
     end
   end
 end

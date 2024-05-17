@@ -25,11 +25,11 @@ module PrivateParlorXT
 
           name, _ = Format.generate_tripcode(tripcode, services)
 
-          response = Format.tripcode_set(
+          response = tripcode_set(
             services.replies.flag_sign_set_format,
             name,
             "",
-            services.replies
+            services
           )
         else
           unless valid_tripcode?(arg)
@@ -43,11 +43,11 @@ module PrivateParlorXT
 
           name, tripcode = Format.generate_tripcode(arg, services)
 
-          response = Format.tripcode_set(
+          response = tripcode_set(
             services.replies.tripcode_set_format,
             name,
             tripcode,
-            services.replies
+            services
           )
         end
       else
@@ -102,6 +102,15 @@ module PrivateParlorXT
                       end
 
       true
+    end
+
+    # Format the tripcode set reply
+    def tripcode_set(set_format : String, name : String, tripcode : String, services : Services) : String
+      set_format = set_format.gsub("{name}", Format.escape_mdv2(name))
+
+      set_format = set_format.gsub("{tripcode}", Format.escape_mdv2(tripcode))
+
+      services.replies.tripcode_set.gsub("{set_format}", set_format)
     end
   end
 end

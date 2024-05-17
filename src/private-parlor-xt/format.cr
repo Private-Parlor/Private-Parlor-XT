@@ -12,6 +12,11 @@ module PrivateParlorXT
       fun crypt(password : UInt8*, salt : UInt8*) : UInt8*
     end
 
+    # A simple wrapper for `Tourmaline::Helpers.escape_md` that defaults to escaping *text* according to Telegram's MarkdownV2
+    def escape_mdv2(text : String?) String
+      escape_md(text, version: 2)
+    end
+
     # Globally substitutes placeholders in message with the given variables
     def substitute_message(msg : String, variables : Hash(String, String?) = {"" => ""}) : String
       msg.gsub(/{\w+}/) do |match|
@@ -23,7 +28,7 @@ module PrivateParlorXT
     # Excapes placeholders according to MarkdownV2
     def substitute_reply(msg : String, variables : Hash(String, String?) = {"" => ""}) : String
       msg.gsub(/{\w+}/) do |match|
-        escape_md(variables[match[1..-2]]?, version: 2)
+        escape_mdv2(variables[match[1..-2]]?)
       end
     end
 
@@ -46,7 +51,7 @@ module PrivateParlorXT
       true
     end
 
-    # Removes formatting from teh given *text* and *entities*
+    # Removes formatting from the given *text* and *entities*
     def format_text(text : String, entities : Array(Tourmaline::MessageEntity), preformatted : Bool?, services : Services) : Tuple(String, Array(Tourmaline::MessageEntity))
       unless preformatted
         text, entities = Format.strip_format(text, entities, services.config.entity_types, services.config.linked_network)
@@ -75,7 +80,9 @@ module PrivateParlorXT
       return text, entities
     end
 
-    # Checks the text and entities from the given *message* for validity
+    # Checks the text and entities from the given *message* for validity. 
+    # 
+    # Used for signature commands where the text should not be formatted or given a tripcode header if pseudonymous mode is enabled
     def validate_text_and_entities(message : Tourmaline::Message, user : User, services : Services) : Tuple(String?, Array(Tourmaline::MessageEntity))
       text = message.caption || message.text || ""
       entities = message.entities.empty? ? message.caption_entities : message.entities
@@ -113,64 +120,11 @@ module PrivateParlorXT
       return header + text, entities
     end
 
-    # Format the cooldown until text based on the given *expiration*
-    def cooldown_until(expiration : Time?, locale : Locale, replies : Replies) : String
-      if time = time(expiration, locale.time_format)
-        "#{replies.cooldown_true} #{time}"
-      else
-        replies.cooldown_false
-      end
-    end
-
-    # Format the warning expiration text based on the given *expiration*
-    def warn_expiry(expiration : Time?, locale : Locale, replies : Replies) : String?
-      if time = time(expiration, locale.time_format)
-        replies.info_warning.gsub("{warn_expiry}", "#{time}")
-      end
-    end
-
-    # Format the tripcode set reply
-    def tripcode_set(set_format : String, name : String, tripcode : String, replies : Replies) : String
-      set_format = set_format.gsub("{name}", escape_md(name, version: 2))
-
-      set_format = set_format.gsub("{tripcode}", escape_md(tripcode, version: 2))
-
-      replies.tripcode_set.gsub("{set_format}", set_format)
-    end
-
     # Format the *reason* for system message replies
     def reason(reason : String?, replies : Replies) : String?
       if reason
         "#{replies.reason_prefix}#{reason}"
       end
-    end
-
-    # Return the first 500 characters of the given *reason*
-    def truncate_karma_reason(reason : String?) : String?
-      return unless reason
-
-      reason[0, 500]
-    end
-
-    # Format the *reason* for karma related replies
-    def karma_reason(reason : String?, karma_reply : String, replies : Replies) : String
-      return Format.substitute_reply(karma_reply) unless reason
-
-      reason = reason.gsub(/\\+$/, "")
-
-      return Format.substitute_reply(karma_reply) if reason.empty?
-
-      # Remove trailing punctuation after placeholder in karma_reply
-      karma_reply = karma_reply.gsub(/{karma_reason}([[:punct:]]+(?=\n|\\n))/, "{karma_reason}")
-
-      reason = escape_md(reason, version: 2)
-
-      reason = reason.gsub("\n", "\n>")
-
-      karma_reply.gsub(
-        "{karma_reason}",
-        replies.karma_reason.gsub("{reason}", "#{reason}")
-      )
     end
 
     # Format the *reason* for log messages
@@ -186,7 +140,7 @@ module PrivateParlorXT
 
       valid_entities = remove_entities(entities, strip_types)
 
-      valid_entities = format_network_links(formatted_text, valid_entities, linked_network)
+      valid_entities = update_network_links(formatted_text, valid_entities, linked_network)
 
       return formatted_text, valid_entities
     end
@@ -283,7 +237,7 @@ module PrivateParlorXT
     end
 
     # Returns a text link message entities corresponding to the network links in *text*, linking to their respective chats
-    def format_network_links(text : String, entities : Array(Tourmaline::MessageEntity), linked_network : Hash(String, String)) : Array(Tourmaline::MessageEntity)
+    def update_network_links(text : String, entities : Array(Tourmaline::MessageEntity), linked_network : Hash(String, String)) : Array(Tourmaline::MessageEntity)
       offset = 0
 
       while (start_index = text.index(/>>>\/\w+\//, offset)) && start_index != nil
@@ -339,147 +293,6 @@ module PrivateParlorXT
       text.split(count + 1)[1..]?
     end
 
-    # Checks the text and entities for a forwarded message to determine if it
-    # was relayed as a regular message
-    #
-    # Returns `true` if the forward message was relayed regularly, `nil` otherwise
-    def regular_forward?(text : String?, entities : Array(Tourmaline::MessageEntity)) : Bool?
-      return unless text
-      if ent = entities.first?
-        text.starts_with?("Forwarded from") && ent.type == "bold"
-      end
-    end
-
-    # Returns a 'Forwarded from' header according to the original user which the message came from
-    def forward_header(message : Tourmaline::Message, entities : Array(Tourmaline::MessageEntity)) : Tuple(String?, Array(Tourmaline::MessageEntity))
-      unless origin = message.forward_origin
-        return nil, [] of Tourmaline::MessageEntity
-      end
-
-      if origin.is_a?(Tourmaline::MessageOriginUser)
-        if origin.sender_user.is_bot?
-          Format.username_forward(origin.sender_user.full_name, origin.sender_user.username, entities)
-        else
-          Format.user_forward(origin.sender_user.full_name, origin.sender_user.id, entities)
-        end
-      elsif origin.is_a?(Tourmaline::MessageOriginChannel)
-        if origin.chat.username
-          Format.username_forward(origin.chat.name, origin.chat.username, entities, origin.message_id)
-        else
-          Format.private_channel_forward(origin.chat.name, origin.chat.id, entities, origin.message_id)
-        end
-      elsif origin.is_a?(Tourmaline::MessageOriginHiddenUser)
-        Format.private_user_forward(origin.sender_user_name, entities)
-      else
-        return nil, [] of Tourmaline::MessageEntity
-      end
-    end
-
-    # Returns a 'Forwarded from' header for users who do not have forward privacy enabled
-    def user_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
-      header = "Forwarded from #{name}\n\n"
-
-      header_size = header[..-3].to_utf16.size
-      name_size = name.to_utf16.size
-
-      entities = offset_entities(entities, header_size + 2)
-
-      entities = [
-        Tourmaline::MessageEntity.new("bold", 0, header_size),
-        Tourmaline::MessageEntity.new("text_link", 15, name_size, "tg://user?id=#{id}"),
-      ].concat(entities)
-
-      return header, entities
-    end
-
-    # Returns a 'Forwarded from' header for private users
-    def private_user_forward(name : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
-      header = "Forwarded from #{name}\n\n"
-
-      header_size = header[..-3].to_utf16.size
-      name_size = name.to_utf16.size
-
-      entities = offset_entities(entities, header_size + 2)
-
-      entities = [
-        Tourmaline::MessageEntity.new("bold", 0, header_size),
-        Tourmaline::MessageEntity.new("italic", 15, name_size),
-      ].concat(entities)
-
-      return header, entities
-    end
-
-    # Returns a 'Forwarded from' header for bots and public channels
-    def username_forward(name : String, username : String?, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
-      header = "Forwarded from #{name}\n\n"
-
-      header_size = header[..-3].to_utf16.size
-      name_size = name.to_utf16.size
-
-      entities = offset_entities(entities, header_size + 2)
-
-      entities = [
-        Tourmaline::MessageEntity.new("bold", 0, header_size),
-        Tourmaline::MessageEntity.new("text_link", 15, name_size, "tg://resolve?domain=#{username}#{"&post=#{msid}" if msid}"),
-      ].concat(entities)
-
-      return header, entities
-    end
-
-    # Returns a 'Forwarded from' header for private channels, removing the "-100" prefix for private channel IDs
-    def private_channel_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
-      header = "Forwarded from #{name}\n\n"
-
-      header_size = header[..-3].to_utf16.size
-      name_size = name.to_utf16.size
-
-      entities = offset_entities(entities, header_size + 2)
-
-      entities = [
-        Tourmaline::MessageEntity.new("bold", 0, header_size),
-        Tourmaline::MessageEntity.new("text_link", 15, name_size, "tg://privatepost?channel=#{id.to_s[4..]}#{"&post=#{msid}" if msid}"),
-      ].concat(entities)
-
-      return header, entities
-    end
-
-    # Returns a link to a given user's account, for reveal messages
-    def user_reveal(id : UserID, name : String, replies : Replies) : String
-      replies.username_reveal.gsub("{username}", "[#{escape_md(name, version: 2)}](tg://user?id=#{id})")
-    end
-
-    # Format the user sign based on the given *name*, appending the signature to *arg* as a text link to the user's ID
-    def user_sign(name : String, id : UserID, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
-      signature = "~~#{name}"
-
-      signature_size = signature.to_utf16.size
-
-      entities.concat([
-        Tourmaline::MessageEntity.new(
-          "text_link",
-          arg.to_utf16.size + 1,
-          signature_size,
-          url: "tg://user?id=#{id}"
-        ),
-      ])
-
-      return "#{arg} #{signature}", entities
-    end
-
-    # Format the karma level sign based on the given *level* appending the signature to *arg*
-    def karma_sign(level : String, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
-      signature = "t. #{level}"
-
-      signature_size = signature.to_utf16.size
-
-      entities.concat([
-        Tourmaline::MessageEntity.new("bold", arg.to_utf16.size + 1, signature_size),
-        Tourmaline::MessageEntity.new("italic", arg.to_utf16.size + 1, signature_size),
-      ])
-
-      return "#{arg} #{signature}", entities
-    end
-
     # Format the tripcode header for tripcode signs
     def tripcode_sign(name : String, tripcode : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "#{name} #{tripcode}:\n"
@@ -512,19 +325,6 @@ module PrivateParlorXT
       ].concat(entities)
 
       return header, entities
-    end
-
-    # Format ranksay signature for the given *rank*, appending it to the given *arg*
-    def ranksay(rank : String, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
-      signature = "~~#{rank}"
-
-      signature_size = signature.to_utf16.size
-
-      entities.concat([
-        Tourmaline::MessageEntity.new("bold", arg.to_utf16.size + 1, signature_size),
-      ])
-
-      return "#{arg} #{signature}", entities
     end
 
     # Add the given *offset* to the offset of each message entity
@@ -563,134 +363,10 @@ module PrivateParlorXT
       end
     end
 
-    # Returns a smiley based on the number of given warnings
-    def smiley(warnings : Int32, smileys : Array(String)) : String
-      case warnings
-      when (0..0) then smileys[0]
-      when (1..2) then smileys[1]
-      when (2..5) then smileys[2]
-      else             smileys[3]
-      end
-    end
-
-    # Formats a loading bar for the /karmainfo command
-    def karma_loading_bar(percentage : Float32, locale : Locale) : String
-      pips = (percentage.floor.to_i).divmod(10)
-
-      if pips[0] != 10
-        String.build(10) do |str|
-          str << locale.loading_bar[2] * pips[0]
-
-          if pips[1] >= 5
-            str << locale.loading_bar[1]
-          else
-            str << locale.loading_bar[0]
-          end
-
-          str << locale.loading_bar[0] * (10 - (pips[0] + 1))
-        end
-      else
-        locale.loading_bar[2] * 10
-      end
-    end
-
     # Formats a given `Time` based on the given *format*
     def time(time : Time?, format : String) : String?
       if time
         time.to_s(format)
-      end
-    end
-
-    # Returns a message containing the program version and a link to its Git repo.
-    #
-    # Feel free to edit this if you fork the code.
-    def version : String
-      "Private Parlor XT v#{escape_md(VERSION, version: 2)} \\~ [\\[Source\\]](https://github.com/Private-Parlor/Private-Parlor-XT)"
-    end
-
-    # Returns a generated message containing the commands the user can use based on his rank.
-    def help(user : User, ranks : Hash(Int32, Rank), services : Services, descriptions : CommandDescriptions, replies : Replies) : String
-      ranked = {
-        CommandPermissions::Promote      => "/promote [name/OID/ID] [rank] - #{descriptions.promote}",
-        CommandPermissions::PromoteSame  => "/promote [name/OID/ID] [rank] - #{descriptions.promote}",
-        CommandPermissions::PromoteLower => "/promote [name/OID/ID] [rank] - #{descriptions.promote}",
-        CommandPermissions::Demote       => "/demote [name/OID/ID] [rank] - #{descriptions.demote}",
-        CommandPermissions::Ranksay      => "/#{ranks[user.rank].name.downcase}say [text] - #{descriptions.ranksay}",
-        CommandPermissions::Sign         => "/sign [text] - #{descriptions.sign}",
-        CommandPermissions::TSign        => "/tsign [text] - #{descriptions.tsign}",
-        CommandPermissions::Uncooldown   => "/uncooldown [name/OID] - #{descriptions.uncooldown}",
-        CommandPermissions::Whitelist    => "/whitelist [ID] - #{descriptions.whitelist}",
-        CommandPermissions::Purge        => "/purge - #{descriptions.purge}",
-        CommandPermissions::MotdSet      => "/motd - #{descriptions.motd_set}",
-        CommandPermissions::Unblacklist   => "/unblacklist [name/ID]  - #{descriptions.unblacklist}",
-      }
-
-      reply_required = {
-        CommandPermissions::Upvote     => "+1 - #{descriptions.upvote}",
-        CommandPermissions::Downvote   => "-1 - #{descriptions.downvote}",
-        CommandPermissions::Warn       => "/warn [reason] - #{descriptions.warn}",
-        CommandPermissions::Delete     => "/delete [reason] - #{descriptions.delete}",
-        CommandPermissions::Spoiler    => "/spoiler - #{descriptions.spoiler}",
-        CommandPermissions::Remove     => "/remove [reason] - #{descriptions.remove}",
-        CommandPermissions::Blacklist  => "/blacklist [reason] - #{descriptions.blacklist}",
-        CommandPermissions::RankedInfo => "/info - #{descriptions.ranked_info}",
-        CommandPermissions::Reveal     => "/reveal - #{descriptions.reveal}",
-        CommandPermissions::Pin        => "/pin - #{descriptions.pin}",
-        CommandPermissions::Unpin      => "/unpin - #{descriptions.unpin}",
-      }
-
-      String.build do |str|
-        str << replies.help_header
-        str << "\n"
-        str << escape_md("/start - #{descriptions.start}\n", version: 2)
-        str << escape_md("/stop - #{descriptions.stop}\n", version: 2)
-        str << escape_md("/info - #{descriptions.info}\n", version: 2)
-        str << escape_md("/users - #{descriptions.users}\n", version: 2)
-        str << escape_md("/version - #{descriptions.version}\n", version: 2)
-        str << escape_md("/toggle_karma - #{descriptions.toggle_karma}\n", version: 2)
-        str << escape_md("/toggle_debug - #{descriptions.toggle_debug}\n", version: 2)
-        str << escape_md("/tripcode - #{descriptions.tripcode}\n", version: 2)
-        str << escape_md("/motd - #{descriptions.motd}\n", version: 2)
-        str << escape_md("/help - #{descriptions.help}\n", version: 2)
-        str << escape_md("/stats - #{descriptions.stats}\n", version: 2)
-
-        next unless rank = ranks[user.rank]?
-
-        rank_commands = [] of String
-        reply_commands = [] of String
-
-        if rank.command_permissions.includes?(CommandPermissions::RanksayLower)
-          lower_ranks = ranks.select{|k, _| k <= user.rank && k != -10}
-
-          lower_ranks.each do |k, v|
-            ranksay_permissions = Set{CommandPermissions::Ranksay, CommandPermissions::RanksayLower}
-
-            unless (v.command_permissions & ranksay_permissions).empty?
-              rank_commands << escape_md("/#{services.access.ranksay(v.name)}say [text] - #{descriptions.ranksay}", version: 2)
-            end
-          end
-        end
-
-        rank.command_permissions.each do |permission|
-          if ranked.keys.includes?(permission)
-            rank_commands << escape_md(ranked[permission], version: 2)
-          elsif reply_required.keys.includes?(permission)
-            reply_commands << escape_md(reply_required[permission], version: 2)
-          end
-        end
-
-        unless rank_commands.empty?
-          str << "\n"
-          str << substitute_reply(replies.help_rank_commands, {"rank" => rank.name})
-          str << "\n"
-          rank_commands.each { |line| str << "#{line}\n" }
-        end
-        unless reply_commands.empty?
-          str << "\n"
-          str << replies.help_reply_commands
-          str << "\n"
-          reply_commands.each { |line| str << "#{line}\n" }
-        end
       end
     end
   end

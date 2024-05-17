@@ -41,7 +41,7 @@ module PrivateParlorXT
       Format.substitute_reply(services.replies.ranked_info, {
         "oid"            => reply_user.obfuscated_id.to_s,
         "karma"          => reply_user.obfuscated_karma.to_s,
-        "cooldown_until" => Format.cooldown_until(reply_user.cooldown_until, services.locale, services.replies),
+        "cooldown_until" => cooldown_until(reply_user.cooldown_until, services),
       })
     end
 
@@ -65,10 +65,36 @@ module PrivateParlorXT
         "karma"          => user.karma.to_s,
         "karma_level"    => current_level.empty? ? nil : "(#{current_level})",
         "warnings"       => user.warnings.to_s,
-        "warn_expiry"    => Format.warn_expiry(user.warn_expiry, services.locale, services.replies),
-        "smiley"         => Format.smiley(user.warnings, @smileys),
-        "cooldown_until" => Format.cooldown_until(user.cooldown_until, services.locale, services.replies),
+        "warn_expiry"    => warn_expiry(user.warn_expiry, services),
+        "smiley"         => smiley(user.warnings),
+        "cooldown_until" => cooldown_until(user.cooldown_until, services),
       })
+    end
+
+    # Format the cooldown until text based on the given *expiration*
+    def cooldown_until(expiration : Time?, services : Services) : String
+      if time = Format.time(expiration, services.locale.time_format)
+        "#{services.replies.cooldown_true} #{time}"
+      else
+        services.replies.cooldown_false
+      end
+    end
+
+    # Format the warning expiration text based on the given *expiration*
+    def warn_expiry(expiration : Time?, services : Services) : String?
+      if time = Format.time(expiration, services.locale.time_format)
+        services.replies.info_warning.gsub("{warn_expiry}", "#{time}")
+      end
+    end
+
+    # Returns a smiley based on the number of given warnings
+    def smiley(warnings : Int32) : String
+      case warnings
+      when (0..0) then @smileys[0]
+      when (1..2) then @smileys[1]
+      when (2..5) then @smileys[2]
+      else             @smileys[3]
+      end
     end
   end
 end

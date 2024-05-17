@@ -108,7 +108,7 @@ module PrivateParlorXT
         reason = Format.get_arg(message.text)
 
         if reason
-          reason = Format.truncate_karma_reason(reason)
+          reason = truncate_karma_reason(reason)
           services.relay.log_output(Format.substitute_message(services.logs.downvoted, {
             "id"     => user.id.to_s,
             "name"   => user.formatted_name,
@@ -118,7 +118,7 @@ module PrivateParlorXT
         end
       end
 
-      gave_downvote_reply = Format.karma_reason(reason, services.replies.gave_downvote, services.replies)
+      gave_downvote_reply = karma_reason(reason, services.replies.gave_downvote, services)
 
       services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, gave_downvote_reply)
 
@@ -131,7 +131,7 @@ module PrivateParlorXT
 
         karma_level_down(reply_user, reply_parameters, services)
 
-        got_downvote_reply = Format.karma_reason(reason, services.replies.got_downvote, services.replies)
+        got_downvote_reply = karma_reason(reason, services.replies.got_downvote, services)
 
         services.relay.send_to_user(
           reply_parameters,

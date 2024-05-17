@@ -52,11 +52,31 @@ module PrivateParlorXT
         "next_level"    => next_level,
         "karma"         => user.karma.to_s,
         "limit"         => limit.to_s,
-        "loading_bar"   => Format.karma_loading_bar(percentage, services.locale),
+        "loading_bar"   => karma_loading_bar(percentage, services),
         "percentage"    => percentage.format(decimal_places: 1, only_significant: true),
       })
 
       services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
+    end
+    # Formats a loading bar for the /karmainfo command
+    def karma_loading_bar(percentage : Float32, services : Services) : String
+      pips = (percentage.floor.to_i).divmod(10)
+
+      if pips[0] != 10
+        String.build(10) do |str|
+          str << services.locale.loading_bar[2] * pips[0]
+
+          if pips[1] >= 5
+            str << services.locale.loading_bar[1]
+          else
+            str << services.locale.loading_bar[0]
+          end
+
+          str << services.locale.loading_bar[0] * (10 - (pips[0] + 1))
+        end
+      else
+        services.locale.loading_bar[2] * 10
+      end
     end
   end
 end

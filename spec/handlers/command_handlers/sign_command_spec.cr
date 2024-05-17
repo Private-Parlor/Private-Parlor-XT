@@ -519,5 +519,30 @@ module PrivateParlorXT
         handler.spamming?(beispiel, message, "", spamless_services).should(be_false)
       end
     end
+
+    describe "#user_sign" do
+      it "returns updated entities and text signed with user name" do
+        handler = SignCommand.new(MockConfig.new)
+
+        arg = "Example🦫Text"
+
+        expected_text = "Example🦫Text ~~🦫Beaver"
+
+        text, entities = handler.user_sign(
+          "🦫Beaver",
+          123456,
+          arg,
+          [] of Tourmaline::MessageEntity
+        )
+
+        text.should(eq(expected_text))
+
+        entities.size.should(eq(1))
+
+        entities[0].type.should(eq("text_link"))
+        entities[0].offset.should(eq(14))
+        entities[0].length.should(eq(10))
+      end
+    end
   end
 end

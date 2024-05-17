@@ -23,7 +23,7 @@ module PrivateParlorXT
     getter logs : Logs
 
     # Returns the `CommandDescriptions` object
-    getter command_descriptions : CommandDescriptions
+    getter descriptions : CommandDescriptions
 
     # Returns the `Database` object
     getter database : Database
@@ -96,7 +96,7 @@ module PrivateParlorXT
       @locale : Locale,
       @replies : Replies,
       @logs : Logs,
-      @command_descriptions : CommandDescriptions,
+      @descriptions : CommandDescriptions,
       @database : Database,
       @history : History,
       @access : AuthorizedRanks,
@@ -116,7 +116,7 @@ module PrivateParlorXT
       @locale = localization.locale
       @replies = localization.replies
       @logs = localization.logs
-      @command_descriptions = localization.command_descriptions
+      @descriptions = localization.command_descriptions
       
       connection = DB.open("sqlite3://#{config.database}")
 

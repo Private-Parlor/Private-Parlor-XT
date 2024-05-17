@@ -27,6 +27,7 @@ module PrivateParlorXT
       @toggle_r9k_text = false,
       @toggle_r9k_media = false,
       @toggle_r9k_forwards = false,
+      @smileys = [":)", ":|", ":/", ":("],
       @karma_levels = {
         (Int32::MIN...0) => "Junk",
         (0...10) => "Normal",

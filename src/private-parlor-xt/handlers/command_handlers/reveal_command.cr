@@ -31,7 +31,7 @@ module PrivateParlorXT
 
       receiver_message = services.history.receiver_message(reply.message_id.to_i64, reply_user.id)
 
-      response = Format.user_reveal(user.id, user.formatted_name, services.replies)
+      response = user_reveal(user.id, user.formatted_name, services.replies)
 
       if receiver_message
         receiver_message = ReplyParameters.new(receiver_message)
@@ -50,6 +50,11 @@ module PrivateParlorXT
       services.relay.log_output(log)
 
       services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.success)
+    end
+
+    # Returns a link to a given user's account, for reveal messages
+    def user_reveal(id : UserID, name : String, replies : Replies) : String
+      replies.username_reveal.gsub("{username}", "[#{Format.escape_mdv2(name)}](tg://user?id=#{id})")
     end
   end
 end

@@ -38,5 +38,33 @@ module PrivateParlorXT
 
       services.relay.send_to_user(nil, user.id, response)
     end
+
+    # Return the first 500 characters of the given *reason*
+    def truncate_karma_reason(reason : String?) : String?
+      return unless reason
+
+      reason[0, 500]
+    end
+
+    # Format the *reason* for karma related replies
+    def karma_reason(reason : String?, karma_reply : String, services : Services) : String
+      return Format.substitute_reply(karma_reply) unless reason
+
+      reason = reason.gsub(/\\+$/, "")
+
+      return Format.substitute_reply(karma_reply) if reason.empty?
+
+      # Remove trailing punctuation after placeholder in karma_reply
+      karma_reply = karma_reply.gsub(/{karma_reason}([[:punct:]]+(?=\n|\\n))/, "{karma_reason}")
+
+      reason = Format.escape_mdv2(reason)
+
+      reason = reason.gsub("\n", "\n>")
+
+      karma_reply.gsub(
+        "{karma_reason}",
+        services.replies.karma_reason.gsub("{reason}", "#{reason}")
+      )
+    end
   end
 end

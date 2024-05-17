@@ -56,12 +56,22 @@ module PrivateParlorXT
 
         handler.do(message, services)
 
-        expected = Format.version
+        expected = handler.version
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
 
         messages[0].data.should(eq(expected))
+      end
+    end
+
+    describe "#version" do
+      it "returns string containing source code link and information" do 
+        handler = VersionCommand.new(MockConfig.new)
+
+        expected = "Private Parlor XT vspec \\~ [\\[Source\\]](https://github.com/Private-Parlor/Private-Parlor-XT)"
+
+        handler.version.should(eq(expected))
       end
     end
   end

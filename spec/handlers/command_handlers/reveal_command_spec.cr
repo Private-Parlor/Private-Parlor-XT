@@ -231,7 +231,7 @@ module PrivateParlorXT
 
         handler.do(message, services)
 
-        expected = Format.user_reveal(80300, "beispiel", services.replies)
+        expected = handler.user_reveal(80300, "beispiel", services.replies)
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(2))
@@ -321,7 +321,7 @@ module PrivateParlorXT
 
         handler.do(message, services)
 
-        expected = Format.user_reveal(80300, "beispiel", services.replies)
+        expected = handler.user_reveal(80300, "beispiel", services.replies)
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(2))
@@ -333,6 +333,24 @@ module PrivateParlorXT
 
           responses = responses - [msg.data]
         end
+      end
+    end
+
+    describe "#user_reveal" do
+      it "returns Markdown link to the given user id" do
+        services = create_services
+
+        handler = RevealCommand.new(MockConfig.new)
+
+        expected = "[user\\_name](tg://user?id=123456)"
+
+        expected = Format.substitute_message(services.replies.username_reveal, {
+          "username" => expected,
+        })
+
+        result = handler.user_reveal(123456, "user_name", services.replies)
+
+        result.should(eq(expected))
       end
     end
   end

@@ -42,7 +42,7 @@ module PrivateParlorXT
       record_message_statistics(Statistics::Messages::Forwards, services)
 
       # Foward regular forwards, otherwise add header to text and offset entities then send as a captioned type
-      if Format.regular_forward?(text, entities)
+      if regular_forward?(text, entities)
         return services.relay.send_forward(RelayParameters.new(
           original_message: new_message,
           sender: user.id,
@@ -158,7 +158,7 @@ module PrivateParlorXT
       if (album = message.media_group_id) && @albums[album]?
         return "", [] of Tourmaline::MessageEntity
       else
-        Format.forward_header(message, entities)
+        forward_header(message, entities)
       end
     end
 
@@ -256,6 +256,110 @@ module PrivateParlorXT
           message.message_id.to_i64
         )
       end
+    end
+
+    # Checks the text and entities for a forwarded message to determine if it
+    # was relayed as a regular message
+    #
+    # Returns `true` if the forward message was relayed regularly, `nil` otherwise
+    def regular_forward?(text : String?, entities : Array(Tourmaline::MessageEntity)) : Bool?
+      return unless text
+      if ent = entities.first?
+        text.starts_with?("Forwarded from") && ent.type == "bold"
+      end
+    end
+
+    # Returns a 'Forwarded from' header according to the original user which the message came from
+    def forward_header(message : Tourmaline::Message, entities : Array(Tourmaline::MessageEntity)) : Tuple(String?, Array(Tourmaline::MessageEntity))
+      unless origin = message.forward_origin
+        return nil, [] of Tourmaline::MessageEntity
+      end
+
+      if origin.is_a?(Tourmaline::MessageOriginUser)
+        if origin.sender_user.is_bot?
+          username_forward(origin.sender_user.full_name, origin.sender_user.username, entities)
+        else
+          user_forward(origin.sender_user.full_name, origin.sender_user.id, entities)
+        end
+      elsif origin.is_a?(Tourmaline::MessageOriginChannel)
+        if origin.chat.username
+          username_forward(origin.chat.name, origin.chat.username, entities, origin.message_id)
+        else
+          private_channel_forward(origin.chat.name, origin.chat.id, entities, origin.message_id)
+        end
+      elsif origin.is_a?(Tourmaline::MessageOriginHiddenUser)
+        private_user_forward(origin.sender_user_name, entities)
+      else
+        return nil, [] of Tourmaline::MessageEntity
+      end
+    end
+
+    # Returns a 'Forwarded from' header for users who do not have forward privacy enabled
+    def user_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      header = "Forwarded from #{name}\n\n"
+
+      header_size = header[..-3].to_utf16.size
+      name_size = name.to_utf16.size
+
+      entities = Format.offset_entities(entities, header_size + 2)
+
+      entities = [
+        Tourmaline::MessageEntity.new("bold", 0, header_size),
+        Tourmaline::MessageEntity.new("text_link", 15, name_size, "tg://user?id=#{id}"),
+      ].concat(entities)
+
+      return header, entities
+    end
+
+    # Returns a 'Forwarded from' header for private users
+    def private_user_forward(name : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      header = "Forwarded from #{name}\n\n"
+
+      header_size = header[..-3].to_utf16.size
+      name_size = name.to_utf16.size
+
+      entities = Format.offset_entities(entities, header_size + 2)
+
+      entities = [
+        Tourmaline::MessageEntity.new("bold", 0, header_size),
+        Tourmaline::MessageEntity.new("italic", 15, name_size),
+      ].concat(entities)
+
+      return header, entities
+    end
+
+    # Returns a 'Forwarded from' header for bots and public channels
+    def username_forward(name : String, username : String?, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
+      header = "Forwarded from #{name}\n\n"
+
+      header_size = header[..-3].to_utf16.size
+      name_size = name.to_utf16.size
+
+      entities = Format.offset_entities(entities, header_size + 2)
+
+      entities = [
+        Tourmaline::MessageEntity.new("bold", 0, header_size),
+        Tourmaline::MessageEntity.new("text_link", 15, name_size, "tg://resolve?domain=#{username}#{"&post=#{msid}" if msid}"),
+      ].concat(entities)
+
+      return header, entities
+    end
+
+    # Returns a 'Forwarded from' header for private channels, removing the "-100" prefix for private channel IDs
+    def private_channel_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
+      header = "Forwarded from #{name}\n\n"
+
+      header_size = header[..-3].to_utf16.size
+      name_size = name.to_utf16.size
+
+      entities = Format.offset_entities(entities, header_size + 2)
+
+      entities = [
+        Tourmaline::MessageEntity.new("bold", 0, header_size),
+        Tourmaline::MessageEntity.new("text_link", 15, name_size, "tg://privatepost?channel=#{id.to_s[4..]}#{"&post=#{msid}" if msid}"),
+      ].concat(entities)
+
+      return header, entities
     end
   end
 end

@@ -34,7 +34,7 @@ module PrivateParlorXT
 
       current_level = get_karma_level(karma_levels, user)
 
-      text, entities = Format.karma_sign(current_level, arg, entities)
+      text, entities = karma_sign(current_level, arg, entities)
 
       if message.text
         message.text = text
@@ -69,6 +69,20 @@ module PrivateParlorXT
     # Returns the name of the karma level whose range contains the *user's* karma
     def get_karma_level(karma_levels : Hash(Range(Int32, Int32), String), user : User) : String
       current_level = karma_levels.find({(..), ""}) {|range, level| range === user.karma}[1]
+    end
+
+    # Format the karma level sign based on the given *level* appending the signature to *arg*
+    def karma_sign(level : String, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      signature = "t. #{level}"
+
+      signature_size = signature.to_utf16.size
+
+      entities.concat([
+        Tourmaline::MessageEntity.new("bold", arg.to_utf16.size + 1, signature_size),
+        Tourmaline::MessageEntity.new("italic", arg.to_utf16.size + 1, signature_size),
+      ])
+
+      return "#{arg} #{signature}", entities
     end
   end
 end

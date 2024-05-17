@@ -38,7 +38,7 @@ module PrivateParlorXT
 
       entities = remove_command_entity(text, entities, arg)
 
-      text, entities = Format.ranksay(rank_name, arg, entities)
+      text, entities = ranksay(rank_name, arg, entities)
 
       if message.text
         message.text = text
@@ -101,6 +101,19 @@ module PrivateParlorXT
       end
 
       parsed_rank[1].name
+    end
+
+    # Format ranksay signature for the given *rank*, appending it to the given *arg*
+    def ranksay(rank : String, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+      signature = "~~#{rank}"
+
+      signature_size = signature.to_utf16.size
+
+      entities.concat([
+        Tourmaline::MessageEntity.new("bold", arg.to_utf16.size + 1, signature_size),
+      ])
+
+      return "#{arg} #{signature}", entities
     end
   end
 end

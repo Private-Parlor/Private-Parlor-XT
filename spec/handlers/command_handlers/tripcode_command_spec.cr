@@ -126,11 +126,11 @@ module PrivateParlorXT
 
         name, code = Format.generate_tripcode("name#password", services)
 
-        expected = Format.tripcode_set(
+        expected = handler.tripcode_set(
           services.replies.tripcode_set_format,
           name,
           code,
-          services.replies
+          services
         )
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -178,11 +178,11 @@ module PrivateParlorXT
 
         updated_user.tripcode.should(eq("🦤🦆🕊️##{obfuscated_id}"))
 
-        expected = Format.tripcode_set(
+        expected = handler.tripcode_set(
           services.replies.flag_sign_set_format,
           "🦤🦆🕊️",
           "",
-          services.replies
+          services
         )
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -303,6 +303,45 @@ module PrivateParlorXT
 
         handler.valid_signature?("🦤🦆🕊️").should(be_true)
         handler.valid_signature?("🏴󠁧󠁢󠁥󠁮󠁧󠁿🏴󠁧󠁢󠁷󠁬󠁳󠁿🏴󠁧󠁢󠁳󠁣󠁴󠁿🇮🇲🇬🇧").should(be_true)
+      end
+    end
+
+    describe "#tripcode_set" do
+      it "returns tripcode set reponse" do
+        services = create_services
+
+        handler = TripcodeCommand.new(MockConfig.new)
+
+        expected = Format.substitute_message(services.replies.tripcode_set, {
+          "set_format" => Format.substitute_reply(services.replies.tripcode_set_format, {
+            "name" => "name",
+            "tripcode" => "!ozOtJW9BFA",
+          })
+        })
+
+        result = handler.tripcode_set(
+          services.replies.tripcode_set_format,
+          "name",
+          "!ozOtJW9BFA",
+          services
+        )
+
+        result.should(eq(expected))
+
+        expected = Format.substitute_message(services.replies.tripcode_set, {
+          "set_format" => Format.substitute_reply(services.replies.flag_sign_set_format, {
+            "name" => "🦤🦆🕊️🐦🦃",
+          })
+        })
+
+        result = handler.tripcode_set(
+          services.replies.flag_sign_set_format,
+          "🦤🦆🕊️🐦🦃",
+          "",
+          services
+        )
+
+        result.should(eq(expected))
       end
     end
   end

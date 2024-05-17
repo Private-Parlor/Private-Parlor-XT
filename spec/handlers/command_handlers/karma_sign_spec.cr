@@ -497,5 +497,33 @@ module PrivateParlorXT
         ).should(eq("Unique"))
       end
     end
+
+    describe "#karma_sign" do
+      it "returns updated entities and text signed with karma level" do
+        handler = KarmaSignCommand.new(MockConfig.new)
+
+        arg = "Example🦫Text"
+
+        expected_text = "Example🦫Text t. 🦫-Tier"
+
+        text, entities = handler.karma_sign(
+          "🦫-Tier",
+          arg,
+          [] of Tourmaline::MessageEntity
+        )
+
+        text.should(eq(expected_text))
+
+        entities.size.should(eq(2))
+
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(14))
+        entities[0].length.should(eq(10))
+
+        entities[1].type.should(eq("italic"))
+        entities[1].offset.should(eq(14))
+        entities[1].length.should(eq(10))
+      end
+    end
   end
 end

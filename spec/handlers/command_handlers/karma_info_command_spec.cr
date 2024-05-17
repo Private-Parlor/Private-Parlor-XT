@@ -98,7 +98,7 @@ module PrivateParlorXT
           "next_level"    => "Normal",
           "karma"         => "-20",
           "limit"         => "0",
-          "loading_bar"   => Format.karma_loading_bar(100.0, services.locale),
+          "loading_bar"   => handler.karma_loading_bar(100.0_f32, services),
           "percentage"    => "100.0",
         })
 
@@ -106,6 +106,59 @@ module PrivateParlorXT
         messages.size.should(eq(1))
 
         messages[0].data.should(eq(expected))
+      end
+    end
+
+    describe "#karma_loading_bar" do
+      it "returns full bar when percentage is 100%" do
+        services = create_services()
+
+        handler = KarmaInfoCommand.new(MockConfig.new)
+
+        expected = services.locale.loading_bar[2] * 10
+
+        bar = handler.karma_loading_bar(100.0_f32, services)
+
+        bar.should(eq(expected))
+      end
+
+      it "returns empty bar when percentage is 0%" do
+        services = create_services()
+
+        handler = KarmaInfoCommand.new(MockConfig.new)
+
+        expected = services.locale.loading_bar[0] * 10
+
+        bar = handler.karma_loading_bar(0.0_f32, services)
+
+        bar.should(eq(expected))
+      end
+
+      it "returns bar with a half filled pip when percentage is 55%" do
+        services = create_services()
+
+        handler = KarmaInfoCommand.new(MockConfig.new)
+
+        expected = services.locale.loading_bar[2] * 5
+        expected = expected + services.locale.loading_bar[1]
+        expected = expected + services.locale.loading_bar[0] * 4
+
+        bar = handler.karma_loading_bar(55.0_f32, services)
+
+        bar.should(eq(expected))
+      end
+
+      it "returns partially filled bar when percentage has a remainder less than 5" do
+        services = create_services()
+
+        handler = KarmaInfoCommand.new(MockConfig.new)
+
+        expected = services.locale.loading_bar[2] * 3
+        expected = expected + services.locale.loading_bar[0] * 7
+
+        bar = handler.karma_loading_bar(33.3_f32, services)
+
+        bar.should(eq(expected))
       end
     end
   end

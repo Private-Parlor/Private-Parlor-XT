@@ -98,7 +98,7 @@ module PrivateParlorXT
         expected = Format.substitute_reply(services.replies.ranked_info, {
           "oid"            => reply_user.obfuscated_id.to_s,
           "karma"          => obfuscated_karma,
-          "cooldown_until" => Format.cooldown_until(reply_user.cooldown_until, services.locale, services.replies),
+          "cooldown_until" => handler.cooldown_until(reply_user.cooldown_until, services),
         })
 
         handler.do(message, services)
@@ -145,9 +145,9 @@ module PrivateParlorXT
           "karma"          => "-20",
           "karma_level"    => "(Junk)",
           "warnings"       => "2",
-          "warn_expiry"    => Format.warn_expiry(user.warn_expiry, services.locale, services.replies),
+          "warn_expiry"    => handler.warn_expiry(user.warn_expiry, services),
           "smiley"         => ":|",
-          "cooldown_until" => Format.cooldown_until(user.cooldown_until, services.locale, services.replies),
+          "cooldown_until" => handler.cooldown_until(user.cooldown_until, services),
         })
 
         handler.do(message, services)
@@ -322,7 +322,7 @@ module PrivateParlorXT
         expected = Format.substitute_reply(services.replies.ranked_info, {
           "oid"            => reply_user.obfuscated_id.to_s,
           "karma"          => obfuscated_karma,
-          "cooldown_until" => Format.cooldown_until(reply_user.cooldown_until, services.locale, services.replies),
+          "cooldown_until" => handler.cooldown_until(reply_user.cooldown_until, services),
         })
 
         unless result = handler.ranked_info(user, message, reply, services)
@@ -368,9 +368,9 @@ module PrivateParlorXT
           "karma"          => "-20",
           "karma_level"    => "(Junk)",
           "warnings"       => "2",
-          "warn_expiry"    => Format.warn_expiry(user.warn_expiry, services.locale, services.replies),
+          "warn_expiry"    => handler.warn_expiry(user.warn_expiry, services),
           "smiley"         => ":|",
-          "cooldown_until" => Format.cooldown_until(user.cooldown_until, services.locale, services.replies),
+          "cooldown_until" => handler.cooldown_until(user.cooldown_until, services),
         })
 
         unless result = handler.user_info(user, services)
@@ -378,6 +378,79 @@ module PrivateParlorXT
         end
 
         result.should(eq(expected))
+      end
+    end
+
+    describe "#cooldown_until" do
+      it "returns cooldown time response" do
+        services = create_services
+
+        handler = InfoCommand.new(MockConfig.new)
+
+        time = Time.utc
+
+        expected = "#{services.replies.cooldown_true} #{Format.time(time, services.locale.time_format)}"
+
+        result = handler.cooldown_until(time, services)
+
+        result.should(eq(expected))
+      end
+
+      it "returns a no cooldown response if time is nil" do
+        services = create_services
+
+        handler = InfoCommand.new(MockConfig.new)
+
+        result = handler.cooldown_until(nil, services)
+
+        result.should(eq(services.replies.cooldown_false))
+      end
+    end
+
+    describe "#warn_expiry" do
+      it "returns warning expiration response" do
+        services = create_services
+
+        handler = InfoCommand.new(MockConfig.new)
+
+        time = Time.utc
+
+        expected = Format.substitute_message(services.replies.info_warning, {
+          "warn_expiry" => Format.time(time, services.locale.time_format)
+        })
+
+        result = handler.warn_expiry(time, services)
+
+        result.should(eq(expected))
+      end
+
+      it "returns nil if expiration time is nil" do
+        services = create_services
+
+        handler = InfoCommand.new(MockConfig.new)
+
+        result = handler.warn_expiry(nil, services)
+
+        result.should(be_nil)
+      end
+    end
+
+    describe "#smiley" do
+      it "returns smiley face based on number of given warnings" do
+        handler = InfoCommand.new(
+          MockConfig.new(
+            smileys: [":)", ":O", ":/", ">:("]
+          )
+        )
+
+        handler.smiley(0).should(eq(":)"))
+        handler.smiley(1).should(eq(":O"))
+        handler.smiley(2).should(eq(":O"))
+        handler.smiley(3).should(eq(":/"))
+        handler.smiley(4).should(eq(":/"))
+        handler.smiley(5).should(eq(":/"))
+        handler.smiley(6).should(eq(">:("))
+        handler.smiley(7).should(eq(">:("))
       end
     end
   end

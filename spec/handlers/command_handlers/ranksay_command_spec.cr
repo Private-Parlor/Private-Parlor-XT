@@ -619,5 +619,29 @@ module PrivateParlorXT
         ).should(be_nil)
       end
     end
+
+    describe "#ranksay" do
+      it "returns updated entities and text signed with karma level" do
+        handler = RanksayCommand.new(MockConfig.new)
+
+        arg = "Example🦫Text"
+
+        expected_text = "Example🦫Text ~~🦫Baron"
+
+        text, entities = handler.ranksay(
+          "🦫Baron",
+          arg,
+          [] of Tourmaline::MessageEntity
+        )
+
+        text.should(eq(expected_text))
+
+        entities.size.should(eq(1))
+
+        entities[0].type.should(eq("bold"))
+        entities[0].offset.should(eq(14))
+        entities[0].length.should(eq(9))
+      end
+    end
   end
 end

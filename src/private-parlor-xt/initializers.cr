@@ -55,10 +55,10 @@ module PrivateParlorXT
           bot_commands << Tourmaline::BotCommand.new(
             {% if responds_to[:command].is_a?(ArrayLiteral) %}
               {{responds_to[:command][0]}},
-              services.command_descriptions.{{responds_to[:command][0].id}}
+              services.descriptions.{{responds_to[:command][0].id}}
             {% else %}
               {{responds_to[:command]}},
-              services.command_descriptions.{{responds_to[:command].id}}
+              services.descriptions.{{responds_to[:command].id}}
             {% end %}
           )
         end
