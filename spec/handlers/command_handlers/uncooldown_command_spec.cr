@@ -51,7 +51,7 @@ module PrivateParlorXT
 
         generate_users(services.database)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -80,7 +80,7 @@ module PrivateParlorXT
 
         generate_users(services.database)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -109,7 +109,7 @@ module PrivateParlorXT
 
         generate_users(services.database)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -142,8 +142,6 @@ module PrivateParlorXT
           fail("User 60200 should exist in the database")
         end
 
-        prior_warnings = cooldowned_user.warnings
-
         cooldowned_user.cooldown(10.minutes)
 
         services.database.update_user(cooldowned_user)
@@ -168,7 +166,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        user.last_active.should(be < updated_user.last_active) 
+        user.last_active.should(be < updated_user.last_active)
       end
 
       it "uncooldowns the given user by ID" do

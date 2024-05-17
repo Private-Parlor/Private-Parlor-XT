@@ -2,43 +2,43 @@ require "./constants.cr"
 
 module PrivateParlorXT
   # A base class for ROBOT9000 implementations
-  # 
+  #
   # ROBOT9000 is an algorithm by Randall Munroe designed to reduce noise in large chats and
   # encourage original content.
   #
-  # ROBOT9000 will prevent users from repeating information that has already been posted before. 
+  # ROBOT9000 will prevent users from repeating information that has already been posted before.
   # When a user's post is considered unoriginal, the post will not be sent and the user will be cooldowned.
-  # 
+  #
   # Subclasses of this type should use a `Database` to store and query unique texts and media IDs
   abstract class Robot9000
     # An array of Int32 ranges corresponding to Unicode codeblock ranges to accept.
-    # 
+    #
     # When checking texts for uniqueness, each characater/codepoint must be found within these ranges.
-    # 
+    #
     # Default accepts codepoints in the ASCII character set
     @valid_codepoints : Array(Range(Int32, Int32)) = [(0x0000..0x007F)]
 
     # Returns `true` if this module should check text for uniqueness
-    # 
+    #
     # Returns `false` otherwise
     getter? check_text : Bool? = false
 
     # Returns `true` if this module should check media (photos, audio, videos, etc.) for uniqueness
-    # 
+    #
     # Returns `false` otherwise
     getter? check_media : Bool? = false
 
     # Returns `true` if this module should check forwards for uniqueness
-    # 
+    #
     # If true, this module should also check for unique text or media if `check_text` or `check_media` is toggled, respectively.
-    # 
+    #
     # Returns `false` otherwise
     getter? check_forwards : Bool? = false
 
     # Returns `true` if this module should give the user a warning for unoriginal messages
-    # 
+    #
     # If true, the unoriginal message cooldown should scale with user warnings
-    # 
+    #
     # Returns `false` otherwise
     getter? warn_user : Bool? = false
 
@@ -61,7 +61,7 @@ module PrivateParlorXT
     end
 
     # Returns `true` if the given *text* has valid codepoints or is empty
-    # 
+    #
     # Returns `false` if any character/codepoint in the given *text* is not found in `valid_codepoints`
     def allow_text?(text : String) : Bool
       return true if text.empty?
@@ -146,9 +146,9 @@ module PrivateParlorXT
     #   - Message is a forward, but this `Robot9000` is not configured to check forwards for uniqueness
     #   - No media file ID could be found when checking message media
     #   - Message is unique
-    # 
+    #
     # Returns `false` if the message does not pass the `text_check` or the `media_check`; *message* is unoriginal
-    # 
+    #
     # The unique text and/or file_id will be stored to flag future messages of the same kind as unoriginal
     def unique_message?(user : User, message : Tourmaline::Message, services : Services, text : String? = nil) : Bool
       return true if message.preformatted?
@@ -158,9 +158,9 @@ module PrivateParlorXT
         unless text
           text = message.text || message.caption || ""
         end
-  
+
         entities = message.caption_entities.empty? ? message.entities : message.caption_entities
-  
+
         stripped_text = strip_text(text, entities)
 
         return false unless unique_text = unique_text(user, message, services, stripped_text)
@@ -184,7 +184,7 @@ module PrivateParlorXT
     end
 
     # Returns the *text* if the *message*'s text or caption is unique
-    # 
+    #
     # Returns `nil` if the *message*'s text or caption is not unique, and cooldowns the sender if configured to do so
     def unique_text(user : User, message : Tourmaline::Message, services : Services, text : String) : String?
       if unoriginal_text?(text)
@@ -195,11 +195,11 @@ module PrivateParlorXT
         return unoriginal_message(user, message, services)
       end
 
-     text
+      text
     end
 
     # Returns the *file_id* if the *message*'s media is unique
-    # 
+    #
     # Returns `nil` if the *message*'s media is not unique, and cooldowns the sender if configured to do so
     def unique_media(user : User, message : Tourmaline::Message, services : Services, file_id : String) : String?
       if unoriginal_media?(file_id)

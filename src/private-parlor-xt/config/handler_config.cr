@@ -20,7 +20,7 @@ module PrivateParlorXT
 
     # A hash of `String` => `String` mapping the name of a chat to the chat's username
     getter linked_network : Hash(String, String) = {} of String => String
-    
+
     # Whether or not to allow users to send photos, videos, or GIFs with a spoiler overlay
     getter allow_spoilers : Bool? = false
 

@@ -93,7 +93,8 @@ module PrivateParlorXT
         }
 
         restricted_user_services = create_services(
-          ranks: restricted_ranks,)
+          ranks: restricted_ranks,
+        )
 
         generate_users(restricted_user_services.database)
 
@@ -194,9 +195,9 @@ module PrivateParlorXT
 
       it "returns early if user is spamming" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           spam: SpamHandler.new(
-            spam_limit: 10, 
+            spam_limit: 10,
             score_animation: 2,
             score_text: 0,
             score_line: 5,
@@ -259,7 +260,7 @@ module PrivateParlorXT
 
       it "returns early if message is not unique" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           r9k: SQLiteRobot9000.new(
             DB.open("sqlite3://%3Amemory%3A"),
             check_media: true,
@@ -330,7 +331,7 @@ module PrivateParlorXT
         services = create_services(ranks: ranks)
 
         handler = TripcodeSignCommand.new(MockConfig.new)
-    
+
         generate_users(services.database)
 
         tourmaline_user = Tourmaline::User.new(60200, false, "voorbeeld")
@@ -488,7 +489,7 @@ module PrivateParlorXT
         services = create_services(ranks: ranks)
 
         handler = TripcodeSignCommand.new(MockConfig.new)
-        
+
         generate_users(services.database)
 
         unless beispiel = services.database.get_user(80300)

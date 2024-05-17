@@ -32,7 +32,7 @@ module PrivateParlorXT
         CommandPermissions::Whitelist    => "/whitelist [ID] - #{services.descriptions.whitelist}",
         CommandPermissions::Purge        => "/purge - #{services.descriptions.purge}",
         CommandPermissions::MotdSet      => "/motd - #{services.descriptions.motd_set}",
-        CommandPermissions::Unblacklist   => "/unblacklist [name/ID]  - #{services.descriptions.unblacklist}",
+        CommandPermissions::Unblacklist  => "/unblacklist [name/ID]  - #{services.descriptions.unblacklist}",
       }
 
       reply_required = {
@@ -70,9 +70,9 @@ module PrivateParlorXT
         reply_commands = [] of String
 
         if rank.command_permissions.includes?(CommandPermissions::RanksayLower)
-          lower_ranks = ranks.select{|k, _| k <= user.rank && k != -10}
+          lower_ranks = ranks.select { |k, _| k <= user.rank && k != -10 }
 
-          lower_ranks.each do |k, v|
+          lower_ranks.each do |_, v|
             ranksay_permissions = Set{CommandPermissions::Ranksay, CommandPermissions::RanksayLower}
 
             unless (v.command_permissions & ranksay_permissions).empty?

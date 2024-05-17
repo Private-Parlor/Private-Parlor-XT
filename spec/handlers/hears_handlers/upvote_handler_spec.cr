@@ -2,7 +2,6 @@ require "../../spec_helper.cr"
 
 module PrivateParlorXT
   describe UpvoteHandler do
-
     describe "#do" do
       it "returns early if user's rank cannot upvote" do
         services = create_services(
@@ -11,7 +10,7 @@ module PrivateParlorXT
               "Mod",
               Set(CommandPermissions).new,
               Set(MessagePermissions).new,
-            )
+            ),
           },
         )
 
@@ -20,7 +19,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -59,7 +58,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -81,7 +80,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.no_reply))
       end
 
-      it "returns early with 'not in cache' response if reply message does not exist in message history" do 
+      it "returns early with 'not in cache' response if reply message does not exist in message history" do
         services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
@@ -89,7 +88,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -122,7 +121,7 @@ module PrivateParlorXT
 
       it "returns early with 'spamming' response if user is spamming upvotes" do
         services = create_services(
-          spam: SpamHandler.new(),
+          spam: SpamHandler.new,
         )
 
         handler = UpvoteHandler.new(MockConfig.new)
@@ -130,7 +129,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -183,16 +182,15 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.upvote_spam))
       end
 
-      it "returns early if user already upvoted the message or attempted to upvote his own message" do 
-        services = create_services(
-        )
+      it "returns early if user already upvoted the message or attempted to upvote his own message" do
+        services = create_services()
 
         handler = UpvoteHandler.new(MockConfig.new)
 
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -296,7 +294,7 @@ module PrivateParlorXT
       it "records message statistics" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         database = SQLiteDatabase.new(connection)
-        
+
         services = create_services(
           database: database,
           statistics: SQLiteStatistics.new(connection),
@@ -307,7 +305,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -349,7 +347,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -767,7 +765,7 @@ module PrivateParlorXT
 
         generate_users(services.database)
         generate_history(services.history)
-        
+
         unless user = services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
@@ -843,7 +841,7 @@ module PrivateParlorXT
       it "updates the number of upvotes" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         database = SQLiteDatabase.new(connection)
-        
+
         services = create_services(
           database: database,
           statistics: SQLiteStatistics.new(connection),
@@ -983,11 +981,11 @@ module PrivateParlorXT
         services = create_services(
           config: HandlerConfig.new(MockConfig.new(karma_levels: {
             (Int32::MIN...0) => "Junk",
-            (0...10) => "Normal",
-            (10...20) => "Common",
-            (20...30) => "Uncommon",
-            (30...40) => "Rare",
-            (40...50) => "Legendary",
+            (0...10)         => "Normal",
+            (10...20)        => "Common",
+            (20...30)        => "Uncommon",
+            (30...40)        => "Rare",
+            (40...50)        => "Legendary",
             (50..Int32::MAX) => "Unique",
           }))
         )
@@ -1155,11 +1153,11 @@ module PrivateParlorXT
         services = create_services(
           config: HandlerConfig.new(MockConfig.new(karma_levels: {
             (Int32::MIN...0) => "Junk",
-            (0...10) => "Normal",
-            (10...20) => "Common",
-            (20...30) => "Uncommon",
-            (30...40) => "Rare",
-            (40...50) => "Legendary",
+            (0...10)         => "Normal",
+            (10...20)        => "Common",
+            (20...30)        => "Uncommon",
+            (30...40)        => "Rare",
+            (40...50)        => "Legendary",
             (50..Int32::MAX) => "Unique",
           }))
         )
@@ -1174,16 +1172,16 @@ module PrivateParlorXT
 
         messages.size.should(eq(0))
       end
-      
+
       it "queues 'leveled up' response when reply user has gained a level" do
         services = create_services(
           config: HandlerConfig.new(MockConfig.new(karma_levels: {
             (Int32::MIN...0) => "Junk",
-            (0...10) => "Normal",
-            (10...20) => "Common",
-            (20...30) => "Uncommon",
-            (30...40) => "Rare",
-            (40...50) => "Legendary",
+            (0...10)         => "Normal",
+            (10...20)        => "Common",
+            (20...30)        => "Uncommon",
+            (30...40)        => "Rare",
+            (40...50)        => "Legendary",
             (50..Int32::MAX) => "Unique",
           }))
         )
@@ -1195,13 +1193,13 @@ module PrivateParlorXT
         handler.karma_level_up(reply_user, ReplyParameters.new(6, 9000), services)
 
         expected = Format.substitute_reply(services.replies.karma_level_up, {
-          "level" => "Rare"
+          "level" => "Rare",
         })
 
         messages = services.relay.as(MockRelay).empty_queue
 
         messages.size.should(eq(1))
-        
+
         messages[0].receiver.should(eq(9000))
         messages[0].data.should(eq(expected))
       end

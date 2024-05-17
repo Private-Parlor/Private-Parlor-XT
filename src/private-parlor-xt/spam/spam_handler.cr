@@ -2,7 +2,6 @@ require "../constants.cr"
 require "yaml"
 
 module PrivateParlorXT
-
   # A module used for keeping track of the frequency of a user's message posting in order to prevent spam
   class SpamHandler
     include YAML::Serializable
@@ -195,105 +194,105 @@ module PrivateParlorXT
     end
 
     # Returns `true` if the text message was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_text?(user : UserID, text : String) : Bool
       spammy?(user, score_text + (text.size * score_character) + (text.lines.size * score_line))
     end
 
     # Returns `true` if the photo was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_photo?(user : UserID) : Bool
       spammy?(user, score_photo)
     end
 
     # Returns `true` if the animation was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_animation?(user : UserID) : Bool
       spammy?(user, score_animation)
     end
 
     # Returns `true` if the video was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_video?(user : UserID) : Bool
       spammy?(user, score_video)
     end
 
     # Returns `true` if the audio was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_audio?(user : UserID) : Bool
       spammy?(user, score_audio)
     end
 
     # Returns `true` if the voice message was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_voice?(user : UserID) : Bool
       spammy?(user, score_voice)
     end
 
     # Returns `true` if the document was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_document?(user : UserID) : Bool
       spammy?(user, score_document)
     end
 
     # Returns `true` if the poll was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_poll?(user : UserID) : Bool
       spammy?(user, score_poll)
     end
 
     # Returns `true` if the forwarded message was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_forward?(user : UserID) : Bool
       spammy?(user, score_forwarded_message)
     end
 
     # Returns `true` if the video note was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_video_note?(user : UserID) : Bool
       spammy?(user, score_video_note)
     end
 
     # Returns `true` if the sticker was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_sticker?(user : UserID) : Bool
       spammy?(user, score_sticker)
     end
 
     # Returns `true` if the album was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_album?(user : UserID) : Bool
       spammy?(user, score_media_group)
     end
 
     # Returns `true` if the venue was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_venue?(user : UserID) : Bool
       spammy?(user, score_venue)
     end
 
     # Returns `true` if the location was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_location?(user : UserID) : Bool
       spammy?(user, score_location)
     end
 
     # Returns `true` if the contact was spammy
-    # 
+    #
     # Returns `false` otherwise
     def spammy_contact?(user : UserID) : Bool
       spammy?(user, score_contact)

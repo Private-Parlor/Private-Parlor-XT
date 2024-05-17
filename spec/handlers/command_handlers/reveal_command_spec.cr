@@ -108,7 +108,6 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
         message = Tourmaline::Message.new(
@@ -128,7 +127,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.no_reply))
       end
 
-      it "returns early with 'not in cache' response if reply message does not exist in message history" do 
+      it "returns early with 'not in cache' response if reply message does not exist in message history" do
         services = create_services(ranks: ranks)
 
         handler = RevealCommand.new(MockConfig.new)
@@ -202,7 +201,7 @@ module PrivateParlorXT
       it "returns early is user is spamming signatures" do
         services = create_services(
           ranks: ranks,
-          spam: SpamHandler.new(),
+          spam: SpamHandler.new,
         )
 
         handler = RevealCommand.new(MockConfig.new)

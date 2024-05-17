@@ -83,7 +83,7 @@ module PrivateParlorXT
 
         messages[0].data.should(eq(services.replies.fail))
       end
-      
+
       it "returns early if given no argument, or argument is not a number" do
         services = create_services(
           ranks: ranks,
@@ -91,13 +91,14 @@ module PrivateParlorXT
             MockConfig.new(
               registration_open: false,
             ),
-          ),)
+          ),
+        )
 
         handler = WhitelistCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        unless user = services.database.get_user(20000)
+        unless services.database.get_user(20000)
           fail("User 20000 should exist in the database")
         end
 
@@ -133,10 +134,10 @@ module PrivateParlorXT
         messages.size.should(eq(1))
         messages[0].data.should(eq(services.replies.missing_args))
       end
-      
-      it "returns early if user exists with the given ID" do 
+
+      it "returns early if user exists with the given ID" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           config: HandlerConfig.new(
             MockConfig.new(
               registration_open: false,
@@ -148,7 +149,7 @@ module PrivateParlorXT
 
         generate_users(services.database)
 
-        unless user = services.database.get_user(20000)
+        unless services.database.get_user(20000)
           fail("User 20000 should exist in the database")
         end
 
@@ -169,10 +170,10 @@ module PrivateParlorXT
         messages.size.should(eq(1))
         messages[0].data.should(eq(services.replies.already_whitelisted))
       end
-      
+
       it "updates user actitivy" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           config: HandlerConfig.new(
             MockConfig.new(
               registration_open: false,

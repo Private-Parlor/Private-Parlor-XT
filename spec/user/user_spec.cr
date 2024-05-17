@@ -6,10 +6,9 @@ module PrivateParlorXT
       it "returns an array of all user object values" do
         joined = Time.utc
         last_active = Time.utc
-        cooldown_until = Time.utc
-        
+
         user = MockUser.new(
-          id: 9000, 
+          id: 9000,
           username: "UserNineThousand",
           realname: "User9000",
           rank: 0,
@@ -41,7 +40,7 @@ module PrivateParlorXT
           25,
           false,
           true,
-          "Test#TEST"
+          "Test#TEST",
         ]
 
         arr = user.to_a
@@ -207,7 +206,7 @@ module PrivateParlorXT
       it "handles overflow error; keeps karma at max value" do
         user = MockUser.new(9000, karma: Int32::MAX)
 
-        user.increment_karma()
+        user.increment_karma
 
         user.karma.should(eq(Int32::MAX))
 
@@ -231,7 +230,7 @@ module PrivateParlorXT
       it "handles overflow error; keeps karma at min value" do
         user = MockUser.new(9000, karma: Int32::MIN)
 
-        user.decrement_karma()
+        user.decrement_karma
 
         user.karma.should(eq(Int32::MIN))
 
@@ -326,7 +325,7 @@ module PrivateParlorXT
         user.cooldown_until.should(be_nil)
       end
 
-      it "returns true if user is not in cooldown" do 
+      it "returns true if user is not in cooldown" do
         user = MockUser.new(9000)
 
         user.remove_cooldown.should(be_true)

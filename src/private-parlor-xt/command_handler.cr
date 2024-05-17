@@ -3,7 +3,7 @@ require "tourmaline"
 
 module PrivateParlorXT
   # Annotation for Telegram command handlers
-  # 
+  #
   # ## Keys and Values:
   #
   # `command`
@@ -17,11 +17,10 @@ module PrivateParlorXT
   end
 
   # A base class for handling a Telegram command
-  # 
-  # Handlers that are meant to respond to commands (messages that start with '/') should inherit this class, 
+  #
+  # Handlers that are meant to respond to commands (messages that start with '/') should inherit this class,
   # and include a `RespondsTo` annotation to have it be usable by the bot.
   abstract class CommandHandler < Handler
-
     # Gets the `User` with updated names from the given *message* and returns it if the message is a command, the user exists, and the user is not blacklisted
     def user_from_message(message : Tourmaline::Message, services : Services) : User?
       return unless info = message.from
@@ -54,7 +53,7 @@ module PrivateParlorXT
     end
 
     # Checks if the user's `Rank` contain the given `CommandPermissions`
-    # 
+    #
     # Returns `true` if it does, `false` otherwise
     def authorized?(user : User, message : Tourmaline::Message, permission : CommandPermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, permission)
@@ -66,7 +65,7 @@ module PrivateParlorXT
     end
 
     # Checks if the user's `Rank` contains any of the given `CommandPermissions`
-    # 
+    #
     # If it does, it returns the one `CommandPermissions`
     # Returns `nil` otherwise
     def authorized?(user : User, message : Tourmaline::Message, services : Services, *permissions : CommandPermissions) : CommandPermissions?
@@ -78,7 +77,7 @@ module PrivateParlorXT
     end
 
     # Deletes the message group associated with the given *message* ID in the chat and from the `History`
-    # 
+    #
     # Returns the original `MessageID` of the associated message group
     def delete_messages(message : MessageID, user : UserID, debug_enabled : Bool?, services : Services) : MessageID?
       reply_msids = services.history.receivers(message)
@@ -95,7 +94,7 @@ module PrivateParlorXT
     end
 
     # Removes the bot command message entity from *entities* and subtracts the index of the *arg* start from the offset of each message entity in *entities*
-    # 
+    #
     # Returns an array of updated `Tourmaline::MessageEntity`
     def remove_command_entity(text : String, entities : Array(Tourmaline::MessageEntity), arg : String) : Array(Tourmaline::MessageEntity)
       if command_entity = entities.find { |item| item.type == "bot_command" && item.offset == 0 }

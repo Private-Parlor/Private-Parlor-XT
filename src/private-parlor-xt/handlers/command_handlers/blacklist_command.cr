@@ -54,7 +54,7 @@ module PrivateParlorXT
       send_messages(args[1]?, blacklisted_user, user, nil, message, services)
     end
 
-    # Blacklists the *blacklisted_user* and removes all messages sent by and addressed to him if his rank does not equal to or exceed *invoker's* rank 
+    # Blacklists the *blacklisted_user* and removes all messages sent by and addressed to him if his rank does not equal to or exceed *invoker's* rank
     def blacklist_user(blacklisted_user : User, invoker : User, message : MessageID, reason : String?, services : Services) : Bool?
       unless blacklisted_user.rank < invoker.rank
         return services.relay.send_to_user(ReplyParameters.new(message), invoker.id, services.replies.fail)

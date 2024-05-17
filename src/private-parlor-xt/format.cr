@@ -13,7 +13,8 @@ module PrivateParlorXT
     end
 
     # A simple wrapper for `Tourmaline::Helpers.escape_md` that defaults to escaping *text* according to Telegram's MarkdownV2
-    def escape_mdv2(text : String?) String
+    def escape_mdv2(text : String?)
+      String
       escape_md(text, version: 2)
     end
 
@@ -80,8 +81,8 @@ module PrivateParlorXT
       return text, entities
     end
 
-    # Checks the text and entities from the given *message* for validity. 
-    # 
+    # Checks the text and entities from the given *message* for validity.
+    #
     # Used for signature commands where the text should not be formatted or given a tripcode header if pseudonymous mode is enabled
     def validate_text_and_entities(message : Tourmaline::Message, user : User, services : Services) : Tuple(String?, Array(Tourmaline::MessageEntity))
       text = message.caption || message.text || ""

@@ -62,7 +62,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -84,14 +84,14 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.no_reply))
       end
 
-      it "returns early with 'not in cache' response if reply message does not exist in message history" do 
+      it "returns early with 'not in cache' response if reply message does not exist in message history" do
         services = create_services(ranks: ranks)
 
         handler = DeleteCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -202,7 +202,7 @@ module PrivateParlorXT
         duration = temp_user.cooldown(services.config.cooldown_base)
 
         expected = Format.substitute_reply(services.replies.message_deleted, {
-          "reason" => Format.reason("detailed reason", services.replies),
+          "reason"   => Format.reason("detailed reason", services.replies),
           "duration" => Format.time_span(duration, services.locale),
         })
 

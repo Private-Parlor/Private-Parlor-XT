@@ -52,7 +52,7 @@ module PrivateParlorXT
     end
 
     # Checks if the user is spamming video messages
-    # 
+    #
     # Returns `true` if the user is spamming video messages, `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
@@ -66,13 +66,13 @@ module PrivateParlorXT
     end
 
     # Checks if the user has sufficient karma to send a video message when `KarmaHandler` is enabled
-    # 
+    #
     # Returns `true` if:
     #   - `KarmaHandler` is not enabled
     #   - The price for video messages is less than 0
     #   - The *user's* `Rank` is equal to or greater than the cutoff `Rank`
     #   - User has sufficient karma
-    # 
+    #
     # Returns `nil` if the user does not have sufficient karma
     def sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
       return true unless karma = services.karma
@@ -95,8 +95,7 @@ module PrivateParlorXT
       true
     end
 
-
-    # Returns the `User` with decremented karma when `KarmaHandler` is enabled and 
+    # Returns the `User` with decremented karma when `KarmaHandler` is enabled and
     # *user* has sufficient karma for a video message
     def spend_karma(user : User, services : Services) : User
       return user unless karma = services.karma

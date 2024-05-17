@@ -2,9 +2,8 @@ require "./handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-
   # Annotation for Telegram update handlers
-  # 
+  #
   # ## Keys and Values:
   #
   # `update`
@@ -17,14 +16,13 @@ module PrivateParlorXT
   end
 
   # A base class for handling one of the Telegram updates (`Tourmaline::Text`, `Tourmaline::Photo`, `Tourmaline::ForwardedMessage`, etc).
-  # 
-  # Handlers that are meant to work with Telegram updates should inherit this class, 
+  #
+  # Handlers that are meant to work with Telegram updates should inherit this class,
   # and include an `On` annotation to have it be usable by the bot.
   abstract class UpdateHandler < Handler
-
     # Returns the `User` associated with the message if the `User` could be found in the `Database`.
     # This will also update the `User`'s username and realname if they have changed since the last message.
-    # 
+    #
     # Returns `nil`  if:
     #   - Message has no sender
     #   - Message is a command
@@ -53,7 +51,7 @@ module PrivateParlorXT
     end
 
     # Returns `true` if user is authorized to send this type of message (one of the `MessagePermissions` types).
-    # 
+    #
     # Returns `false` otherwise.
     def authorized?(user : User, message : Tourmaline::Message, authority : MessagePermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, authority)
@@ -66,7 +64,7 @@ module PrivateParlorXT
     end
 
     # Returns `true` if the *message* is not a forward or an album.
-    # 
+    #
     # Returns `false` otherwise.
     def meets_requirements?(message : Tourmaline::Message) : Bool
       return false if message.forward_origin
@@ -99,9 +97,9 @@ module PrivateParlorXT
 
     # Returns a hash of a receiver's `UserID` to the relevant message ID for which this message will reply to when relayed.
     # When quoting, the `ReplyParameters` value will contain the replied message's quote if it is not invalid (i.e., user quoted his own message and it had strippable entities or was edited)
-    # 
+    #
     # The hash will be empty if the message does not have a reply
-    # 
+    #
     # Returns nil if the message had a reply, but no receiver message IDs could be found (message replied to is no longer in the cache)
     def reply_receivers(message : Tourmaline::Message, user : User, services : Services) : Hash(UserID, ReplyParameters)?
       return Hash(UserID, ReplyParameters).new unless reply = message.reply_to_message
@@ -144,7 +142,7 @@ module PrivateParlorXT
     end
 
     # Returns an array of `UserID` for which the relayed message will be sent to
-    # 
+    #
     # If the given *User* has debug mode enabled, he will get a copy of the relayed message
     def message_receivers(user : User, services : Services) : Array(UserID)
       if user.debug_enabled
@@ -162,7 +160,7 @@ module PrivateParlorXT
     end
 
     # Returns early if the message *text* contains a command.
-    # 
+    #
     # Iterates through all `HearsHandlers` that are meant to be commands,
     # and returns early if the handler matches a substring in the text (for `RegexLiteral` patterns)
     # or if the handler starts with a substring (for `StringLiteral` patterns)
@@ -170,8 +168,8 @@ module PrivateParlorXT
       return if text.starts_with?('/')
 
       {% for hears_handler in HearsHandler.all_subclasses.select { |sub_class|
-                        (hears = sub_class.annotation(Hears))
-                      } %}
+                                (hears = sub_class.annotation(Hears))
+                              } %}
 
         {% hears = hears_handler.annotation(Hears) %}
 
@@ -180,7 +178,7 @@ module PrivateParlorXT
         {% elsif hears[:command] && hears[:pattern].is_a?(StringLiteral) %}
           return if text.starts_with?({{hears[:pattern]}})
         {% end %}
-      
+
       {% end %}
     end
   end

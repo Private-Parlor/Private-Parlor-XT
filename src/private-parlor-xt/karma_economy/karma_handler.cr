@@ -1,9 +1,8 @@
 require "yaml"
 
 module PrivateParlorXT
-
   # A module that requires users to have a certain amount of karma before sending a message
-  # 
+  #
   # Each message has a specific among of karma necessary before a message of that type can be sent.
   # If a message of that type is sent, the amount for that type will be deducted from the user's karma.
   class KarmaHandler
@@ -89,7 +88,7 @@ module PrivateParlorXT
       @karma_sticker : Int32 = 2,
       @karma_venue : Int32 = 10,
       @karma_location : Int32 = 10,
-      @karma_contact : Int32 = 10,
+      @karma_contact : Int32 = 10
     )
     end
   end

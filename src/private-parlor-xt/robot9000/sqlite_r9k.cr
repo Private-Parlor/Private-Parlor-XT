@@ -3,7 +3,6 @@ require "../robot9000.cr"
 require "db"
 
 module PrivateParlorXT
-
   # An implementation of `Robot9000` using the `Database` to store unique text and media IDs
   class SQLiteRobot9000 < Robot9000
     @connection : DB::Database

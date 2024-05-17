@@ -58,6 +58,7 @@ module PrivateParlorXT
 
       services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, response)
     end
+
     # Formats a loading bar for the /karmainfo command
     def karma_loading_bar(percentage : Float32, services : Services) : String
       pips = (percentage.floor.to_i).divmod(10)

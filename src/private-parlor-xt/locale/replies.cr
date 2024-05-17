@@ -1,7 +1,6 @@
 require "yaml"
 
 module PrivateParlorXT
-
   # A container for various system message replies
   class Replies
     include YAML::Serializable
@@ -323,7 +322,7 @@ module PrivateParlorXT
     getter karma_stats : String
 
     @[YAML::Field(key: "karma_level_stats")]
-    # Message containing totals for each karma level when `Statistics` are enabled 
+    # Message containing totals for each karma level when `Statistics` are enabled
     getter karma_level_stats : String
 
     @[YAML::Field(key: "robot9000_stats")]

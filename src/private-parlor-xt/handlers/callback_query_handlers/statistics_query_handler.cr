@@ -2,7 +2,6 @@ require "../../callback_query_handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-
   # A `CallbackHandler` that responds to callback queries originating from the inline keyboard buttons found on the message produced by `StatsCommand`
   class StatisticsQueryHandler < CallbackHandler
     # Parses the query found in *callback* and returns the associated statistics screen if *callback* meets requirements

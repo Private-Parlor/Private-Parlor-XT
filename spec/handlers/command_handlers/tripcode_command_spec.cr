@@ -7,7 +7,7 @@ module PrivateParlorXT
         services = create_services()
 
         handler = TripcodeCommand.new(MockConfig.new)
-    
+
         generate_users(services.database)
 
         tourmaline_user = Tourmaline::User.new(20000, false, "example")
@@ -42,7 +42,7 @@ module PrivateParlorXT
         )
 
         handler = TripcodeCommand.new(MockConfig.new)
-    
+
         generate_users(services.database)
 
         tourmaline_user = Tourmaline::User.new(20000, false, "example")
@@ -94,14 +94,14 @@ module PrivateParlorXT
           fail("User 20000 should exist in the database")
         end
 
-        user.last_active.should(be < updated_user.last_active)  
+        user.last_active.should(be < updated_user.last_active)
       end
 
       it "sets user tripcode" do
         services = create_services()
 
         handler = TripcodeCommand.new(MockConfig.new)
-    
+
         generate_users(services.database)
 
         tourmaline_user = Tourmaline::User.new(20000, false, "example")
@@ -224,7 +224,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(expected))
 
         user.set_tripcode("name#example")
-        
+
         services.database.update_user(user)
 
         handler.do(message, services)
@@ -314,9 +314,9 @@ module PrivateParlorXT
 
         expected = Format.substitute_message(services.replies.tripcode_set, {
           "set_format" => Format.substitute_reply(services.replies.tripcode_set_format, {
-            "name" => "name",
+            "name"     => "name",
             "tripcode" => "!ozOtJW9BFA",
-          })
+          }),
         })
 
         result = handler.tripcode_set(
@@ -331,7 +331,7 @@ module PrivateParlorXT
         expected = Format.substitute_message(services.replies.tripcode_set, {
           "set_format" => Format.substitute_reply(services.replies.flag_sign_set_format, {
             "name" => "🦤🦆🕊️🐦🦃",
-          })
+          }),
         })
 
         result = handler.tripcode_set(

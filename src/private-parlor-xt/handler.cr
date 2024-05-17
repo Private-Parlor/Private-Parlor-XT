@@ -1,11 +1,10 @@
 require "tourmaline"
 
 module PrivateParlorXT
-
   # The base class for all message handlers
   abstract class Handler
-    # Initializes an instance of `Handler` 
-    # 
+    # Initializes an instance of `Handler`
+    #
     # The *config* can be used to modify the functionality of the handler
     def initialize(config : Config)
     end
@@ -22,7 +21,7 @@ module PrivateParlorXT
     # Returns the given *message's* reply, if it exists
     def reply_message(user : User, message : Tourmaline::Message, services : Services) : Tourmaline::Message?
       unless message.reply_to_message
-        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.no_reply) 
+        return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.no_reply)
       end
 
       message.reply_to_message
@@ -42,7 +41,7 @@ module PrivateParlorXT
     end
 
     # Checks the given *message* for uniqueness and returns `true` if the message is unique
-    # 
+    #
     # Returns `false` if the message is unoriginal
     def unique?(user : User, message : Tourmaline::Message, services : Services, text : String? = nil) : Bool
       return true unless r9k = services.robot9000

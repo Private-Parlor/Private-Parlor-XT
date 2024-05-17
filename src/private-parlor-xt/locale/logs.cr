@@ -1,7 +1,6 @@
 require "yaml"
 
 module PrivateParlorXT
-
   # A container for various log messages
   class Logs
     include YAML::Serializable

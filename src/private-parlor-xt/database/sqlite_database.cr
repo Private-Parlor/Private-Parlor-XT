@@ -2,7 +2,6 @@ require "../database.cr"
 require "sqlite3"
 
 module PrivateParlorXT
-
   # An implementation of `Database` that uses a SQLite database for storing information about `SQLiteUser` objects
   class SQLiteDatabase < Database
     # The path to the SQLite database

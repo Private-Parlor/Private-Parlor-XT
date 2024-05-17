@@ -3,7 +3,6 @@ require "./message_permissions.cr"
 require "yaml"
 
 module PrivateParlorXT
-
   # Represents a `Rank` which a user may belong to
   class Rank
     include YAML::Serializable

@@ -7,7 +7,7 @@ module PrivateParlorXT
         config = MockConfig.new(
           database_history: false,
           spam_interval: 0,
-          spam_handler: SpamHandler.new(),
+          spam_handler: SpamHandler.new,
           toggle_r9k_text: false,
           toggle_r9k_media: false,
           toggle_r9k_forwards: false,
@@ -36,11 +36,11 @@ module PrivateParlorXT
         config = MockConfig.new(
           database_history: true,
           spam_interval: 10,
-          spam_handler: SpamHandler.new(),
+          spam_handler: SpamHandler.new,
           toggle_r9k_text: true,
           toggle_r9k_media: true,
           toggle_r9k_forwards: false,
-          karma_economy: KarmaHandler.new(),
+          karma_economy: KarmaHandler.new,
           statistics: true,
         )
 

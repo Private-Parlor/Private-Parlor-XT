@@ -3,7 +3,6 @@ require "./command_permissions.cr"
 require "./message_permissions.cr"
 
 module PrivateParlorXT
-
   # A handler for `Rank` and determines if a `Rank` has access to certain commands and message types
   class AuthorizedRanks
     # A hash of `Int32` to `Rank`, where each value represents a `Rank`
@@ -132,7 +131,7 @@ module PrivateParlorXT
 
     # Converts the given *rank* string into a string that can be used for a `RanksayCommand`, preceding the '-say' substring
     def ranksay(rank : String) : String
-      # Bot commands can only have English text, underscores, and digits 
+      # Bot commands can only have English text, underscores, and digits
       rank = rank.gsub("_", " ")
       rank = rank.gsub(/[[:punct:]]|[^[:ascii:]]/, "")
       rank = rank.gsub(/\s{1,}/, "_")

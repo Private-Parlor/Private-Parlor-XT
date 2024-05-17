@@ -8,7 +8,7 @@ module PrivateParlorXT
     getter origin : MessageID | Array(MessageID) | Nil
 
     # The sender of the message group from which this `QueuedMessage` originates
-    # 
+    #
     # Set to `nil` for system messages
     getter sender : UserID?
 
@@ -16,7 +16,7 @@ module PrivateParlorXT
     getter receiver : UserID
 
     # Data about the message this `QueuedMessage` replies to
-    # 
+    #
     # Set to `nil` if this `QueuedMessage` does not reply to a message
     getter reply : ReplyParameters?
 

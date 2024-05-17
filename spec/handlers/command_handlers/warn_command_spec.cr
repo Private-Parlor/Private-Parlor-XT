@@ -62,7 +62,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -84,7 +84,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.no_reply))
       end
 
-      it "returns early with 'not in cache' response if reply message does not exist in message history" do 
+      it "returns early with 'not in cache' response if reply message does not exist in message history" do
         services = create_services(ranks: ranks)
 
         handler = WarnCommand.new(MockConfig.new)
@@ -92,7 +92,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -123,7 +123,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.not_in_cache))
       end
 
-      it "returns early if message was already warned" do 
+      it "returns early if message was already warned" do
         services = create_services(ranks: ranks)
 
         handler = WarnCommand.new(MockConfig.new)
@@ -131,6 +131,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
+        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
         bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
 
         reply = Tourmaline::Message.new(
@@ -139,8 +140,6 @@ module PrivateParlorXT
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user
         )
-
-        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
         message = Tourmaline::Message.new(
           message_id: 11,
@@ -156,8 +155,6 @@ module PrivateParlorXT
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(2))
 
-        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
-
         second_warn_message = Tourmaline::Message.new(
           message_id: 12,
           date: Time.utc,
@@ -167,7 +164,7 @@ module PrivateParlorXT
           reply_to_message: reply,
         )
 
-        handler.do(message, services)
+        handler.do(second_warn_message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
@@ -267,7 +264,7 @@ module PrivateParlorXT
           "reason"   => Format.reason("detailed reason", services.replies),
           "duration" => Format.time_span(duration, services.locale),
         })
-        
+
         messages = services.relay.as(MockRelay).empty_queue
 
         messages.size.should(eq(2))

@@ -38,7 +38,7 @@ module PrivateParlorXT
     end
 
     # Returns a `Tourmaline::InputMedia` from the media contents of the given *message*
-    # 
+    #
     # Returns `nil` unless message contains a photo, video, or animation/GIF
     def message_input(message : Tourmaline::Message) : Tourmaline::InputMedia?
       if media = message.photo.last?

@@ -109,14 +109,14 @@ module PrivateParlorXT
         result_text = connection.query_one?("
           SELECT EXISTS (
             SELECT name FROM sqlite_schema WHERE type='table' AND name='text'
-          )", 
+          )",
           as: Int32
         )
 
         result_file_id = connection.query_one?("
           SELECT EXISTS (
             SELECT name FROM sqlite_schema WHERE type='table' AND name='file_id'
-          )", 
+          )",
           as: Int32
         )
 

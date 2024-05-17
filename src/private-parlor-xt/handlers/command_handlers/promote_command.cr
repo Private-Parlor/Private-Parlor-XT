@@ -91,7 +91,7 @@ module PrivateParlorXT
       unless (args = Format.get_args(text, count: 2)) && args.size > 0
         return services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.missing_args)
       end
-      
+
       if args.size == 1 && authority.in?(CommandPermissions::Promote, CommandPermissions::PromoteSame)
         tuple = {user.rank, services.access.ranks[user.rank]}
       elsif args.size == 2

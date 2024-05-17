@@ -461,7 +461,7 @@ module PrivateParlorXT
         r9k.as(MockRobot9000).lines.should(contain("example text"))
         r9k.as(MockRobot9000).files.should(contain("unique_photo"))
       end
-      
+
       it "returns true if message did not have a file ID" do
         services = create_services(
           r9k: MockRobot9000.new(
@@ -822,14 +822,14 @@ module PrivateParlorXT
 
         r9k.unique_message?(user, message, services)
 
-        statistics = stats.robot9000_counts()
+        statistics = stats.robot9000_counts
 
         statistics[Statistics::Robot9000::TotalUnoriginal].should(eq(0))
         statistics[Statistics::Robot9000::UnoriginalText].should(eq(0))
 
         r9k.unique_text(user, message, services, "example text")
 
-        statistics = stats.robot9000_counts()
+        statistics = stats.robot9000_counts
 
         statistics[Statistics::Robot9000::TotalUnoriginal].should(eq(1))
         statistics[Statistics::Robot9000::UnoriginalText].should(eq(1))
@@ -1037,14 +1037,14 @@ module PrivateParlorXT
 
         r9k.unique_message?(user, message, services)
 
-        statistics = stats.robot9000_counts()
+        statistics = stats.robot9000_counts
 
         statistics[Statistics::Robot9000::TotalUnoriginal].should(eq(0))
         statistics[Statistics::Robot9000::UnoriginalMedia].should(eq(0))
 
         r9k.unique_media(user, message, services, "unique_photo")
 
-        statistics = stats.robot9000_counts()
+        statistics = stats.robot9000_counts
 
         statistics[Statistics::Robot9000::TotalUnoriginal].should(eq(1))
         statistics[Statistics::Robot9000::UnoriginalMedia].should(eq(1))

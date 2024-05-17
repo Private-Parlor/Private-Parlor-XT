@@ -30,7 +30,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        user.last_active.should(be < updated_user.last_active) 
+        user.last_active.should(be < updated_user.last_active)
       end
 
       it "queues message with link to source code" do
@@ -40,7 +40,7 @@ module PrivateParlorXT
 
         generate_users(services.database)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -66,7 +66,7 @@ module PrivateParlorXT
     end
 
     describe "#version" do
-      it "returns string containing source code link and information" do 
+      it "returns string containing source code link and information" do
         handler = VersionCommand.new(MockConfig.new)
 
         expected = "Private Parlor XT vspec \\~ [\\[Source\\]](https://github.com/Private-Parlor/Private-Parlor-XT)"

@@ -23,7 +23,7 @@ module PrivateParlorXT
         response = user_info(user, services)
       end
 
-      return unless response 
+      return unless response
 
       update_user_activity(user, services)
 
@@ -52,7 +52,7 @@ module PrivateParlorXT
       if karma_levels.empty?
         current_level = ""
       else
-        current_level = karma_levels.find({(..), ""}) {|range, level| range === user.karma}[1]
+        current_level = karma_levels.find({(..), ""}) { |range, _| range === user.karma }[1]
       end
 
       user.remove_cooldown

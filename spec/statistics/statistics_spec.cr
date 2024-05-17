@@ -4,9 +4,7 @@ module PrivateParlorXT
   describe Statistics do
     describe "#uptime" do
       it "returns time span since class instantiation" do
-        start_time = Time.utc 
-
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         uptime = stats.uptime
 
@@ -32,7 +30,7 @@ module PrivateParlorXT
 
         services = create_services(config: config, history: history, r9k: r9k)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         hash = stats.configuration_details(services)
 
@@ -60,11 +58,11 @@ module PrivateParlorXT
             karma_reasons: true,
           )
         )
-        karma_economy = KarmaHandler.new()
+        karma_economy = KarmaHandler.new
 
         services = create_services(config: config, karma_economy: karma_economy)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.statistic_screen(:General, services)
 
@@ -73,20 +71,20 @@ module PrivateParlorXT
         # Replace uptime data with something we know
         result = result.gsub(/Current uptime: .+ seconds/,
           Format.substitute_reply("Current uptime: {days} days, {hours} hours, {minutes} minutes, {seconds} seconds",
-          {
-            "days" => uptime.days.to_s,
-            "hours" => uptime.hours.to_s,
-            "minutes" => uptime.minutes.to_s,
-            "seconds" => uptime.seconds.to_s,
-          })
+            {
+              "days"    => uptime.days.to_s,
+              "hours"   => uptime.hours.to_s,
+              "minutes" => uptime.minutes.to_s,
+              "seconds" => uptime.seconds.to_s,
+            })
         )
 
         expected = Format.substitute_reply(services.replies.config_stats, {
           "start_date"           => "MOCKED!",
-          "days" => uptime.days.to_s,
-          "hours" => uptime.hours.to_s,
-          "minutes" => uptime.minutes.to_s,
-          "seconds" => uptime.seconds.to_s,
+          "days"                 => uptime.days.to_s,
+          "hours"                => uptime.hours.to_s,
+          "minutes"              => uptime.minutes.to_s,
+          "seconds"              => uptime.seconds.to_s,
           "registration_toggle"  => services.locale.toggle[1],
           "media_limit_period"   => Format.time_span(Time::Span.new(hours: 38), services.locale),
           "message_lifespan"     => services.locale.toggle[0],
@@ -101,11 +99,11 @@ module PrivateParlorXT
       end
 
       it "returns formatted message stats screen" do
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
 
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.statistic_screen(:Messages, services)
 
@@ -141,11 +139,11 @@ module PrivateParlorXT
       end
 
       it "returns formatted user stats screen" do
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
 
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.statistic_screen(:Users, services)
 
@@ -181,11 +179,11 @@ module PrivateParlorXT
       end
 
       it "returns formatted karma stats screen" do
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
 
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.statistic_screen(:Karma, services)
 
@@ -216,22 +214,22 @@ module PrivateParlorXT
       end
 
       it "returns formatted karma level counts screen" do
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
 
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.statistic_screen(:KarmaLevels, services)
 
         karma_level_counts = \
-          "Junk: 3\n" \
-          "Normal: 2\n" \
-          "Common: 3\n" \
-          "Uncommon: 1\n" \
-          "Rare: 1\n" \
-          "Legendary: 1\n" \
-          "Unique: 1\n"
+           "Junk: 3\n" \
+         "Normal: 2\n" \
+         "Common: 3\n" \
+         "Uncommon: 1\n" \
+         "Rare: 1\n" \
+         "Legendary: 1\n" \
+         "Unique: 1\n"
 
         expected = Format.substitute_reply(services.replies.karma_level_stats, {
           "karma_levels" => karma_level_counts,
@@ -242,12 +240,12 @@ module PrivateParlorXT
 
       it "returns formatted robot9000 stats screen" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
         r9k = SQLiteRobot9000.new(connection, check_text: true, check_media: true)
 
         services = create_services(config: config, r9k: r9k)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.statistic_screen(:Robot9000, services)
 
@@ -266,7 +264,7 @@ module PrivateParlorXT
 
     describe "#percent_change" do
       it "returns the percent change from initial to final value" do
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         stats.percent_change(1, 4).should(eq(300.0))
         stats.percent_change(50, 25).should(eq(-50.0))
@@ -276,12 +274,12 @@ module PrivateParlorXT
     end
 
     describe "#keyboard_markup" do
-      it "returns keyboard markup with 3 buttons in rows of three" do 
+      it "returns keyboard markup with 3 buttons in rows of three" do
         config = HandlerConfig.new(MockConfig.new(karma_levels: {} of Range(Int32, Int32) => String))
 
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         keyboard = stats.keyboard_markup(:Users, services)
 
@@ -303,11 +301,11 @@ module PrivateParlorXT
         end
       end
 
-      it "returns keyboard markup with 4 buttons in rows of three with karma levels or r9k" do 
-        config = HandlerConfig.new(MockConfig.new())
+      it "returns keyboard markup with 4 buttons in rows of three with karma levels or r9k" do
+        config = HandlerConfig.new(MockConfig.new)
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         keyboard = stats.keyboard_markup(:Karma, services)
 
@@ -358,14 +356,14 @@ module PrivateParlorXT
         end
       end
 
-      it "returns keyboard markup with 5 buttons in rows of three with karma levels and r9k" do 
+      it "returns keyboard markup with 5 buttons in rows of three with karma levels and r9k" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
         r9k = SQLiteRobot9000.new(connection, check_text: true, check_media: true)
 
         services = create_services(config: config, r9k: r9k)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         keyboard = stats.keyboard_markup(:Robot9000, services)
 
@@ -392,7 +390,7 @@ module PrivateParlorXT
     end
 
     describe "#config_screen" do
-      it "returns formatted bot info screen" do 
+      it "returns formatted bot info screen" do
         start_time = Time.utc
 
         config = HandlerConfig.new(
@@ -404,11 +402,11 @@ module PrivateParlorXT
             karma_reasons: true,
           )
         )
-        karma_economy = KarmaHandler.new()
+        karma_economy = KarmaHandler.new
 
         services = create_services(config: config, karma_economy: karma_economy)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.config_screen(services)
 
@@ -417,20 +415,20 @@ module PrivateParlorXT
         # Replace uptime data with something we know
         result = result.gsub(/Current uptime: .+ seconds/,
           Format.substitute_reply("Current uptime: {days} days, {hours} hours, {minutes} minutes, {seconds} seconds",
-          {
-            "days" => uptime.days.to_s,
-            "hours" => uptime.hours.to_s,
-            "minutes" => uptime.minutes.to_s,
-            "seconds" => uptime.seconds.to_s,
-          })
+            {
+              "days"    => uptime.days.to_s,
+              "hours"   => uptime.hours.to_s,
+              "minutes" => uptime.minutes.to_s,
+              "seconds" => uptime.seconds.to_s,
+            })
         )
 
         expected = Format.substitute_reply(services.replies.config_stats, {
           "start_date"           => "MOCKED!",
-          "days" => uptime.days.to_s,
-          "hours" => uptime.hours.to_s,
-          "minutes" => uptime.minutes.to_s,
-          "seconds" => uptime.seconds.to_s,
+          "days"                 => uptime.days.to_s,
+          "hours"                => uptime.hours.to_s,
+          "minutes"              => uptime.minutes.to_s,
+          "seconds"              => uptime.seconds.to_s,
           "registration_toggle"  => services.locale.toggle[1],
           "media_limit_period"   => Format.time_span(Time::Span.new(hours: 38), services.locale),
           "message_lifespan"     => services.locale.toggle[0],
@@ -447,11 +445,11 @@ module PrivateParlorXT
 
     describe "#message_screen" do
       it "returns formatted message stats screen" do
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
 
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.messages_screen(services)
 
@@ -489,11 +487,11 @@ module PrivateParlorXT
 
     describe "#full_users_screen" do
       it "returns formatted full user stats screen" do
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
 
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.full_users_screen(services)
 
@@ -531,19 +529,19 @@ module PrivateParlorXT
 
     describe "#users_screen" do
       it "returns formatted user stats screen" do
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
 
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.users_screen(services)
 
         expected = Format.substitute_reply(services.replies.user_stats, {
-          "total_users"              => "30",
-          "net_daily"                => "2",
-          "net_weekly"               => "13",
-          "net_monthly"              => "15",
+          "total_users" => "30",
+          "net_daily"   => "2",
+          "net_weekly"  => "13",
+          "net_monthly" => "15",
         })
 
         result.should(eq(expected))
@@ -552,11 +550,11 @@ module PrivateParlorXT
 
     describe "#karma_screen" do
       it "returns formatted karma stats screen" do
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
 
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.karma_screen(services)
 
@@ -589,22 +587,22 @@ module PrivateParlorXT
 
     describe "#karma_levels_screen" do
       it "returns formatted karma level counts screen" do
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
 
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.karma_levels_screen(services)
 
         karma_level_counts = \
-          "Junk: 3\n" \
-          "Normal: 2\n" \
-          "Common: 3\n" \
-          "Uncommon: 1\n" \
-          "Rare: 1\n" \
-          "Legendary: 1\n" \
-          "Unique: 1\n"
+           "Junk: 3\n" \
+         "Normal: 2\n" \
+         "Common: 3\n" \
+         "Uncommon: 1\n" \
+         "Rare: 1\n" \
+         "Legendary: 1\n" \
+         "Unique: 1\n"
 
         expected = Format.substitute_reply(services.replies.karma_level_stats, {
           "karma_levels" => karma_level_counts,
@@ -618,7 +616,7 @@ module PrivateParlorXT
 
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.karma_levels_screen(services)
 
@@ -629,12 +627,12 @@ module PrivateParlorXT
     describe "#robot9000_screen" do
       it "returns formatted robot9000 stats screen" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
         r9k = SQLiteRobot9000.new(connection, check_text: true, check_media: true)
 
         services = create_services(config: config, r9k: r9k)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.robot9000_screen(services)
 
@@ -651,11 +649,11 @@ module PrivateParlorXT
       end
 
       it "return no stats available message when r9k is not toggled" do
-        config = HandlerConfig.new(MockConfig.new())
+        config = HandlerConfig.new(MockConfig.new)
 
         services = create_services(config: config)
 
-        stats = MockStatistics.new()
+        stats = MockStatistics.new
 
         result = stats.robot9000_screen(services)
 

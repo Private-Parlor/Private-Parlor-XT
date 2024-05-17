@@ -391,7 +391,7 @@ module PrivateParlorXT
 
     def edit_message_media(user : UserID, media : Tourmaline::InputMedia, message : MessageID) : Nil
       return unless (queue = @queue) && queue.is_a?(MockMessageQueue)
-      
+
       queue.enqueue_priority(
         user,
         ReplyParameters.new(message),

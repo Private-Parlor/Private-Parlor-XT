@@ -6,7 +6,7 @@ module PrivateParlorXT
   # A command used to give a user a warning and a cooldown without deleting the message
   class WarnCommand < CommandHandler
     # Warns the user who sent a message the given *message* replies to if the *message* meets requirements
-    # 
+    #
     # Warning a message will give the sender a warning and a cooldown, but will not delete the message
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = user_from_message(message, services)

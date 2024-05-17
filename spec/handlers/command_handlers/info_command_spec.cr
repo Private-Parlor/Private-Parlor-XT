@@ -66,7 +66,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -200,7 +200,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.command_disabled))
       end
 
-      it "returns early with 'not in cache' response if reply message does not exist in message history" do 
+      it "returns early with 'not in cache' response if reply message does not exist in message history" do
         services = create_services(ranks: ranks)
 
         handler = InfoCommand.new(MockConfig.new)
@@ -237,49 +237,6 @@ module PrivateParlorXT
         messages.size.should(eq(1))
 
         messages[0].data.should(eq(services.replies.not_in_cache))
-      end
-
-      it "removes cooldown from reply user if it has expired" do
-        services = create_services(ranks: ranks)
-
-        handler = InfoCommand.new(MockConfig.new)
-
-        generate_users(services.database)
-        generate_history(services.history)
-
-        services.history.new_message(50000_i64, 11)
-        services.history.add_to_history(11, 12, 80300)
-
-        unless user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
-
-        bot_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
-        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
-
-        reply = Tourmaline::Message.new(
-          message_id: 12,
-          date: Time.utc,
-          chat: Tourmaline::Chat.new(bot_user.id, "private"),
-          from: bot_user,
-        )
-
-        message = Tourmaline::Message.new(
-          message_id: 13,
-          date: Time.utc,
-          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/info",
-          from: tourmaline_user,
-          reply_to_message: reply
-        )
-
-        handler.ranked_info(user, message, reply, services)
-
-        unless uncooldowned_user = services.database.get_user(50000)
-          fail("User 50000 should exist in the database")
-        end
-
-        user.cooldown_until.should(be_nil)
       end
 
       it "returns info about the reply user" do
@@ -350,16 +307,6 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
-
-        message = Tourmaline::Message.new(
-          message_id: 11,
-          date: Time.utc,
-          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
-          text: "/info",
-          from: tourmaline_user,
-        )
-
         expected = Format.substitute_reply(services.replies.user_info, {
           "oid"            => user.obfuscated_id.to_s,
           "username"       => "beispiel",
@@ -416,7 +363,7 @@ module PrivateParlorXT
         time = Time.utc
 
         expected = Format.substitute_message(services.replies.info_warning, {
-          "warn_expiry" => Format.time(time, services.locale.time_format)
+          "warn_expiry" => Format.time(time, services.locale.time_format),
         })
 
         result = handler.warn_expiry(time, services)

@@ -272,7 +272,7 @@ module PrivateParlorXT
               type: "text_link",
               offset: 0,
               length: 25,
-              url:  "www.google.com"
+              url: "www.google.com"
             ),
           ],
         )
@@ -329,7 +329,7 @@ module PrivateParlorXT
               type: "text_link",
               offset: 0,
               length: 25,
-              url:  "www.google.com"
+              url: "www.google.com"
             ),
           ],
         )
@@ -416,7 +416,7 @@ module PrivateParlorXT
               type: "text_link",
               offset: 0,
               length: 25,
-              url:  "www.google.com"
+              url: "www.google.com"
             ),
           ],
         )
@@ -703,7 +703,7 @@ module PrivateParlorXT
         result.should(eq(expected))
       end
 
-      it "returns nil if reason is nil" do 
+      it "returns nil if reason is nil" do
         services = create_services
 
         result = Format.reason(nil, services.replies)
@@ -723,7 +723,7 @@ module PrivateParlorXT
         result.should(eq(expected))
       end
 
-      it "returns nil if reason is nil" do 
+      it "returns nil if reason is nil" do
         services = create_services
 
         result = Format.reason_log(nil, services.logs)
@@ -734,8 +734,6 @@ module PrivateParlorXT
 
     describe "#strip_format" do
       it "returns text and entities stripped of formatting" do
-        services = create_services
-
         text = "Example text with >>>/foo/ backlinks"
         entities = [
           Tourmaline::MessageEntity.new(
@@ -756,7 +754,7 @@ module PrivateParlorXT
           ),
         ]
 
-        expected = "Example text with >>>/foo/ backlinks\n"\
+        expected = "Example text with >>>/foo/ backlinks\n" \
                    "(www.google.com)"
 
         result_text, result_entities = Format.strip_format(
@@ -1016,7 +1014,7 @@ module PrivateParlorXT
         entities[1].length.should(eq(9))
       end
     end
-    
+
     describe "#flag_sign" do
       it "returns header with updated entities and text for user flags" do
         expected_header = "🦤🦆🕊️:\n"
@@ -1121,7 +1119,6 @@ module PrivateParlorXT
 
       it "returns nil if no contact was given" do
         services = create_services
-
 
         Format.contact(nil, services.replies).should(be_nil)
       end

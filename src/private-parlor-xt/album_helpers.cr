@@ -45,7 +45,7 @@ module PrivateParlorXT
     end
 
     # Returns the `Tourmaline::InputMedia` from the media in the given *message*, if available.
-    # 
+    #
     # Returns `nil` if there was no media in the *message* to create a `Tourmaline::InputMedia`
     def album_input(message : Tourmaline::Message, caption : String, entities : Array(Tourmaline::MessageEntity), allow_spoilers : Bool? = false) : AlbumMedia?
       if media = message.photo.last?
@@ -62,7 +62,7 @@ module PrivateParlorXT
     end
 
     # Relays the given *album* after an arbitrary amount of time, waiting for the rest of the media group updates to come in
-    # 
+    #
     # Returns early if the album is already queued for relaying, and adds the *input* to the Album object.
     def relay_album(albums : Hash(String, Album), album : String, message_id : MessageID, input : AlbumMedia, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, ReplyParameters), services : Services) : Nil
       if albums[album]?

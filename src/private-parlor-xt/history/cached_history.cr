@@ -2,10 +2,8 @@ require "../constants.cr"
 require "../history.cr"
 
 module PrivateParlorXT
-
   # An implementation of `History` storing the messages in RAM as a `Hash`
   class CachedHistory < History
-
     # Represents single message sent and all of its receivers
     class MessageGroup
       # User who sent this message
@@ -24,7 +22,7 @@ module PrivateParlorXT
       property ratings : Set(UserID) = Set(UserID).new
 
       # Whether or not this message has been warned
-      # 
+      #
       # If `true`, a warning has been given to the user who sent this message, `false` otherwise
       property warned : Bool? = false
 
@@ -146,7 +144,7 @@ module PrivateParlorXT
     end
 
     # Returns `true` if the given message group is older than `lifespan`
-    # 
+    #
     # Returns `false` otherwise
     private def expired?(message : MessageGroup) : Bool
       message.sent <= Time.utc - @lifespan

@@ -59,7 +59,7 @@ module PrivateParlorXT
   end
 
   # Reads from the config file and initialize `Services`, recurring tasks, and bot handlers
-  # 
+  #
   # Returns the initialized `Services` object
   def self.initialize_bot(client : Client? = nil) : Services
     config = Config.parse_config

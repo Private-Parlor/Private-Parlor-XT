@@ -51,7 +51,7 @@ module PrivateParlorXT
     end
 
     # Returns `true` if the message meets requirements
-    # 
+    #
     # Returns `false if the message does not meet requirements, when the message is
     # a forward, part of an album, or an animation/GIF
     def meets_requirements?(message : Tourmaline::Message) : Bool
@@ -63,7 +63,7 @@ module PrivateParlorXT
     end
 
     # Checks if the user is spamming documents
-    # 
+    #
     # Returns `true` if the user is spamming documents, `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
@@ -77,13 +77,13 @@ module PrivateParlorXT
     end
 
     # Checks if the user has sufficient karma to send a document when `KarmaHandler` is enabled
-    # 
+    #
     # Returns `true` if:
     #   - `KarmaHandler` is not enabled
     #   - The price for documents is less than 0
     #   - The *user's* `Rank` is equal to or greater than the cutoff `Rank`
     #   - User has sufficient karma
-    # 
+    #
     # Returns `nil` if the user does not have sufficient karma
     def sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
       return true unless karma = services.karma
@@ -106,7 +106,7 @@ module PrivateParlorXT
       true
     end
 
-    # Returns the `User` with decremented karma when `KarmaHandler` is enabled and 
+    # Returns the `User` with decremented karma when `KarmaHandler` is enabled and
     # *user* has sufficient karma for a document
     def spend_karma(user : User, services : Services) : User
       return user unless karma = services.karma

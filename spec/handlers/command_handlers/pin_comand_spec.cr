@@ -40,6 +40,7 @@ module PrivateParlorXT
           date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           text: "/pin",
+          reply_to_message: reply,
           from: tourmaline_user
         )
 
@@ -52,7 +53,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.command_disabled))
       end
 
-      it "returns early if message has no reply" do 
+      it "returns early if message has no reply" do
         services = create_services(ranks: ranks)
 
         handler = PinCommand.new(MockConfig.new)
@@ -60,7 +61,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -82,7 +83,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.no_reply))
       end
 
-      it "returns early if reply does not exist" do 
+      it "returns early if reply does not exist" do
         services = create_services(ranks: ranks)
 
         handler = PinCommand.new(MockConfig.new)
@@ -90,7 +91,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -158,10 +159,10 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        user.last_active.should(be < updated_user.last_active) 
+        user.last_active.should(be < updated_user.last_active)
       end
 
-      it "pins replied to message" do 
+      it "pins replied to message" do
         services = create_services(ranks: ranks)
 
         handler = PinCommand.new(MockConfig.new)
@@ -169,7 +170,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 

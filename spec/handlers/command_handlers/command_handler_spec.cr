@@ -100,7 +100,7 @@ module PrivateParlorXT
         handler = MockCommandHandler.new(MockConfig.new)
 
         generate_users(services.database)
-        
+
         tourmaline_user = Tourmaline::User.new(12345678, false, "beispiel", "spec", "new_username")
 
         message = Tourmaline::Message.new(
@@ -289,7 +289,6 @@ module PrivateParlorXT
 
     describe "#remove_command_entity" do
       it "returns entities without bot command and other entities' offsets modified" do
-        services = create_services()
         handler = MockCommandHandler.new(MockConfig.new)
 
         entities = [
@@ -317,8 +316,8 @@ module PrivateParlorXT
         ]
 
         result = handler.remove_command_entity(
-          "/example Text with entities and backlinks >>>/foo/", 
-          entities, 
+          "/example Text with entities and backlinks >>>/foo/",
+          entities,
           "Text with entities and backlinks >>>/foo/"
         )
 

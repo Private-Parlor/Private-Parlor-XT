@@ -44,7 +44,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.command_disabled))
       end
 
-      it "returns early if unpinning with reply and reply does not exist" do 
+      it "returns early if unpinning with reply and reply does not exist" do
         services = create_services(ranks: ranks)
 
         handler = UnpinCommand.new(MockConfig.new)
@@ -52,7 +52,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -110,10 +110,10 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        user.last_active.should(be < updated_user.last_active) 
+        user.last_active.should(be < updated_user.last_active)
       end
 
-      it "unpins replied to message" do 
+      it "unpins replied to message" do
         services = create_services(ranks: ranks)
 
         handler = UnpinCommand.new(MockConfig.new)
@@ -121,7 +121,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -177,7 +177,7 @@ module PrivateParlorXT
         generate_users(services.database)
         generate_history(services.history)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 

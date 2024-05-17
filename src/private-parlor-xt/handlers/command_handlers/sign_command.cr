@@ -4,7 +4,7 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: ["sign", "s"], config: "enable_sign")]
   # Processes sign messages before an `UpdateHandler` gets them
-  # 
+  #
   # This handler expects the command handlers to be registered before the update handlers
   class SignCommand < CommandHandler
     # Preformats the given *message* with a username signature if the *message* meets requirements
@@ -48,7 +48,7 @@ module PrivateParlorXT
     end
 
     # Checks if the user is spamming username signatures
-    # 
+    #
     # Returns `true` if the user is spamming username signatures or unformatted text is spammy, returns `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, arg : String, services : Services) : Bool
       return false unless spam = services.spam

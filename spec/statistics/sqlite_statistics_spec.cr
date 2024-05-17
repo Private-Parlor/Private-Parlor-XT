@@ -2,40 +2,40 @@ require "../spec_helper.cr"
 
 module PrivateParlorXT
   def self.generate_message_stats(connection : DB::Database) : Nil
-    connection.exec("INSERT INTO message_stats 
+    connection.exec("INSERT INTO message_stats
       VALUES (date('now'), '0', '1', '3', '0', '0', '0', '4', '5', '0', '0', '1', '0', '0', '4', '0', '0', '2', '0', '0', '22');
     ")
-    connection.exec("INSERT INTO message_stats 
+    connection.exec("INSERT INTO message_stats
       VALUES (date('now', '-1 day'), '0', '1', '2', '2', '0', '4', '0', '0', '0', '0', '3', '0', '0', '9', '0', '3', '0', '0', '5', '24');
     ")
-    connection.exec("INSERT INTO message_stats 
+    connection.exec("INSERT INTO message_stats
       VALUES (date('now', '-2 days'), '5', '3', '0', '0', '3', '0', '0', '6', '0', '0', '1', '0', '0', '0', '8', '0', '3', '0', '0', '31');
     ")
-    connection.exec("INSERT INTO message_stats 
+    connection.exec("INSERT INTO message_stats
       VALUES (date('now', '-6 days'), '4', '3', '0', '0', '4', '0', '8', '6', '0', '0', '0', '4', '0', '0', '3', '0', '3', '6', '0', '41');
     ")
-    connection.exec("INSERT INTO message_stats 
+    connection.exec("INSERT INTO message_stats
       VALUES (date('now', '-7 days'), '5', '2', '0', '3', '7', '0', '7', '0', '0', '8', '0', '3', '0', '0', '5', '0', '3', '7', '7', '50');
     ")
-    connection.exec("INSERT INTO message_stats 
+    connection.exec("INSERT INTO message_stats
       VALUES (date('now', '-8 days'), '5', '7', '8', '1', '0', '2', '8', '0', '0', '8', '0', '5', '0', '0', '5', '0', '6', '7', '0', '62');
     ")
-    connection.exec("INSERT INTO message_stats 
+    connection.exec("INSERT INTO message_stats
       VALUES (date('now', '-9 days'), '1', '2', '0', '5', '1', '0', '7', '0', '0', '8', '0', '3', '0', '0', '4', '0', '8', '0', '8', '39');
     ")
-    connection.exec("INSERT INTO message_stats 
+    connection.exec("INSERT INTO message_stats
       VALUES (date('now', '-10 days'), '0', '6', '0', '6', '8', '0', '6', '0', '0', '3', '0', '3', '0', '0', '5', '0', '3', '1', '0', '41');
     ")
-    connection.exec("INSERT INTO message_stats 
+    connection.exec("INSERT INTO message_stats
       VALUES (date('now', '-1 month'), '0', '2', '0', '6', '3', '0', '8', '0', '5', '3', '0', '3', '0', '0', '5', '0', '3', '1', '3', '39');
     ")
-    connection.exec("INSERT INTO message_stats 
+    connection.exec("INSERT INTO message_stats
       VALUES (date('now', '-1 month', '-1 day'), '0', '1', '0', '6', '4', '4', '8', '0', '0', '3', '0', '3', '0', '8', '5', '0', '3', '1', '0', '41');
     ")
-    connection.exec("INSERT INTO message_stats 
+    connection.exec("INSERT INTO message_stats
       VALUES (date('now', '-1 month', '-2 days'), '1', '2', '0', '6', '1', '8', '3', '0', '0', '3', '0', '3', '6', '0', '5', '0', '3', '1', '0', '42');
     ")
-    connection.exec("INSERT INTO message_stats 
+    connection.exec("INSERT INTO message_stats
       VALUES (date('now', '-1 month', '-3 days'), '7', '2', '0', '6', '2', '9', '7', '0', '0', '3', '0', '3', '0', '4', '5', '0', '3', '1', '0', '52');
     ")
   end
@@ -117,8 +117,8 @@ module PrivateParlorXT
         ]
 
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
-        stats = SQLiteStatistics.new(connection)
+        SQLiteDatabase.new(connection)
+        SQLiteStatistics.new(connection)
 
         connection.exec("INSERT INTO message_stats (date) VALUES (date('now'))")
 
@@ -135,8 +135,8 @@ module PrivateParlorXT
 
       it "sets statistics module start date" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
-        stats = SQLiteStatistics.new(connection)
+        SQLiteDatabase.new(connection)
+        SQLiteStatistics.new(connection)
 
         result = connection.query_one?("SELECT value FROM system_config WHERE name = 'start_date'", as: String)
 
@@ -151,7 +151,7 @@ module PrivateParlorXT
     describe "#start_date" do
       it "gets statistics module start date" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
         connection.exec("UPDATE system_config SET value = '1984-07-07' WHERE name = 'start_date'")
@@ -160,10 +160,10 @@ module PrivateParlorXT
       end
     end
 
-    describe "#increment_messages"  do
+    describe "#increment_messages" do
       it "increments the given field and total messages" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
         stats.increment_messages(Statistics::Messages::Audio)
@@ -186,10 +186,10 @@ module PrivateParlorXT
     describe "#increment_upvotes" do
       it "increments the total number of upvotes" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
-        stats.increment_upvotes()
+        stats.increment_upvotes
 
         result = connection.query_one("SELECT upvotes FROM message_stats WHERE date = date('now')", as: Int32)
 
@@ -200,10 +200,10 @@ module PrivateParlorXT
     describe "#increment_downvotes" do
       it "increments the total number of downvotes" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
-        stats.increment_downvotes()
+        stats.increment_downvotes
 
         result = connection.query_one("SELECT downvotes FROM message_stats WHERE date = date('now')", as: Int32)
 
@@ -214,10 +214,10 @@ module PrivateParlorXT
     describe "#increment_unoriginal_text" do
       it "increments the total number of unoriginal text messages" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
-        stats.increment_unoriginal_text()
+        stats.increment_unoriginal_text
 
         result = connection.query_one("SELECT unoriginal_text FROM message_stats WHERE date = date('now')", as: Int32)
 
@@ -228,10 +228,10 @@ module PrivateParlorXT
     describe "#increment_unoriginal_media" do
       it "increments the total number of unoriginal media messages" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
-        stats.increment_unoriginal_media()
+        stats.increment_unoriginal_media
 
         result = connection.query_one("SELECT unoriginal_media FROM message_stats WHERE date = date('now')", as: Int32)
 
@@ -242,12 +242,12 @@ module PrivateParlorXT
     describe "#total_messages" do
       it "returns hash of messages totals for each type and totals over time" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
         generate_message_stats(connection)
 
-        result = stats.message_counts()
+        result = stats.message_counts
 
         result[Statistics::Messages::TotalMessages].should(eq(484))
         result[Statistics::Messages::Albums].should(eq(28))
@@ -277,7 +277,7 @@ module PrivateParlorXT
     describe "#user_counts" do
       it "returns hash of user counts for each type and user count change over time" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
         generate_user_stats(connection)
@@ -306,11 +306,11 @@ module PrivateParlorXT
     describe "#karma_counts" do
       it "returns hash of karma counts and karma count change over time" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
         generate_message_stats(connection)
-        
+
         result = stats.karma_counts
 
         result[Statistics::Karma::TotalUpvotes].should(eq(3))
@@ -333,7 +333,7 @@ module PrivateParlorXT
     describe "#karma_level_count" do
       it "returns total number of users with karma between the given values" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
         generate_user_stats(connection)
@@ -355,8 +355,8 @@ module PrivateParlorXT
     describe "#robot9000_counts" do
       it "returns hash of total original messages and unoriginal message counts" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
-        r9k = SQLiteRobot9000.new(connection, check_text: true, check_media: true)
+        SQLiteDatabase.new(connection)
+        SQLiteRobot9000.new(connection, check_text: true, check_media: true)
         stats = SQLiteStatistics.new(connection)
 
         generate_message_stats(connection)
@@ -376,17 +376,17 @@ module PrivateParlorXT
     describe "#ensure_schema" do
       it "creates message_stats table" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
         connection.exec("DROP TABLE IF EXISTS message_stats")
 
-        stats.ensure_schema()
+        stats.ensure_schema
 
         result = connection.query_one?("
           SELECT EXISTS (
             SELECT name FROM sqlite_schema WHERE type='table' AND name='message_stats'
-          )", 
+          )",
           as: Int32
         )
 
@@ -419,17 +419,17 @@ module PrivateParlorXT
           "total_messages INTEGER NOT NULL DEFAULT 0",
           "PRIMARY KEY (date)",
         ]
-        
+
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
         connection.exec("DROP TABLE IF EXISTS message_stats")
 
-        stats.ensure_schema()
+        stats.ensure_schema
 
         result = connection.query_one?("
-          SELECT sql FROM sqlite_schema WHERE type='table' AND name='message_stats'", 
+          SELECT sql FROM sqlite_schema WHERE type='table' AND name='message_stats'",
           as: String
         )
 
@@ -446,10 +446,10 @@ module PrivateParlorXT
     describe "#ensure_start_date" do
       it "sets statistics module start date" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
-        stats.ensure_start_date()
+        stats.ensure_start_date
 
         result = connection.query_one?("SELECT value FROM system_config WHERE name = 'start_date'", as: String)
 

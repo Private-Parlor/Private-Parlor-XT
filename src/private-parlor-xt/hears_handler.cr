@@ -2,9 +2,8 @@ require "./handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-
   # Annotation for Telegram hears handlers
-  # 
+  #
   # ## Keys and Values:
   #
   # `pattern`
@@ -16,17 +15,16 @@ module PrivateParlorXT
   #       Handlers should be configurable, though a value is not required here to compile or be used in the program.
   #
   # `command`
-  # :     a `BoolLiteral` which determines if the `HearsHandler` functions as a command. 
+  # :     a `BoolLiteral` which determines if the `HearsHandler` functions as a command.
   #       If `true`, a "command_disabled" reply will be sent if this handler is not toggled.
   annotation Hears
   end
 
   # A base class for handling messages whose text matches a certain pattern.
-  # 
-  # Handlers that are meant to match patterns in text should inherit from this class, 
+  #
+  # Handlers that are meant to match patterns in text should inherit from this class,
   # and include an `Hears` annotation to have it be usable by the bot.
   abstract class HearsHandler < Handler
-
     # Queues a system reply when the message matched is from a user who is blacklisted
     def deny_user(user : User, services : Services) : Nil
       return unless user.blacklisted?

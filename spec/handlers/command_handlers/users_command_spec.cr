@@ -45,17 +45,17 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        user.last_active.should(be < updated_user.last_active) 
+        user.last_active.should(be < updated_user.last_active)
       end
 
-      it "returns vague user counts if user is not authorized" do 
+      it "returns vague user counts if user is not authorized" do
         services = create_services()
 
         handler = UsersCommand.new(MockConfig.new)
 
         generate_users(services.database)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -70,10 +70,6 @@ module PrivateParlorXT
         )
 
         handler.do(message, services)
-
-        unless updated_user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
 
         expected = Format.substitute_reply(services.replies.user_count, {
           "total" => "6",
@@ -92,7 +88,7 @@ module PrivateParlorXT
 
         generate_users(services.database)
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -107,10 +103,6 @@ module PrivateParlorXT
         )
 
         handler.do(message, services)
-
-        unless updated_user = services.database.get_user(80300)
-          fail("User 80300 should exist in the database")
-        end
 
         expected = Format.substitute_reply(services.replies.user_count_full, {
           "joined"      => "4",

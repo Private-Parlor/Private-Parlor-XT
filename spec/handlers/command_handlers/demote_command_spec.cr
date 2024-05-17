@@ -260,7 +260,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(expected))
       end
 
-      it "returns early with 'not in cache' response if reply message does not exist in message history" do 
+      it "returns early with 'not in cache' response if reply message does not exist in message history" do
         services = create_services(
           ranks: ranks,
           config: HandlerConfig.new(
@@ -303,7 +303,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.not_in_cache))
       end
 
-      it "returns early if reply user cannot be demoted" do 
+      it "returns early if reply user cannot be demoted" do
         services = create_services(
           ranks: ranks,
           config: HandlerConfig.new(
@@ -404,7 +404,7 @@ module PrivateParlorXT
           ranks: ranks,
           config: HandlerConfig.new(
             MockConfig.new(
-              default_rank: 0 
+              default_rank: 0
             )
           ),
         )
@@ -554,7 +554,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(expected))
       end
 
-      it "returns early with 'no user found' response if user to demote does not exist" do 
+      it "returns early with 'no user found' response if user to demote does not exist" do
         services = create_services(
           ranks: ranks,
           config: HandlerConfig.new(
@@ -582,7 +582,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.no_user_found))
       end
 
-      it "returns early if reply user cannot be demoted" do 
+      it "returns early if reply user cannot be demoted" do
         services = create_services(
           ranks: ranks,
           config: HandlerConfig.new(

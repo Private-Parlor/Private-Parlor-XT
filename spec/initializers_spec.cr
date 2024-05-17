@@ -1,7 +1,6 @@
 require "./spec_helper"
 
 module PrivateParlorXT
-
   @[RespondsTo(command: "hardcode")]
   class HardCodedCommand < CommandHandler
     def do(message : Tourmaline::Message, services : Services) : Nil
@@ -124,8 +123,6 @@ module PrivateParlorXT
     end
 
     it "kicks inative users" do
-      client = MockClient.new
-
       fresh_services = create_services()
 
       generate_users(fresh_services.database)

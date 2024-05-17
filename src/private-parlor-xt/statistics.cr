@@ -1,7 +1,6 @@
 module PrivateParlorXT
   # A base class statistics module used for calculating and recording data about messages and users
   abstract class Statistics
-
     # General information about the bot, such as uptime and certain configuration toggles
     enum BotInfo
       DateStarted
@@ -16,7 +15,7 @@ module PrivateParlorXT
       KarmaEconomyToggle
     end
 
-    # Refers to the counts for each message type, includes the number of total messages 
+    # Refers to the counts for each message type, includes the number of total messages
     # for daily, weekly, and monthly durations
     enum Messages
       TotalMessages
@@ -154,7 +153,7 @@ module PrivateParlorXT
     # Returns an `Int32` total of users whose karma lie between *start_value* and *end_value*
     abstract def karma_level_count(start_value : Int32, end_value : Int32) : Int32
 
-    # Returns a hash of `Robot9000` to `Int32`, containing the total number of unique and unoriginal messages for texts and media types 
+    # Returns a hash of `Robot9000` to `Int32`, containing the total number of unique and unoriginal messages for texts and media types
     abstract def robot9000_counts : Hash(Robot9000, Int32)
 
     # Returns a `String` of the formatted statistics screen based on the given *next_screen*
@@ -178,7 +177,7 @@ module PrivateParlorXT
     end
 
     # Returns the `Tourmaline::InlineKeyboardMarkup` for the given *next_screen*.
-    # 
+    #
     # Keyboard buttons are localized and displayed in rows of 3 buttons.
     def keyboard_markup(next_screen : StatScreens, services : Services) : Tourmaline::InlineKeyboardMarkup
       options = [StatScreens::General, StatScreens::Messages, StatScreens::Users, StatScreens::Karma]
@@ -217,10 +216,10 @@ module PrivateParlorXT
 
       Format.substitute_reply(services.replies.config_stats, {
         "start_date"           => start_date.to_s,
-        "days" => uptime.days.to_s,
-        "hours" => uptime.hours.to_s,
-        "minutes" => uptime.minutes.to_s,
-        "seconds" => uptime.seconds.to_s,
+        "days"                 => uptime.days.to_s,
+        "hours"                => uptime.hours.to_s,
+        "minutes"              => uptime.minutes.to_s,
+        "seconds"              => uptime.seconds.to_s,
         "registration_toggle"  => configuration[BotInfo::RegistrationToggle],
         "media_limit_period"   => configuration[BotInfo::MediaLimitPeriod],
         "message_lifespan"     => configuration[BotInfo::MessageLifespan],
@@ -356,10 +355,10 @@ module PrivateParlorXT
       net_monthly = totals[Users::JoinedMonthly] - totals[Users::LeftMonthly]
 
       Format.substitute_reply(services.replies.user_stats, {
-        "total_users"              => totals[Users::TotalUsers].to_s,
-        "net_daily"                => net_daily.to_s,
-        "net_weekly"               => net_weekly.to_s,
-        "net_monthly"              => net_monthly.to_s,
+        "total_users" => totals[Users::TotalUsers].to_s,
+        "net_daily"   => net_daily.to_s,
+        "net_weekly"  => net_weekly.to_s,
+        "net_monthly" => net_monthly.to_s,
       })
     end
 

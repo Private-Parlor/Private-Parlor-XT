@@ -62,7 +62,7 @@ module PrivateParlorXT
     end
 
     # Returns `true` if the given *arg* is a valid tripcode
-    # 
+    #
     # Returns false otherwise
     def valid_tripcode?(arg : String) : Bool
       return false if (count = arg.count('#')) && count == 0
@@ -77,7 +77,7 @@ module PrivateParlorXT
     end
 
     # Returns `true` if the given *arg* is a valid flag signature
-    # 
+    #
     # Returns `false` otherwise
     def valid_signature?(arg : String) : Bool?
       return false if arg.graphemes.size > 5

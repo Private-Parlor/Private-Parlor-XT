@@ -70,7 +70,7 @@ module PrivateParlorXT
         services = create_services
 
         handler = HelpCommand.new(MockConfig.new)
-        
+
         user = MockUser.new(9000, rank: 1000)
 
         expected = "#{services.replies.help_header}\n" \
@@ -94,7 +94,7 @@ module PrivateParlorXT
                    "#{Format.escape_mdv2("/demote [name/OID/ID] [rank] - #{services.descriptions.demote}\n")}" \
                    "\n#{services.replies.help_reply_commands}\n" \
                    "#{Format.escape_mdv2("+1 - #{services.descriptions.upvote}\n")}" \
-                   "#{Format.escape_mdv2("-1 - #{services.descriptions.downvote}\n")}" 
+                   "#{Format.escape_mdv2("-1 - #{services.descriptions.downvote}\n")}"
 
         result = handler.help(user, services.access.ranks, services)
 

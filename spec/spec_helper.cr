@@ -15,7 +15,7 @@ module PrivateParlorXT
     spam : SpamHandler? = nil,
     r9k : Robot9000? = nil,
     karma_economy : KarmaHandler? = nil,
-    statistics : Statistics? = nil,
+    statistics : Statistics? = nil
   ) : Services
     unless config
       config = HandlerConfig.new(MockConfig.new)

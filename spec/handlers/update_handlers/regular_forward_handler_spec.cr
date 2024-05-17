@@ -61,7 +61,6 @@ module PrivateParlorXT
         messages[0].data.should_not(eq("video_item_one"))
       end
 
-      
       it "returns early with 'deanonymous poll' response if forwaded poll does not have anonymous voting" do
         services = create_services(ranks: ranks)
 
@@ -92,7 +91,7 @@ module PrivateParlorXT
           )
         )
 
-        unless user = services.database.get_user(80300)
+        unless services.database.get_user(80300)
           fail("User 80300 should exist in the database")
         end
 
@@ -106,7 +105,7 @@ module PrivateParlorXT
 
       it "returns early with 'insufficient karma' response if KarmaHandler is enabled and user does not have sufficient karma" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           karma_economy: KarmaHandler.new(
             cutoff_rank: 100,
             karma_forwarded_message: 10,
@@ -114,7 +113,7 @@ module PrivateParlorXT
         )
 
         handler = RegularForwardHandler.new(MockConfig.new)
-        
+
         generate_users(services.database)
 
         unless user = services.database.get_user(80300)
@@ -142,7 +141,7 @@ module PrivateParlorXT
 
         expected = Format.substitute_reply(services.replies.insufficient_karma, {
           "amount" => 10.to_s,
-          "type" => "forward"
+          "type"   => "forward",
         })
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -153,14 +152,14 @@ module PrivateParlorXT
 
       it "returns early with 'spamming' response if user is spamming" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           spam: SpamHandler.new(
             spam_limit: 10, score_forwarded_message: 6
           ),
         )
 
         handler = RegularForwardHandler.new(MockConfig.new)
-        
+
         generate_users(services.database)
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
@@ -209,7 +208,7 @@ module PrivateParlorXT
 
       it "returns early with 'unoriginal message' response if Robot9000 is enabled and message is not unique" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           r9k: SQLiteRobot9000.new(
             DB.open("sqlite3://%3Amemory%3A"),
             check_text: true,
@@ -268,7 +267,7 @@ module PrivateParlorXT
       it "records message statistics when statitics is enabled" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         database = SQLiteDatabase.new(connection)
-        
+
         services = create_services(
           ranks: ranks,
           database: database,
@@ -314,7 +313,7 @@ module PrivateParlorXT
 
       it "spends user karma when KarmaHandler is enabled" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           karma_economy: KarmaHandler.new(
             cutoff_rank: 100,
             karma_forwarded_message: 10,
@@ -1056,7 +1055,14 @@ module PrivateParlorXT
           date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
-          media_group_id: "album_one"
+          media_group_id: "album_one",
+          video: Tourmaline::Video.new(
+            file_id: "video_item_one",
+            file_unique_id: "unique_video",
+            width: 1080,
+            height: 1080,
+            duration: 60,
+          ),
         )
 
         spam_services = create_services(spam: SpamHandler.new(spam_limit: 10, score_forwarded_message: 6))
@@ -1075,7 +1081,7 @@ module PrivateParlorXT
         services = create_services(ranks: ranks)
 
         handler = RegularForwardHandler.new(MockConfig.new)
-    
+
         tourmaline_user = Tourmaline::User.new(9000, false, "test")
 
         message = Tourmaline::Message.new(
@@ -1166,7 +1172,14 @@ module PrivateParlorXT
           date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
-          media_group_id: "album_one"
+          media_group_id: "album_one",
+          video: Tourmaline::Video.new(
+            file_id: "video_item_one",
+            file_unique_id: "unique_video",
+            width: 1080,
+            height: 1080,
+            duration: 60,
+          ),
         )
 
         tuple = handler.get_header(message, [] of Tourmaline::MessageEntity)
@@ -1247,7 +1260,7 @@ module PrivateParlorXT
         user = MockUser.new(9000, rank: 10, karma: 9)
 
         handler.albums["album_one"] = AlbumHelpers::Album.new(
-          11, 
+          11,
           Tourmaline::InputMediaPhoto.new(media: "")
         )
 
@@ -1258,7 +1271,14 @@ module PrivateParlorXT
           date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
-          media_group_id: "album_one"
+          media_group_id: "album_one",
+          video: Tourmaline::Video.new(
+            file_id: "video_item_one",
+            file_unique_id: "unique_video",
+            width: 1080,
+            height: 1080,
+            duration: 60,
+          ),
         )
 
         handler.sufficient_karma?(user, message, services).should(be_true)
@@ -1311,7 +1331,7 @@ module PrivateParlorXT
 
         expected = Format.substitute_reply(services.replies.insufficient_karma, {
           "amount" => 10.to_s,
-          "type" => "forward"
+          "type"   => "forward",
         })
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -1405,7 +1425,14 @@ module PrivateParlorXT
           date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
-          media_group_id: "album_one"
+          media_group_id: "album_one",
+          video: Tourmaline::Video.new(
+            file_id: "video_item_one",
+            file_unique_id: "unique_video",
+            width: 1080,
+            height: 1080,
+            duration: 60,
+          ),
         )
 
         result = handler.spend_karma(user, message, services)
@@ -1413,7 +1440,7 @@ module PrivateParlorXT
         result.karma.should(eq(0))
 
         handler.albums["album_one"] = AlbumHelpers::Album.new(
-          11, 
+          11,
           Tourmaline::InputMediaPhoto.new(media: "")
         )
 
@@ -1422,10 +1449,17 @@ module PrivateParlorXT
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           date: Time.utc,
           from: tourmaline_user,
-          media_group_id: "album_one"
+          media_group_id: "album_one",
+          video: Tourmaline::Video.new(
+            file_id: "video_item_one",
+            file_unique_id: "unique_video",
+            width: 1080,
+            height: 1080,
+            duration: 60,
+          ),
         )
 
-        result = handler.spend_karma(user, message, services)
+        result = handler.spend_karma(user, message_two, services)
 
         result.karma.should(eq(0))
       end
@@ -1498,7 +1532,7 @@ module PrivateParlorXT
 
       it "returns nil if given no text" do
         handler = RegularForwardHandler.new(MockConfig.new)
-        
+
         handler.regular_forward?(nil, [] of Tourmaline::MessageEntity).should(be_nil)
       end
     end

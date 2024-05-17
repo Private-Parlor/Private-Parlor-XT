@@ -6,7 +6,7 @@ module PrivateParlorXT
   # A command used to delete all messages sent by recently blacklisted users in one go
   class PurgeCommand < CommandHandler
     # Deletes all messages sent by recently blacklisted users for everybody, if *message* meets requirements
-    # 
+    #
     # A possible `Tourmaline::Error::MessageCantBeDeleted` error can occur when a message's lifespan is 48 hours or greater.
     # This happens because messages older than 48 hours cannot be deleted for everybody.
     # As this function deletes messages in descending order (most recent messages are deleted first), the function will error out

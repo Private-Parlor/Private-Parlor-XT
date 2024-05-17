@@ -1,7 +1,6 @@
 require "../spec_helper.cr"
 
 module PrivateParlorXT
-
   # NOTE: Can't test most of the 'send_*' functions as these work directly with the Telegram API
 
   describe Relay do
@@ -86,7 +85,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#cache_message" do 
+    describe "#cache_message" do
       it "caches a Telegram message ID" do
         services = create_services()
 
@@ -120,12 +119,12 @@ module PrivateParlorXT
         services = create_services()
 
         queued_message = QueuedMessage.new(
-            origin: [11_i64, 12_i64, 13_i64],
-            sender: 9000_i64,
-            receiver: 10000_i64,
-            reply: nil,
-            function: ->(_receiver : UserID, _message : ReplyParameters?) { true }
-          )
+          origin: [11_i64, 12_i64, 13_i64],
+          sender: 9000_i64,
+          receiver: 10000_i64,
+          reply: nil,
+          function: ->(_receiver : UserID, _message : ReplyParameters?) { true }
+        )
 
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 

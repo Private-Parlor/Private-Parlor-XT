@@ -4,14 +4,14 @@ module PrivateParlorXT
   describe SpamHandler do
     describe "#spammy_sign?" do
       it "returns true if user is spamming message signs" do
-        spam_handler = SpamHandler.new()
-        
+        spam_handler = SpamHandler.new
+
         spam_handler.spammy_sign?(9000, 600).should(be_false)
       end
 
       it "returns false if user is not spamming message signs" do
-        spam_handler = SpamHandler.new()
-        
+        spam_handler = SpamHandler.new
+
         spam_handler.spammy_sign?(9000, 600)
         spam_handler.spammy_sign?(9000, 600).should(be_true)
       end
@@ -19,14 +19,14 @@ module PrivateParlorXT
 
     describe "#spammy_upvote?" do
       it "returns true if user is spamming upvotes" do
-        spam_handler = SpamHandler.new()
-        
+        spam_handler = SpamHandler.new
+
         spam_handler.spammy_upvote?(9000, 600).should(be_false)
       end
 
       it "returns false if user is not spamming upvotes" do
-        spam_handler = SpamHandler.new()
-        
+        spam_handler = SpamHandler.new
+
         spam_handler.spammy_upvote?(9000, 600)
         spam_handler.spammy_upvote?(9000, 600).should(be_true)
       end
@@ -34,14 +34,14 @@ module PrivateParlorXT
 
     describe "#spammy_downvote?" do
       it "returns true if user is spamming downvotes" do
-        spam_handler = SpamHandler.new()
-        
+        spam_handler = SpamHandler.new
+
         spam_handler.spammy_downvote?(9000, 600).should(be_false)
       end
 
       it "returns false if user is not spamming downvotes" do
-        spam_handler = SpamHandler.new()
-        
+        spam_handler = SpamHandler.new
+
         spam_handler.spammy_downvote?(9000, 600)
         spam_handler.spammy_downvote?(9000, 600).should(be_true)
       end

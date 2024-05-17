@@ -173,7 +173,7 @@ module PrivateParlorXT
         handler = MockUpdateHandler.new(MockConfig.new)
 
         generate_users(services.database)
-        
+
         tourmaline_user = Tourmaline::User.new(12345678, false, "beispiel")
 
         message = Tourmaline::Message.new(
@@ -233,7 +233,7 @@ module PrivateParlorXT
         handler = MockUpdateHandler.new(MockConfig.new)
 
         tourmaline_user = Tourmaline::User.new(70000, false, "BLACKLISTED")
-        
+
         message = Tourmaline::Message.new(
           message_id: 11,
           date: Time.utc,
@@ -256,7 +256,6 @@ module PrivateParlorXT
 
     describe "#meets_requirements?" do
       it "returns true if message is not a forward or an album" do
-        services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
 
         tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
@@ -271,7 +270,6 @@ module PrivateParlorXT
       end
 
       it "returns false if message is a forward" do
-        services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
 
         tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
@@ -291,7 +289,6 @@ module PrivateParlorXT
       end
 
       it "returns false if message is an album" do
-        services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
 
         tourmaline_user = Tourmaline::User.new(12345678, true, "Spec", username: "bot_bot")
@@ -595,7 +592,7 @@ module PrivateParlorXT
         hash[60200].quote_position.should(eq(0))
       end
 
-      it "returns nil and queues 'not_in_cache' reply if message has a reply but it is not cached" do 
+      it "returns nil and queues 'not_in_cache' reply if message has a reply but it is not cached" do
         services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
 
@@ -653,11 +650,11 @@ module PrivateParlorXT
         handler.message_receivers(user, services).should(contain(user.id))
       end
     end
-    
+
     describe "#record_message_statistics" do
       it "increments message count and total message counts based on given type" do
         connection = DB.open("sqlite3://%3Amemory%3A")
-        db = SQLiteDatabase.new(connection)
+        SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
         services = create_services(statistics: stats)

@@ -28,7 +28,6 @@ module PrivateParlorXT
         handler = StatisticsQueryHandler.new(MockConfig.new)
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel", "newname", "@new_username")
-        bot_user = Tourmaline::User.new(12345678, true, "Spec")
 
         query = Tourmaline::CallbackQuery.new(
           id: "query_one",
@@ -175,7 +174,7 @@ module PrivateParlorXT
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
-        
+
         messages[0].data.should(eq(stats.statistic_screen(:General, services)))
 
         # Get Message statistics
@@ -191,7 +190,7 @@ module PrivateParlorXT
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
-        
+
         messages[0].data.should(eq(stats.statistic_screen(:Messages, services)))
 
         # Get Full User statistics
@@ -207,7 +206,7 @@ module PrivateParlorXT
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
-        
+
         messages[0].data.should(eq(stats.statistic_screen(:Users, services)))
 
         # Get User statistics
@@ -224,7 +223,7 @@ module PrivateParlorXT
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
-        
+
         messages[0].data.should(eq(stats.users_screen(services)))
 
         # Get Karma statistics
@@ -240,7 +239,7 @@ module PrivateParlorXT
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
-        
+
         messages[0].data.should(eq(stats.statistic_screen(:Karma, services)))
 
         # Get Karma Level statistics
@@ -256,7 +255,7 @@ module PrivateParlorXT
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
-        
+
         messages[0].data.should(eq(stats.statistic_screen(:KarmaLevels, services)))
 
         # Get Robot9000 statistics
@@ -272,7 +271,7 @@ module PrivateParlorXT
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
-        
+
         messages[0].data.should(eq(stats.statistic_screen(:Robot9000, services)))
       end
     end

@@ -5,7 +5,7 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: "ranksay", config: "enable_ranksay")]
   # Processes ranksay messages before an `UpdateHandler` gets them
-  # 
+  #
   # This handler expects the command handlers to be registered before the update handlers
   class RanksayCommand < CommandHandler
     # Preformats the given *message* with a rank name signature if the *message* meets requirements
@@ -61,7 +61,7 @@ module PrivateParlorXT
     end
 
     # Checks if the user is spamming rank signatures
-    # 
+    #
     # Returns `true` if the user is spamming rank signatures or unformatted text is spammy, returns `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, arg : String, services : Services) : Bool
       return false unless spam = services.spam
@@ -75,9 +75,9 @@ module PrivateParlorXT
     end
 
     # For ranksay commands that are not initiated using "/ranksay" and instead uses the name of the rank followed by "-say"
-    # 
+    #
     # Returns the name of the `Rank` if the rank in the given *text* can ranksay
-    # 
+    #
     # Returns `nil` otherwise
     def get_rank_name(text : String, user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services) : String?
       return unless rank = text.match(/^\/(.+?)say\s/).try(&.[1])

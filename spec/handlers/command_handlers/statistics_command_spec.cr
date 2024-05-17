@@ -31,7 +31,7 @@ module PrivateParlorXT
       it "updates user activity" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         database = SQLiteDatabase.new(connection)
-        
+
         services = create_services(
           database: database,
           statistics: SQLiteStatistics.new(connection),
@@ -67,7 +67,7 @@ module PrivateParlorXT
       it "returns message containing general bot statistics" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         database = SQLiteDatabase.new(connection)
-        
+
         services = create_services(
           database: database,
           statistics: SQLiteStatistics.new(connection),
@@ -95,10 +95,10 @@ module PrivateParlorXT
 
         expected = Format.substitute_reply(services.replies.config_stats, {
           "start_date"           => Time.utc.to_s("%Y-%m-%d"),
-          "days" => uptime.days.to_s,
-          "hours" => uptime.hours.to_s,
-          "minutes" => uptime.minutes.to_s,
-          "seconds" => uptime.seconds.to_s,
+          "days"                 => uptime.days.to_s,
+          "hours"                => uptime.hours.to_s,
+          "minutes"              => uptime.minutes.to_s,
+          "seconds"              => uptime.seconds.to_s,
           "registration_toggle"  => services.locale.toggle[1],
           "media_limit_period"   => Format.time_span(Time::Span.new(hours: 120), services.locale),
           "message_lifespan"     => services.locale.toggle[0],
@@ -117,12 +117,12 @@ module PrivateParlorXT
         # Replace uptime data with something we know
         result = result.gsub(/Current uptime: .+ seconds/,
           Format.substitute_reply("Current uptime: {days} days, {hours} hours, {minutes} minutes, {seconds} seconds",
-          {
-            "days" => uptime.days.to_s,
-            "hours" => uptime.hours.to_s,
-            "minutes" => uptime.minutes.to_s,
-            "seconds" => uptime.seconds.to_s,
-          })
+            {
+              "days"    => uptime.days.to_s,
+              "hours"   => uptime.hours.to_s,
+              "minutes" => uptime.minutes.to_s,
+              "seconds" => uptime.seconds.to_s,
+            })
         )
 
         result.should(eq(expected))

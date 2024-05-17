@@ -420,7 +420,7 @@ module PrivateParlorXT
             )
           )
         )
-        
+
         handler = StartCommand.new(MockConfig.new)
 
         handler.new_user(9000, nil, "new user", 1_i64, closed_registration_services)

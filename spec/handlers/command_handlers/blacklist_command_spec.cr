@@ -125,7 +125,7 @@ module PrivateParlorXT
         services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
-        
+
         generate_users(services.database)
         generate_history(services.history)
 
@@ -179,7 +179,7 @@ module PrivateParlorXT
     end
 
     describe "#blacklist_from_reply" do
-      it "returns early with 'not in cache' response if reply message does not exist in message history" do 
+      it "returns early with 'not in cache' response if reply message does not exist in message history" do
         services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)
@@ -259,7 +259,7 @@ module PrivateParlorXT
     end
 
     describe "#blacklist_from_args" do
-      it "returns early with 'no user found' response if user to blacklist does not exist" do 
+      it "returns early with 'no user found' response if user to blacklist does not exist" do
         services = create_services(ranks: ranks)
 
         handler = BlacklistCommand.new(MockConfig.new)

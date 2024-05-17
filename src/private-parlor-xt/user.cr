@@ -1,16 +1,14 @@
 require "./constants.cr"
 
 module PrivateParlorXT
-  
   # A reprentation of a Telegram user.
-  # 
+  #
   # All users require an ID, which is obtained from the Telegram user (`Tourmaline::User`).
   # This ID should be unique and stored as a `UserID`.
-  # 
-  # `Database` implementations should have their own `User` type that inherits 
+  #
+  # `Database` implementations should have their own `User` type that inherits
   # from this class and is modified to work with the given implementation.
   abstract class User
-
     # Returns the user's ID
     getter id : UserID
 
@@ -74,34 +72,34 @@ module PrivateParlorXT
     #
     # `joined`
     # :     date and time the user joined the chat
-    # 
+    #
     # `left`
     # :     date and time the user left the chat; if `nil`, the user is still in the chat
-    # 
+    #
     # `last_active`
     # :     date and time the user last sent a message or used a command
     #
     # `cooldown_until`
     # :     date and time for until which the user cannot send messages; if `nil`, the user is not in cooldown
-    # 
+    #
     # `blacklist_reason`
     # :     described reason for blacklisting the user (see`BlacklistCommand`) ; set to `nil` by default
-    # 
+    #
     # `warnings`
     # :     number of warnings the user received from `WarnCommand` or `DeleteCommand`; cooldown times are based off of this value
     #
     # `warn_expiry`
     # :     date and time in which one of the `warnings` will be removed; if `nil`, user has no `warnings` to remove
-    # 
+    #
     # `karma`
     # :     points the user acquired from upvotes, or lost from downvotes and warnings (see `UpvoteHandler`, `DownvoteHandler`)
-    # 
+    #
     # `hide_karma`
     # :     toggle for receiving karma notifications (see `ToggleKarmaCommand`); if `true`, the user will not receive karma notifications
     #
     # `debug_enabled`
     # :     toggle for debug mode (see `ToggleDebugCommand`); if `true`, the user will receive a copy of their sent message that everyone else received
-    # 
+    #
     # `tripcode`
     # :     a name and password pairing used for generating pseudononyms attached to the user's message; if nil, user has no tripcode
     def initialize(
@@ -272,7 +270,7 @@ module PrivateParlorXT
     end
 
     # Removes the given *amount* of `warnings` from a user
-    # 
+    #
     # If the user still has `warnings` after the removal, reset the `warn_expiry` to a later time based on *warn_lifespan*
     def remove_warning(amount : Int32, warn_lifespan : Time::Span) : Nil
       @warnings -= amount

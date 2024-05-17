@@ -29,7 +29,7 @@ module PrivateParlorXT
 
     # Returns the `User` associated with the message if the `User` could be found in the `Database`.
     # This will also update the `User`'s username and realname if they have changed since the last message.
-    # 
+    #
     # Returns `nil`  if:
     #   - Message has no sender
     #   - `User` does not exist in the `Database`
@@ -49,7 +49,7 @@ module PrivateParlorXT
     end
 
     # Checks if the user is authorized to upvote a message
-    # 
+    #
     # Returns `true` if so, `false` otherwise
     def authorized?(user : User, message : Tourmaline::Message, authority : CommandPermissions, services : Services) : Bool
       unless services.access.authorized?(user.rank, authority)
@@ -61,7 +61,7 @@ module PrivateParlorXT
     end
 
     # Checks if the user is spamming upvotes
-    # 
+    #
     # Returns `true` if the user is spamming upvotes, `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
@@ -101,7 +101,7 @@ module PrivateParlorXT
     end
 
     # Queues 'gave upvote' and 'got upvoted' replies for the *user* and *reply_user*, respectively
-    # 
+    #
     # Includes a reason for the upvote if karma reasons are enabled.
     def send_replies(user : User, reply_user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services) : Nil
       if services.config.karma_reasons
@@ -145,7 +145,7 @@ module PrivateParlorXT
     def karma_level_up(reply_user : User, reply_parameters : ReplyParameters?, services : Services) : Nil
       return if services.config.karma_levels.empty?
 
-      next_level = services.config.karma_levels.find(nil) {|range, level| range.begin == reply_user.karma}
+      next_level = services.config.karma_levels.find(nil) { |range, _| range.begin == reply_user.karma }
 
       return unless next_level
 

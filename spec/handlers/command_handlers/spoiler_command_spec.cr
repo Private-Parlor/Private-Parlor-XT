@@ -63,7 +63,7 @@ module PrivateParlorXT
 
       it "returns early if message has no reply" do
         services = create_services(ranks: ranks)
-        
+
         handler = SpoilerCommand.new(MockConfig.new)
 
         generate_users(services.database)
@@ -89,7 +89,7 @@ module PrivateParlorXT
 
       it "returns early if reply message is a forward" do
         services = create_services(ranks: ranks)
-        
+
         handler = SpoilerCommand.new(MockConfig.new)
 
         generate_users(services.database)
@@ -134,9 +134,9 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.fail))
       end
 
-      it "returns early with 'not in cache' response if reply message does not exist in message history" do 
+      it "returns early with 'not in cache' response if reply message does not exist in message history" do
         services = create_services(ranks: ranks)
-        
+
         handler = SpoilerCommand.new(MockConfig.new)
 
         generate_users(services.database)
@@ -178,7 +178,7 @@ module PrivateParlorXT
 
       it "returns early if user attempts to spoil own message" do
         services = create_services(ranks: ranks)
-        
+
         handler = SpoilerCommand.new(MockConfig.new)
 
         generate_users(services.database)
@@ -220,7 +220,7 @@ module PrivateParlorXT
 
       it "returns early if InputMedia could not be created from reply message" do
         services = create_services(ranks: ranks)
-        
+
         handler = SpoilerCommand.new(MockConfig.new)
 
         generate_users(services.database)
@@ -259,7 +259,7 @@ module PrivateParlorXT
 
       it "updates user activity" do
         services = create_services(ranks: ranks)
-        
+
         handler = SpoilerCommand.new(MockConfig.new)
 
         generate_users(services.database)
@@ -306,7 +306,7 @@ module PrivateParlorXT
 
       it "spoils a message without a spoiler" do
         services = create_services(ranks: ranks)
-        
+
         handler = SpoilerCommand.new(MockConfig.new)
 
         generate_users(services.database)
@@ -356,7 +356,7 @@ module PrivateParlorXT
 
       it "unspoils a message with a spoiler" do
         services = create_services(ranks: ranks)
-        
+
         handler = SpoilerCommand.new(MockConfig.new)
 
         generate_users(services.database)
@@ -409,8 +409,6 @@ module PrivateParlorXT
 
     describe "#message_input" do
       it "returns InputMediaPhoto when message contains a photo" do
-        services = create_services()
-
         handler = SpoilerCommand.new(MockConfig.new)
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
@@ -457,8 +455,6 @@ module PrivateParlorXT
       end
 
       it "returns InputMediaVideo when message contains a video" do
-        services = create_services()
-
         handler = SpoilerCommand.new(MockConfig.new)
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
@@ -504,8 +500,6 @@ module PrivateParlorXT
       end
 
       it "returns InputMediaAnimation when message contains an animation" do
-        services = create_services()
-
         handler = SpoilerCommand.new(MockConfig.new)
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
@@ -551,8 +545,6 @@ module PrivateParlorXT
       end
 
       it "returns nil when message contains a type that can't have a spoiler" do
-        services = create_services()
-
         handler = SpoilerCommand.new(MockConfig.new)
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
@@ -567,8 +559,6 @@ module PrivateParlorXT
             file_unique_id: "unique_document",
           ),
         )
-
-        audio_tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
         audio_message = Tourmaline::Message.new(
           message_id: 1,

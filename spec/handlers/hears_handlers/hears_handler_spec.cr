@@ -26,8 +26,6 @@ module PrivateParlorXT
 
     describe "#truncate_karma_reason" do
       it "returns first 500 characters of karma reason" do
-        services = create_services
-
         handler = HardCodedHearsHandler.new(MockConfig.new)
 
         reason = "lorem sed risus ultricies tristique nulla aliquet enim tortor at auctor
@@ -54,8 +52,6 @@ module PrivateParlorXT
       end
 
       it "returns nil if karma reason is nil" do
-        services = create_services
-
         handler = HardCodedHearsHandler.new(MockConfig.new)
 
         result = handler.truncate_karma_reason(nil)

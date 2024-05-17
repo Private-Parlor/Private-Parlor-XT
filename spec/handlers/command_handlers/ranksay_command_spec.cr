@@ -68,7 +68,8 @@ module PrivateParlorXT
         }
 
         restricted_user_services = create_services(
-          ranks: restricted_ranks,)
+          ranks: restricted_ranks,
+        )
 
         generate_users(restricted_user_services.database)
 
@@ -169,9 +170,9 @@ module PrivateParlorXT
 
       it "returns early if user is spamming" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           spam: SpamHandler.new(
-            spam_limit: 10, 
+            spam_limit: 10,
             score_text: 0,
             score_line: 2,
             score_character: 1,
@@ -226,7 +227,7 @@ module PrivateParlorXT
 
       it "returns early if message is not unique" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           r9k: SQLiteRobot9000.new(
             DB.open("sqlite3://%3Amemory%3A"),
             check_media: true,

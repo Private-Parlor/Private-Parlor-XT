@@ -4,7 +4,6 @@ require "./command_descriptions.cr"
 require "yaml"
 
 module PrivateParlorXT
-
   # A container for general localization values
   class Locale
     include YAML::Serializable

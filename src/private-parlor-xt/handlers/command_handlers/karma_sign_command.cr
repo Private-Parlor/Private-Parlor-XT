@@ -4,7 +4,7 @@ require "tourmaline"
 module PrivateParlorXT
   @[RespondsTo(command: ["ksign", "ks"], config: "enable_karma_sign")]
   # Processes karma sign messages before an `UpdateHandler` gets them
-  # 
+  #
   # This handler expects the command handlers to be registered before the update handlers
   class KarmaSignCommand < CommandHandler
     # Preformats the given *message* with a karma level signature if the *message* meets requirements
@@ -48,7 +48,7 @@ module PrivateParlorXT
     end
 
     # Checks if the user is spamming karma level signatures
-    # 
+    #
     # Returns `true` if the user is spamming karma level signatures or unformatted text is spammy, returns `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, arg : String, services : Services) : Bool
       return false unless spam = services.spam
@@ -68,7 +68,7 @@ module PrivateParlorXT
 
     # Returns the name of the karma level whose range contains the *user's* karma
     def get_karma_level(karma_levels : Hash(Range(Int32, Int32), String), user : User) : String
-      current_level = karma_levels.find({(..), ""}) {|range, level| range === user.karma}[1]
+      karma_levels.find({(..), ""}) { |range, _| range === user.karma }[1]
     end
 
     # Format the karma level sign based on the given *level* appending the signature to *arg*

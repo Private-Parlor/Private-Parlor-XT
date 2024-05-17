@@ -5,7 +5,7 @@ module PrivateParlorXT
   @[RespondsTo(command: ["motd", "rules"], config: "enable_motd")]
   # A command used to view or set the bot's MOTD
   class MotdCommand < CommandHandler
-    # Returns a message containing the MOTD/rules that were set for this bot, 
+    # Returns a message containing the MOTD/rules that were set for this bot,
     # or sets the MOTD/rules to a new value if the sender of the *message* is authorized to do so
     def do(message : Tourmaline::Message, services : Services) : Nil
       return unless user = user_from_message(message, services)

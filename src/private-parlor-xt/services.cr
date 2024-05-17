@@ -67,28 +67,28 @@ module PrivateParlorXT
     #
     # `command_descriptions`
     # :     `CommandDescriptions`, descriptions for commands from a locale file
-    # 
+    #
     # `database`
     # :     `Database` object
-    # 
+    #
     # `history`
     # :     message `History` object
     #
     # `access`
     # :     `AuthorizedRanks` module used to ensure authorized use of commands and messages
-    # 
+    #
     # `relay`
     # :     `Relay` object for queueing messages and sending them to Telegram
-    # 
+    #
     # `spam`
     # :     `SpamHandler` object preventing message spam, if this module is toggled
     #
     # `robot9000`
     # :     `Robot9000` object ensure message uniqueness, if this module is toggled
-    # 
+    #
     # `karma`
     # :     `KarmaHandler` object that requires users to have karma in order to send messages, if this module is toggled
-    # 
+    #
     # `stats`
     # :     `Statistics` object that records data about the bot, if this module is toggled
     def initialize(
@@ -117,7 +117,7 @@ module PrivateParlorXT
       @replies = localization.replies
       @logs = localization.logs
       @descriptions = localization.command_descriptions
-      
+
       connection = DB.open("sqlite3://#{config.database}")
 
       @database = SQLiteDatabase.new(connection)

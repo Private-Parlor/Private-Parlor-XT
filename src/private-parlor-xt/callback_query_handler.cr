@@ -2,9 +2,8 @@ require "./handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-
   # Annotation for Telegram callback query handlers
-  # 
+  #
   # ## Keys and Values:
   #
   # `pattern`
@@ -17,9 +16,8 @@ module PrivateParlorXT
 
   # The base class for all callback query handlers
   abstract class CallbackHandler
-
-    # Initializes an instance of `CallbackHandler` 
-    # 
+    # Initializes an instance of `CallbackHandler`
+    #
     # The *config* can be used to modify the functionality of the handler
     def initialize(config : Config)
     end
@@ -29,7 +27,7 @@ module PrivateParlorXT
 
     # Returns the `User` associated with the *callback* if the `User` could be found in the `Database`.
     # This will also update the `User`'s username and realname if they have changed since the last message.
-    # 
+    #
     # Returns `nil`  if:
     #   - `User` does not exist in the `Database`
     #   - `User` is blacklisted
@@ -49,7 +47,7 @@ module PrivateParlorXT
       user
     end
 
-     # Queues a system reply when the user cannot make a callback query due to being blacklisted.
+    # Queues a system reply when the user cannot make a callback query due to being blacklisted.
     def deny_user(user : User, services : Services) : Nil
       if user.blacklisted?
         response = Format.substitute_reply(services.replies.blacklisted, {

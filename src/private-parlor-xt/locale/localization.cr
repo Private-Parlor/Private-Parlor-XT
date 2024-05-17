@@ -5,7 +5,6 @@ require "./command_descriptions.cr"
 require "yaml"
 
 module PrivateParlorXT
-
   # A container used for parsing the locale file and storing deserialized localization objects
   class Localization
     include YAML::Serializable

@@ -3,7 +3,6 @@ require "../history.cr"
 require "db"
 
 module PrivateParlorXT
-
   # An implementation of `History` using the SQLite `Database` for storing message data
   class SQLiteHistory < History
     @connection : DB::Database

@@ -69,7 +69,7 @@ module PrivateParlorXT
         updated_user.hide_karma.should_not(eq(previous_toggle))
 
         expected = Format.substitute_reply(services.replies.toggle_karma, {
-          "toggle" => services.locale.toggle[0]
+          "toggle" => services.locale.toggle[0],
         })
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -90,7 +90,7 @@ module PrivateParlorXT
         updated_user.hide_karma.should(eq(previous_toggle))
 
         expected = Format.substitute_reply(services.replies.toggle_karma, {
-          "toggle" => services.locale.toggle[1]
+          "toggle" => services.locale.toggle[1],
         })
 
         messages = services.relay.as(MockRelay).empty_queue

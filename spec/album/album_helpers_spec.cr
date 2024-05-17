@@ -1,7 +1,6 @@
 require "../spec_helper.cr"
 
 module PrivateParlorXT
-
   # NOTE: Can't test relay_album due to its delayed task
 
   module AlbumHelpers
@@ -24,7 +23,7 @@ module PrivateParlorXT
               file_unique_id: "unique_photo",
               width: 1080,
               height: 1080,
-            )
+            ),
           ],
           has_media_spoiler: true
         )

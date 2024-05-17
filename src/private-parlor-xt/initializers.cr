@@ -25,7 +25,7 @@ module PrivateParlorXT
   end
 
   # Iterate through all `CommandHandler` subclasses and initialize `Tourmaline::CommandHandler` procs for these commands.
-  # 
+  #
   # `CommandDescriptions` for each `CommandHandler` will be registered by the bot if the the command is configurable.
   macro create_command_handlers
     {% for command in CommandHandler.all_subclasses.select { |sub_class|
@@ -44,13 +44,13 @@ module PrivateParlorXT
           arr << Tourmaline::CommandHandler.new({{responds_to[:command]}}) do |ctx|
             next unless message = ctx.message
             next if message.date == 0 # Message is inaccessible
-    
+
             message = message.as(Tourmaline::Message)
-    
+
             command_disabled(message, services)
           end
         end
-    
+
         if config.{{responds_to[:config].id}}[1]
           bot_commands << Tourmaline::BotCommand.new(
             {% if responds_to[:command].is_a?(ArrayLiteral) %}
@@ -68,7 +68,7 @@ module PrivateParlorXT
   end
 
   # Appends given `CommandHandler` to `Tourmaline::CommandHandler` array
-  # 
+  #
   # The given `CommandHandler` will respond to *command* value(s) of `RespondsTo`
   macro append_command_handler(command, call)
     commands = [] of String
@@ -81,7 +81,7 @@ module PrivateParlorXT
       {{handler = (call + "_command").id}}  = {{command}}.new(config)
     {% end %}
 
-    
+
     {% if @type.has_constant?("RanksayCommand") && command.id == RanksayCommand.id %}
       commands = commands + services.access.ranksay_ranks.map do |rank|
         rank = services.access.ranksay(rank)
@@ -116,8 +116,8 @@ module PrivateParlorXT
   # Iterate through all `HearsHandler` subclasses and initialize `Tourmaline::HearsHandler` procs for these handlers.
   macro create_hears_handlers
     {% for hears_handler in HearsHandler.all_subclasses.select { |sub_class|
-                        (hears = sub_class.annotation(Hears))
-                      } %}
+                              (hears = sub_class.annotation(Hears))
+                            } %}
 
       {{hears = hears_handler.annotation(Hears)}}
 
@@ -128,13 +128,13 @@ module PrivateParlorXT
         if config.{{hears[:config].id}}[0]
           append_hears_handler({{hears_handler}}, {{hears}})
         else
-        {% if hears[:command]%}
+        {% if hears[:command] %}
           arr << Tourmaline::HearsHandler.new({{hears[:pattern]}}) do |ctx|
             next unless message = ctx.message
             next if message.date == 0 # Message is inaccessible
-    
+
             message = message.as(Tourmaline::Message)
-    
+
             command_disabled(message, services)
           end
         {% end %}
@@ -145,7 +145,7 @@ module PrivateParlorXT
   end
 
   # Appends given `HearsHandler` to `Tourmaline::HearsHandler` array
-  # 
+  #
   # The given `HearsHandler` will respond to the *pattern* value of `Hears`
   macro append_hears_handler(hears_handler, hears)
     # Handler name is command's name but snake cased
@@ -210,9 +210,9 @@ module PrivateParlorXT
           client.on({{update_on[:update]}}) do |ctx|
             next unless message = ctx.message
             next if message.date == 0 # Message is inaccessible
-    
+
             message = message.as(Tourmaline::Message)
-    
+
             {% if @type.has_constant?("DocumentHandler") && update.id == DocumentHandler.id %}
               next if message.animation
             {% end %}
@@ -225,7 +225,7 @@ module PrivateParlorXT
   end
 
   # Registers the given `UpdateHandler` with the bot
-  # 
+  #
   # The given `UpdateHandler` will respond to messages of type *update* value of `On`
   macro register_update_handler(update, on)
     {% if @type.has_constant?("ForwardHandler") && @type.has_constant?("RegularForwardHandler") && update.id == ForwardHandler.id %}

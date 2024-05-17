@@ -264,7 +264,7 @@ module PrivateParlorXT
       @client.send_poll(
         user.id,
         question: poll.question,
-        options: poll.options.map { |option| 
+        options: poll.options.map { |option|
           Tourmaline::InputPollOption.new(option.text, text_entities: option.text_entities)
         },
         is_anonymous: true,

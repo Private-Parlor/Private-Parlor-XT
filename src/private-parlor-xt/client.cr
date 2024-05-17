@@ -22,7 +22,7 @@ end
 module Tourmaline
   class Message
     # Set to `true` if the message is preformatted (in case a command handler alters the message before an update handler gets it)
-    # 
+    #
     # Set to `false` otherwise
     property? preformatted : Bool? = false
   end

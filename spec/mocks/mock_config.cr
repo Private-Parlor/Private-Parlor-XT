@@ -22,7 +22,7 @@ module PrivateParlorXT
       @database_history = false,
       @karma_economy = nil,
       @spam_interval = 10,
-      @spam_handler = SpamHandler.new(),
+      @spam_handler = SpamHandler.new,
       @statistics = false,
       @toggle_r9k_text = false,
       @toggle_r9k_media = false,
@@ -30,11 +30,11 @@ module PrivateParlorXT
       @smileys = [":)", ":|", ":/", ":("],
       @karma_levels = {
         (Int32::MIN...0) => "Junk",
-        (0...10) => "Normal",
-        (10...20) => "Common",
-        (20...30) => "Uncommon",
-        (30...40) => "Rare",
-        (40...50) => "Legendary",
+        (0...10)         => "Normal",
+        (10...20)        => "Common",
+        (20...30)        => "Uncommon",
+        (30...40)        => "Rare",
+        (40...50)        => "Legendary",
         (50..Int32::MAX) => "Unique",
       }
     )

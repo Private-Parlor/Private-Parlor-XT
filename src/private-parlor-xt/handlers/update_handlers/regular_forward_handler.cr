@@ -3,8 +3,7 @@ require "../../album_helpers.cr"
 require "tourmaline"
 
 module PrivateParlorXT
-
-  # An alternative to the `ForwardHandler` which handles forwarded messages, but 
+  # An alternative to the `ForwardHandler` which handles forwarded messages, but
   # appends a "Forwarded from" header to the text/caption of the message and relays
   # the message as though it were being relayed by the `TextHandler`, `AlbumHandler`, `PhotoHandler`
   # or a similar `UpdateHandler` with respect to the forwarded message's media type
@@ -78,7 +77,7 @@ module PrivateParlorXT
     end
 
     # Checks if the user is spamming forwarded messages
-    # 
+    #
     # Returns `true` if the user is spamming forwarded messages, `false` otherwise
     def spamming?(user : User, message : Tourmaline::Message, services : Services) : Bool
       return false unless spam = services.spam
@@ -94,7 +93,7 @@ module PrivateParlorXT
     end
 
     # Returns `true` if the forwarded poll does not have anonymous voting
-    # 
+    #
     # Returns `false` otherwise
     def deanonymous_poll?(user : User, message : Tourmaline::Message, services : Services) : Bool
       if (poll = message.poll) && !poll.is_anonymous?
@@ -106,13 +105,13 @@ module PrivateParlorXT
     end
 
     # Checks if the user has sufficient karma to send a forwarded message when `KarmaHandler` is enabled
-    # 
+    #
     # Returns `true` if:
     #   - `KarmaHandler` is not enabled
     #   - The price for forwarded messages is less than 0
     #   - The *user's* `Rank` is equal to or greater than the cutoff `Rank`
     #   - User has sufficient karma
-    # 
+    #
     # Returns `nil` if the user does not have sufficient karma
     def sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
       return true unless karma = services.karma
@@ -137,7 +136,7 @@ module PrivateParlorXT
       true
     end
 
-    # Returns the `User` with decremented karma when `KarmaHandler` is enabled and 
+    # Returns the `User` with decremented karma when `KarmaHandler` is enabled and
     # *user* has sufficient karma for a forwarded message
     def spend_karma(user : User, message : Tourmaline::Message, services : Services) : User
       return user unless karma = services.karma

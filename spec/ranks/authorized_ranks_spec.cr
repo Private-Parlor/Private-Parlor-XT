@@ -242,7 +242,6 @@ module PrivateParlorXT
 
     describe "#ranksay" do
       it "returns rank name without non-ASCII characters and punctuation" do
-
         authorized_ranks.ranksay("User").should(eq("user"))
         authorized_ranks.ranksay("Restricted_user").should(eq("restricted_user"))
         authorized_ranks.ranksay("An ordinary user :)").should(eq("an_ordinary_user_"))

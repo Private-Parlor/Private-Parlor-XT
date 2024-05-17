@@ -127,7 +127,7 @@ module PrivateParlorXT
 
       it "returns early with 'insufficient karma' response if KarmaHandler is enabled and user does not have sufficient karma" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           karma_economy: KarmaHandler.new(
             cutoff_rank: 100,
             karma_photo: 10,
@@ -135,7 +135,7 @@ module PrivateParlorXT
         )
 
         handler = PhotoHandler.new(MockConfig.new)
-        
+
         generate_users(services.database)
 
         unless user = services.database.get_user(80300)
@@ -165,7 +165,7 @@ module PrivateParlorXT
 
         expected = Format.substitute_reply(services.replies.insufficient_karma, {
           "amount" => 10.to_s,
-          "type" => "photo"
+          "type"   => "photo",
         })
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -176,14 +176,14 @@ module PrivateParlorXT
 
       it "returns early with 'spamming' response if user is spamming" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           spam: SpamHandler.new(
             spam_limit: 10, score_photo: 6
           ),
         )
 
         handler = PhotoHandler.new(MockConfig.new)
-        
+
         generate_users(services.database)
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
@@ -335,7 +335,7 @@ module PrivateParlorXT
 
       it "returns early with 'unoriginal message' response if Robot9000 is enabled and message is not unique" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           r9k: SQLiteRobot9000.new(
             DB.open("sqlite3://%3Amemory%3A"),
             check_media: true,
@@ -397,7 +397,7 @@ module PrivateParlorXT
       it "records message statistics when statitics is enabled" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         database = SQLiteDatabase.new(connection)
-        
+
         services = create_services(
           ranks: ranks,
           database: database,
@@ -439,7 +439,7 @@ module PrivateParlorXT
 
       it "spends user karma when KarmaHandler is enabled" do
         services = create_services(
-          ranks: ranks, 
+          ranks: ranks,
           karma_economy: KarmaHandler.new(
             cutoff_rank: 100,
             karma_photo: 10,
@@ -858,7 +858,7 @@ module PrivateParlorXT
 
         expected = Format.substitute_reply(services.replies.insufficient_karma, {
           "amount" => 10.to_s,
-          "type" => "photo"
+          "type"   => "photo",
         })
 
         messages = services.relay.as(MockRelay).empty_queue

@@ -7,13 +7,13 @@ module PrivateParlorXT
   end
 
   describe CallbackHandler do
-    describe "#user_from_callback" do 
+    describe "#user_from_callback" do
       it "returns user with updated names" do
         services = create_services()
         handler = MockCallbackHandler.new(MockConfig.new)
 
         generate_users(services.database)
-        
+
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel", "newname", "@new_username")
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 
@@ -45,7 +45,7 @@ module PrivateParlorXT
         handler = MockCallbackHandler.new(MockConfig.new)
 
         generate_users(services.database)
-        
+
         tourmaline_user = Tourmaline::User.new(9000, false, "not_in_chat")
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 
@@ -76,7 +76,7 @@ module PrivateParlorXT
         handler = MockCallbackHandler.new(MockConfig.new)
 
         generate_users(services.database)
-        
+
         tourmaline_user = Tourmaline::User.new(70000, false, "BLACKLISTED")
         bot_user = Tourmaline::User.new(12345678, true, "Spec")
 

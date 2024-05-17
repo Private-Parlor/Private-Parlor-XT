@@ -4,7 +4,6 @@ require "yaml"
 require "log"
 
 module PrivateParlorXT
-
   # A container for values deserialized from the configuration file
   class Config
     include YAML::Serializable
@@ -30,7 +29,7 @@ module PrivateParlorXT
     getter log_file : String? = nil
 
     @[YAML::Field(key: "log_channel")]
-    # A Telegram ID of a channel to output bot logs to 
+    # A Telegram ID of a channel to output bot logs to
     getter log_channel : String = ""
 
     @[YAML::Field(key: "message_lifespan")]
@@ -468,53 +467,53 @@ module PrivateParlorXT
     end
 
     # Checks that each `Rank` permission in `ranks` is useable, such that the command or update handler is enabled for that permission to be used
-    # 
+    #
     # If a permission is found and the associated handler is not enabled, it creates a new `Rank` without that permission and logs the problem
     private def self.validate_permissions(config : Config) : Config
       command_permissions = {
-        CommandPermissions::Users => config.enable_users[0],
-        CommandPermissions::Upvote => config.enable_upvote[0],
-        CommandPermissions::Downvote => config.enable_downvote[0],
-        CommandPermissions::Promote => config.enable_promote[0],
+        CommandPermissions::Users        => config.enable_users[0],
+        CommandPermissions::Upvote       => config.enable_upvote[0],
+        CommandPermissions::Downvote     => config.enable_downvote[0],
+        CommandPermissions::Promote      => config.enable_promote[0],
         CommandPermissions::PromoteLower => config.enable_promote[0],
-        CommandPermissions::PromoteSame => config.enable_promote[0],
-        CommandPermissions::Demote => config.enable_demote[0],
-        CommandPermissions::Sign => config.enable_sign[0],
-        CommandPermissions::TSign => config.enable_tripsign[0],
-        CommandPermissions::Reveal => config.enable_reveal[0],
-        CommandPermissions::Spoiler => config.enable_spoiler[0],
-        CommandPermissions::Pin => config.enable_pin[0],
-        CommandPermissions::Unpin => config.enable_unpin[0],
-        CommandPermissions::Ranksay => config.enable_ranksay[0],
+        CommandPermissions::PromoteSame  => config.enable_promote[0],
+        CommandPermissions::Demote       => config.enable_demote[0],
+        CommandPermissions::Sign         => config.enable_sign[0],
+        CommandPermissions::TSign        => config.enable_tripsign[0],
+        CommandPermissions::Reveal       => config.enable_reveal[0],
+        CommandPermissions::Spoiler      => config.enable_spoiler[0],
+        CommandPermissions::Pin          => config.enable_pin[0],
+        CommandPermissions::Unpin        => config.enable_unpin[0],
+        CommandPermissions::Ranksay      => config.enable_ranksay[0],
         CommandPermissions::RanksayLower => config.enable_ranksay[0],
-        CommandPermissions::Warn => config.enable_warn[0],
-        CommandPermissions::Delete => config.enable_delete[0],
-        CommandPermissions::Uncooldown => config.enable_uncooldown[0],
-        CommandPermissions::Remove => config.enable_remove[0],
-        CommandPermissions::Purge => config.enable_purge[0],
-        CommandPermissions::Blacklist => config.enable_blacklist[0],
-        CommandPermissions::Whitelist => config.enable_whitelist[0],
-        CommandPermissions::MotdSet => config.enable_motd[0],
-        CommandPermissions::RankedInfo => config.enable_info[0],
-        CommandPermissions::Unblacklist => config.enable_unblacklist[0],
+        CommandPermissions::Warn         => config.enable_warn[0],
+        CommandPermissions::Delete       => config.enable_delete[0],
+        CommandPermissions::Uncooldown   => config.enable_uncooldown[0],
+        CommandPermissions::Remove       => config.enable_remove[0],
+        CommandPermissions::Purge        => config.enable_purge[0],
+        CommandPermissions::Blacklist    => config.enable_blacklist[0],
+        CommandPermissions::Whitelist    => config.enable_whitelist[0],
+        CommandPermissions::MotdSet      => config.enable_motd[0],
+        CommandPermissions::RankedInfo   => config.enable_info[0],
+        CommandPermissions::Unblacklist  => config.enable_unblacklist[0],
       }
 
       message_permissions = {
-        MessagePermissions::Text => config.relay_text,
-        MessagePermissions::Animation => config.relay_animation,
-        MessagePermissions::Audio => config.relay_audio,
-        MessagePermissions::Document => config.relay_document,
-        MessagePermissions::Video => config.relay_video,
-        MessagePermissions::VideoNote => config.relay_video_note,
-        MessagePermissions::Voice => config.relay_voice,
-        MessagePermissions::Photo => config.relay_photo,
+        MessagePermissions::Text       => config.relay_text,
+        MessagePermissions::Animation  => config.relay_animation,
+        MessagePermissions::Audio      => config.relay_audio,
+        MessagePermissions::Document   => config.relay_document,
+        MessagePermissions::Video      => config.relay_video,
+        MessagePermissions::VideoNote  => config.relay_video_note,
+        MessagePermissions::Voice      => config.relay_voice,
+        MessagePermissions::Photo      => config.relay_photo,
         MessagePermissions::MediaGroup => config.relay_media_group,
-        MessagePermissions::Poll => config.relay_poll,
-        MessagePermissions::Forward => config.relay_forwarded_message,
-        MessagePermissions::Sticker => config.relay_sticker,
-        MessagePermissions::Venue => config.relay_venue,
-        MessagePermissions::Location => config.relay_location,
-        MessagePermissions::Contact => config.relay_contact,
+        MessagePermissions::Poll       => config.relay_poll,
+        MessagePermissions::Forward    => config.relay_forwarded_message,
+        MessagePermissions::Sticker    => config.relay_sticker,
+        MessagePermissions::Venue      => config.relay_venue,
+        MessagePermissions::Location   => config.relay_location,
+        MessagePermissions::Contact    => config.relay_contact,
       }
 
       config.ranks.each do |key, rank|
@@ -529,7 +528,6 @@ module PrivateParlorXT
 
         rank.message_permissions.each do |permission|
           next if message_permissions[permission]
-
 
           extraneous_messages.add(permission)
         end
@@ -546,61 +544,61 @@ module PrivateParlorXT
 
         permissions = extraneous_commands.map(&.to_s) + extraneous_messages.map(&.to_s)
 
-        Log.notice {"The permissions #{permissions} for rank '#{rank.name}' were ignored as the revelant handlers were not enabled"}
+        Log.notice { "The permissions #{permissions} for rank '#{rank.name}' were ignored as the revelant handlers were not enabled" }
       end
 
       config
     end
 
     # Checks the config for entries that are enabled but require another entry to be enabled to function
-    # 
+    #
     # If an entry that depends on another is found, it logs the problem
     private def self.validate_prerequisites(config : Config) : Nil
       if config.media_spoilers
-        unless (config.relay_photo || config.relay_video || config.relay_animation || config.relay_media_group)
-          Log.info {"Media spoilers are enabled, but neither photos nor videos nor animations nor media groups are enabled"}
+        unless config.relay_photo || config.relay_video || config.relay_animation || config.relay_media_group
+          Log.info { "Media spoilers are enabled, but neither photos nor videos nor animations nor media groups are enabled" }
         end
       end
 
       if config.karma_reasons
-        unless (config.enable_upvote[0] || config.enable_downvote[0])
-          Log.info {"Karma reasons are enabled, but neither upvotes nor downvotes are enabled, so karma reasons cannot be used"}
+        unless config.enable_upvote[0] || config.enable_downvote[0]
+          Log.info { "Karma reasons are enabled, but neither upvotes nor downvotes are enabled, so karma reasons cannot be used" }
         end
       end
 
       if config.regular_forwards
         unless config.relay_forwarded_message
-          Log.info {"Regular forwards are enabled, but forwarded messages are not, so the bot cannot relay regular forwards"}
+          Log.info { "Regular forwards are enabled, but forwarded messages are not, so the bot cannot relay regular forwards" }
         end
       end
 
       if config.toggle_r9k_forwards
-        unless (config.toggle_r9k_text || config.toggle_r9k_media)
-          Log.info {"R9K forwards are enabled, but neither R9K text nor R9K media are enabled, so ROBOT9000 is not enbaled"}
+        unless config.toggle_r9k_text || config.toggle_r9k_media
+          Log.info { "R9K forwards are enabled, but neither R9K text nor R9K media are enabled, so ROBOT9000 is not enbaled" }
         end
       end
 
       if config.enable_whitelist[0]
         if config.registration_open
-          Log.info {"The whitelist command is enabled, but registration is open; the command is unecessary"}
+          Log.info { "The whitelist command is enabled, but registration is open; the command is unecessary" }
         end
       end
 
       if config.pseudonymous
         unless config.enable_tripcode[0]
-          Log.info {"Pseudonymous mode is enabled, but the tripcode command is disabled. It will not be possible to set a tripcode"}
+          Log.info { "Pseudonymous mode is enabled, but the tripcode command is disabled. It will not be possible to set a tripcode" }
         end
       end
 
       if config.statistics
         unless config.enable_stats[0]
-          Log.info {"Statistics are enabled, but the stats command is disabled. It will not be possible to view the statisitics"}
+          Log.info { "Statistics are enabled, but the stats command is disabled. It will not be possible to view the statisitics" }
         end
       end
 
-      if config.r9k_warn 
+      if config.r9k_warn
         if config.r9k_cooldown > 0
-          Log.info {"R9K Warn and R9K Cooldown are both enabled; only R9K Cooldown will apply if ROBOT9000 is enabled"}
+          Log.info { "R9K Warn and R9K Cooldown are both enabled; only R9K Cooldown will apply if ROBOT9000 is enabled" }
         end
       end
     end
@@ -619,7 +617,7 @@ module PrivateParlorXT
 
         config.karma_levels = {
           (Int32::MIN...keys[1]) => config.intermediate_karma_levels[keys[0]],
-          (keys[1]..Int32::MAX) => config.intermediate_karma_levels[keys[1]]
+          (keys[1]..Int32::MAX)  => config.intermediate_karma_levels[keys[1]],
         }
       else
         keys = config.intermediate_karma_levels.keys.sort!
