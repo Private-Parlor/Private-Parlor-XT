@@ -1,5 +1,5 @@
 require "../constants.cr"
-require "../history.cr"
+require "./history.cr"
 
 module PrivateParlorXT
   # An implementation of `History` storing the messages in RAM as a `Hash`

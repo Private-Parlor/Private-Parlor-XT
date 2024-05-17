@@ -1,5 +1,5 @@
-require "../user.cr"
-require "../constants.cr"
+require "../../user.cr"
+require "../../constants.cr"
 require "db"
 
 module PrivateParlorXT

@@ -1,6 +1,6 @@
-require "./command_handler.cr"
-require "./hears_handler.cr"
-require "./update_handler.cr"
+require "./handlers/command_handler.cr"
+require "./handlers/hears_handler.cr"
+require "./handlers/update_handler.cr"
 require "./services.cr"
 require "tasker"
 

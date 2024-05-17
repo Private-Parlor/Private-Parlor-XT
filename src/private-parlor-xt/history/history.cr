@@ -1,4 +1,4 @@
-require "./constants.cr"
+require "../constants.cr"
 
 module PrivateParlorXT
   # A base class for objects that store the history of sent messages so that they can be referenced later for replies, deletions, or other commands

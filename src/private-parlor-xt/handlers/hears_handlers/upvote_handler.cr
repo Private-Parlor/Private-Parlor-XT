@@ -1,4 +1,4 @@
-require "../../hears_handler.cr"
+require "../hears_handler.cr"
 require "../../services.cr"
 require "tourmaline"
 

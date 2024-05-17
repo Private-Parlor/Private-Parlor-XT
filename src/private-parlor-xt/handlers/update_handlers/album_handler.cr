@@ -1,4 +1,4 @@
-require "../../update_handler.cr"
+require "../update_handler.cr"
 require "../../constants.cr"
 require "../../album_helpers.cr"
 require "tourmaline"

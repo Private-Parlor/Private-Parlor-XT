@@ -1,4 +1,4 @@
-require "./constants.cr"
+require "../constants.cr"
 
 module PrivateParlorXT
   # A base class for ROBOT9000 implementations

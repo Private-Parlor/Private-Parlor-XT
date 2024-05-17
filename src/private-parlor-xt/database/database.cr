@@ -1,5 +1,5 @@
-require "./constants.cr"
-require "./user.cr"
+require "../constants.cr"
+require "../user.cr"
 
 module PrivateParlorXT
   # A base class for `Database` implementations, used for storing and retrieving data about users

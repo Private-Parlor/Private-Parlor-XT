@@ -1,4 +1,4 @@
-require "./handler.cr"
+require "../handler.cr"
 require "tourmaline"
 
 module PrivateParlorXT

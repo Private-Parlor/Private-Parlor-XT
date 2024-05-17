@@ -1,5 +1,5 @@
 require "../constants.cr"
-require "../robot9000.cr"
+require "./robot9000.cr"
 require "db"
 
 module PrivateParlorXT

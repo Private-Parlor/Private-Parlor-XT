@@ -1,5 +1,5 @@
 require "../constants.cr"
-require "../history.cr"
+require "./history.cr"
 require "db"
 
 module PrivateParlorXT
