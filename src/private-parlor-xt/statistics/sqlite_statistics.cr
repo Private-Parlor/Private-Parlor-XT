@@ -22,7 +22,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_start_date : String
+    def start_date : String
       @connection.query_one("
         SELECT value
         FROM system_config
@@ -32,7 +32,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def increment_message_count(type : MessageCounts) : Nil
+    def increment_messages(type : Messages) : Nil
       column = type.to_s.downcase
 
       write do
@@ -45,7 +45,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def increment_upvote_count : Nil
+    def increment_upvotes : Nil
       write do
         @connection.exec("
           INSERT INTO message_stats (date, upvotes)
@@ -56,7 +56,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def increment_downvote_count : Nil
+    def increment_downvotes : Nil
       write do
         @connection.exec("
           INSERT INTO message_stats (date, downvotes)
@@ -67,7 +67,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def increment_unoriginal_text_count : Nil
+    def increment_unoriginal_text : Nil
       write do
         @connection.exec("
           INSERT INTO message_stats (date, unoriginal_text)
@@ -78,7 +78,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def increment_unoriginal_media_count : Nil
+    def increment_unoriginal_media : Nil
       write do
         @connection.exec("
           INSERT INTO message_stats (date, unoriginal_media)
@@ -89,7 +89,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_total_messages : Hash(MessageCounts, Int32)
+    def message_counts : Hash(Messages, Int32)
       totals = @connection.query_one("
         SELECT
           coalesce(sum(total_messages), 0) as total_messages,
@@ -124,11 +124,11 @@ module PrivateParlorXT
         }
       )
 
-      Hash.zip(MessageCounts.values, totals.to_a)
+      Hash.zip(Messages.values, totals.to_a)
     end
 
     # :inherit:
-    def get_user_counts : Hash(UserCounts, Int32)
+    def user_counts : Hash(Users, Int32)
       totals = @connection.query_one("
         SELECT
           count(id) as total_users,
@@ -156,11 +156,11 @@ module PrivateParlorXT
         }
       )
 
-      Hash.zip(UserCounts.values, totals.to_a)
+      Hash.zip(Users.values, totals.to_a)
     end
 
     # :inherit:
-    def get_karma_counts : Hash(KarmaCounts, Int32)
+    def karma_counts : Hash(Karma, Int32)
       totals = @connection.query_one("
         SELECT
           coalesce(sum(upvotes), 0) as total_upvotes,
@@ -185,11 +185,11 @@ module PrivateParlorXT
         }
       )
 
-      Hash.zip(KarmaCounts.values, totals.to_a)
+      Hash.zip(Karma.values, totals.to_a)
     end
 
     # :inherit:
-    def get_karma_level_count(start_value : Int32, end_value : Int32) : Int32
+    def karma_level_count(start_value : Int32, end_value : Int32) : Int32
       @connection.query_one("
         SELECT count(id)
         FROM users
@@ -200,7 +200,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_robot9000_counts : Hash(Robot9000Counts, Int32)
+    def robot9000_counts : Hash(Robot9000, Int32)
       totals = @connection.query_one("
         SELECT
           (SELECT count(id) FROM (SELECT * FROM file_id UNION SELECT * FROM text)) as total_unique,
@@ -215,7 +215,7 @@ module PrivateParlorXT
         }
       )
 
-      Hash.zip(Robot9000Counts.values, totals.to_a)
+      Hash.zip(Robot9000.values, totals.to_a)
     end
 
     # Ensures that there is a 'message_stats' table in the database

@@ -43,7 +43,7 @@ module PrivateParlorXT
 
         messages[0].data.should(eq(services.replies.command_disabled))
 
-        services.database.get_motd.should(be_nil)
+        services.database.motd.should(be_nil)
       end
 
       it "updates user activity when motd is set" do
@@ -156,7 +156,7 @@ module PrivateParlorXT
 
         messages[0].data.should(eq(services.replies.success))
 
-        services.database.get_motd.should(eq("*new* motd example"))
+        services.database.motd.should(eq("*new* motd example"))
       end
     end
   end

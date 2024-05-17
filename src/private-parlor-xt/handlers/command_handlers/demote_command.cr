@@ -7,7 +7,7 @@ module PrivateParlorXT
   class DemoteCommand < CommandHandler
     # Demotes the user described in the *message* text or demotes the sender of the message it replies to, if *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return unless authorized?(user, message, :Demote, services)
 
@@ -34,7 +34,7 @@ module PrivateParlorXT
         }))
       end
 
-      return unless demoted_user = get_reply_user(user, reply, services)
+      return unless demoted_user = reply_user(user, reply, services)
 
       unless services.access.can_demote?(tuple[0], user.rank, demoted_user.rank)
         return services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.fail)
@@ -47,9 +47,9 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.demoted, {
         "id"      => demoted_user.id.to_s,
-        "name"    => demoted_user.get_formatted_name,
+        "name"    => demoted_user.formatted_name,
         "rank"    => tuple[1].name,
-        "invoker" => user.get_formatted_name,
+        "invoker" => user.formatted_name,
       })
 
       services.relay.log_output(log)
@@ -91,9 +91,9 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.demoted, {
         "id"      => demoted_user.id.to_s,
-        "name"    => demoted_user.get_formatted_name,
+        "name"    => demoted_user.formatted_name,
         "rank"    => tuple[1].name,
-        "invoker" => user.get_formatted_name,
+        "invoker" => user.formatted_name,
       })
 
       services.relay.log_output(log)

@@ -100,7 +100,7 @@ module PrivateParlorXT
           "minutes" => uptime.minutes.to_s,
           "seconds" => uptime.seconds.to_s,
           "registration_toggle"  => services.locale.toggle[1],
-          "media_limit_period"   => Format.format_time_span(Time::Span.new(hours: 120), services.locale),
+          "media_limit_period"   => Format.time_span(Time::Span.new(hours: 120), services.locale),
           "message_lifespan"     => services.locale.toggle[0],
           "pseudonymous_toggle"  => services.locale.toggle[0],
           "spoilers_toggle"      => services.locale.toggle[0],

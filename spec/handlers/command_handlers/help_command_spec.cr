@@ -56,7 +56,7 @@ module PrivateParlorXT
 
         handler.do(message, services)
 
-        expected = Format.format_help(user, services.access.ranks, services, services.command_descriptions, services.replies)
+        expected = Format.help(user, services.access.ranks, services, services.command_descriptions, services.replies)
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))

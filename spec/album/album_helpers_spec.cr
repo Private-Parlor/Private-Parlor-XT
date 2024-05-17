@@ -9,7 +9,7 @@ module PrivateParlorXT
   end
 
   describe AlbumHelpers do
-    describe "#get_album_input" do
+    describe "#album_input" do
       it "returns InputMediaPhoto when message contains a photo" do
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
@@ -29,8 +29,8 @@ module PrivateParlorXT
           has_media_spoiler: true
         )
 
-        unless input = AlbumHelpers.get_album_input(message, "photo caption", [] of Tourmaline::MessageEntity, true)
-          fail("get_album_input should not have returned nil")
+        unless input = AlbumHelpers.album_input(message, "photo caption", [] of Tourmaline::MessageEntity, true)
+          fail("album_input should not have returned nil")
         end
 
         unless input.is_a?(Tourmaline::InputMediaPhoto)
@@ -61,8 +61,8 @@ module PrivateParlorXT
           has_media_spoiler: true
         )
 
-        unless input = AlbumHelpers.get_album_input(message, "video caption", [] of Tourmaline::MessageEntity, true)
-          fail("get_album_input should not have returned nil")
+        unless input = AlbumHelpers.album_input(message, "video caption", [] of Tourmaline::MessageEntity, true)
+          fail("album_input should not have returned nil")
         end
 
         unless input.is_a?(Tourmaline::InputMediaVideo)
@@ -90,8 +90,8 @@ module PrivateParlorXT
           ),
         )
 
-        unless input = AlbumHelpers.get_album_input(message, "audio caption", [] of Tourmaline::MessageEntity, true)
-          fail("get_album_input should not have returned nil")
+        unless input = AlbumHelpers.album_input(message, "audio caption", [] of Tourmaline::MessageEntity, true)
+          fail("album_input should not have returned nil")
         end
 
         unless input.is_a?(Tourmaline::InputMediaAudio)
@@ -117,8 +117,8 @@ module PrivateParlorXT
           ),
         )
 
-        unless input = AlbumHelpers.get_album_input(message, "document caption", [] of Tourmaline::MessageEntity, true)
-          fail("get_album_input should not have returned nil")
+        unless input = AlbumHelpers.album_input(message, "document caption", [] of Tourmaline::MessageEntity, true)
+          fail("album_input should not have returned nil")
         end
 
         unless input.is_a?(Tourmaline::InputMediaDocument)
@@ -147,7 +147,7 @@ module PrivateParlorXT
           ),
         )
 
-        input = AlbumHelpers.get_album_input(message, "animation caption", [] of Tourmaline::MessageEntity, true)
+        input = AlbumHelpers.album_input(message, "animation caption", [] of Tourmaline::MessageEntity, true)
 
         input.should(be_nil)
       end

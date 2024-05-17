@@ -7,14 +7,14 @@ module PrivateParlorXT
   class HelpCommand < CommandHandler
     # Returns a message containing commands that the sender of the *message* can use
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       update_user_activity(user, services)
 
       services.relay.send_to_user(
         ReplyParameters.new(message.message_id),
         user.id,
-        Format.format_help(
+        Format.help(
           user,
           services.access.ranks,
           services,

@@ -306,10 +306,10 @@ module PrivateParlorXT
           fail("Services should have a statistics object")
         end
 
-        result = stats.get_total_messages
+        result = stats.message_counts
 
-        result[Statistics::MessageCounts::Forwards].should(eq(1))
-        result[Statistics::MessageCounts::TotalMessages].should(eq(1))
+        result[Statistics::Messages::Forwards].should(eq(1))
+        result[Statistics::Messages::TotalMessages].should(eq(1))
       end
 
       it "spends user karma when KarmaHandler is enabled" do
@@ -440,12 +440,12 @@ module PrivateParlorXT
         messages.size.should(eq(4))
 
         messages.each do |msg|
-          msg.origin_msid.should(eq(11))
+          msg.origin.should(eq(11))
           msg.sender.should(eq(80300))
           msg.data.should(eq("Forwarded from other user\n\nExample Text"))
           msg.entities.size.should(eq(3))
           msg.entities[2].type.should(eq("underline"))
-          msg.reply_to.should(be_nil)
+          msg.reply.should(be_nil)
 
           [
             80300,
@@ -544,12 +544,12 @@ module PrivateParlorXT
         messages.size.should(eq(4))
 
         messages.each do |msg|
-          msg.origin_msid.should(eq(11))
+          msg.origin.should(eq(11))
           msg.sender.should(eq(80300))
           msg.data.should(eq("animation_item_one"))
           msg.entities.size.should(eq(3))
           msg.entities[2].type.should(eq("underline"))
-          msg.reply_to.should(be_nil)
+          msg.reply.should(be_nil)
 
           [
             80300,
@@ -605,12 +605,12 @@ module PrivateParlorXT
         messages.size.should(eq(4))
 
         messages.each do |msg|
-          msg.origin_msid.should(eq(11))
+          msg.origin.should(eq(11))
           msg.sender.should(eq(80300))
           msg.data.should(eq("audio_item_one"))
           msg.entities.size.should(eq(3))
           msg.entities[2].type.should(eq("underline"))
-          msg.reply_to.should(be_nil)
+          msg.reply.should(be_nil)
 
           [
             80300,
@@ -665,12 +665,12 @@ module PrivateParlorXT
         messages.size.should(eq(4))
 
         messages.each do |msg|
-          msg.origin_msid.should(eq(11))
+          msg.origin.should(eq(11))
           msg.sender.should(eq(80300))
           msg.data.should(eq("document_item_one"))
           msg.entities.size.should(eq(3))
           msg.entities[2].type.should(eq("underline"))
-          msg.reply_to.should(be_nil)
+          msg.reply.should(be_nil)
 
           [
             80300,
@@ -728,12 +728,12 @@ module PrivateParlorXT
         messages.size.should(eq(4))
 
         messages.each do |msg|
-          msg.origin_msid.should(eq(11))
+          msg.origin.should(eq(11))
           msg.sender.should(eq(80300))
           msg.data.should(eq("video_item_one"))
           msg.entities.size.should(eq(3))
           msg.entities[2].type.should(eq("underline"))
-          msg.reply_to.should(be_nil)
+          msg.reply.should(be_nil)
 
           [
             80300,
@@ -792,12 +792,12 @@ module PrivateParlorXT
         messages.size.should(eq(4))
 
         messages.each do |msg|
-          msg.origin_msid.should(eq(11))
+          msg.origin.should(eq(11))
           msg.sender.should(eq(80300))
           msg.data.should(eq("photo_item_one"))
           msg.entities.size.should(eq(3))
           msg.entities[2].type.should(eq("underline"))
-          msg.reply_to.should(be_nil)
+          msg.reply.should(be_nil)
 
           [
             80300,
@@ -857,10 +857,10 @@ module PrivateParlorXT
         messages.size.should(eq(4))
 
         messages.each do |msg|
-          msg.origin_msid.should(eq(11))
+          msg.origin.should(eq(11))
           msg.sender.should(eq(80300))
           msg.data.should(eq("11"))
-          msg.reply_to.should(be_nil)
+          msg.reply.should(be_nil)
 
           [
             80300,
@@ -924,10 +924,10 @@ module PrivateParlorXT
         messages.size.should(eq(4))
 
         messages.each do |msg|
-          msg.origin_msid.should(eq(11))
+          msg.origin.should(eq(11))
           msg.sender.should(eq(80300))
           msg.data.should(eq("11"))
-          msg.reply_to.should(be_nil)
+          msg.reply.should(be_nil)
 
           [
             80300,
@@ -1070,7 +1070,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#deanonymous_poll" do
+    describe "#deanonymous_poll?" do
       it "returns true if forward contains a deanonymous poll" do
         services = create_services(ranks: ranks)
 
@@ -1096,7 +1096,7 @@ module PrivateParlorXT
 
         user = MockUser.new(9000, rank: 0)
 
-        handler.deanonymous_poll(user, message, services).should(be_true)
+        handler.deanonymous_poll?(user, message, services).should(be_true)
       end
 
       it "returns false if forward contains an anonymous poll" do
@@ -1124,7 +1124,7 @@ module PrivateParlorXT
 
         user = MockUser.new(9000, rank: 0)
 
-        handler.deanonymous_poll(user, message, services).should(be_false)
+        handler.deanonymous_poll?(user, message, services).should(be_false)
       end
 
       it "returns false if forward does not contain a poll" do
@@ -1143,7 +1143,7 @@ module PrivateParlorXT
 
         user = MockUser.new(9000, rank: 0)
 
-        handler.deanonymous_poll(user, message, services).should(be_false)
+        handler.deanonymous_poll?(user, message, services).should(be_false)
       end
     end
 
@@ -1175,7 +1175,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#has_sufficient_karma?" do
+    describe "#sufficient_karma?" do
       it "returns true if there is no karma economy handler" do
         services = create_services()
 
@@ -1192,7 +1192,7 @@ module PrivateParlorXT
           from: tourmaline_user,
         )
 
-        handler.has_sufficient_karma?(user, message, services).should(be_true)
+        handler.sufficient_karma?(user, message, services).should(be_true)
       end
 
       it "returns true if price for forwarded messages is less than 0" do
@@ -1211,7 +1211,7 @@ module PrivateParlorXT
           from: tourmaline_user,
         )
 
-        handler.has_sufficient_karma?(user, message, services).should(be_true)
+        handler.sufficient_karma?(user, message, services).should(be_true)
       end
 
       it "returns true if user's rank is equal to or greater than the cutoff rank" do
@@ -1233,7 +1233,7 @@ module PrivateParlorXT
           from: tourmaline_user,
         )
 
-        handler.has_sufficient_karma?(user, message, services).should(be_true)
+        handler.sufficient_karma?(user, message, services).should(be_true)
       end
 
       it "returns true if message is part of a queued album" do
@@ -1261,7 +1261,7 @@ module PrivateParlorXT
           media_group_id: "album_one"
         )
 
-        handler.has_sufficient_karma?(user, message, services).should(be_true)
+        handler.sufficient_karma?(user, message, services).should(be_true)
       end
 
       it "returns true if user has sufficient karma" do
@@ -1283,7 +1283,7 @@ module PrivateParlorXT
           from: tourmaline_user,
         )
 
-        handler.has_sufficient_karma?(user, message, services).should(be_true)
+        handler.sufficient_karma?(user, message, services).should(be_true)
       end
 
       it "returns nil and queues 'insufficient karma' response if user does not have enough karma" do
@@ -1307,7 +1307,7 @@ module PrivateParlorXT
           from: tourmaline_user,
         )
 
-        handler.has_sufficient_karma?(user, message, services).should(be_nil)
+        handler.sufficient_karma?(user, message, services).should(be_nil)
 
         expected = Format.substitute_reply(services.replies.insufficient_karma, {
           "amount" => 10.to_s,

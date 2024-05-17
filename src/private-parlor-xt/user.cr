@@ -138,7 +138,7 @@ module PrivateParlorXT
     # Get the formatted name of the user.
     # If the user has a `username`, returns it with the '@' prepended to it
     # Otherwise, returns the `realname`
-    def get_formatted_name : String
+    def formatted_name : String
       if username = @username
         "@" + username
       else
@@ -147,13 +147,13 @@ module PrivateParlorXT
     end
 
     # Generate an obfuscated ID for the user, used for log messages and commands like `InfoCommand`
-    def get_obfuscated_id : String
+    def obfuscated_id : String
       # With 64 possible Base64 characters, this should give us 766,480 possible OIDs
       Random.new(@id + Time.utc.at_beginning_of_day.to_unix).base64(3)
     end
 
     # Get the user's obfuscated `karma`
-    def get_obfuscated_karma : Int32
+    def obfuscated_karma : Int32
       offset = ((@karma * 0.2).abs + 2).round.to_i
       @karma + Random.rand(0..(offset + 1)) - offset
     end

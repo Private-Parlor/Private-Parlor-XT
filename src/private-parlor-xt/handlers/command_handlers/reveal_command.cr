@@ -7,7 +7,7 @@ module PrivateParlorXT
   class RevealCommand < CommandHandler
     # Privately sends the *message* sender's username signature to the sender of the message this *message* replies to, if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return unless authorized?(user, message, :Reveal, services)
 
@@ -15,9 +15,9 @@ module PrivateParlorXT
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.private_sign)
       end
 
-      return unless reply = get_reply_message(user, message, services)
+      return unless reply = reply_message(user, message, services)
 
-      return unless reply_user = get_reply_user(user, reply, services)
+      return unless reply_user = reply_user(user, reply, services)
 
       if reply_user.id == user.id
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.fail)
@@ -29,9 +29,9 @@ module PrivateParlorXT
 
       update_user_activity(user, services)
 
-      receiver_message = services.history.get_receiver_message(reply.message_id.to_i64, reply_user.id)
+      receiver_message = services.history.receiver_message(reply.message_id.to_i64, reply_user.id)
 
-      response = Format.format_user_reveal(user.id, user.get_formatted_name, services.replies)
+      response = Format.user_reveal(user.id, user.formatted_name, services.replies)
 
       if receiver_message
         receiver_message = ReplyParameters.new(receiver_message)
@@ -41,9 +41,9 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.revealed, {
         "sender_id"   => user.id.to_s,
-        "sender"      => user.get_formatted_name,
+        "sender"      => user.formatted_name,
         "receiver_id" => reply_user.id.to_s,
-        "receiver"    => reply_user.get_formatted_name,
+        "receiver"    => reply_user.formatted_name,
         "msid"        => reply.message_id.to_s,
       })
 

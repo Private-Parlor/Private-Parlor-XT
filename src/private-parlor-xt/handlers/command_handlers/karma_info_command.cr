@@ -7,7 +7,7 @@ module PrivateParlorXT
   class KarmaInfoCommand < CommandHandler
     # Returns a message containing the user's karma level progress if karma levels are not empty
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       karma_levels = services.config.karma_levels
 
@@ -52,7 +52,7 @@ module PrivateParlorXT
         "next_level"    => next_level,
         "karma"         => user.karma.to_s,
         "limit"         => limit.to_s,
-        "loading_bar"   => Format.format_karma_loading_bar(percentage, services.locale),
+        "loading_bar"   => Format.karma_loading_bar(percentage, services.locale),
         "percentage"    => percentage.format(decimal_places: 1, only_significant: true),
       })
 

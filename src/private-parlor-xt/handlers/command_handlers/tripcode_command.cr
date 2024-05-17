@@ -7,7 +7,7 @@ module PrivateParlorXT
   class TripcodeCommand < CommandHandler
     # Sets the user's tripcode or returns the user's tripcode if set when the message meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       if arg = Format.get_arg(message.text)
         if services.config.flag_signatures
@@ -20,12 +20,12 @@ module PrivateParlorXT
 
           # Append with a pound sign and the user's obfuscated ID to make
           # the flag signature still compatible with tripcode generations
-          tripcode = arg + '#' + user.get_obfuscated_id
+          tripcode = arg + '#' + user.obfuscated_id
           user.set_tripcode(tripcode)
 
           name, _ = Format.generate_tripcode(tripcode, services)
 
-          response = Format.format_tripcode_set_reply(
+          response = Format.tripcode_set(
             services.replies.flag_sign_set_format,
             name,
             "",
@@ -43,7 +43,7 @@ module PrivateParlorXT
 
           name, tripcode = Format.generate_tripcode(arg, services)
 
-          response = Format.format_tripcode_set_reply(
+          response = Format.tripcode_set(
             services.replies.tripcode_set_format,
             name,
             tripcode,

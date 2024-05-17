@@ -62,7 +62,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_origin_message" do
+    describe "#origin_message" do
       it "gets original message ID from receiver message ID" do
         history = CachedHistory.new(HISTORY_LIFESPAN)
         sender = 100
@@ -75,7 +75,7 @@ module PrivateParlorXT
 
         history.add_to_history(origin, receiver_msid, receiver_id)
 
-        history.get_origin_message(receiver_msid).should(eq(origin))
+        history.origin_message(receiver_msid).should(eq(origin))
       end
 
       it "returns nil if receiver message ID has no original message" do
@@ -83,11 +83,11 @@ module PrivateParlorXT
 
         receiver_msid = 2
 
-        history.get_origin_message(receiver_msid).should(be_nil)
+        history.origin_message(receiver_msid).should(be_nil)
       end
     end
 
-    describe "#get_all_receivers" do
+    describe "#receivers" do
       it "gets all receiver messages IDs from a message group" do
         history = CachedHistory.new(HISTORY_LIFESPAN)
         sender = 100
@@ -106,20 +106,20 @@ module PrivateParlorXT
           103 => 4,
         } of Int64 => Int64
 
-        history.get_all_receivers(1).should(eq(expected))
-        history.get_all_receivers(2).should(eq(expected))
-        history.get_all_receivers(3).should(eq(expected))
-        history.get_all_receivers(4).should(eq(expected))
+        history.receivers(1).should(eq(expected))
+        history.receivers(2).should(eq(expected))
+        history.receivers(3).should(eq(expected))
+        history.receivers(4).should(eq(expected))
       end
 
       it "returns an empty hash if original message does not exist" do
         history = CachedHistory.new(HISTORY_LIFESPAN)
 
-        history.get_all_receivers(1).should(eq({} of Int64 => Int64))
+        history.receivers(1).should(eq({} of Int64 => Int64))
       end
     end
 
-    describe "#get_receiver_message" do
+    describe "#receiver_message" do
       it "gets receiver message ID for a given user" do
         history = CachedHistory.new(HISTORY_LIFESPAN)
         sender = 100
@@ -131,19 +131,19 @@ module PrivateParlorXT
         history.add_to_history(origin, 3, 102)
         history.add_to_history(origin, 4, 103)
 
-        history.get_receiver_message(4, 101).should(eq(2))
-        history.get_receiver_message(3, 103).should(eq(4))
-        history.get_receiver_message(2, 100).should(eq(1))
+        history.receiver_message(4, 101).should(eq(2))
+        history.receiver_message(3, 103).should(eq(4))
+        history.receiver_message(2, 100).should(eq(1))
       end
 
       it "returns nil if original message does not exist" do
         history = CachedHistory.new(HISTORY_LIFESPAN)
 
-        history.get_receiver_message(4, 101).should(be_nil)
+        history.receiver_message(4, 101).should(be_nil)
       end
     end
 
-    describe "#get_sender" do
+    describe "#sender" do
       it "gets the sender ID of a message group from a receiver message ID" do
         history = CachedHistory.new(HISTORY_LIFESPAN)
         sender = 100
@@ -153,17 +153,17 @@ module PrivateParlorXT
 
         history.add_to_history(origin, 2, 101)
 
-        history.get_sender(2).should(eq(100))
+        history.sender(2).should(eq(100))
       end
 
       it "returns nil if original message does not exist" do
         history = CachedHistory.new(HISTORY_LIFESPAN)
 
-        history.get_sender(2).should(be_nil)
+        history.sender(2).should(be_nil)
       end
     end
 
-    describe "#get_messages_from_user" do
+    describe "#messages_from_user" do
       it "gets all recent message IDs sent by a given user" do
         history = CachedHistory.new(HISTORY_LIFESPAN)
 
@@ -174,7 +174,7 @@ module PrivateParlorXT
 
         expected = [1, 2, 3, 4].to_set
 
-        history.get_messages_from_user(100).should(eq(expected))
+        history.messages_from_user(100).should(eq(expected))
       end
     end
 
@@ -202,12 +202,12 @@ module PrivateParlorXT
 
       history.add_to_history(origin, 2, 101)
 
-      history.get_warning(2).should(be_false)
+      history.warned?(2).should(be_false)
       history.add_warning(2)
-      history.get_warning(2).should(be_true)
+      history.warned?(2).should(be_true)
     end
 
-    describe "#get_purge_receivers" do
+    describe "#purge_receivers" do
       it "returns messages to purge in descending order" do
         history = CachedHistory.new(HISTORY_LIFESPAN)
         generate_history(history)
@@ -234,7 +234,7 @@ module PrivateParlorXT
           60200 => [22, 18, 14],
         }
 
-        history.get_purge_receivers(Set{11_i64, 15_i64, 19_i64}).should(eq(purge_receivers))
+        history.purge_receivers(Set{11_i64, 15_i64, 19_i64}).should(eq(purge_receivers))
       end
     end
 
@@ -258,8 +258,8 @@ module PrivateParlorXT
         history.delete_message_group(2)
         history.delete_message_group(4)
 
-        history.get_origin_message(3).should(be_nil)
-        history.get_origin_message(5).should(be_nil)
+        history.origin_message(3).should(be_nil)
+        history.origin_message(5).should(be_nil)
       end
     end
 

@@ -20,7 +20,7 @@ module PrivateParlorXT
     end
 
     # Returns the given *message's* reply, if it exists
-    def get_reply_message(user : User, message : Tourmaline::Message, services : Services) : Tourmaline::Message?
+    def reply_message(user : User, message : Tourmaline::Message, services : Services) : Tourmaline::Message?
       unless message.reply_to_message
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.no_reply) 
       end
@@ -29,8 +29,8 @@ module PrivateParlorXT
     end
 
     # Returns the *reply_message's* `User` if he exists and the *reply_message* is still available in the `History`
-    def get_reply_user(user : User, reply_message : Tourmaline::Message, services : Services) : User?
-      reply_user_id = services.history.get_sender(reply_message.message_id.to_i64)
+    def reply_user(user : User, reply_message : Tourmaline::Message, services : Services) : User?
+      reply_user_id = services.history.sender(reply_message.message_id.to_i64)
 
       reply_user = services.database.get_user(reply_user_id)
 

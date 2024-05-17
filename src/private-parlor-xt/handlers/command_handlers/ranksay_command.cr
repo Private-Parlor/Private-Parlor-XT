@@ -10,7 +10,7 @@ module PrivateParlorXT
   class RanksayCommand < CommandHandler
     # Preformats the given *message* with a rank name signature if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return if message.forward_origin
 
@@ -21,7 +21,7 @@ module PrivateParlorXT
                       :Ranksay, :RanksayLower
                     )
 
-      text, entities = Format.valid_text_and_entities(message, user, services)
+      text, entities = Format.validate_text_and_entities(message, user, services)
       return unless text
 
       unless arg = Format.get_arg(text)
@@ -36,9 +36,9 @@ module PrivateParlorXT
 
       text, entities = Format.format_text(text, entities, false, services)
 
-      entities = update_entities(text, entities, arg)
+      entities = remove_command_entity(text, entities, arg)
 
-      text, entities = Format.format_ranksay(rank_name, arg, entities)
+      text, entities = Format.ranksay(rank_name, arg, entities)
 
       if message.text
         message.text = text
@@ -53,7 +53,7 @@ module PrivateParlorXT
       services.relay.log_output(
         Format.substitute_message(services.logs.ranked_message, {
           "id"   => user.id.to_s,
-          "name" => user.get_formatted_name,
+          "name" => user.formatted_name,
           "rank" => rank_name,
           "text" => arg,
         })

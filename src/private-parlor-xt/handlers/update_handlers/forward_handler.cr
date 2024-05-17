@@ -7,19 +7,19 @@ module PrivateParlorXT
   class ForwardHandler < UpdateHandler
     # Checks if the forwarded message meets requirements and relays it
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return unless authorized?(user, message, :Forward, services)
 
-      return if deanonymous_poll(user, message, services)
+      return if deanonymous_poll?(user, message, services)
 
-      return unless has_sufficient_karma?(user, message, services)
+      return unless sufficient_karma?(user, message, services)
 
       return if spamming?(user, message, services)
 
       return unless unique?(user, message, services)
 
-      record_message_statistics(Statistics::MessageCounts::Forwards, services)
+      record_message_statistics(Statistics::Messages::Forwards, services)
 
       user = spend_karma(user, services)
 
@@ -27,7 +27,7 @@ module PrivateParlorXT
 
       update_user_activity(user, services)
 
-      receivers = get_message_receivers(user, services)
+      receivers = message_receivers(user, services)
 
       services.relay.send_forward(
         RelayParameters.new(
@@ -56,7 +56,7 @@ module PrivateParlorXT
     # Returns `true` if the forwarded poll does not have anonymous voting
     # 
     # Returns `false` otherwise
-    def deanonymous_poll(user : User, message : Tourmaline::Message, services : Services) : Bool
+    def deanonymous_poll?(user : User, message : Tourmaline::Message, services : Services) : Bool
       if (poll = message.poll) && (!poll.is_anonymous?)
         services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.deanon_poll)
         return true
@@ -74,7 +74,7 @@ module PrivateParlorXT
     #   - User has sufficient karma
     # 
     # Returns `nil` if the user does not have sufficient karma
-    def has_sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
+    def sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
       return true unless karma = services.karma
 
       return true unless karma.karma_forwarded_message >= 0

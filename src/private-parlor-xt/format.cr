@@ -56,7 +56,7 @@ module PrivateParlorXT
     end
 
     # Gets the text and message entities from a given *message*
-    def get_text_and_entities(message : Tourmaline::Message, user : User, services : Services) : Tuple(String?, Array(Tourmaline::MessageEntity))
+    def text_and_entities(message : Tourmaline::Message, user : User, services : Services) : Tuple(String?, Array(Tourmaline::MessageEntity))
       text = message.caption || message.text || ""
       entities = message.entities.empty? ? message.caption_entities : message.entities
 
@@ -76,7 +76,7 @@ module PrivateParlorXT
     end
 
     # Checks the text and entities from the given *message* for validity
-    def valid_text_and_entities(message : Tourmaline::Message, user : User, services : Services) : Tuple(String?, Array(Tourmaline::MessageEntity))
+    def validate_text_and_entities(message : Tourmaline::Message, user : User, services : Services) : Tuple(String?, Array(Tourmaline::MessageEntity))
       text = message.caption || message.text || ""
       entities = message.entities.empty? ? message.caption_entities : message.entities
 
@@ -105,17 +105,17 @@ module PrivateParlorXT
       name, tripcode = Format.generate_tripcode(tripcode, services)
 
       if services.config.flag_signatures
-        header, entities = Format.format_flag_sign(name, entities)
+        header, entities = Format.flag_sign(name, entities)
       else
-        header, entities = Format.format_tripcode_sign(name, tripcode, entities)
+        header, entities = Format.tripcode_sign(name, tripcode, entities)
       end
 
       return header + text, entities
     end
 
     # Format the cooldown until text based on the given *expiration*
-    def format_cooldown_until(expiration : Time?, locale : Locale, replies : Replies) : String
-      if time = format_time(expiration, locale.time_format)
+    def cooldown_until(expiration : Time?, locale : Locale, replies : Replies) : String
+      if time = time(expiration, locale.time_format)
         "#{replies.cooldown_true} #{time}"
       else
         replies.cooldown_false
@@ -123,14 +123,14 @@ module PrivateParlorXT
     end
 
     # Format the warning expiration text based on the given *expiration*
-    def format_warn_expiry(expiration : Time?, locale : Locale, replies : Replies) : String?
-      if time = format_time(expiration, locale.time_format)
+    def warn_expiry(expiration : Time?, locale : Locale, replies : Replies) : String?
+      if time = time(expiration, locale.time_format)
         replies.info_warning.gsub("{warn_expiry}", "#{time}")
       end
     end
 
     # Format the tripcode set reply
-    def format_tripcode_set_reply(set_format : String, name : String, tripcode : String, replies : Replies) : String
+    def tripcode_set(set_format : String, name : String, tripcode : String, replies : Replies) : String
       set_format = set_format.gsub("{name}", escape_md(name, version: 2))
 
       set_format = set_format.gsub("{tripcode}", escape_md(tripcode, version: 2))
@@ -139,7 +139,7 @@ module PrivateParlorXT
     end
 
     # Format the *reason* for system message replies
-    def format_reason_reply(reason : String?, replies : Replies) : String?
+    def reason(reason : String?, replies : Replies) : String?
       if reason
         "#{replies.reason_prefix}#{reason}"
       end
@@ -153,7 +153,7 @@ module PrivateParlorXT
     end
 
     # Format the *reason* for karma related replies
-    def format_karma_reason_reply(reason : String?, karma_reply : String, replies : Replies) : String
+    def karma_reason(reason : String?, karma_reply : String, replies : Replies) : String
       return Format.substitute_reply(karma_reply) unless reason
 
       reason = reason.gsub(/\\+$/, "")
@@ -174,7 +174,7 @@ module PrivateParlorXT
     end
 
     # Format the *reason* for log messages
-    def format_reason_log(reason : String?, logs : Logs) : String?
+    def reason_log(reason : String?, logs : Logs) : String?
       if reason
         "#{logs.reason_prefix}#{reason}"
       end
@@ -351,32 +351,32 @@ module PrivateParlorXT
     end
 
     # Returns a 'Forwarded from' header according to the original user which the message came from
-    def get_forward_header(message : Tourmaline::Message, entities : Array(Tourmaline::MessageEntity)) : Tuple(String?, Array(Tourmaline::MessageEntity))
+    def forward_header(message : Tourmaline::Message, entities : Array(Tourmaline::MessageEntity)) : Tuple(String?, Array(Tourmaline::MessageEntity))
       unless origin = message.forward_origin
         return nil, [] of Tourmaline::MessageEntity
       end
 
       if origin.is_a?(Tourmaline::MessageOriginUser)
         if origin.sender_user.is_bot?
-          Format.format_username_forward(origin.sender_user.full_name, origin.sender_user.username, entities)
+          Format.username_forward(origin.sender_user.full_name, origin.sender_user.username, entities)
         else
-          Format.format_user_forward(origin.sender_user.full_name, origin.sender_user.id, entities)
+          Format.user_forward(origin.sender_user.full_name, origin.sender_user.id, entities)
         end
       elsif origin.is_a?(Tourmaline::MessageOriginChannel)
         if origin.chat.username
-          Format.format_username_forward(origin.chat.name, origin.chat.username, entities, origin.message_id)
+          Format.username_forward(origin.chat.name, origin.chat.username, entities, origin.message_id)
         else
-          Format.format_private_channel_forward(origin.chat.name, origin.chat.id, entities, origin.message_id)
+          Format.private_channel_forward(origin.chat.name, origin.chat.id, entities, origin.message_id)
         end
       elsif origin.is_a?(Tourmaline::MessageOriginHiddenUser)
-        Format.format_private_user_forward(origin.sender_user_name, entities)
+        Format.private_user_forward(origin.sender_user_name, entities)
       else
         return nil, [] of Tourmaline::MessageEntity
       end
     end
 
     # Returns a 'Forwarded from' header for users who do not have forward privacy enabled
-    def format_user_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+    def user_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "Forwarded from #{name}\n\n"
 
       header_size = header[..-3].to_utf16.size
@@ -393,7 +393,7 @@ module PrivateParlorXT
     end
 
     # Returns a 'Forwarded from' header for private users
-    def format_private_user_forward(name : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+    def private_user_forward(name : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "Forwarded from #{name}\n\n"
 
       header_size = header[..-3].to_utf16.size
@@ -410,7 +410,7 @@ module PrivateParlorXT
     end
 
     # Returns a 'Forwarded from' header for bots and public channels
-    def format_username_forward(name : String, username : String?, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
+    def username_forward(name : String, username : String?, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "Forwarded from #{name}\n\n"
 
       header_size = header[..-3].to_utf16.size
@@ -427,7 +427,7 @@ module PrivateParlorXT
     end
 
     # Returns a 'Forwarded from' header for private channels, removing the "-100" prefix for private channel IDs
-    def format_private_channel_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
+    def private_channel_forward(name : String, id : Int64 | Int32, entities : Array(Tourmaline::MessageEntity), msid : Int64 | Int32 | Nil = nil) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "Forwarded from #{name}\n\n"
 
       header_size = header[..-3].to_utf16.size
@@ -444,12 +444,12 @@ module PrivateParlorXT
     end
 
     # Returns a link to a given user's account, for reveal messages
-    def format_user_reveal(id : UserID, name : String, replies : Replies) : String
+    def user_reveal(id : UserID, name : String, replies : Replies) : String
       replies.username_reveal.gsub("{username}", "[#{escape_md(name, version: 2)}](tg://user?id=#{id})")
     end
 
     # Format the user sign based on the given *name*, appending the signature to *arg* as a text link to the user's ID
-    def format_user_sign(name : String, id : UserID, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+    def user_sign(name : String, id : UserID, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       signature = "~~#{name}"
 
       signature_size = signature.to_utf16.size
@@ -467,7 +467,7 @@ module PrivateParlorXT
     end
 
     # Format the karma level sign based on the given *level* appending the signature to *arg*
-    def format_karma_sign(level : String, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+    def karma_sign(level : String, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       signature = "t. #{level}"
 
       signature_size = signature.to_utf16.size
@@ -481,7 +481,7 @@ module PrivateParlorXT
     end
 
     # Format the tripcode header for tripcode signs
-    def format_tripcode_sign(name : String, tripcode : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+    def tripcode_sign(name : String, tripcode : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "#{name} #{tripcode}:\n"
 
       header_size = header[..-3].to_utf16.size
@@ -499,7 +499,7 @@ module PrivateParlorXT
     end
 
     # Format the flag sign header for tripcode messages when flag signs are enabled
-    def format_flag_sign(name : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+    def flag_sign(name : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       header = "#{name}:\n"
 
       header_size = header[..-3].to_utf16.size
@@ -515,7 +515,7 @@ module PrivateParlorXT
     end
 
     # Format ranksay signature for the given *rank*, appending it to the given *arg*
-    def format_ranksay(rank : String, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
+    def ranksay(rank : String, arg : String, entities : Array(Tourmaline::MessageEntity)) : Tuple(String, Array(Tourmaline::MessageEntity))
       signature = "~~#{rank}"
 
       signature_size = signature.to_utf16.size
@@ -546,14 +546,14 @@ module PrivateParlorXT
     end
 
     # Format the given *contact* for blacklist contact replies
-    def format_contact_reply(contact : String?, replies : Replies) : String?
+    def contact(contact : String?, replies : Replies) : String?
       if contact
         replies.blacklist_contact.gsub("{contact}", contact)
       end
     end
 
     # Format a time span using localized time units
-    def format_time_span(time : Time::Span, locale : Locale) : String
+    def time_span(time : Time::Span, locale : Locale) : String
       case
       when time < 1.minute then "#{time.to_i}#{locale.time_units[4]}"
       when time < 1.hour   then "#{time.total_minutes.floor.to_i}#{locale.time_units[3]}"
@@ -564,7 +564,7 @@ module PrivateParlorXT
     end
 
     # Returns a smiley based on the number of given warnings
-    def format_smiley(warnings : Int32, smileys : Array(String)) : String
+    def smiley(warnings : Int32, smileys : Array(String)) : String
       case warnings
       when (0..0) then smileys[0]
       when (1..2) then smileys[1]
@@ -574,7 +574,7 @@ module PrivateParlorXT
     end
 
     # Formats a loading bar for the /karmainfo command
-    def format_karma_loading_bar(percentage : Float32, locale : Locale) : String
+    def karma_loading_bar(percentage : Float32, locale : Locale) : String
       pips = (percentage.floor.to_i).divmod(10)
 
       if pips[0] != 10
@@ -595,7 +595,7 @@ module PrivateParlorXT
     end
 
     # Formats a given `Time` based on the given *format*
-    def format_time(time : Time?, format : String) : String?
+    def time(time : Time?, format : String) : String?
       if time
         time.to_s(format)
       end
@@ -604,12 +604,12 @@ module PrivateParlorXT
     # Returns a message containing the program version and a link to its Git repo.
     #
     # Feel free to edit this if you fork the code.
-    def format_version : String
+    def version : String
       "Private Parlor XT v#{escape_md(VERSION, version: 2)} \\~ [\\[Source\\]](https://github.com/Private-Parlor/Private-Parlor-XT)"
     end
 
     # Returns a generated message containing the commands the user can use based on his rank.
-    def format_help(user : User, ranks : Hash(Int32, Rank), services : Services, descriptions : CommandDescriptions, replies : Replies) : String
+    def help(user : User, ranks : Hash(Int32, Rank), services : Services, descriptions : CommandDescriptions, replies : Replies) : String
       ranked = {
         CommandPermissions::Promote      => "/promote [name/OID/ID] [rank] - #{descriptions.promote}",
         CommandPermissions::PromoteSame  => "/promote [name/OID/ID] [rank] - #{descriptions.promote}",

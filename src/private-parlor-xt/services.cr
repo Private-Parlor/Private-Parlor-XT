@@ -107,5 +107,58 @@ module PrivateParlorXT
       @stats : Statistics? = nil
     )
     end
+
+    # Creates a new instance of `Services` from a `Config` file
+    def initialize(config : Config, client : Client)
+      localization = Localization.parse_locale(Path["./locales"], config.locale)
+
+      @config = HandlerConfig.new(config)
+      @locale = localization.locale
+      @replies = localization.replies
+      @logs = localization.logs
+      @command_descriptions = localization.command_descriptions
+      
+      connection = DB.open("sqlite3://#{config.database}")
+
+      @database = SQLiteDatabase.new(connection)
+
+      if config.database_history
+        @history = SQLiteHistory.new(config.message_lifespan.hours, connection)
+      else
+        @history = CachedHistory.new(config.message_lifespan.hours)
+      end
+
+      @access = AuthorizedRanks.new(config.ranks)
+
+      @relay = Relay.new(config.log_channel, client)
+
+      if config.spam_interval != 0
+        @spam = config.spam_handler
+      else
+        @spam = nil
+      end
+
+      if config.toggle_r9k_media || config.toggle_r9k_text
+        @robot9000 = SQLiteRobot9000.new(
+          connection,
+          config.valid_codepoints,
+          config.toggle_r9k_text,
+          config.toggle_r9k_media,
+          config.toggle_r9k_forwards,
+          config.r9k_warn,
+          config.r9k_cooldown,
+        )
+      else
+        @robot9000 = nil
+      end
+
+      if config.karma_economy
+        @karma = config.karma_economy
+      end
+
+      if config.statistics
+        @stats = SQLiteStatistics.new(connection)
+      end
+    end
   end
 end

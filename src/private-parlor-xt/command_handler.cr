@@ -23,7 +23,7 @@ module PrivateParlorXT
   abstract class CommandHandler < Handler
 
     # Gets the `User` with updated names from the given *message* and returns it if the message is a command, the user exists, and the user is not blacklisted
-    def get_user_from_message(message : Tourmaline::Message, services : Services) : User?
+    def user_from_message(message : Tourmaline::Message, services : Services) : User?
       return unless info = message.from
 
       if text = message.text || message.caption
@@ -46,8 +46,8 @@ module PrivateParlorXT
       return unless user.blacklisted?
 
       response = Format.substitute_reply(services.replies.blacklisted, {
-        "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
-        "reason"  => Format.format_reason_reply(user.blacklist_reason, services.replies),
+        "contact" => Format.contact(services.config.blacklist_contact, services.replies),
+        "reason"  => Format.reason(user.blacklist_reason, services.replies),
       })
 
       services.relay.send_to_user(nil, user.id, response)
@@ -81,7 +81,7 @@ module PrivateParlorXT
     # 
     # Returns the original `MessageID` of the associated message group
     def delete_messages(message : MessageID, user : UserID, debug_enabled : Bool?, services : Services) : MessageID?
-      reply_msids = services.history.get_all_receivers(message)
+      reply_msids = services.history.receivers(message)
 
       unless debug_enabled
         reply_msids.delete(user)
@@ -97,7 +97,7 @@ module PrivateParlorXT
     # Removes the bot command message entity from *entities* and subtracts the index of the *arg* start from the offset of each message entity in *entities*
     # 
     # Returns an array of updated `Tourmaline::MessageEntity`
-    def update_entities(text : String, entities : Array(Tourmaline::MessageEntity), arg : String) : Array(Tourmaline::MessageEntity)
+    def remove_command_entity(text : String, entities : Array(Tourmaline::MessageEntity), arg : String) : Array(Tourmaline::MessageEntity)
       if command_entity = entities.find { |item| item.type == "bot_command" && item.offset == 0 }
         entities = entities - [command_entity]
       end

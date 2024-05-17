@@ -205,7 +205,7 @@ module PrivateParlorXT
           fail("User 70000 should exist in the database")
         end
 
-        obfuscated_id = blacklisted_user.get_obfuscated_id
+        obfuscated_id = blacklisted_user.obfuscated_id
 
         services.database.update_user(blacklisted_user)
 

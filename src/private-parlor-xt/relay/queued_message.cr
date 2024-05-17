@@ -5,7 +5,7 @@ module PrivateParlorXT
   # A queued message ready to be sent to Telegram
   class QueuedMessage
     # The message ID of the message group that this `QueuedMessage` originated from
-    getter origin_msid : MessageID | Array(MessageID) | Nil
+    getter origin : MessageID | Array(MessageID) | Nil
 
     # The sender of the message group from which this `QueuedMessage` originates
     # 
@@ -18,17 +18,17 @@ module PrivateParlorXT
     # Data about the message this `QueuedMessage` replies to
     # 
     # Set to `nil` if this `QueuedMessage` does not reply to a message
-    getter reply_to : ReplyParameters?
+    getter reply : ReplyParameters?
 
     # The proc that will run when this `QueuedMessage` is ready to be sent
     getter function : MessageProc
 
     # Creates an instance of `QueuedMessage`.
     def initialize(
-      @origin_msid : MessageID | Array(MessageID) | Nil,
+      @origin : MessageID | Array(MessageID) | Nil,
       @sender : UserID?,
       @receiver : UserID,
-      @reply_to : ReplyParameters?,
+      @reply : ReplyParameters?,
       @function : MessageProc
     )
     end

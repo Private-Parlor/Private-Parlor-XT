@@ -197,7 +197,7 @@ module PrivateParlorXT
         handler.do(message, services)
 
         expected = Format.substitute_reply(services.replies.message_removed, {
-          "reason" => Format.format_reason_reply("detailed reason", services.replies),
+          "reason" => Format.reason("detailed reason", services.replies),
         })
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -210,7 +210,7 @@ module PrivateParlorXT
           responses = responses - [msg.data]
         end
 
-        services.history.get_origin_message(10).should(be_nil)
+        services.history.origin_message(10).should(be_nil)
 
         unless updated_reply_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")

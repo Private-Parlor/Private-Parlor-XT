@@ -56,7 +56,7 @@ module PrivateParlorXT
 
         handler.do(message, services)
 
-        expected = Format.format_version
+        expected = Format.version
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))

@@ -93,12 +93,12 @@ module PrivateParlorXT
           fail("User 60200 should exist in the database")
         end
 
-        obfuscated_karma = reply_user.get_obfuscated_karma.to_s
+        obfuscated_karma = reply_user.obfuscated_karma.to_s
 
         expected = Format.substitute_reply(services.replies.ranked_info, {
-          "oid"            => reply_user.get_obfuscated_id.to_s,
+          "oid"            => reply_user.obfuscated_id.to_s,
           "karma"          => obfuscated_karma,
-          "cooldown_until" => Format.format_cooldown_until(reply_user.cooldown_until, services.locale, services.replies),
+          "cooldown_until" => Format.cooldown_until(reply_user.cooldown_until, services.locale, services.replies),
         })
 
         handler.do(message, services)
@@ -138,16 +138,16 @@ module PrivateParlorXT
         )
 
         expected = Format.substitute_reply(services.replies.user_info, {
-          "oid"            => user.get_obfuscated_id.to_s,
+          "oid"            => user.obfuscated_id.to_s,
           "username"       => "beispiel",
           "rank_val"       => "10",
           "rank"           => "Mod",
           "karma"          => "-20",
           "karma_level"    => "(Junk)",
           "warnings"       => "2",
-          "warn_expiry"    => Format.format_warn_expiry(user.warn_expiry, services.locale, services.replies),
+          "warn_expiry"    => Format.warn_expiry(user.warn_expiry, services.locale, services.replies),
           "smiley"         => ":|",
-          "cooldown_until" => Format.format_cooldown_until(user.cooldown_until, services.locale, services.replies),
+          "cooldown_until" => Format.cooldown_until(user.cooldown_until, services.locale, services.replies),
         })
 
         handler.do(message, services)
@@ -317,12 +317,12 @@ module PrivateParlorXT
           fail("User 60200 should exist in the database")
         end
 
-        obfuscated_karma = reply_user.get_obfuscated_karma.to_s
+        obfuscated_karma = reply_user.obfuscated_karma.to_s
 
         expected = Format.substitute_reply(services.replies.ranked_info, {
-          "oid"            => reply_user.get_obfuscated_id.to_s,
+          "oid"            => reply_user.obfuscated_id.to_s,
           "karma"          => obfuscated_karma,
-          "cooldown_until" => Format.format_cooldown_until(reply_user.cooldown_until, services.locale, services.replies),
+          "cooldown_until" => Format.cooldown_until(reply_user.cooldown_until, services.locale, services.replies),
         })
 
         unless result = handler.ranked_info(user, message, reply, services)
@@ -361,16 +361,16 @@ module PrivateParlorXT
         )
 
         expected = Format.substitute_reply(services.replies.user_info, {
-          "oid"            => user.get_obfuscated_id.to_s,
+          "oid"            => user.obfuscated_id.to_s,
           "username"       => "beispiel",
           "rank_val"       => "10",
           "rank"           => "Mod",
           "karma"          => "-20",
           "karma_level"    => "(Junk)",
           "warnings"       => "2",
-          "warn_expiry"    => Format.format_warn_expiry(user.warn_expiry, services.locale, services.replies),
+          "warn_expiry"    => Format.warn_expiry(user.warn_expiry, services.locale, services.replies),
           "smiley"         => ":|",
-          "cooldown_until" => Format.format_cooldown_until(user.cooldown_until, services.locale, services.replies),
+          "cooldown_until" => Format.cooldown_until(user.cooldown_until, services.locale, services.replies),
         })
 
         unless result = handler.user_info(user, services)

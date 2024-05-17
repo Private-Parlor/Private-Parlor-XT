@@ -15,7 +15,7 @@ module PrivateParlorXT
 
     # Returns a message containing information about the user's account or the user who sent the message this *message* replies to
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       if reply = message.reply_to_message
         response = ranked_info(user, message, reply, services)
@@ -34,14 +34,14 @@ module PrivateParlorXT
     def ranked_info(user : User, message : Tourmaline::Message, reply : Tourmaline::Message, services : Services) : String?
       return unless authorized?(user, message, :RankedInfo, services)
 
-      return unless reply_user = get_reply_user(user, reply, services)
+      return unless reply_user = reply_user(user, reply, services)
 
       reply_user.remove_cooldown
 
       Format.substitute_reply(services.replies.ranked_info, {
-        "oid"            => reply_user.get_obfuscated_id.to_s,
-        "karma"          => reply_user.get_obfuscated_karma.to_s,
-        "cooldown_until" => Format.format_cooldown_until(reply_user.cooldown_until, services.locale, services.replies),
+        "oid"            => reply_user.obfuscated_id.to_s,
+        "karma"          => reply_user.obfuscated_karma.to_s,
+        "cooldown_until" => Format.cooldown_until(reply_user.cooldown_until, services.locale, services.replies),
       })
     end
 
@@ -58,16 +58,16 @@ module PrivateParlorXT
       user.remove_cooldown
 
       Format.substitute_reply(services.replies.user_info, {
-        "oid"            => user.get_obfuscated_id.to_s,
-        "username"       => user.get_formatted_name,
+        "oid"            => user.obfuscated_id.to_s,
+        "username"       => user.formatted_name,
         "rank_val"       => user.rank.to_s,
         "rank"           => services.access.rank_name(user.rank),
         "karma"          => user.karma.to_s,
         "karma_level"    => current_level.empty? ? nil : "(#{current_level})",
         "warnings"       => user.warnings.to_s,
-        "warn_expiry"    => Format.format_warn_expiry(user.warn_expiry, services.locale, services.replies),
-        "smiley"         => Format.format_smiley(user.warnings, @smileys),
-        "cooldown_until" => Format.format_cooldown_until(user.cooldown_until, services.locale, services.replies),
+        "warn_expiry"    => Format.warn_expiry(user.warn_expiry, services.locale, services.replies),
+        "smiley"         => Format.smiley(user.warnings, @smileys),
+        "cooldown_until" => Format.cooldown_until(user.cooldown_until, services.locale, services.replies),
       })
     end
   end

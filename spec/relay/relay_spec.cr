@@ -91,10 +91,10 @@ module PrivateParlorXT
         services = create_services()
 
         queued_message = QueuedMessage.new(
-          origin_msid: 11,
+          origin: 11,
           sender: 9000,
           receiver: 10000,
-          reply_to: nil,
+          reply: nil,
           function: ->(_receiver : UserID, _message : ReplyParameters?) { true }
         )
 
@@ -111,7 +111,7 @@ module PrivateParlorXT
 
         services.relay.cache_message(message, queued_message, services)
 
-        receivers = services.history.get_all_receivers(11)
+        receivers = services.history.receivers(11)
 
         receivers[10000].should(eq(12))
       end
@@ -120,10 +120,10 @@ module PrivateParlorXT
         services = create_services()
 
         queued_message = QueuedMessage.new(
-            origin_msid: [11_i64, 12_i64, 13_i64],
+            origin: [11_i64, 12_i64, 13_i64],
             sender: 9000_i64,
             receiver: 10000_i64,
-            reply_to: nil,
+            reply: nil,
             function: ->(_receiver : UserID, _message : ReplyParameters?) { true }
           )
 
@@ -156,9 +156,9 @@ module PrivateParlorXT
 
         services.relay.cache_message(messages, queued_message, services)
 
-        message_one_receivers = services.history.get_all_receivers(11)
-        message_two_receivers = services.history.get_all_receivers(12)
-        message_three_receivers = services.history.get_all_receivers(13)
+        message_one_receivers = services.history.receivers(11)
+        message_two_receivers = services.history.receivers(12)
+        message_three_receivers = services.history.receivers(13)
 
         message_one_receivers[10000].should(eq(14))
         message_two_receivers[10000].should(eq(15))

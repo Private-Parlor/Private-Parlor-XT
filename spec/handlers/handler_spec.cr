@@ -31,7 +31,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_reply_message" do
+    describe "#reply_message" do
       it "returns reply message if it exists" do
         services = create_services()
 
@@ -63,7 +63,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        reply_to = handler.get_reply_message(user, message, services)
+        reply_to = handler.reply_message(user, message, services)
 
         reply_to.should(eq(reply))
       end
@@ -89,7 +89,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        reply = handler.get_reply_message(user, no_reply_message, services)
+        reply = handler.reply_message(user, no_reply_message, services)
 
         reply.should(be_nil)
 
@@ -100,7 +100,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_reply_user" do
+    describe "#reply_user" do
       it "returns reply user if message is in cache and user exists in database" do
         services = create_services()
 
@@ -122,7 +122,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        unless reply_user = handler.get_reply_user(user, reply, services)
+        unless reply_user = handler.reply_user(user, reply, services)
           fail("Reply user should not be nil")
         end
 
@@ -150,7 +150,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        reply_user = handler.get_reply_user(user, fake_message, services)
+        reply_user = handler.reply_user(user, fake_message, services)
 
         reply_user.should(be_nil)
 
@@ -184,7 +184,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        reply_user = handler.get_reply_user(user, no_user_message, services)
+        reply_user = handler.reply_user(user, no_user_message, services)
 
         reply_user.should(be_nil)
 

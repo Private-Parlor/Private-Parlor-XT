@@ -7,7 +7,7 @@ module PrivateParlorXT
   class PromoteCommand < CommandHandler
     # Promotes the user described in the *message* text or promotes the sender of the message it replies to, if *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return unless authority = authorized?(
                       user,
@@ -57,7 +57,7 @@ module PrivateParlorXT
         }))
       end
 
-      return unless promoted_user = get_reply_user(user, reply, services)
+      return unless promoted_user = reply_user(user, reply, services)
 
       unless services.access.can_promote?(tuple[0], user.rank, promoted_user.rank, authority)
         return services.relay.send_to_user(ReplyParameters.new(message), user.id, services.replies.fail)
@@ -74,9 +74,9 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.promoted, {
         "id"      => promoted_user.id.to_s,
-        "name"    => promoted_user.get_formatted_name,
+        "name"    => promoted_user.formatted_name,
         "rank"    => tuple[1].name,
-        "invoker" => user.get_formatted_name,
+        "invoker" => user.formatted_name,
       })
 
       services.relay.log_output(log)
@@ -121,9 +121,9 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.promoted, {
         "id"      => promoted_user.id.to_s,
-        "name"    => promoted_user.get_formatted_name,
+        "name"    => promoted_user.formatted_name,
         "rank"    => tuple[1].name,
-        "invoker" => user.get_formatted_name,
+        "invoker" => user.formatted_name,
       })
 
       services.relay.log_output(log)

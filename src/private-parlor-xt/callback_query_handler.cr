@@ -33,7 +33,7 @@ module PrivateParlorXT
     # Returns `nil`  if:
     #   - `User` does not exist in the `Database`
     #   - `User` is blacklisted
-    def get_user_from_callback(callback : Tourmaline::CallbackQuery, services : Services) : User?
+    def user_from_callback(callback : Tourmaline::CallbackQuery, services : Services) : User?
       info = callback.from
 
       unless user = services.database.get_user(info.id.to_i64)
@@ -53,8 +53,8 @@ module PrivateParlorXT
     def deny_user(user : User, services : Services) : Nil
       if user.blacklisted?
         response = Format.substitute_reply(services.replies.blacklisted, {
-          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
-          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.replies),
+          "contact" => Format.contact(services.config.blacklist_contact, services.replies),
+          "reason"  => Format.reason(user.blacklist_reason, services.replies),
         })
       else
         response = services.replies.not_in_chat

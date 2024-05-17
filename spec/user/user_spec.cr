@@ -50,27 +50,27 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_formatted_name" do
+    describe "#formatted_name" do
       it "returns username if user has a username" do
         user = MockUser.new(9000, "new_user")
 
-        user.get_formatted_name.should(eq("@new_user"))
+        user.formatted_name.should(eq("@new_user"))
       end
 
       it "returns real name if user does not have a username" do
         user = MockUser.new(9000, nil, "New User")
 
-        user.get_formatted_name.should(eq("New User"))
+        user.formatted_name.should(eq("New User"))
       end
     end
 
-    describe "#get_obfuscated_id" do
+    describe "#obfuscated_id" do
       it "generates obfuscated id" do
         expected = Random.new(9000 + Time.utc.at_beginning_of_day.to_unix).base64(3)
 
         user = MockUser.new(9000)
 
-        user.get_obfuscated_id.should(eq(expected))
+        user.obfuscated_id.should(eq(expected))
       end
 
       it "generates generally unique obfuscated ids" do
@@ -82,7 +82,7 @@ module PrivateParlorXT
         iterations.times do |id|
           user = MockUser.new(id)
 
-          user_oid = user.get_obfuscated_id
+          user_oid = user.obfuscated_id
 
           unless oids.add?(user_oid)
             repeats += 1
@@ -93,7 +93,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_obfuscated_karma" do
+    describe "#obfuscated_karma" do
       it "generates obfuscated karma" do
         user_one = MockUser.new(5000, karma: 25)
 
@@ -101,11 +101,11 @@ module PrivateParlorXT
 
         user_three = MockUser.new(9000, karma: -25)
 
-        user_one.get_obfuscated_karma.should(be_close(25, 7))
+        user_one.obfuscated_karma.should(be_close(25, 7))
 
-        user_two.get_obfuscated_karma.should(be_close(0, 2))
+        user_two.obfuscated_karma.should(be_close(0, 2))
 
-        user_three.get_obfuscated_karma.should(be_close(-25, 7))
+        user_three.obfuscated_karma.should(be_close(-25, 7))
       end
     end
 

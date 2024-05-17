@@ -2,7 +2,7 @@ require "../../spec_helper.cr"
 
 module PrivateParlorXT
   describe CommandHandler do
-    describe "#get_user_from_message" do
+    describe "#user_from_message" do
       it "returns user" do
         services = create_services()
         handler = MockCommandHandler.new(MockConfig.new)
@@ -27,7 +27,7 @@ module PrivateParlorXT
           reply_to_message: reply,
         )
 
-        unless returned_user = handler.get_user_from_message(message, services)
+        unless returned_user = handler.user_from_message(message, services)
           fail("Did not get a user from method")
         end
 
@@ -49,7 +49,7 @@ module PrivateParlorXT
           from: tourmaline_user,
         )
 
-        unless returned_user = handler.get_user_from_message(new_names_message, services)
+        unless returned_user = handler.user_from_message(new_names_message, services)
           fail("Did not get a user from method")
         end
 
@@ -73,7 +73,7 @@ module PrivateParlorXT
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
         )
 
-        handler.get_user_from_message(message, services).should(be_nil)
+        handler.user_from_message(message, services).should(be_nil)
       end
 
       it "returns nil if message does not contain a command" do
@@ -92,7 +92,7 @@ module PrivateParlorXT
           text: "Example text"
         )
 
-        handler.get_user_from_message(message, services).should(be_nil)
+        handler.user_from_message(message, services).should(be_nil)
       end
 
       it "returns nil if user does not exist and queues 'not_in_chat' reply" do
@@ -110,7 +110,7 @@ module PrivateParlorXT
           from: tourmaline_user,
         )
 
-        handler.get_user_from_message(message, services).should(be_nil)
+        handler.user_from_message(message, services).should(be_nil)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -133,7 +133,7 @@ module PrivateParlorXT
           from: tourmaline_user
         )
 
-        handler.get_user_from_message(message, services).should(be_nil)
+        handler.user_from_message(message, services).should(be_nil)
       end
     end
 
@@ -282,12 +282,12 @@ module PrivateParlorXT
         handler.delete_messages(6, 20000, false, services).should(eq(4))
         handler.delete_messages(9, 20000, false, services).should(eq(8))
 
-        services.history.get_origin_message(6).should(be_nil)
-        services.history.get_origin_message(9).should(be_nil)
+        services.history.origin_message(6).should(be_nil)
+        services.history.origin_message(9).should(be_nil)
       end
     end
 
-    describe "#update_entities" do
+    describe "#remove_command_entity" do
       it "returns entities without bot command and other entities' offsets modified" do
         services = create_services()
         handler = MockCommandHandler.new(MockConfig.new)
@@ -316,7 +316,7 @@ module PrivateParlorXT
           ),
         ]
 
-        result = handler.update_entities(
+        result = handler.remove_command_entity(
           "/example Text with entities and backlinks >>>/foo/", 
           entities, 
           "Text with entities and backlinks >>>/foo/"

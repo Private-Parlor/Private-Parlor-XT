@@ -2,20 +2,20 @@ require "../spec_helper.cr"
 
 module PrivateParlorXT
   describe Statistics do
-    describe "#get_uptime" do
+    describe "#uptime" do
       it "returns time span since class instantiation" do
         start_time = Time.utc 
 
         stats = MockStatistics.new()
 
-        uptime = stats.get_uptime
+        uptime = stats.uptime
 
         uptime.should(be_a(Time::Span))
         uptime.should(be > Time::Span.new)
       end
     end
 
-    describe "#get_configuration_details" do
+    describe "#configuration_details" do
       it "returns hash of bot details based on services object" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         config = HandlerConfig.new(
@@ -34,11 +34,11 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        hash = stats.get_configuration_details(services)
+        hash = stats.configuration_details(services)
 
         hash[Statistics::BotInfo::RegistrationToggle].should(eq(services.locale.toggle[0]))
-        hash[Statistics::BotInfo::MediaLimitPeriod].should(eq(Format.format_time_span(Time::Span.new(hours: 24), services.locale)))
-        hash[Statistics::BotInfo::MessageLifespan].should(eq(Format.format_time_span(Time::Span.new(hours: 14), services.locale)))
+        hash[Statistics::BotInfo::MediaLimitPeriod].should(eq(Format.time_span(Time::Span.new(hours: 24), services.locale)))
+        hash[Statistics::BotInfo::MessageLifespan].should(eq(Format.time_span(Time::Span.new(hours: 14), services.locale)))
         hash[Statistics::BotInfo::PseudonymousToggle].should(eq(services.locale.toggle[1]))
         hash[Statistics::BotInfo::SpoilerToggle].should(eq(services.locale.toggle[1]))
         hash[Statistics::BotInfo::KarmaReasonsToggle].should(eq(services.locale.toggle[0]))
@@ -47,7 +47,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_statistic_screen" do
+    describe "#statistic_screen" do
       it "returns formatted general info screen" do
         start_time = Time.utc
 
@@ -66,7 +66,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.get_statistic_screen(:General, services)
+        result = stats.statistic_screen(:General, services)
 
         uptime = Time.utc - start_time
 
@@ -88,7 +88,7 @@ module PrivateParlorXT
           "minutes" => uptime.minutes.to_s,
           "seconds" => uptime.seconds.to_s,
           "registration_toggle"  => services.locale.toggle[1],
-          "media_limit_period"   => Format.format_time_span(Time::Span.new(hours: 38), services.locale),
+          "media_limit_period"   => Format.time_span(Time::Span.new(hours: 38), services.locale),
           "message_lifespan"     => services.locale.toggle[0],
           "pseudonymous_toggle"  => services.locale.toggle[0],
           "spoilers_toggle"      => services.locale.toggle[1],
@@ -107,7 +107,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.get_statistic_screen(:Messages, services)
+        result = stats.statistic_screen(:Messages, services)
 
         expected = Format.substitute_reply(services.replies.message_stats, {
           "total"             => "38",
@@ -147,7 +147,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.get_statistic_screen(:Users, services)
+        result = stats.statistic_screen(:Users, services)
 
         expected = Format.substitute_reply(services.replies.full_user_stats, {
           "total_users"              => "30",
@@ -187,7 +187,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.get_statistic_screen(:Karma, services)
+        result = stats.statistic_screen(:Karma, services)
 
         expected = Format.substitute_reply(services.replies.karma_stats, {
           "upvotes"                    => "45",
@@ -222,7 +222,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.get_statistic_screen(:KarmaLevels, services)
+        result = stats.statistic_screen(:KarmaLevels, services)
 
         karma_level_counts = \
           "Junk: 3\n" \
@@ -249,7 +249,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.get_statistic_screen(:Robot9000, services)
+        result = stats.statistic_screen(:Robot9000, services)
 
         expected = Format.substitute_reply(services.replies.robot9000_stats, {
           "total_unique"     => "46",
@@ -264,14 +264,14 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_percent_change" do
+    describe "#percent_change" do
       it "returns the percent change from initial to final value" do
         stats = MockStatistics.new()
 
-        stats.get_percent_change(1, 4).should(eq(300.0))
-        stats.get_percent_change(50, 25).should(eq(-50.0))
-        stats.get_percent_change(567, 423).should(be_close(-25.4, 0.05))
-        stats.get_percent_change(23, 697).should(be_close(2930.4, 0.05))
+        stats.percent_change(1, 4).should(eq(300.0))
+        stats.percent_change(50, 25).should(eq(-50.0))
+        stats.percent_change(567, 423).should(be_close(-25.4, 0.05))
+        stats.percent_change(23, 697).should(be_close(2930.4, 0.05))
       end
     end
 
@@ -391,7 +391,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_config_data" do
+    describe "#config_screen" do
       it "returns formatted bot info screen" do 
         start_time = Time.utc
 
@@ -410,7 +410,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.format_config_data(services)
+        result = stats.config_screen(services)
 
         uptime = Time.utc - start_time
 
@@ -432,7 +432,7 @@ module PrivateParlorXT
           "minutes" => uptime.minutes.to_s,
           "seconds" => uptime.seconds.to_s,
           "registration_toggle"  => services.locale.toggle[1],
-          "media_limit_period"   => Format.format_time_span(Time::Span.new(hours: 38), services.locale),
+          "media_limit_period"   => Format.time_span(Time::Span.new(hours: 38), services.locale),
           "message_lifespan"     => services.locale.toggle[0],
           "pseudonymous_toggle"  => services.locale.toggle[0],
           "spoilers_toggle"      => services.locale.toggle[1],
@@ -445,7 +445,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_message_data" do
+    describe "#message_screen" do
       it "returns formatted message stats screen" do
         config = HandlerConfig.new(MockConfig.new())
 
@@ -453,7 +453,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.format_message_data(services)
+        result = stats.messages_screen(services)
 
         expected = Format.substitute_reply(services.replies.message_stats, {
           "total"             => "38",
@@ -487,7 +487,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_full_user_counts" do
+    describe "#full_users_screen" do
       it "returns formatted full user stats screen" do
         config = HandlerConfig.new(MockConfig.new())
 
@@ -495,7 +495,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.format_full_user_counts(services)
+        result = stats.full_users_screen(services)
 
         expected = Format.substitute_reply(services.replies.full_user_stats, {
           "total_users"              => "30",
@@ -529,7 +529,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_user_counts" do
+    describe "#users_screen" do
       it "returns formatted user stats screen" do
         config = HandlerConfig.new(MockConfig.new())
 
@@ -537,7 +537,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.format_user_counts(services)
+        result = stats.users_screen(services)
 
         expected = Format.substitute_reply(services.replies.user_stats, {
           "total_users"              => "30",
@@ -550,7 +550,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_karma_counts" do
+    describe "#karma_screen" do
       it "returns formatted karma stats screen" do
         config = HandlerConfig.new(MockConfig.new())
 
@@ -558,7 +558,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.format_karma_counts(services)
+        result = stats.karma_screen(services)
 
         expected = Format.substitute_reply(services.replies.karma_stats, {
           "upvotes"                    => "45",
@@ -587,7 +587,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_karma_level_counts" do
+    describe "#karma_levels_screen" do
       it "returns formatted karma level counts screen" do
         config = HandlerConfig.new(MockConfig.new())
 
@@ -595,7 +595,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.format_karma_level_counts(services)
+        result = stats.karma_levels_screen(services)
 
         karma_level_counts = \
           "Junk: 3\n" \
@@ -620,13 +620,13 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.format_karma_level_counts(services)
+        result = stats.karma_levels_screen(services)
 
         result.should(eq(services.replies.no_stats_available))
       end
     end
 
-    describe "#format_robot9000_counts" do
+    describe "#robot9000_screen" do
       it "returns formatted robot9000 stats screen" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         config = HandlerConfig.new(MockConfig.new())
@@ -636,7 +636,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.format_robot9000_counts(services)
+        result = stats.robot9000_screen(services)
 
         expected = Format.substitute_reply(services.replies.robot9000_stats, {
           "total_unique"     => "46",
@@ -657,7 +657,7 @@ module PrivateParlorXT
 
         stats = MockStatistics.new()
 
-        result = stats.format_robot9000_counts(services)
+        result = stats.robot9000_screen(services)
 
         result.should(eq(services.replies.no_stats_available))
       end

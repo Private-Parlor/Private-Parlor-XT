@@ -244,7 +244,7 @@ module PrivateParlorXT
 
         handler.do(message, services)
 
-        services.history.get_origin_message(9).should(be_nil)
+        services.history.origin_message(9).should(be_nil)
 
         blacklisted_user = services.database.get_user(60200)
 
@@ -444,13 +444,13 @@ module PrivateParlorXT
         messages.size.should(eq(2))
 
         response = Format.substitute_reply(services.replies.blacklisted, {
-          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
+          "contact" => Format.contact(services.config.blacklist_contact, services.replies),
         })
 
         log = Format.substitute_message(services.logs.blacklisted, {
           "id"      => banned_user.id.to_s,
-          "name"    => banned_user.get_formatted_name,
-          "invoker" => invoker.get_formatted_name,
+          "name"    => banned_user.formatted_name,
+          "invoker" => invoker.formatted_name,
         })
 
         hash = {response => true, log => true, services.replies.success => true}
@@ -484,15 +484,15 @@ module PrivateParlorXT
         messages.size.should(eq(2))
 
         response = Format.substitute_reply(services.replies.blacklisted, {
-          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
-          "reason"  => Format.format_reason_reply(reason, services.replies),
+          "contact" => Format.contact(services.config.blacklist_contact, services.replies),
+          "reason"  => Format.reason(reason, services.replies),
         })
 
         log = Format.substitute_message(services.logs.blacklisted, {
           "id"      => banned_user.id.to_s,
-          "name"    => banned_user.get_formatted_name,
-          "invoker" => invoker.get_formatted_name,
-          "reason"  => Format.format_reason_log(reason, services.logs),
+          "name"    => banned_user.formatted_name,
+          "invoker" => invoker.formatted_name,
+          "reason"  => Format.reason_log(reason, services.logs),
         })
 
         hash = {response => true, log => true, services.replies.success => true}

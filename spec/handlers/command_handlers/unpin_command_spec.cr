@@ -153,7 +153,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.success))
 
         messages[1..-1].each do |msg|
-          unless reply_to_message = msg.reply_to
+          unless reply_to_message = msg.reply
             fail("Queued unpin message should have a reply here")
           end
 
@@ -200,7 +200,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(services.replies.success))
 
         messages[1..-1].each do |msg|
-          msg.reply_to.should(be_nil)
+          msg.reply.should(be_nil)
         end
       end
     end

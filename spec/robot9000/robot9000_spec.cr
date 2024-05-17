@@ -86,7 +86,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_media_file_id" do
+    describe "#media_file_id" do
       it "gets unique animation file id" do
         r9k = MockRobot9000.new
 
@@ -105,7 +105,7 @@ module PrivateParlorXT
           ),
         )
 
-        r9k.get_media_file_id(message).should(eq("unique_animation"))
+        r9k.media_file_id(message).should(eq("unique_animation"))
       end
 
       it "gets unique audio file id" do
@@ -124,7 +124,7 @@ module PrivateParlorXT
           ),
         )
 
-        r9k.get_media_file_id(message).should(eq("unique_audio"))
+        r9k.media_file_id(message).should(eq("unique_audio"))
       end
 
       it "gets unique document file id" do
@@ -142,7 +142,7 @@ module PrivateParlorXT
           ),
         )
 
-        r9k.get_media_file_id(message).should(eq("unique_document"))
+        r9k.media_file_id(message).should(eq("unique_document"))
       end
 
       it "gets unique video file id" do
@@ -163,7 +163,7 @@ module PrivateParlorXT
           ),
         )
 
-        r9k.get_media_file_id(message).should(eq("unique_video"))
+        r9k.media_file_id(message).should(eq("unique_video"))
       end
 
       it "gets unique video note file id" do
@@ -183,7 +183,7 @@ module PrivateParlorXT
           ),
         )
 
-        r9k.get_media_file_id(message).should(eq("unique_video_note"))
+        r9k.media_file_id(message).should(eq("unique_video_note"))
       end
 
       it "gets unique voice file id" do
@@ -202,7 +202,7 @@ module PrivateParlorXT
           ),
         )
 
-        r9k.get_media_file_id(message).should(eq("unique_voice"))
+        r9k.media_file_id(message).should(eq("unique_voice"))
       end
 
       it "gets unique photo file id" do
@@ -224,7 +224,7 @@ module PrivateParlorXT
           ],
         )
 
-        r9k.get_media_file_id(message).should(eq("unique_photo"))
+        r9k.media_file_id(message).should(eq("unique_photo"))
       end
 
       it "gets unique sticker file id" do
@@ -247,7 +247,7 @@ module PrivateParlorXT
           ),
         )
 
-        r9k.get_media_file_id(message).should(eq("unique_sticker"))
+        r9k.media_file_id(message).should(eq("unique_sticker"))
       end
 
       it "returns nil if message did not match any message type" do
@@ -262,7 +262,7 @@ module PrivateParlorXT
           text: "Example"
         )
 
-        r9k.get_media_file_id(message).should(be_nil)
+        r9k.media_file_id(message).should(be_nil)
       end
     end
 
@@ -822,17 +822,17 @@ module PrivateParlorXT
 
         r9k.unique_message?(user, message, services)
 
-        statistics = stats.get_robot9000_counts()
+        statistics = stats.robot9000_counts()
 
-        statistics[Statistics::Robot9000Counts::TotalUnoriginal].should(eq(0))
-        statistics[Statistics::Robot9000Counts::UnoriginalText].should(eq(0))
+        statistics[Statistics::Robot9000::TotalUnoriginal].should(eq(0))
+        statistics[Statistics::Robot9000::UnoriginalText].should(eq(0))
 
         r9k.unique_text(user, message, services, "example text")
 
-        statistics = stats.get_robot9000_counts()
+        statistics = stats.robot9000_counts()
 
-        statistics[Statistics::Robot9000Counts::TotalUnoriginal].should(eq(1))
-        statistics[Statistics::Robot9000Counts::UnoriginalText].should(eq(1))
+        statistics[Statistics::Robot9000::TotalUnoriginal].should(eq(1))
+        statistics[Statistics::Robot9000::UnoriginalText].should(eq(1))
       end
     end
 
@@ -1037,17 +1037,17 @@ module PrivateParlorXT
 
         r9k.unique_message?(user, message, services)
 
-        statistics = stats.get_robot9000_counts()
+        statistics = stats.robot9000_counts()
 
-        statistics[Statistics::Robot9000Counts::TotalUnoriginal].should(eq(0))
-        statistics[Statistics::Robot9000Counts::UnoriginalMedia].should(eq(0))
+        statistics[Statistics::Robot9000::TotalUnoriginal].should(eq(0))
+        statistics[Statistics::Robot9000::UnoriginalMedia].should(eq(0))
 
         r9k.unique_media(user, message, services, "unique_photo")
 
-        statistics = stats.get_robot9000_counts()
+        statistics = stats.robot9000_counts()
 
-        statistics[Statistics::Robot9000Counts::TotalUnoriginal].should(eq(1))
-        statistics[Statistics::Robot9000Counts::UnoriginalMedia].should(eq(1))
+        statistics[Statistics::Robot9000::TotalUnoriginal].should(eq(1))
+        statistics[Statistics::Robot9000::UnoriginalMedia].should(eq(1))
       end
     end
 
@@ -1081,7 +1081,7 @@ module PrivateParlorXT
         user.warnings.should_not(eq(1))
 
         expected = Format.substitute_reply(services.replies.r9k_cooldown, {
-          "duration" => Format.format_time_span(10.seconds, services.locale),
+          "duration" => Format.time_span(10.seconds, services.locale),
         })
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -1123,7 +1123,7 @@ module PrivateParlorXT
         user.warnings.should(eq(2))
 
         expected = Format.substitute_reply(services.replies.r9k_cooldown, {
-          "duration" => Format.format_time_span(5.minutes, services.locale),
+          "duration" => Format.time_span(5.minutes, services.locale),
         })
 
         messages = services.relay.as(MockRelay).empty_queue

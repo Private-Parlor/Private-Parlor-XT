@@ -252,7 +252,7 @@ module PrivateParlorXT
 
         handler.do(message, services)
 
-        services.history.get_origin_message(10).should_not(be_nil)
+        services.history.origin_message(10).should_not(be_nil)
 
         unless updated_reply_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")
@@ -264,8 +264,8 @@ module PrivateParlorXT
         reply_user.cooldown_until.should_not(be_nil)
 
         expected = Format.substitute_reply(services.replies.cooldown_given, {
-          "reason"   => Format.format_reason_reply("detailed reason", services.replies),
-          "duration" => Format.format_time_span(duration, services.locale),
+          "reason"   => Format.reason("detailed reason", services.replies),
+          "duration" => Format.time_span(duration, services.locale),
         })
         
         messages = services.relay.as(MockRelay).empty_queue

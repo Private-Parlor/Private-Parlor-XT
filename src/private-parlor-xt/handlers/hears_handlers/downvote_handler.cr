@@ -8,13 +8,13 @@ module PrivateParlorXT
   class DownvoteHandler < HearsHandler
     # Downvotes the message that the given *message* replies to if it meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return unless authorized?(user, message, :Downvote, services)
 
-      return unless reply = get_reply_message(user, message, services)
+      return unless reply = reply_message(user, message, services)
 
-      return unless reply_user = get_reply_user(user, reply, services)
+      return unless reply_user = reply_user(user, reply, services)
 
       return if spamming?(user, message, services)
 
@@ -34,7 +34,7 @@ module PrivateParlorXT
     #   - Message has no sender
     #   - `User` does not exist in the `Database`
     #   - `User` cannot use a command due to being blacklisted
-    def get_user_from_message(message : Tourmaline::Message, services : Services) : User?
+    def user_from_message(message : Tourmaline::Message, services : Services) : User?
       return unless info = message.from
 
       unless user = services.database.get_user(info.id.to_i64)
@@ -97,7 +97,7 @@ module PrivateParlorXT
     def record_message_statistics(services : Services) : Nil
       return unless stats = services.stats
 
-      stats.increment_downvote_count
+      stats.increment_downvotes
     end
 
     # Queues 'gave downvote' and 'got downvoted' replies for the *user* and *reply_user*, respectively
@@ -111,19 +111,19 @@ module PrivateParlorXT
           reason = Format.truncate_karma_reason(reason)
           services.relay.log_output(Format.substitute_message(services.logs.downvoted, {
             "id"     => user.id.to_s,
-            "name"   => user.get_formatted_name,
-            "oid"    => reply_user.get_obfuscated_id,
+            "name"   => user.formatted_name,
+            "oid"    => reply_user.obfuscated_id,
             "reason" => reason,
           }))
         end
       end
 
-      gave_downvote_reply = Format.format_karma_reason_reply(reason, services.replies.gave_downvote, services.replies)
+      gave_downvote_reply = Format.karma_reason(reason, services.replies.gave_downvote, services.replies)
 
       services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, gave_downvote_reply)
 
       unless reply_user.hide_karma
-        reply_msid = services.history.get_receiver_message(reply.message_id.to_i64, reply_user.id)
+        reply_msid = services.history.receiver_message(reply.message_id.to_i64, reply_user.id)
 
         if reply_msid
           reply_parameters = ReplyParameters.new(reply_msid)
@@ -131,7 +131,7 @@ module PrivateParlorXT
 
         karma_level_down(reply_user, reply_parameters, services)
 
-        got_downvote_reply = Format.format_karma_reason_reply(reason, services.replies.got_downvote, services.replies)
+        got_downvote_reply = Format.karma_reason(reason, services.replies.got_downvote, services.replies)
 
         services.relay.send_to_user(
           reply_parameters,

@@ -7,13 +7,13 @@ module PrivateParlorXT
   class PollHandler < UpdateHandler
     # Checks if the poll meets requirements and relays it
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return if message.forward_origin
 
       return unless authorized?(user, message, :Poll, services)
 
-      return unless has_sufficient_karma?(user, message, services)
+      return unless sufficient_karma?(user, message, services)
 
       return if spamming?(user, message, services)
 
@@ -25,11 +25,11 @@ module PrivateParlorXT
       poll_copy = services.relay.send_poll_copy(cached_message, user, poll)
       services.history.add_to_history(cached_message, poll_copy.message_id.to_i64, user.id)
 
-      record_message_statistics(Statistics::MessageCounts::Polls, services)
+      record_message_statistics(Statistics::Messages::Polls, services)
 
       update_user_activity(user, services)
 
-      receivers = get_message_receivers(user, services)
+      receivers = message_receivers(user, services)
 
       services.relay.send_forward(
         RelayParameters.new(
@@ -64,7 +64,7 @@ module PrivateParlorXT
     #   - User has sufficient karma
     # 
     # Returns `nil` if the user does not have sufficient karma
-    def has_sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
+    def sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
       return true unless karma = services.karma
 
       return true unless karma.karma_poll >= 0

@@ -5,124 +5,6 @@ require "./services.cr"
 require "tasker"
 
 module PrivateParlorXT
-  
-  # Reads from the config file and initialize `Services`, recurring tasks, and bot handlers
-  # 
-  # Returns the initialized `Services` object
-  def self.initialize_bot(client : Client? = nil) : Services
-    config = Config.parse_config
-
-    unless client
-      client = Client.new(config.token)
-    end
-
-    client.default_parse_mode = Tourmaline::ParseMode::MarkdownV2
-
-    services = initialize_services(config, client)
-
-    initialize_tasks(config, services)
-
-    initialize_handlers(client, config, services)
-
-    services
-  end
-
-  # Returns an initialized `Services` object
-  # 
-  # Checks the `Config` for configurable modules and initializes the `Services` with them
-  def self.initialize_services(config : Config, client : Client) : Services
-    localization = Localization.parse_locale(Path["./locales"], config.locale)
-
-    connection = DB.open("sqlite3://#{config.database}")
-
-    database = SQLiteDatabase.new(connection)
-
-    if config.database_history
-      history = SQLiteHistory.new(config.message_lifespan.hours, connection)
-    else
-      history = CachedHistory.new(config.message_lifespan.hours)
-    end
-
-    access = AuthorizedRanks.new(config.ranks)
-
-    relay = Relay.new(config.log_channel, client)
-
-    if config.spam_interval != 0
-      spam = config.spam_handler
-    else
-      spam = nil
-    end
-
-    if config.toggle_r9k_media || config.toggle_r9k_text
-      robot9000 = SQLiteRobot9000.new(
-        connection,
-        config.valid_codepoints,
-        config.toggle_r9k_text,
-        config.toggle_r9k_media,
-        config.toggle_r9k_forwards,
-        config.r9k_warn,
-        config.r9k_cooldown,
-      )
-    else
-      robot9000 = nil
-    end
-
-    if config.karma_economy
-      karma_economy = config.karma_economy
-    end
-
-    if config.statistics
-      stats = SQLiteStatistics.new(connection)
-    end
-
-    services = Services.new(
-      HandlerConfig.new(config),
-      localization.locale,
-      localization.replies,
-      localization.logs,
-      localization.command_descriptions,
-      database,
-      history,
-      access,
-      relay,
-      spam,
-      robot9000,
-      karma_economy,
-      stats
-    )
-
-    services
-  end
-
-  # Initializes recurring tasks, such as:
-  #   - Warning expiration
-  #   - Message expiration (if toggled)
-  #   - Spam cooldown expiration (if toggled)
-  #   - Inactive user kicking (if toggled)
-  def self.initialize_tasks(config : Config, services : Services) : Nil
-    Tasker.every(15.minutes) {
-      services.database.expire_warnings(config.warn_lifespan.hours)
-    }
-
-    if config.message_lifespan > 0
-      Tasker.every(config.message_lifespan.hours * (1/4)) {
-        services.history.expire
-      }
-    end
-
-    if spam = services.spam
-      Tasker.every(config.spam_interval.seconds) {
-        spam.expire
-      }
-    end
-
-    if config.inactivity_limit > 0
-      Tasker.every(6.hours) {
-        kick_inactive_users(config.inactivity_limit.days, services)
-      }
-    end
-  end
-  
   # Initialize bot handlers, such as `CommandHandler`, `HearsHandler`, `CallbackHandler`, and `UpdateHandler`
   def self.initialize_handlers(client : Tourmaline::Client, config : Config, services : Services) : Nil
     events = [] of Tourmaline::EventHandler
@@ -399,14 +281,14 @@ module PrivateParlorXT
 
   # Force-leave users whose last active time is creater than the given `Time::Span` *limit*
   def self.kick_inactive_users(limit : Time::Span, services : Services) : Nil
-    services.database.get_inactive_users(limit).each do |user|
+    services.database.inactive_users(limit).each do |user|
       user.set_left
       services.database.update_user(user)
       services.relay.reject_inactive_user_messages(user.id)
 
       log = Format.substitute_message(services.logs.left, {
         "id"   => user.id.to_s,
-        "name" => user.get_formatted_name,
+        "name" => user.formatted_name,
       })
 
       response = Format.substitute_reply(services.replies.inactive, {

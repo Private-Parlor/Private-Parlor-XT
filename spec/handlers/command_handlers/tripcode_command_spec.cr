@@ -126,7 +126,7 @@ module PrivateParlorXT
 
         name, code = Format.generate_tripcode("name#password", services)
 
-        expected = Format.format_tripcode_set_reply(
+        expected = Format.tripcode_set(
           services.replies.tripcode_set_format,
           name,
           code,
@@ -156,7 +156,7 @@ module PrivateParlorXT
           fail("User 20000 should exist in the database")
         end
 
-        obfuscated_id = user.get_obfuscated_id
+        obfuscated_id = user.obfuscated_id
 
         tourmaline_user = Tourmaline::User.new(20000, false, "example")
 
@@ -178,7 +178,7 @@ module PrivateParlorXT
 
         updated_user.tripcode.should(eq("🦤🦆🕊️##{obfuscated_id}"))
 
-        expected = Format.format_tripcode_set_reply(
+        expected = Format.tripcode_set(
           services.replies.flag_sign_set_format,
           "🦤🦆🕊️",
           "",

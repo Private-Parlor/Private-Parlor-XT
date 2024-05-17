@@ -53,7 +53,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_origin_message(message : MessageID) : MessageID?
+    def origin_message(message : MessageID) : MessageID?
       @connection.query_one?(
         "SELECT messageGroupID
         FROM receivers
@@ -68,8 +68,8 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_all_receivers(message : MessageID) : Hash(UserID, MessageID)
-      origin_msid = get_origin_message(message)
+    def receivers(message : MessageID) : Hash(UserID, MessageID)
+      origin = origin_message(message)
 
       @connection.query_all(
         "SELECT senderID, messageGroupID
@@ -79,18 +79,18 @@ module PrivateParlorXT
         SELECT receiverID, receiverMSID
         FROM receivers
         WHERE messageGroupID = ?",
-        origin_msid, origin_msid,
+        origin, origin,
         as: {UserID, MessageID}
       ).to_h
     end
 
     # :inherit:
-    def get_receiver_message(message : MessageID, receiver : UserID) : MessageID?
-      get_all_receivers(message)[receiver]?
+    def receiver_message(message : MessageID, receiver : UserID) : MessageID?
+      receivers(message)[receiver]?
     end
 
     # :inherit:
-    def get_sender(message : MessageID) : UserID?
+    def sender(message : MessageID) : UserID?
       @connection.query_one?(
         "SELECT DISTINCT senderID
         FROM message_groups
@@ -106,7 +106,7 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_messages_from_user(user : UserID) : Set(MessageID)
+    def messages_from_user(user : UserID) : Set(MessageID)
       @connection.query_all(
         "SELECT messageGroupID
         FROM message_groups
@@ -136,24 +136,24 @@ module PrivateParlorXT
           "UPDATE message_groups
           SET warned = TRUE
           WHERE messageGroupID = ?",
-          get_origin_message(message)
+          origin_message(message)
         )
       end
     end
 
     # :inherit:
-    def get_warning(message : MessageID) : Bool?
+    def warned?(message : MessageID) : Bool?
       @connection.query_one?(
         "SELECT warned
         FROM message_groups
         WHERE messageGroupID = ?",
-        get_origin_message(message),
+        origin_message(message),
         as: Bool
       )
     end
 
     # :inherit:
-    def get_purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
+    def purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
       hash = {} of UserID => Array(MessageID)
 
       tuples = @connection.query_all(
@@ -182,13 +182,13 @@ module PrivateParlorXT
 
     # :inherit:
     def delete_message_group(message : MessageID) : MessageID?
-      origin_msid = get_origin_message(message)
+      origin = origin_message(message)
 
       write do
-        @connection.exec("DELETE FROM message_groups WHERE messageGroupID = ?", origin_msid)
+        @connection.exec("DELETE FROM message_groups WHERE messageGroupID = ?", origin)
       end
 
-      origin_msid
+      origin
     end
 
     # :inherit:

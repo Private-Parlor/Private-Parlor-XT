@@ -15,35 +15,35 @@ module PrivateParlorXT
 
     # Checks if the album message meets requirements and relays it
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return if message.forward_origin
 
       return unless authorized?(user, message, :MediaGroup, services)
 
-      return unless has_sufficient_karma?(user, message, services)
+      return unless sufficient_karma?(user, message, services)
 
       return if spamming?(user, message, services)
 
       return unless album = message.media_group_id
 
-      caption, entities = Format.get_text_and_entities(message, user, services)
+      caption, entities = Format.text_and_entities(message, user, services)
       return unless caption
 
-      reply_messages = get_reply_receivers(message, user, services)
+      reply_messages = reply_receivers(message, user, services)
       return unless reply_messages
 
       return unless unique?(user, message, services)
 
-      return unless input = get_album_input(message, caption, entities, services.config.allow_spoilers)
+      return unless input = album_input(message, caption, entities, services.config.allow_spoilers)
 
-      record_message_statistics(Statistics::MessageCounts::Albums, services)
+      record_message_statistics(Statistics::Messages::Albums, services)
 
       user = spend_karma(user, message, services)
 
       update_user_activity(user, services)
 
-      receivers = get_message_receivers(user, services)
+      receivers = message_receivers(user, services)
 
       relay_album(
         @albums,
@@ -82,7 +82,7 @@ module PrivateParlorXT
     #   - User has sufficient karma
     # 
     # Returns `nil` if the user does not have sufficient karma
-    def has_sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
+    def sufficient_karma?(user : User, message : Tourmaline::Message, services : Services) : Bool?
       return true unless karma = services.karma
 
       return true unless karma.karma_media_group >= 0

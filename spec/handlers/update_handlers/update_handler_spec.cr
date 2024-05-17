@@ -20,7 +20,7 @@ module PrivateParlorXT
   end
 
   describe MockUpdateHandler do
-    describe "#get_user_from_message" do
+    describe "#user_from_message" do
       it "returns nil if message has no sender" do
         services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
@@ -36,7 +36,7 @@ module PrivateParlorXT
           from: nil,
         )
 
-        handler.get_user_from_message(message, services).should(be_nil)
+        handler.user_from_message(message, services).should(be_nil)
       end
 
       it "returns nil if message text is a command" do
@@ -82,11 +82,11 @@ module PrivateParlorXT
           text: "starts_with_UpdateHandler This is a command",
         )
 
-        handler.get_user_from_message(command_message, services).should(be_nil)
-        handler.get_user_from_message(upvote_message, services).should(be_nil)
-        handler.get_user_from_message(downvote_message, services).should(be_nil)
-        handler.get_user_from_message(example_contains_message, services).should(be_nil)
-        handler.get_user_from_message(example_starts_with_message, services).should(be_nil)
+        handler.user_from_message(command_message, services).should(be_nil)
+        handler.user_from_message(upvote_message, services).should(be_nil)
+        handler.user_from_message(downvote_message, services).should(be_nil)
+        handler.user_from_message(example_contains_message, services).should(be_nil)
+        handler.user_from_message(example_starts_with_message, services).should(be_nil)
       end
 
       it "returns user" do
@@ -113,7 +113,7 @@ module PrivateParlorXT
           from: tourmaline_user
         )
 
-        unless returned_user = handler.get_user_from_message(message, services)
+        unless returned_user = handler.user_from_message(message, services)
           fail("Did not get a user from method")
         end
 
@@ -136,7 +136,7 @@ module PrivateParlorXT
           from: tourmaline_user
         )
 
-        unless returned_user = handler.get_user_from_message(message, services)
+        unless returned_user = handler.user_from_message(message, services)
           fail("Did not get a user from method")
         end
 
@@ -158,7 +158,7 @@ module PrivateParlorXT
           from: tourmaline_user
         )
 
-        unless returned_user = handler.get_user_from_message(new_names_message, services)
+        unless returned_user = handler.user_from_message(new_names_message, services)
           fail("Did not get a user from method")
         end
 
@@ -183,7 +183,7 @@ module PrivateParlorXT
           from: tourmaline_user
         )
 
-        handler.get_user_from_message(message, services).should(be_nil)
+        handler.user_from_message(message, services).should(be_nil)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -206,7 +206,7 @@ module PrivateParlorXT
           from: tourmaline_user
         )
 
-        handler.get_user_from_message(message, services).should(be_nil)
+        handler.user_from_message(message, services).should(be_nil)
       end
     end
 
@@ -340,7 +340,7 @@ module PrivateParlorXT
         messages = services.relay.as(MockRelay).empty_queue
 
         expected = Format.substitute_reply(services.replies.on_cooldown, {
-          "time" => Format.format_time(user.cooldown_until, services.locale.time_format),
+          "time" => Format.time(user.cooldown_until, services.locale.time_format),
         })
 
         messages.size.should(eq(1))
@@ -370,7 +370,7 @@ module PrivateParlorXT
         })
 
         cooldown_message = Format.substitute_reply(services.replies.on_cooldown, {
-          "time" => Format.format_time(user.cooldown_until, services.locale.time_format),
+          "time" => Format.time(user.cooldown_until, services.locale.time_format),
         })
 
         messages.size.should(eq(1))
@@ -401,7 +401,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_reply_receivers" do
+    describe "#reply_receivers" do
       it "returns hash of reply message receivers if reply exists" do
         services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
@@ -428,7 +428,7 @@ module PrivateParlorXT
 
         user = MockUser.new(80300, rank: 10)
 
-        unless hash = handler.get_reply_receivers(message, user, services)
+        unless hash = handler.reply_receivers(message, user, services)
           fail("Handler method should have returned a hash of reply message receivers")
         end
 
@@ -453,7 +453,7 @@ module PrivateParlorXT
 
         user = MockUser.new(80300, rank: 10)
 
-        unless hash = handler.get_reply_receivers(message, user, services)
+        unless hash = handler.reply_receivers(message, user, services)
           fail("Handler method should have returned an empty hash of reply message receivers")
         end
 
@@ -492,7 +492,7 @@ module PrivateParlorXT
 
         user = MockUser.new(80300, rank: 10)
 
-        unless hash = handler.get_reply_receivers(message, user, services)
+        unless hash = handler.reply_receivers(message, user, services)
           fail("Handler method should have returned a hash of reply message receivers")
         end
 
@@ -534,7 +534,7 @@ module PrivateParlorXT
 
         user = MockUser.new(80300, rank: 10)
 
-        unless hash = handler.get_reply_receivers(message, user, services)
+        unless hash = handler.reply_receivers(message, user, services)
           fail("Handler method should have returned a hash of reply message receivers")
         end
 
@@ -578,7 +578,7 @@ module PrivateParlorXT
 
         user = MockUser.new(80300, rank: 10)
 
-        unless hash = handler.get_reply_receivers(message, user, services)
+        unless hash = handler.reply_receivers(message, user, services)
           fail("Handler method should have returned a hash of reply message receivers")
         end
 
@@ -620,7 +620,7 @@ module PrivateParlorXT
 
         user = MockUser.new(80300, rank: 10)
 
-        handler.get_reply_receivers(message, user, services).should(be_nil)
+        handler.reply_receivers(message, user, services).should(be_nil)
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
@@ -628,7 +628,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_message_receivers" do
+    describe "#message_receivers" do
       it "returns array of user IDs without given user ID" do
         services = create_services()
         handler = MockUpdateHandler.new(MockConfig.new)
@@ -637,7 +637,7 @@ module PrivateParlorXT
 
         user = MockUser.new(80300, rank: 10)
 
-        handler.get_message_receivers(user, services).should_not(contain(user.id))
+        handler.message_receivers(user, services).should_not(contain(user.id))
       end
 
       it "returns array of user IDs including given user if debug is enabled" do
@@ -650,7 +650,7 @@ module PrivateParlorXT
 
         user.toggle_debug
 
-        handler.get_message_receivers(user, services).should(contain(user.id))
+        handler.message_receivers(user, services).should(contain(user.id))
       end
     end
     
@@ -665,8 +665,8 @@ module PrivateParlorXT
 
         handler.record_message_statistics(:Audio, services)
 
-        stats.get_total_messages[Statistics::MessageCounts::Audio].should(eq(1))
-        stats.get_total_messages[Statistics::MessageCounts::TotalMessages].should(eq(1))
+        stats.message_counts[Statistics::Messages::Audio].should(eq(1))
+        stats.message_counts[Statistics::Messages::TotalMessages].should(eq(1))
       end
     end
   end

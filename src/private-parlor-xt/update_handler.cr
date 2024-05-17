@@ -30,7 +30,7 @@ module PrivateParlorXT
     #   - Message is a command
     #   - `User` does not exist in the `Database`
     #   - `User` cannot chat right now (due to a cooldown, blacklist, media limit, or having left the chat)
-    def get_user_from_message(message : Tourmaline::Message, services : Services) : User?
+    def user_from_message(message : Tourmaline::Message, services : Services) : User?
       return unless info = message.from
 
       if text = message.text
@@ -79,16 +79,16 @@ module PrivateParlorXT
     def deny_user(user : User, services : Services) : Nil
       if user.blacklisted?
         response = Format.substitute_reply(services.replies.blacklisted, {
-          "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
-          "reason"  => Format.format_reason_reply(user.blacklist_reason, services.replies),
+          "contact" => Format.contact(services.config.blacklist_contact, services.replies),
+          "reason"  => Format.reason(user.blacklist_reason, services.replies),
         })
       elsif cooldown_until = user.cooldown_until
         response = Format.substitute_reply(services.replies.on_cooldown, {
-          "time" => Format.format_time(cooldown_until, services.locale.time_format),
+          "time" => Format.time(cooldown_until, services.locale.time_format),
         })
       elsif Time.utc - user.joined < services.config.media_limit_period
         response = Format.substitute_reply(services.replies.media_limit, {
-          "total" => Format.format_time_span(services.config.media_limit_period - (Time.utc - user.joined), services.locale),
+          "total" => Format.time_span(services.config.media_limit_period - (Time.utc - user.joined), services.locale),
         })
       else
         response = services.replies.not_in_chat
@@ -103,10 +103,10 @@ module PrivateParlorXT
     # The hash will be empty if the message does not have a reply
     # 
     # Returns nil if the message had a reply, but no receiver message IDs could be found (message replied to is no longer in the cache)
-    def get_reply_receivers(message : Tourmaline::Message, user : User, services : Services) : Hash(UserID, ReplyParameters)?
+    def reply_receivers(message : Tourmaline::Message, user : User, services : Services) : Hash(UserID, ReplyParameters)?
       return Hash(UserID, ReplyParameters).new unless reply = message.reply_to_message
 
-      replies = services.history.get_all_receivers(reply.message_id.to_i64)
+      replies = services.history.receivers(reply.message_id.to_i64)
 
       if reply && replies.empty?
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.not_in_cache)
@@ -146,19 +146,19 @@ module PrivateParlorXT
     # Returns an array of `UserID` for which the relayed message will be sent to
     # 
     # If the given *User* has debug mode enabled, he will get a copy of the relayed message
-    def get_message_receivers(user : User, services : Services) : Array(UserID)
+    def message_receivers(user : User, services : Services) : Array(UserID)
       if user.debug_enabled
-        services.database.get_active_users
+        services.database.active_users
       else
-        services.database.get_active_users(user.id)
+        services.database.active_users(user.id)
       end
     end
 
     # If the statistics module is enabled, update the message_stats for the given *type* by incrementing the totals.
-    def record_message_statistics(type : Statistics::MessageCounts, services : Services) : Nil
+    def record_message_statistics(type : Statistics::Messages, services : Services) : Nil
       return unless stats = services.stats
 
-      stats.increment_message_count(type)
+      stats.increment_messages(type)
     end
 
     # Returns early if the message *text* contains a command.

@@ -199,7 +199,7 @@ module PrivateParlorXT
         messages.size.should(eq(3))
 
         messages.each do |msg|
-          unless reply_to_message = msg.reply_to
+          unless reply_to_message = msg.reply
             fail("Queued pin message should have a reply here")
           end
 

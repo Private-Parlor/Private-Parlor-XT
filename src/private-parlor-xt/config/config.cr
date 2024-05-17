@@ -406,17 +406,17 @@ module PrivateParlorXT
 
       set_log(config)
       validate_prerequisites(config)
-      config = check_and_init_ranks(config)
-      config = init_karma_levels(config)
-      config = init_valid_codepoints(config)
-      config = check_and_init_linked_network(config)
+      config = initialize_ranks(config)
+      config = initialize_karma_levels(config)
+      config = initialize_valid_codepoints(config)
+      config = initialize_linked_network(config)
     end
 
     # Checks every intermediate rank for invalid or otherwise undefined permissions
     # and initializes the Ranks hash
     #
     # Returns an updated `Config` object
-    private def self.check_and_init_ranks(config : Config) : Config
+    private def self.initialize_ranks(config : Config) : Config
       promote_keys = Set{
         CommandPermissions::Promote,
         CommandPermissions::PromoteLower,
@@ -606,7 +606,7 @@ module PrivateParlorXT
     end
 
     # Validate `intermediate_karma_levels` and set `karma_levels`
-    private def self.init_karma_levels(config : Config) : Config
+    private def self.initialize_karma_levels(config : Config) : Config
       return config if config.intermediate_karma_levels.empty?
 
       case config.intermediate_karma_levels.size
@@ -644,7 +644,7 @@ module PrivateParlorXT
     end
 
     # Validate `intermediate_valid_codepoints` and set `valid_codepoints`
-    private def self.init_valid_codepoints(config : Config) : Config
+    private def self.initialize_valid_codepoints(config : Config) : Config
       unless codepoint_tuples = config.intermediate_valid_codepoints
         return config
       end
@@ -665,7 +665,7 @@ module PrivateParlorXT
     #
     # Otherwise if it is a string, try to open the file from the path and merge
     # the YAML dictionary there into `linked_network`
-    private def self.check_and_init_linked_network(config : Config) : Config
+    private def self.initialize_linked_network(config : Config) : Config
       if (links = config.intermediary_linked_network) && links.is_a?(String)
         begin
           hash = {} of String => String

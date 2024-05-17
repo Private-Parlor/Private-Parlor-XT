@@ -7,7 +7,7 @@ module PrivateParlorXT
   end
 
   describe CallbackHandler do
-    describe "#get_user_from_callback" do 
+    describe "#user_from_callback" do 
       it "returns user with updated names" do
         services = create_services()
         handler = MockCallbackHandler.new(MockConfig.new)
@@ -31,7 +31,7 @@ module PrivateParlorXT
           message: message,
         )
 
-        unless user = handler.get_user_from_callback(query, services)
+        unless user = handler.user_from_callback(query, services)
           fail("Did not get a user from method")
         end
 
@@ -63,7 +63,7 @@ module PrivateParlorXT
           message: message,
         )
 
-        handler.get_user_from_callback(query, services).should(be_nil)
+        handler.user_from_callback(query, services).should(be_nil)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -94,7 +94,7 @@ module PrivateParlorXT
           message: message,
         )
 
-        handler.get_user_from_callback(query, services).should(be_nil)
+        handler.user_from_callback(query, services).should(be_nil)
       end
     end
 

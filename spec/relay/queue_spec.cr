@@ -8,14 +8,14 @@ module PrivateParlorXT
       it "deletes messages in queue according to given conditions" do
         message_queue = MessageQueue.new
 
-        message_queue.add_to_queue_priority(100_i64, ReplyParameters.new(1_i64), proc)
-        message_queue.add_to_queue_priority(101_i64, ReplyParameters.new(2_i64), proc)
-        message_queue.add_to_queue_priority(102_i64, ReplyParameters.new(3_i64), proc)
+        message_queue.enqueue_priority(100_i64, ReplyParameters.new(1_i64), proc)
+        message_queue.enqueue_priority(101_i64, ReplyParameters.new(2_i64), proc)
+        message_queue.enqueue_priority(102_i64, ReplyParameters.new(3_i64), proc)
 
         message_queue.queue.size.should(eq(3))
 
         message_queue.reject_messages do |msg|
-          next unless reply_to_message = msg.reply_to
+          next unless reply_to_message = msg.reply
 
           reply_to_message.message_id < 3
         end
@@ -27,20 +27,20 @@ module PrivateParlorXT
         end
 
         message.receiver.should(eq(102))
-        unless reply_to_message = message.reply_to
+        unless reply_to_message = message.reply
           fail("Message reply should not be nil")
         end
         reply_to_message.message_id.should(eq(3))
       end
     end
 
-    describe "#add_to_queue" do
+    describe "#enqueue" do
       it "adds cached message to the end of the queue" do
         message_queue = MessageQueue.new
 
         message_queue.queue.size.should(eq(0))
 
-        message_queue.add_to_queue(
+        message_queue.enqueue(
           100_i64,
           9000_i64,
           [1500_i64, 1700_i64, 1900_i64],
@@ -54,10 +54,10 @@ module PrivateParlorXT
           fail("Message should not be nil")
         end
 
-        message_one.origin_msid.should(eq(100))
+        message_one.origin.should(eq(100))
         message_one.sender.should(eq(9000))
         message_one.receiver.should(eq(1500))
-        message_one.reply_to.should(be_nil)
+        message_one.reply.should(be_nil)
 
         message_queue.queue.size.should(eq(2))
 
@@ -65,10 +65,10 @@ module PrivateParlorXT
           fail("Message should not be nil")
         end
 
-        message_two.origin_msid.should(eq(100))
+        message_two.origin.should(eq(100))
         message_two.sender.should(eq(9000))
         message_two.receiver.should(eq(1700))
-        message_two.reply_to.should(be_nil)
+        message_two.reply.should(be_nil)
 
         message_queue.queue.size.should(eq(1))
 
@@ -76,10 +76,10 @@ module PrivateParlorXT
           fail("Message should not be nil")
         end
 
-        message_three.origin_msid.should(eq(100))
+        message_three.origin.should(eq(100))
         message_three.sender.should(eq(9000))
         message_three.receiver.should(eq(1900))
-        message_three.reply_to.should(be_nil)
+        message_three.reply.should(be_nil)
       end
 
       it "adds cached message with reply to the end of the queue" do
@@ -92,7 +92,7 @@ module PrivateParlorXT
           1700_i64 => ReplyParameters.new(98_i64),
         }
 
-        message_queue.add_to_queue(
+        message_queue.enqueue(
           100_i64,
           9000_i64,
           [1500_i64, 1700_i64, 1900_i64],
@@ -106,10 +106,10 @@ module PrivateParlorXT
           fail("Message_one should not be nil")
         end
 
-        message_one.origin_msid.should(eq(100))
+        message_one.origin.should(eq(100))
         message_one.sender.should(eq(9000))
         message_one.receiver.should(eq(1500))
-        unless reply_to_message = message_one.reply_to
+        unless reply_to_message = message_one.reply
           fail("Message_one reply should not be nil")
         end
         reply_to_message.message_id.should(eq(97))
@@ -120,10 +120,10 @@ module PrivateParlorXT
           fail("Message_two should not be nil")
         end
 
-        message_two.origin_msid.should(eq(100))
+        message_two.origin.should(eq(100))
         message_two.sender.should(eq(9000))
         message_two.receiver.should(eq(1700))
-        unless reply_to_message = message_two.reply_to
+        unless reply_to_message = message_two.reply
           fail("Message_two reply should not be nil")
         end
         reply_to_message.message_id.should(eq(98))
@@ -134,18 +134,18 @@ module PrivateParlorXT
           fail("Message_three should not be nil")
         end
 
-        message_three.origin_msid.should(eq(100))
+        message_three.origin.should(eq(100))
         message_three.sender.should(eq(9000))
         message_three.receiver.should(eq(1900))
-        message_three.reply_to.should(be_nil)
+        message_three.reply.should(be_nil)
       end
     end
 
-    describe "#add_to_queue_priority" do
+    describe "#enqueue_priority" do
       it "adds QueuedMessage to the front of the queue" do
         message_queue = MessageQueue.new
 
-        message_queue.add_to_queue(
+        message_queue.enqueue(
           100_i64,
           9000_i64,
           [1500_i64, 1700_i64, 1900_i64],
@@ -155,7 +155,7 @@ module PrivateParlorXT
 
         message_queue.queue.size.should(eq(3))
 
-        message_queue.add_to_queue_priority(9000, ReplyParameters.new(100), proc)
+        message_queue.enqueue_priority(9000, ReplyParameters.new(100), proc)
 
         message_queue.queue.size.should(eq(4))
 
@@ -163,10 +163,10 @@ module PrivateParlorXT
           fail("Message should not be nil")
         end
 
-        message.origin_msid.should(be_nil)
+        message.origin.should(be_nil)
         message.sender.should(be_nil)
         message.receiver.should(eq(9000))
-        unless reply_to_message = message.reply_to
+        unless reply_to_message = message.reply
           fail("Message reply should not be nil")
         end
         reply_to_message.message_id.should(eq(100))
@@ -177,7 +177,7 @@ module PrivateParlorXT
       it "returns first QueuedMessage in queue" do
         message_queue = MessageQueue.new
 
-        message_queue.add_to_queue(
+        message_queue.enqueue(
           200_i64,
           nil,
           [100_i64],
@@ -185,7 +185,7 @@ module PrivateParlorXT
           proc
         )
 
-        message_queue.add_to_queue(
+        message_queue.enqueue(
           201_i64,
           nil,
           [101_i64],
@@ -193,7 +193,7 @@ module PrivateParlorXT
           proc
         )
 
-        message_queue.add_to_queue(
+        message_queue.enqueue(
           202_i64,
           nil,
           [102_i64],

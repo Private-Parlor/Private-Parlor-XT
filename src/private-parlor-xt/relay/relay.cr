@@ -84,7 +84,7 @@ module PrivateParlorXT
 
     # Relay a message to a single user. Used for system messages.
     def send_to_user(reply_message : ReplyParameters?, user : UserID, text : String, reply_markup : Tourmaline::InlineKeyboardMarkup? = nil) : Nil
-      @queue.add_to_queue_priority(
+      @queue.enqueue_priority(
         user,
         reply_message,
         ->(receiver : UserID, reply : ReplyParameters?) {
@@ -103,7 +103,7 @@ module PrivateParlorXT
     def send_to_channel(reply_message : MessageID?, channel : String, text : String) : Nil
       return unless id = channel.to_i64?
 
-      @queue.add_to_queue_priority(
+      @queue.enqueue_priority(
         id,
         nil,
         ->(receiver : UserID, _reply : ReplyParameters?) {
@@ -118,7 +118,7 @@ module PrivateParlorXT
 
     # Queues a text message with the given *params*
     def send_text(params : RelayParameters) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -138,7 +138,7 @@ module PrivateParlorXT
 
     # Queues a photo with the given *params*
     def send_photo(params : RelayParameters) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -159,7 +159,7 @@ module PrivateParlorXT
 
     # Queues a GIF with the given *params*
     def send_animation(params : RelayParameters) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -180,7 +180,7 @@ module PrivateParlorXT
 
     # Queues a video with the given *params*
     def send_video(params : RelayParameters) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -201,7 +201,7 @@ module PrivateParlorXT
 
     # Queues an audio message with the given *params*
     def send_audio(params : RelayParameters) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -221,7 +221,7 @@ module PrivateParlorXT
 
     # Queues a voice message with the given *params*
     def send_voice(params : RelayParameters) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -241,7 +241,7 @@ module PrivateParlorXT
 
     # Queues a document with the given *params*
     def send_document(params : RelayParameters) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -280,7 +280,7 @@ module PrivateParlorXT
 
     # Queues a forwarded message with the given *params*
     def send_forward(params : RelayParameters, message : MessageID) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -297,7 +297,7 @@ module PrivateParlorXT
 
     # Queues a video note with the given *params*
     def send_video_note(params : RelayParameters) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -314,7 +314,7 @@ module PrivateParlorXT
 
     # Queues a sticker with the given *params*
     def send_sticker(params : RelayParameters) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -331,8 +331,8 @@ module PrivateParlorXT
 
     # Queues an album with the given *params*
     def send_album(params : AlbumHelpers::AlbumRelayParameters) : Nil
-      @queue.add_to_queue(
-        params.original_messages,
+      @queue.enqueue(
+        params.origins,
         params.sender,
         params.receivers,
         params.replies,
@@ -348,7 +348,7 @@ module PrivateParlorXT
 
     # Queues a `Tourmaline::Venue` with the given *params*
     def send_venue(params : RelayParameters, venue : Tourmaline::Venue) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -372,7 +372,7 @@ module PrivateParlorXT
 
     # Queues a `Tourmaline::Location` with the given *params*
     def send_location(params : RelayParameters, location : Tourmaline::Location) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -390,7 +390,7 @@ module PrivateParlorXT
 
     # Queues a `Tourmaline::Contact` with the given *params*
     def send_contact(params : RelayParameters, contact : Tourmaline::Contact) : Nil
-      @queue.add_to_queue(
+      @queue.enqueue(
         params.original_message,
         params.sender,
         params.receivers,
@@ -424,7 +424,7 @@ module PrivateParlorXT
 
     # Delete a *message* for *receiver*
     def delete_message(receiver : UserID, message : MessageID) : Nil
-      @queue.add_to_queue_priority(
+      @queue.enqueue_priority(
         receiver,
         ReplyParameters.new(message),
         ->(receiver_id : UserID, reply : ReplyParameters?) {
@@ -436,7 +436,7 @@ module PrivateParlorXT
 
     # Bulk dellete *messages* for a given *receiver*
     def purge_messages(receiver : UserID, messages : Array(MessageID)) : Nil
-      @queue.add_to_queue_priority(
+      @queue.enqueue_priority(
         receiver,
         nil,
         ->(receiver_id : UserID, _reply : ReplyParameters?) {
@@ -447,7 +447,7 @@ module PrivateParlorXT
 
     # Pins the given *message* to the chat
     def pin_message(user : UserID, message : MessageID) : Nil
-      @queue.add_to_queue_priority(
+      @queue.enqueue_priority(
         user,
         ReplyParameters.new(message),
         ->(receiver : UserID, reply : ReplyParameters?) {
@@ -465,7 +465,7 @@ module PrivateParlorXT
         message = nil
       end
 
-      @queue.add_to_queue_priority(
+      @queue.enqueue_priority(
         user,
         message,
         ->(receiver : UserID, reply : ReplyParameters?) {
@@ -480,7 +480,7 @@ module PrivateParlorXT
 
     # Edit a message's media, usually used for placing a spoiler on a message
     def edit_message_media(user : UserID, media : Tourmaline::InputMedia, message : MessageID) : Nil
-      @queue.add_to_queue_priority(
+      @queue.enqueue_priority(
         user,
         ReplyParameters.new(message),
         ->(receiver : UserID, reply : ReplyParameters?) {
@@ -495,7 +495,7 @@ module PrivateParlorXT
 
     # Exit a message's text
     def edit_message_text(user : UserID, text : String, markup : Tourmaline::InlineKeyboardMarkup?, message : MessageID) : Nil
-      @queue.add_to_queue_priority(
+      @queue.enqueue_priority(
         user,
         ReplyParameters.new(message),
         ->(receiver : UserID, reply : ReplyParameters?) {
@@ -532,9 +532,9 @@ module PrivateParlorXT
     # Returns nil on sending a system message, Telegram giving us a boolean,
     # or encountering an error
     def relay_message(message : QueuedMessage, services : Services) : Tourmaline::Message | Array(Tourmaline::Message) | Nil
-      success = message.function.call(message.receiver, message.reply_to)
+      success = message.function.call(message.receiver, message.reply)
 
-      return unless message.origin_msid # System messages have this set to nil
+      return unless message.origin # System messages have this set to nil
       return if success.is_a?(Bool)
 
       success
@@ -543,14 +543,14 @@ module PrivateParlorXT
         user.set_left
         services.database.update_user(user)
 
-        log = Format.substitute_message(services.logs.force_leave, {"id" => user.id.to_s, "name" => user.get_formatted_name})
+        log = Format.substitute_message(services.logs.force_leave, {"id" => user.id.to_s, "name" => user.formatted_name})
 
         log_output(log)
       end
 
       reject_inactive_user_messages(message.receiver)
     rescue ex : Tourmaline::Error::ChatNotFound
-      if message.origin_msid
+      if message.origin
         Log.error(exception: ex) { "Error occured when relaying message." }
       end
     rescue ex : Tourmaline::Error::RetryAfter
@@ -567,12 +567,12 @@ module PrivateParlorXT
     def cache_message(success : Tourmaline::Message | Array(Tourmaline::Message), message : QueuedMessage, services : Services) : Nil
       case success
       when Tourmaline::Message
-        services.history.add_to_history(message.origin_msid.as(MessageID), success.message_id.to_i64, message.receiver)
+        services.history.add_to_history(message.origin.as(MessageID), success.message_id.to_i64, message.receiver)
       when Array(Tourmaline::Message)
         sent_msids = success.map(&.message_id)
 
-        sent_msids.zip(message.origin_msid.as(Array(MessageID))) do |msid, origin_msid|
-          services.history.add_to_history(origin_msid, msid.to_i64, message.receiver)
+        sent_msids.zip(message.origin.as(Array(MessageID))) do |msid, origin|
+          services.history.add_to_history(origin, msid.to_i64, message.receiver)
         end
       end
     end

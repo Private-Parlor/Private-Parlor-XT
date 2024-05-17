@@ -7,7 +7,7 @@ module PrivateParlorXT
   class ToggleKarmaCommand < CommandHandler
     # Hides karma notifications for user or enabled them, depending on the user's hide_karma value
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       user.toggle_karma
 

@@ -111,7 +111,7 @@ module PrivateParlorXT
     end
 
     # Returns a `String` containing the unique file ID from the given *message*
-    def get_media_file_id(message : Tourmaline::Message) : String?
+    def media_file_id(message : Tourmaline::Message) : String?
       if media = message.animation
       elsif media = message.audio
       elsif media = message.document
@@ -167,7 +167,7 @@ module PrivateParlorXT
       end
 
       if @check_media
-        return true unless file_id = get_media_file_id(message)
+        return true unless file_id = media_file_id(message)
 
         return false unless unique_media = unique_media(user, message, services, file_id)
       end
@@ -189,7 +189,7 @@ module PrivateParlorXT
     def unique_text(user : User, message : Tourmaline::Message, services : Services, text : String) : String?
       if unoriginal_text?(text)
         if stats = services.stats
-          stats.increment_unoriginal_text_count
+          stats.increment_unoriginal_text
         end
 
         return unoriginal_message(user, message, services)
@@ -204,7 +204,7 @@ module PrivateParlorXT
     def unique_media(user : User, message : Tourmaline::Message, services : Services, file_id : String) : String?
       if unoriginal_media?(file_id)
         if stats = services.stats
-          stats.increment_unoriginal_media_count
+          stats.increment_unoriginal_media
         end
 
         return unoriginal_message(user, message, services)
@@ -220,7 +220,7 @@ module PrivateParlorXT
         services.database.update_user(user)
 
         response = Format.substitute_reply(services.replies.r9k_cooldown, {
-          "duration" => Format.format_time_span(duration, services.locale),
+          "duration" => Format.time_span(duration, services.locale),
         })
       elsif @warn_user
         duration = user.cooldown(services.config.cooldown_base)
@@ -228,7 +228,7 @@ module PrivateParlorXT
         services.database.update_user(user)
 
         response = Format.substitute_reply(services.replies.r9k_cooldown, {
-          "duration" => Format.format_time_span(duration, services.locale),
+          "duration" => Format.time_span(duration, services.locale),
         })
       else
         response = services.replies.unoriginal_message

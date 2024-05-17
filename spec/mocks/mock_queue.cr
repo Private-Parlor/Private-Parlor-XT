@@ -6,10 +6,10 @@ module PrivateParlorXT
     getter entities : Array(Tourmaline::MessageEntity)
 
     def initialize(
-      @origin_msid : MessageID | Array(MessageID) | Nil,
+      @origin : MessageID | Array(MessageID) | Nil,
       @sender : UserID?,
       @receiver : UserID,
-      @reply_to : ReplyParameters?,
+      @reply : ReplyParameters?,
       @function : MessageProc,
       @data : String,
       @entities : Array(Tourmaline::MessageEntity)
@@ -24,7 +24,7 @@ module PrivateParlorXT
     end
 
     # Creates a new `QueuedMessage` with a reply and pushes it to the back of the queue.
-    def add_to_queue(
+    def enqueue(
       cached_msid : Int64 | Array(Int64),
       sender_id : Int64 | Nil,
       receiver_ids : Array(Int64),
@@ -55,7 +55,7 @@ module PrivateParlorXT
 
     # Creates a new `QueuedMessage` and pushes it to the front of the queue.
     # Useful for reply messages.
-    def add_to_queue_priority(
+    def enqueue_priority(
       receiver_id : Int64,
       reply : Tourmaline::ReplyParameters?,
       data : String,

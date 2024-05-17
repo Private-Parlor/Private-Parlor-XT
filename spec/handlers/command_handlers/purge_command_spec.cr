@@ -114,13 +114,13 @@ module PrivateParlorXT
 
         handler.do(message, services)
 
-        services.history.get_origin_message(12).should(be_nil)
-        services.history.get_origin_message(13).should(be_nil)
-        services.history.get_origin_message(14).should(be_nil)
-        services.history.get_origin_message(15).should(be_nil)
-        services.history.get_origin_message(16).should(be_nil)
-        services.history.get_origin_message(17).should(be_nil)
-        services.history.get_origin_message(18).should(be_nil)
+        services.history.origin_message(12).should(be_nil)
+        services.history.origin_message(13).should(be_nil)
+        services.history.origin_message(14).should(be_nil)
+        services.history.origin_message(15).should(be_nil)
+        services.history.origin_message(16).should(be_nil)
+        services.history.origin_message(17).should(be_nil)
+        services.history.origin_message(18).should(be_nil)
 
         expected = Format.substitute_reply(services.replies.purge_complete, {
           "msgs_deleted" => "2",

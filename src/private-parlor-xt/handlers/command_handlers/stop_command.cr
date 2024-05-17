@@ -30,7 +30,7 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.left, {
         "id"   => user.id.to_s,
-        "name" => user.get_formatted_name,
+        "name" => user.formatted_name,
       })
 
       services.relay.log_output(log)

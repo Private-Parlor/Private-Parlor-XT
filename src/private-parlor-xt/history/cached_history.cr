@@ -54,14 +54,14 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_origin_message(message : MessageID) : MessageID?
+    def origin_message(message : MessageID) : MessageID?
       if msg = @message_map[message]?
         msg.origin
       end
     end
 
     # :inherit:
-    def get_all_receivers(message : MessageID) : Hash(UserID, MessageID)
+    def receivers(message : MessageID) : Hash(UserID, MessageID)
       if msg = @message_map[message]?
         {msg.sender => msg.origin}.merge!(msg.receivers)
       else
@@ -70,19 +70,19 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_receiver_message(message : MessageID, receiver : UserID) : MessageID?
-      get_all_receivers(message)[receiver]?
+    def receiver_message(message : MessageID, receiver : UserID) : MessageID?
+      receivers(message)[receiver]?
     end
 
     # :inherit:
-    def get_sender(message : MessageID) : UserID?
+    def sender(message : MessageID) : UserID?
       if msg = @message_map[message]?
         msg.sender
       end
     end
 
     # :inherit:
-    def get_messages_from_user(user : UserID) : Set(MessageID)
+    def messages_from_user(user : UserID) : Set(MessageID)
       user_msgs = Set(MessageID).new
       @message_map.each_value do |msg|
         next unless msg.sender == user
@@ -108,14 +108,14 @@ module PrivateParlorXT
     end
 
     # :inherit:
-    def get_warning(message : MessageID) : Bool?
+    def warned?(message : MessageID) : Bool?
       if msg = @message_map[message]
         msg.warned
       end
     end
 
     # :inherit:
-    def get_purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
+    def purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))
       hash = {} of UserID => Array(MessageID)
 
       messages = messages.to_a.sort { |a, b| b <=> a }

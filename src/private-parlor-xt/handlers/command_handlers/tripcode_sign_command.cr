@@ -9,7 +9,7 @@ module PrivateParlorXT
   class TripcodeSignCommand < CommandHandler
     # Preformats the given *message* with a tripcode signature header if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return if message.forward_origin
 
@@ -19,7 +19,7 @@ module PrivateParlorXT
 
       return unless authorized?(user, message, :TSign, services)
 
-      text, entities = Format.valid_text_and_entities(message, user, services)
+      text, entities = Format.validate_text_and_entities(message, user, services)
       return unless text
 
       unless arg = Format.get_arg(text)
@@ -32,14 +32,14 @@ module PrivateParlorXT
 
       text, entities = Format.format_text(text, entities, false, services)
 
-      entities = update_entities(text, entities, arg)
+      entities = remove_command_entity(text, entities, arg)
 
       name, tripcode = Format.generate_tripcode(tripcode, services)
 
       if services.config.flag_signatures
-        text, entities = Format.format_flag_sign(name, entities)
+        text, entities = Format.flag_sign(name, entities)
       else
-        text, entities = Format.format_tripcode_sign(name, tripcode, entities)
+        text, entities = Format.tripcode_sign(name, tripcode, entities)
       end
 
       text = text + arg

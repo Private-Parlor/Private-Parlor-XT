@@ -231,7 +231,7 @@ module PrivateParlorXT
 
         handler.do(message, services)
 
-        expected = Format.format_user_reveal(80300, "beispiel", services.replies)
+        expected = Format.user_reveal(80300, "beispiel", services.replies)
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(2))
@@ -321,7 +321,7 @@ module PrivateParlorXT
 
         handler.do(message, services)
 
-        expected = Format.format_user_reveal(80300, "beispiel", services.replies)
+        expected = Format.user_reveal(80300, "beispiel", services.replies)
 
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(2))

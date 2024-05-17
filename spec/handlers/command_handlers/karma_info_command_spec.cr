@@ -98,7 +98,7 @@ module PrivateParlorXT
           "next_level"    => "Normal",
           "karma"         => "-20",
           "limit"         => "0",
-          "loading_bar"   => Format.format_karma_loading_bar(100.0, services.locale),
+          "loading_bar"   => Format.karma_loading_bar(100.0, services.locale),
           "percentage"    => "100.0",
         })
 

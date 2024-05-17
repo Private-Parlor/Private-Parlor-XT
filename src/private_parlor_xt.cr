@@ -57,4 +57,54 @@ module PrivateParlorXT
     Log.notice { "Sent last messages in queue. Shutting down..." }
     exit
   end
+
+  # Reads from the config file and initialize `Services`, recurring tasks, and bot handlers
+  # 
+  # Returns the initialized `Services` object
+  def self.initialize_bot(client : Client? = nil) : Services
+    config = Config.parse_config
+
+    unless client
+      client = Client.new(config.token)
+    end
+
+    client.default_parse_mode = Tourmaline::ParseMode::MarkdownV2
+
+    services = Services.new(config, client)
+
+    start_tasks(config, services)
+
+    initialize_handlers(client, config, services)
+
+    services
+  end
+
+  # Initializes recurring tasks, such as:
+  #   - Warning expiration
+  #   - Message expiration (if toggled)
+  #   - Spam cooldown expiration (if toggled)
+  #   - Inactive user kicking (if toggled)
+  def self.start_tasks(config : Config, services : Services) : Nil
+    Tasker.every(15.minutes) {
+      services.database.expire_warnings(config.warn_lifespan.hours)
+    }
+
+    if config.message_lifespan > 0
+      Tasker.every(config.message_lifespan.hours * (1/4)) {
+        services.history.expire
+      }
+    end
+
+    if spam = services.spam
+      Tasker.every(config.spam_interval.seconds) {
+        spam.expire
+      }
+    end
+
+    if config.inactivity_limit > 0
+      Tasker.every(6.hours) {
+        kick_inactive_users(config.inactivity_limit.days, services)
+      }
+    end
+  end
 end

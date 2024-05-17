@@ -336,9 +336,9 @@ module PrivateParlorXT
           fail("Services should have a statistics object")
         end
 
-        result = stats.get_karma_counts
+        result = stats.karma_counts
 
-        result[Statistics::KarmaCounts::TotalUpvotes].should(eq(1))
+        result[Statistics::Karma::TotalUpvotes].should(eq(1))
       end
 
       it "increments reply user's karma and sends upvote replies" do
@@ -392,7 +392,7 @@ module PrivateParlorXT
         messages.size.should(eq(2))
 
         messages.each do |msg|
-          msg.origin_msid.should(be_nil)
+          msg.origin.should(be_nil)
           msg.sender.should(be_nil)
 
           [80300, 20000].should(contain(msg.receiver))
@@ -408,7 +408,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_user_from_message" do
+    describe "#user_from_message" do
       it "returns user" do
         services = create_services()
 
@@ -437,7 +437,7 @@ module PrivateParlorXT
           reply_to_message: reply,
         )
 
-        unless returned_user = handler.get_user_from_message(message, services)
+        unless returned_user = handler.user_from_message(message, services)
           fail("Did not get a user from method")
         end
 
@@ -461,7 +461,7 @@ module PrivateParlorXT
           text: "+1",
         )
 
-        unless returned_user = handler.get_user_from_message(new_names_message, services)
+        unless returned_user = handler.user_from_message(new_names_message, services)
           fail("Did not get a user from method")
         end
 
@@ -487,7 +487,7 @@ module PrivateParlorXT
           from: nil,
         )
 
-        handler.get_user_from_message(message, services).should(be_nil)
+        handler.user_from_message(message, services).should(be_nil)
       end
 
       it "returns nil if user does not exist" do
@@ -506,7 +506,7 @@ module PrivateParlorXT
           from: bot_user,
         )
 
-        user = handler.get_user_from_message(message, services)
+        user = handler.user_from_message(message, services)
 
         user.should(be_nil)
       end
@@ -525,7 +525,7 @@ module PrivateParlorXT
           from: bot_user,
         )
 
-        handler.get_user_from_message(message, services)
+        handler.user_from_message(message, services)
 
         messages = services.relay.as(MockRelay).empty_queue
 
@@ -560,7 +560,7 @@ module PrivateParlorXT
           from: tourmaline_user
         )
 
-        handler.get_user_from_message(message, services)
+        handler.user_from_message(message, services)
 
         expected = Format.substitute_reply(services.replies.blacklisted, {
           "contact" => "",
@@ -745,7 +745,7 @@ module PrivateParlorXT
           reply_to_message: reply,
         )
 
-        unless reply_user = handler.get_reply_user(user, reply, services)
+        unless reply_user = handler.reply_user(user, reply, services)
           fail("User 20000 should exist in the database")
         end
 
@@ -792,7 +792,7 @@ module PrivateParlorXT
           reply_to_message: reply_message,
         )
 
-        unless reply_user = handler.get_reply_user(user, reply_message, services)
+        unless reply_user = handler.reply_user(user, reply_message, services)
           fail("User 20000 should exist in the database")
         end
 
@@ -831,7 +831,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        unless reply_user = handler.get_reply_user(user, reply_message, services)
+        unless reply_user = handler.reply_user(user, reply_message, services)
           fail("User 20000 should exist in the database")
         end
 
@@ -857,9 +857,9 @@ module PrivateParlorXT
           fail("Services should have a statistics object")
         end
 
-        result = stats.get_karma_counts
+        result = stats.karma_counts
 
-        result[Statistics::KarmaCounts::TotalUpvotes].should(eq(1))
+        result[Statistics::Karma::TotalUpvotes].should(eq(1))
       end
     end
 
@@ -896,7 +896,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        unless reply_user = handler.get_reply_user(user, reply, services)
+        unless reply_user = handler.reply_user(user, reply, services)
           fail("User 20000 should exist in the database")
         end
 
@@ -912,7 +912,7 @@ module PrivateParlorXT
         messages.size.should(eq(2))
 
         messages.each do |msg|
-          msg.origin_msid.should(be_nil)
+          msg.origin.should(be_nil)
           msg.sender.should(be_nil)
 
           [80300, 20000].should(contain(msg.receiver))
@@ -959,7 +959,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        unless reply_user = handler.get_reply_user(user, reply, services)
+        unless reply_user = handler.reply_user(user, reply, services)
           fail("User 20000 should exist in the database")
         end
 
@@ -973,7 +973,7 @@ module PrivateParlorXT
 
         messages.size.should(eq(1))
 
-        messages[0].origin_msid.should(be_nil)
+        messages[0].origin.should(be_nil)
         messages[0].sender.should(be_nil)
         messages[0].receiver.should(eq(80300))
         messages[0].data.should(eq(gave_upvote_expected))
@@ -1021,7 +1021,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        unless reply_user = handler.get_reply_user(user, reply, services)
+        unless reply_user = handler.reply_user(user, reply, services)
           fail("User 20000 should exist in the database")
         end
 
@@ -1044,7 +1044,7 @@ module PrivateParlorXT
         messages.size.should(eq(3))
 
         messages.each do |msg|
-          msg.origin_msid.should(be_nil)
+          msg.origin.should(be_nil)
           msg.sender.should(be_nil)
 
           [80300, 20000].should(contain(msg.receiver))
@@ -1099,7 +1099,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        unless reply_user = handler.get_reply_user(user, reply, services)
+        unless reply_user = handler.reply_user(user, reply, services)
           fail("User 20000 should exist in the database")
         end
 
@@ -1107,16 +1107,16 @@ module PrivateParlorXT
 
         handler.send_replies(user, reply_user, message, reply, services)
 
-        gave_upvote_expected = Format.format_karma_reason_reply(reason, services.replies.gave_upvote, services.replies)
+        gave_upvote_expected = Format.karma_reason(reason, services.replies.gave_upvote, services.replies)
 
-        got_upvote_expected = Format.format_karma_reason_reply(reason, services.replies.got_upvote, services.replies)
+        got_upvote_expected = Format.karma_reason(reason, services.replies.got_upvote, services.replies)
 
         messages = services.relay.as(MockRelay).empty_queue
 
         messages.size.should(eq(2))
 
         messages.each do |msg|
-          msg.origin_msid.should(be_nil)
+          msg.origin.should(be_nil)
           msg.sender.should(be_nil)
 
           [80300, 20000].should(contain(msg.receiver))

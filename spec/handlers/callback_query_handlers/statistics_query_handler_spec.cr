@@ -176,7 +176,7 @@ module PrivateParlorXT
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
         
-        messages[0].data.should(eq(stats.get_statistic_screen(:General, services)))
+        messages[0].data.should(eq(stats.statistic_screen(:General, services)))
 
         # Get Message statistics
         query = Tourmaline::CallbackQuery.new(
@@ -192,7 +192,7 @@ module PrivateParlorXT
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
         
-        messages[0].data.should(eq(stats.get_statistic_screen(:Messages, services)))
+        messages[0].data.should(eq(stats.statistic_screen(:Messages, services)))
 
         # Get Full User statistics
         query = Tourmaline::CallbackQuery.new(
@@ -208,7 +208,7 @@ module PrivateParlorXT
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
         
-        messages[0].data.should(eq(stats.get_statistic_screen(:Users, services)))
+        messages[0].data.should(eq(stats.statistic_screen(:Users, services)))
 
         # Get User statistics
         user_rank_user = Tourmaline::User.new(60200, false, "voorbeeld")
@@ -225,7 +225,7 @@ module PrivateParlorXT
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
         
-        messages[0].data.should(eq(stats.format_user_counts(services)))
+        messages[0].data.should(eq(stats.users_screen(services)))
 
         # Get Karma statistics
         query = Tourmaline::CallbackQuery.new(
@@ -241,7 +241,7 @@ module PrivateParlorXT
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
         
-        messages[0].data.should(eq(stats.get_statistic_screen(:Karma, services)))
+        messages[0].data.should(eq(stats.statistic_screen(:Karma, services)))
 
         # Get Karma Level statistics
         query = Tourmaline::CallbackQuery.new(
@@ -257,7 +257,7 @@ module PrivateParlorXT
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
         
-        messages[0].data.should(eq(stats.get_statistic_screen(:KarmaLevels, services)))
+        messages[0].data.should(eq(stats.statistic_screen(:KarmaLevels, services)))
 
         # Get Robot9000 statistics
         query = Tourmaline::CallbackQuery.new(
@@ -273,7 +273,7 @@ module PrivateParlorXT
         messages = services.relay.as(MockRelay).empty_queue
         messages.size.should(eq(1))
         
-        messages[0].data.should(eq(stats.get_statistic_screen(:Robot9000, services)))
+        messages[0].data.should(eq(stats.statistic_screen(:Robot9000, services)))
       end
     end
   end

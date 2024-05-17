@@ -220,7 +220,7 @@ module PrivateParlorXT
         end
 
         prior_warnings = cooldowned_user.warnings
-        obfuscated_id = cooldowned_user.get_obfuscated_id
+        obfuscated_id = cooldowned_user.obfuscated_id
 
         cooldowned_user.cooldown(10.minutes)
 

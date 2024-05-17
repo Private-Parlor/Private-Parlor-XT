@@ -162,7 +162,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_text_and_entities" do
+    describe "#text_and_entities" do
       it "returns unaltered string and entities if message is preformatted" do
         services = create_services()
         generate_users(services.database)
@@ -202,7 +202,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        text, entities = Format.get_text_and_entities(message, user, services)
+        text, entities = Format.text_and_entities(message, user, services)
 
         text.should(eq("Preformatted Text ~~Admin"))
 
@@ -231,7 +231,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        text, entities = Format.get_text_and_entities(message, user, services)
+        text, entities = Format.text_and_entities(message, user, services)
 
         text.should(be_nil)
         entities.should(be_empty)
@@ -284,7 +284,7 @@ module PrivateParlorXT
         expected = "Text with entities and backlinks >>>/foo/\n" \
                    "(www.google.com)"
 
-        text, entities = Format.get_text_and_entities(message, user, format_services)
+        text, entities = Format.text_and_entities(message, user, format_services)
 
         text.should(eq(expected))
         entities.size.should(eq(2))
@@ -342,7 +342,7 @@ module PrivateParlorXT
                    "Text with entities and backlinks >>>/foo/\n" \
                    "(www.google.com)"
 
-        text, entities = Format.get_text_and_entities(message, user, format_services)
+        text, entities = Format.text_and_entities(message, user, format_services)
 
         text.should(eq(expected))
         entities.size.should(eq(4))
@@ -355,7 +355,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#valid_text_and_entities" do
+    describe "#validate_text_and_entities" do
       it "returns nil and empty entities when user sends invalid text" do
         services = create_services()
         generate_users(services.database)
@@ -374,7 +374,7 @@ module PrivateParlorXT
           fail("User 80300 should exist in the database")
         end
 
-        text, entities = Format.get_text_and_entities(message, user, services)
+        text, entities = Format.text_and_entities(message, user, services)
 
         text.should(be_nil)
         entities.should(be_empty)
@@ -427,7 +427,7 @@ module PrivateParlorXT
 
         expected = "Text with entities and backlinks >>>/foo/"
 
-        text, entities = Format.valid_text_and_entities(message, user, format_services)
+        text, entities = Format.validate_text_and_entities(message, user, format_services)
 
         text.should(eq(expected))
         entities.size.should(eq(3))
@@ -692,15 +692,15 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_cooldown_until" do
+    describe "#cooldown_until" do
       it "returns cooldown time response" do
         services = create_services
 
         time = Time.utc
 
-        expected = "#{services.replies.cooldown_true} #{Format.format_time(time, services.locale.time_format)}"
+        expected = "#{services.replies.cooldown_true} #{Format.time(time, services.locale.time_format)}"
 
-        result = Format.format_cooldown_until(time, services.locale, services.replies)
+        result = Format.cooldown_until(time, services.locale, services.replies)
 
         result.should(eq(expected))
       end
@@ -708,23 +708,23 @@ module PrivateParlorXT
       it "returns a no cooldown response if time is nil" do
         services = create_services
 
-        result = Format.format_cooldown_until(nil, services.locale, services.replies)
+        result = Format.cooldown_until(nil, services.locale, services.replies)
 
         result.should(eq(services.replies.cooldown_false))
       end
     end
 
-    describe "#format_warn_expiry" do
+    describe "#warn_expiry" do
       it "returns warning expiration response" do
         services = create_services
 
         time = Time.utc
 
         expected = Format.substitute_message(services.replies.info_warning, {
-          "warn_expiry" => Format.format_time(time, services.locale.time_format)
+          "warn_expiry" => Format.time(time, services.locale.time_format)
         })
 
-        result = Format.format_warn_expiry(time, services.locale, services.replies)
+        result = Format.warn_expiry(time, services.locale, services.replies)
 
         result.should(eq(expected))
       end
@@ -732,13 +732,13 @@ module PrivateParlorXT
       it "returns nil if expiration time is nil" do
         services = create_services
 
-        result = Format.format_warn_expiry(nil, services.locale, services.replies)
+        result = Format.warn_expiry(nil, services.locale, services.replies)
 
         result.should(be_nil)
       end
     end
 
-    describe "#format_tripcode_set_reply" do
+    describe "#tripcode_set" do
       it "returns tripcode set reponse" do
         services = create_services
 
@@ -749,7 +749,7 @@ module PrivateParlorXT
           })
         })
 
-        result = Format.format_tripcode_set_reply(
+        result = Format.tripcode_set(
           services.replies.tripcode_set_format,
           "name",
           "!ozOtJW9BFA",
@@ -760,13 +760,13 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_reason_reply" do
+    describe "#reason" do
       it "returns formatted reason reply" do
         services = create_services
 
         expected = "#{services.replies.reason_prefix}reason"
 
-        result = Format.format_reason_reply("reason", services.replies)
+        result = Format.reason("reason", services.replies)
 
         result.should(eq(expected))
       end
@@ -774,7 +774,7 @@ module PrivateParlorXT
       it "returns nil if reason is nil" do 
         services = create_services
 
-        result = Format.format_reason_reply(nil, services.replies)
+        result = Format.reason(nil, services.replies)
 
         result.should(be_nil)
       end
@@ -816,7 +816,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_karma_reason_reply" do
+    describe "#karma_reason" do
       it "returns formatted karma reply with reason" do
         services = create_services
 
@@ -831,7 +831,7 @@ module PrivateParlorXT
                    ">ultricies tristique nulla\n" \
                    ">aliquet enim tortor at auctor"
 
-        result = Format.format_karma_reason_reply(reason, reply, services.replies)
+        result = Format.karma_reason(reason, reply, services.replies)
 
         result.should(eq(expected))
       end
@@ -841,24 +841,24 @@ module PrivateParlorXT
 
         expected = Format.substitute_reply(services.replies.gave_upvote, {} of String => String)
 
-        result = Format.format_karma_reason_reply(nil, services.replies.gave_upvote, services.replies)
+        result = Format.karma_reason(nil, services.replies.gave_upvote, services.replies)
         result.should(eq(expected))
 
-        result_two = Format.format_karma_reason_reply("", services.replies.gave_upvote, services.replies)
+        result_two = Format.karma_reason("", services.replies.gave_upvote, services.replies)
         result_two.should(eq(expected))
 
-        result_three = Format.format_karma_reason_reply("\\\\\\\\", services.replies.gave_upvote, services.replies)
+        result_three = Format.karma_reason("\\\\\\\\", services.replies.gave_upvote, services.replies)
         result_three.should(eq(expected))
       end
     end
 
-    describe "#format_reason_log" do
+    describe "#reason_log" do
       it "returns formatted reason reply" do
         services = create_services
 
         expected = "#{services.logs.reason_prefix}reason"
 
-        result = Format.format_reason_log("reason", services.logs)
+        result = Format.reason_log("reason", services.logs)
 
         result.should(eq(expected))
       end
@@ -866,7 +866,7 @@ module PrivateParlorXT
       it "returns nil if reason is nil" do 
         services = create_services
 
-        result = Format.format_reason_log(nil, services.logs)
+        result = Format.reason_log(nil, services.logs)
 
         result.should(be_nil)
       end
@@ -1173,7 +1173,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_forward_header" do
+    describe "#forward_header" do
       it "returns header and entities for forwards from users with public forwards" do
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
@@ -1194,7 +1194,7 @@ module PrivateParlorXT
           )
         )
 
-        header, entities = Format.get_forward_header(message, [] of Tourmaline::MessageEntity)
+        header, entities = Format.forward_header(message, [] of Tourmaline::MessageEntity)
 
         unless header
           fail("Header should not be nil")
@@ -1234,7 +1234,7 @@ module PrivateParlorXT
           )
         )
 
-        header, entities = Format.get_forward_header(message, [] of Tourmaline::MessageEntity)
+        header, entities = Format.forward_header(message, [] of Tourmaline::MessageEntity)
 
         unless header
           fail("Header should not be nil")
@@ -1274,7 +1274,7 @@ module PrivateParlorXT
           )
         )
 
-        header, entities = Format.get_forward_header(message, [] of Tourmaline::MessageEntity)
+        header, entities = Format.forward_header(message, [] of Tourmaline::MessageEntity)
 
         unless header
           fail("Header should not be nil")
@@ -1313,7 +1313,7 @@ module PrivateParlorXT
           )
         )
 
-        header, entities = Format.get_forward_header(message, [] of Tourmaline::MessageEntity)
+        header, entities = Format.forward_header(message, [] of Tourmaline::MessageEntity)
 
         unless header
           fail("Header should not be nil")
@@ -1347,7 +1347,7 @@ module PrivateParlorXT
           )
         )
 
-        header, entities = Format.get_forward_header(message, [] of Tourmaline::MessageEntity)
+        header, entities = Format.forward_header(message, [] of Tourmaline::MessageEntity)
 
         unless header
           fail("Header should not be nil")
@@ -1366,9 +1366,9 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_user_forward" do
+    describe "#user_forward" do
       it "handles UTF-16 code units in given name and updates entities" do
-        header, entities = Format.format_user_forward(
+        header, entities = Format.user_forward(
           "Dodo 🦤🏝🍽",
           9000,
           [
@@ -1401,9 +1401,9 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_private_user_forward" do
+    describe "#private_user_forward" do
       it "handles UTF-16 code units in given name and updates entities" do
-        header, entities = Format.format_private_user_forward(
+        header, entities = Format.private_user_forward(
           "Private 🔒🦤 Dodo",
           [
             Tourmaline::MessageEntity.new(
@@ -1435,9 +1435,9 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_username_forward" do
+    describe "#username_forward" do
       it "handles UTF-16 code units in given name and updates entities" do
-        header, entities = Format.format_username_forward(
+        header, entities = Format.username_forward(
           "🤖 Dodo Bot 🦤",
           "dodobot",
           [
@@ -1470,9 +1470,9 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_private_channel_forward" do
+    describe "#private_channel_forward" do
       it "handles UTF-16 code units in given name and updates entities" do
-        header, entities = Format.format_private_channel_forward(
+        header, entities = Format.private_channel_forward(
           "🦤 Private 🔒 Dodo 📣",
           9000,
           [
@@ -1505,7 +1505,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_user_reveal" do
+    describe "#user_reveal" do
       it "returns Markdown link to the given user id" do
         services = create_services
 
@@ -1515,19 +1515,19 @@ module PrivateParlorXT
           "username" => expected,
         })
 
-        result = Format.format_user_reveal(123456, "user_name", services.replies)
+        result = Format.user_reveal(123456, "user_name", services.replies)
 
         result.should(eq(expected))
       end
     end
 
-    describe "#format_user_sign" do
+    describe "#user_sign" do
       it "returns updated entities and text signed with user name" do
         arg = "Example🦫Text"
 
         expected_text = "Example🦫Text ~~🦫Beaver"
 
-        text, entities = Format.format_user_sign(
+        text, entities = Format.user_sign(
           "🦫Beaver",
           123456,
           arg,
@@ -1544,13 +1544,13 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_karma_sign" do
+    describe "#karma_sign" do
       it "returns updated entities and text signed with karma level" do
         arg = "Example🦫Text"
 
         expected_text = "Example🦫Text t. 🦫-Tier"
 
-        text, entities = Format.format_karma_sign(
+        text, entities = Format.karma_sign(
           "🦫-Tier",
           arg,
           [] of Tourmaline::MessageEntity
@@ -1570,11 +1570,11 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_tripcode_sign" do
+    describe "#tripcode_sign" do
       it "returns header with updated entities and text for a tripcode" do
         expected_header = "🦫Beaver !Tripcode:\n"
 
-        text, entities = Format.format_tripcode_sign(
+        text, entities = Format.tripcode_sign(
           "🦫Beaver",
           "!Tripcode",
           [] of Tourmaline::MessageEntity
@@ -1594,11 +1594,11 @@ module PrivateParlorXT
       end
     end
     
-    describe "#format_flag_sign" do
+    describe "#flag_sign" do
       it "returns header with updated entities and text for user flags" do
         expected_header = "🦤🦆🕊️:\n"
 
-        text, entities = Format.format_flag_sign(
+        text, entities = Format.flag_sign(
           "🦤🦆🕊️",
           [] of Tourmaline::MessageEntity
         )
@@ -1613,13 +1613,13 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_ranksay" do
+    describe "#ranksay" do
       it "returns updated entities and text signed with karma level" do
         arg = "Example🦫Text"
 
         expected_text = "Example🦫Text ~~🦫Baron"
 
-        text, entities = Format.format_ranksay(
+        text, entities = Format.ranksay(
           "🦫Baron",
           arg,
           [] of Tourmaline::MessageEntity
@@ -1705,7 +1705,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#format_contact_reply" do
+    describe "#contact" do
       it "returns formatted contact string" do
         services = create_services
 
@@ -1715,18 +1715,18 @@ module PrivateParlorXT
           "contact" => contact,
         })
 
-        Format.format_contact_reply(contact, services.replies).should(eq(expected))
+        Format.contact(contact, services.replies).should(eq(expected))
       end
 
       it "returns nil if no contact was given" do
         services = create_services
 
 
-        Format.format_contact_reply(nil, services.replies).should(be_nil)
+        Format.contact(nil, services.replies).should(be_nil)
       end
     end
 
-    describe "#format_time_span" do
+    describe "#time_span" do
       it "returns time and its unit for the given time span" do
         services = create_services
 
@@ -1744,37 +1744,37 @@ module PrivateParlorXT
         expected_five = "56#{services.locale.time_units[3]}"
         expected_six = "2#{services.locale.time_units[4]}"
 
-        Format.format_time_span(time_one, services.locale).should(eq(expected_one))
-        Format.format_time_span(time_two, services.locale).should(eq(expected_two))
-        Format.format_time_span(time_three, services.locale).should(eq(expected_three))
-        Format.format_time_span(time_four, services.locale).should(eq(expected_four))
-        Format.format_time_span(time_five, services.locale).should(eq(expected_five))
-        Format.format_time_span(time_six, services.locale).should(eq(expected_six))
+        Format.time_span(time_one, services.locale).should(eq(expected_one))
+        Format.time_span(time_two, services.locale).should(eq(expected_two))
+        Format.time_span(time_three, services.locale).should(eq(expected_three))
+        Format.time_span(time_four, services.locale).should(eq(expected_four))
+        Format.time_span(time_five, services.locale).should(eq(expected_five))
+        Format.time_span(time_six, services.locale).should(eq(expected_six))
       end
     end
 
-    describe "#format_smiley" do
+    describe "#smiley" do
       it "returns smiley face based on number of given warnings" do
         smileys = [":)", ":O", ":/", ">:("]
 
-        Format.format_smiley(0, smileys).should(eq(":)"))
-        Format.format_smiley(1, smileys).should(eq(":O"))
-        Format.format_smiley(2, smileys).should(eq(":O"))
-        Format.format_smiley(3, smileys).should(eq(":/"))
-        Format.format_smiley(4, smileys).should(eq(":/"))
-        Format.format_smiley(5, smileys).should(eq(":/"))
-        Format.format_smiley(6, smileys).should(eq(">:("))
-        Format.format_smiley(7, smileys).should(eq(">:("))
+        Format.smiley(0, smileys).should(eq(":)"))
+        Format.smiley(1, smileys).should(eq(":O"))
+        Format.smiley(2, smileys).should(eq(":O"))
+        Format.smiley(3, smileys).should(eq(":/"))
+        Format.smiley(4, smileys).should(eq(":/"))
+        Format.smiley(5, smileys).should(eq(":/"))
+        Format.smiley(6, smileys).should(eq(">:("))
+        Format.smiley(7, smileys).should(eq(">:("))
       end
     end
 
-    describe "#format_karma_loading_bar" do
+    describe "#karma_loading_bar" do
       it "returns full bar when percentage is 100%" do
         services = create_services()
 
         expected = services.locale.loading_bar[2] * 10
 
-        bar = Format.format_karma_loading_bar(100.0_f32, services.locale)
+        bar = Format.karma_loading_bar(100.0_f32, services.locale)
 
         bar.should(eq(expected))
       end
@@ -1784,7 +1784,7 @@ module PrivateParlorXT
 
         expected = services.locale.loading_bar[0] * 10
 
-        bar = Format.format_karma_loading_bar(0.0_f32, services.locale)
+        bar = Format.karma_loading_bar(0.0_f32, services.locale)
 
         bar.should(eq(expected))
       end
@@ -1796,7 +1796,7 @@ module PrivateParlorXT
         expected = expected + services.locale.loading_bar[1]
         expected = expected + services.locale.loading_bar[0] * 4
 
-        bar = Format.format_karma_loading_bar(55.0_f32, services.locale)
+        bar = Format.karma_loading_bar(55.0_f32, services.locale)
 
         bar.should(eq(expected))
       end
@@ -1807,13 +1807,13 @@ module PrivateParlorXT
         expected = services.locale.loading_bar[2] * 3
         expected = expected + services.locale.loading_bar[0] * 7
 
-        bar = Format.format_karma_loading_bar(33.3_f32, services.locale)
+        bar = Format.karma_loading_bar(33.3_f32, services.locale)
 
         bar.should(eq(expected))
       end
     end
 
-    describe "#format_time" do
+    describe "#time" do
       it "returns time string based on the given format" do
         time = Time.utc
 
@@ -1821,23 +1821,23 @@ module PrivateParlorXT
 
         expected = time.to_s(format)
 
-        Format.format_time(time, format).should(eq(expected))
+        Format.time(time, format).should(eq(expected))
       end
 
       it "returns nil when no time was given" do
-        Format.format_time(nil, "%D, %T").should(be_nil)
+        Format.time(nil, "%D, %T").should(be_nil)
       end
     end
 
-    describe "#format_version" do
+    describe "#version" do
       it "returns string containing source code link and information" do 
         expected = "Private Parlor XT vspec \\~ [\\[Source\\]](https://github.com/Private-Parlor/Private-Parlor-XT)"
 
-        Format.format_version.should(eq(expected))
+        Format.version.should(eq(expected))
       end
     end
 
-    describe "#format_help" do
+    describe "#help" do
       it "returns dynamically generated help message according to user's rank" do
         services = create_services
         
@@ -1866,7 +1866,7 @@ module PrivateParlorXT
                    "#{Format.escape_md("+1 - #{services.command_descriptions.upvote}\n", version: 2)}" \
                    "#{Format.escape_md("-1 - #{services.command_descriptions.downvote}\n", version: 2)}" 
 
-        result = Format.format_help(user, services.access.ranks, services, services.command_descriptions, services.replies)
+        result = Format.help(user, services.access.ranks, services, services.command_descriptions, services.replies)
 
         result.should(eq(expected))
       end

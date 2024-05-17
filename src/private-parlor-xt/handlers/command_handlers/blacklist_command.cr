@@ -7,7 +7,7 @@ module PrivateParlorXT
   class BlacklistCommand < CommandHandler
     # Blacklists the user described in the *message* text or blacklists the sender of the message it replies to, if *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return unless authorized?(user, message, :Blacklist, services)
 
@@ -25,7 +25,7 @@ module PrivateParlorXT
 
     # Blacklists the sender of *reply* if the message still exists in the cache
     def blacklist_from_reply(reason : String?, user : User, message : MessageID, reply : Tourmaline::Message, services : Services) : Nil
-      return unless reply_user = get_reply_user(user, reply, services)
+      return unless reply_user = reply_user(user, reply, services)
 
       return unless blacklist_user(reply_user, user, message, reason, services)
 
@@ -73,15 +73,15 @@ module PrivateParlorXT
     # Queues success and blacklisted responses
     def send_messages(reason : String?, blacklisted_user : User, invoker : User, deleted_message : ReplyParameters?, invoker_message : MessageID, services : Services) : Nil
       response = Format.substitute_reply(services.replies.blacklisted, {
-        "contact" => Format.format_contact_reply(services.config.blacklist_contact, services.replies),
-        "reason"  => Format.format_reason_reply(reason, services.replies),
+        "contact" => Format.contact(services.config.blacklist_contact, services.replies),
+        "reason"  => Format.reason(reason, services.replies),
       })
 
       log = Format.substitute_message(services.logs.blacklisted, {
         "id"      => blacklisted_user.id.to_s,
-        "name"    => blacklisted_user.get_formatted_name,
-        "invoker" => invoker.get_formatted_name,
-        "reason"  => Format.format_reason_log(reason, services.logs),
+        "name"    => blacklisted_user.formatted_name,
+        "invoker" => invoker.formatted_name,
+        "reason"  => Format.reason_log(reason, services.logs),
       })
 
       services.relay.send_to_user(deleted_message, blacklisted_user.id, response)

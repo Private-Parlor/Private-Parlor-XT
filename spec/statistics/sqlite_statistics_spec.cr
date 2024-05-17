@@ -79,7 +79,7 @@ module PrivateParlorXT
     ")
   end
 
-  def self.generate_original_messages(connection : DB::Database) : Nil
+  def self.generate_origins(connection : DB::Database) : Nil
     connection.exec("INSERT INTO text VALUES('test')")
     connection.exec("INSERT INTO text VALUES('test two')")
     connection.exec("INSERT INTO text VALUES('test three')")
@@ -148,7 +148,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_start_date" do
+    describe "#start_date" do
       it "gets statistics module start date" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteDatabase.new(connection)
@@ -156,24 +156,24 @@ module PrivateParlorXT
 
         connection.exec("UPDATE system_config SET value = '1984-07-07' WHERE name = 'start_date'")
 
-        stats.get_start_date.should(eq("1984-07-07"))
+        stats.start_date.should(eq("1984-07-07"))
       end
     end
 
-    describe "#increment_message_count"  do
+    describe "#increment_messages"  do
       it "increments the given field and total messages" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
-        stats.increment_message_count(Statistics::MessageCounts::Audio)
+        stats.increment_messages(Statistics::Messages::Audio)
 
         result_one = connection.query_one("SELECT audio, total_messages FROM message_stats WHERE date = date('now')", as: {Int32, Int32})
 
         result_one[0].should(eq(1))
         result_one[1].should(eq(1))
 
-        stats.increment_message_count(Statistics::MessageCounts::Stickers)
+        stats.increment_messages(Statistics::Messages::Stickers)
 
         result_two = connection.query_one("SELECT stickers, audio, total_messages FROM message_stats WHERE date = date('now')", as: {Int32, Int32, Int32})
 
@@ -183,13 +183,13 @@ module PrivateParlorXT
       end
     end
 
-    describe "#increment_upvote_count" do
+    describe "#increment_upvotes" do
       it "increments the total number of upvotes" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
-        stats.increment_upvote_count()
+        stats.increment_upvotes()
 
         result = connection.query_one("SELECT upvotes FROM message_stats WHERE date = date('now')", as: Int32)
 
@@ -197,13 +197,13 @@ module PrivateParlorXT
       end
     end
 
-    describe "#increment_downvote_count" do
+    describe "#increment_downvotes" do
       it "increments the total number of downvotes" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
-        stats.increment_downvote_count()
+        stats.increment_downvotes()
 
         result = connection.query_one("SELECT downvotes FROM message_stats WHERE date = date('now')", as: Int32)
 
@@ -211,13 +211,13 @@ module PrivateParlorXT
       end
     end
 
-    describe "#increment_unoriginal_text_count" do
+    describe "#increment_unoriginal_text" do
       it "increments the total number of unoriginal text messages" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
-        stats.increment_unoriginal_text_count()
+        stats.increment_unoriginal_text()
 
         result = connection.query_one("SELECT unoriginal_text FROM message_stats WHERE date = date('now')", as: Int32)
 
@@ -225,13 +225,13 @@ module PrivateParlorXT
       end
     end
 
-    describe "#increment_unoriginal_media_count" do
+    describe "#increment_unoriginal_media" do
       it "increments the total number of unoriginal media messages" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteDatabase.new(connection)
         stats = SQLiteStatistics.new(connection)
 
-        stats.increment_unoriginal_media_count()
+        stats.increment_unoriginal_media()
 
         result = connection.query_one("SELECT unoriginal_media FROM message_stats WHERE date = date('now')", as: Int32)
 
@@ -239,7 +239,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_total_messages" do
+    describe "#total_messages" do
       it "returns hash of messages totals for each type and totals over time" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteDatabase.new(connection)
@@ -247,34 +247,34 @@ module PrivateParlorXT
 
         generate_message_stats(connection)
 
-        result = stats.get_total_messages()
+        result = stats.message_counts()
 
-        result[Statistics::MessageCounts::TotalMessages].should(eq(484))
-        result[Statistics::MessageCounts::Albums].should(eq(28))
-        result[Statistics::MessageCounts::Animations].should(eq(32))
-        result[Statistics::MessageCounts::Audio].should(eq(13))
-        result[Statistics::MessageCounts::Contacts].should(eq(41))
-        result[Statistics::MessageCounts::Documents].should(eq(33))
-        result[Statistics::MessageCounts::Forwards].should(eq(27))
-        result[Statistics::MessageCounts::Locations].should(eq(66))
-        result[Statistics::MessageCounts::Photos].should(eq(17))
-        result[Statistics::MessageCounts::Polls].should(eq(5))
-        result[Statistics::MessageCounts::Stickers].should(eq(39))
-        result[Statistics::MessageCounts::Text].should(eq(5))
-        result[Statistics::MessageCounts::Venues].should(eq(30))
-        result[Statistics::MessageCounts::Videos].should(eq(6))
-        result[Statistics::MessageCounts::VideoNotes].should(eq(25))
-        result[Statistics::MessageCounts::Voice].should(eq(50))
-        result[Statistics::MessageCounts::MessagesDaily].should(eq(22))
-        result[Statistics::MessageCounts::MessagesYesterday].should(eq(24))
-        result[Statistics::MessageCounts::MessagesWeekly].should(eq(118))
-        result[Statistics::MessageCounts::MessagesYesterweek].should(eq(192))
-        result[Statistics::MessageCounts::MessagesMonthly].should(eq(310))
-        result[Statistics::MessageCounts::MessagesYestermonth].should(eq(174))
+        result[Statistics::Messages::TotalMessages].should(eq(484))
+        result[Statistics::Messages::Albums].should(eq(28))
+        result[Statistics::Messages::Animations].should(eq(32))
+        result[Statistics::Messages::Audio].should(eq(13))
+        result[Statistics::Messages::Contacts].should(eq(41))
+        result[Statistics::Messages::Documents].should(eq(33))
+        result[Statistics::Messages::Forwards].should(eq(27))
+        result[Statistics::Messages::Locations].should(eq(66))
+        result[Statistics::Messages::Photos].should(eq(17))
+        result[Statistics::Messages::Polls].should(eq(5))
+        result[Statistics::Messages::Stickers].should(eq(39))
+        result[Statistics::Messages::Text].should(eq(5))
+        result[Statistics::Messages::Venues].should(eq(30))
+        result[Statistics::Messages::Videos].should(eq(6))
+        result[Statistics::Messages::VideoNotes].should(eq(25))
+        result[Statistics::Messages::Voice].should(eq(50))
+        result[Statistics::Messages::MessagesDaily].should(eq(22))
+        result[Statistics::Messages::MessagesYesterday].should(eq(24))
+        result[Statistics::Messages::MessagesWeekly].should(eq(118))
+        result[Statistics::Messages::MessagesYesterweek].should(eq(192))
+        result[Statistics::Messages::MessagesMonthly].should(eq(310))
+        result[Statistics::Messages::MessagesYestermonth].should(eq(174))
       end
     end
 
-    describe "#get_user_counts" do
+    describe "#user_counts" do
       it "returns hash of user counts for each type and user count change over time" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteDatabase.new(connection)
@@ -282,28 +282,28 @@ module PrivateParlorXT
 
         generate_user_stats(connection)
 
-        result = stats.get_user_counts
+        result = stats.user_counts
 
-        result[Statistics::UserCounts::TotalUsers].should(eq(12))
-        result[Statistics::UserCounts::TotalJoined].should(eq(9))
-        result[Statistics::UserCounts::TotalLeft].should(eq(3))
-        result[Statistics::UserCounts::TotalBlacklisted].should(eq(2))
-        result[Statistics::UserCounts::JoinedDaily].should(eq(0))
-        result[Statistics::UserCounts::JoinedYesterday].should(eq(0))
-        result[Statistics::UserCounts::JoinedWeekly].should(eq(5))
-        result[Statistics::UserCounts::JoinedYesterweek].should(eq(3))
-        result[Statistics::UserCounts::JoinedMonthly].should(eq(10))
-        result[Statistics::UserCounts::JoinedYestermonth].should(eq(1))
-        result[Statistics::UserCounts::LeftDaily].should(eq(1))
-        result[Statistics::UserCounts::LeftYesterday].should(eq(0))
-        result[Statistics::UserCounts::LeftWeekly].should(eq(2))
-        result[Statistics::UserCounts::LeftYesterweek].should(eq(1))
-        result[Statistics::UserCounts::LeftMonthly].should(eq(3))
-        result[Statistics::UserCounts::LeftYestermonth].should(eq(0))
+        result[Statistics::Users::TotalUsers].should(eq(12))
+        result[Statistics::Users::TotalJoined].should(eq(9))
+        result[Statistics::Users::TotalLeft].should(eq(3))
+        result[Statistics::Users::TotalBlacklisted].should(eq(2))
+        result[Statistics::Users::JoinedDaily].should(eq(0))
+        result[Statistics::Users::JoinedYesterday].should(eq(0))
+        result[Statistics::Users::JoinedWeekly].should(eq(5))
+        result[Statistics::Users::JoinedYesterweek].should(eq(3))
+        result[Statistics::Users::JoinedMonthly].should(eq(10))
+        result[Statistics::Users::JoinedYestermonth].should(eq(1))
+        result[Statistics::Users::LeftDaily].should(eq(1))
+        result[Statistics::Users::LeftYesterday].should(eq(0))
+        result[Statistics::Users::LeftWeekly].should(eq(2))
+        result[Statistics::Users::LeftYesterweek].should(eq(1))
+        result[Statistics::Users::LeftMonthly].should(eq(3))
+        result[Statistics::Users::LeftYestermonth].should(eq(0))
       end
     end
 
-    describe "#get_karma_counts" do
+    describe "#karma_counts" do
       it "returns hash of karma counts and karma count change over time" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteDatabase.new(connection)
@@ -311,26 +311,26 @@ module PrivateParlorXT
 
         generate_message_stats(connection)
         
-        result = stats.get_karma_counts
+        result = stats.karma_counts
 
-        result[Statistics::KarmaCounts::TotalUpvotes].should(eq(3))
-        result[Statistics::KarmaCounts::TotalDownvotes].should(eq(40))
-        result[Statistics::KarmaCounts::UpvotesDaily].should(eq(0))
-        result[Statistics::KarmaCounts::UpvotesYesterday].should(eq(3))
-        result[Statistics::KarmaCounts::UpvotesWeekly].should(eq(3))
-        result[Statistics::KarmaCounts::UpvotesYesterweek].should(eq(0))
-        result[Statistics::KarmaCounts::UpvotesMonthly].should(eq(3))
-        result[Statistics::KarmaCounts::UpvotesYestermonth].should(eq(0))
-        result[Statistics::KarmaCounts::DownvotesDaily].should(eq(2))
-        result[Statistics::KarmaCounts::DownvotesYesterday].should(eq(0))
-        result[Statistics::KarmaCounts::DownvotesWeekly].should(eq(8))
-        result[Statistics::KarmaCounts::DownvotesYesterweek].should(eq(20))
-        result[Statistics::KarmaCounts::DownvotesMonthly].should(eq(28))
-        result[Statistics::KarmaCounts::DownvotesYestermonth].should(eq(12))
+        result[Statistics::Karma::TotalUpvotes].should(eq(3))
+        result[Statistics::Karma::TotalDownvotes].should(eq(40))
+        result[Statistics::Karma::UpvotesDaily].should(eq(0))
+        result[Statistics::Karma::UpvotesYesterday].should(eq(3))
+        result[Statistics::Karma::UpvotesWeekly].should(eq(3))
+        result[Statistics::Karma::UpvotesYesterweek].should(eq(0))
+        result[Statistics::Karma::UpvotesMonthly].should(eq(3))
+        result[Statistics::Karma::UpvotesYestermonth].should(eq(0))
+        result[Statistics::Karma::DownvotesDaily].should(eq(2))
+        result[Statistics::Karma::DownvotesYesterday].should(eq(0))
+        result[Statistics::Karma::DownvotesWeekly].should(eq(8))
+        result[Statistics::Karma::DownvotesYesterweek].should(eq(20))
+        result[Statistics::Karma::DownvotesMonthly].should(eq(28))
+        result[Statistics::Karma::DownvotesYestermonth].should(eq(12))
       end
     end
 
-    describe "#get_karma_level_count" do
+    describe "#karma_level_count" do
       it "returns total number of users with karma between the given values" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteDatabase.new(connection)
@@ -338,21 +338,21 @@ module PrivateParlorXT
 
         generate_user_stats(connection)
 
-        result_one = stats.get_karma_level_count(-100, 0)
+        result_one = stats.karma_level_count(-100, 0)
         result_one.should(eq(3))
 
-        result_two = stats.get_karma_level_count(0, 10)
+        result_two = stats.karma_level_count(0, 10)
         result_two.should(eq(2))
 
-        result_three = stats.get_karma_level_count(16, 44)
+        result_three = stats.karma_level_count(16, 44)
         result_three.should(eq(3))
 
-        result_four = stats.get_karma_level_count(100, 200)
+        result_four = stats.karma_level_count(100, 200)
         result_four.should(eq(0))
       end
     end
 
-    describe "#get_robot9000_counts" do
+    describe "#robot9000_counts" do
       it "returns hash of total original messages and unoriginal message counts" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteDatabase.new(connection)
@@ -360,16 +360,16 @@ module PrivateParlorXT
         stats = SQLiteStatistics.new(connection)
 
         generate_message_stats(connection)
-        generate_original_messages(connection)
+        generate_origins(connection)
 
-        results = stats.get_robot9000_counts
+        results = stats.robot9000_counts
 
-        results[Statistics::Robot9000Counts::TotalUnique].should(eq(7))
-        results[Statistics::Robot9000Counts::UniqueText].should(eq(3))
-        results[Statistics::Robot9000Counts::UniqueMedia].should(eq(4))
-        results[Statistics::Robot9000Counts::TotalUnoriginal].should(eq(48))
-        results[Statistics::Robot9000Counts::UnoriginalText].should(eq(25))
-        results[Statistics::Robot9000Counts::UnoriginalMedia].should(eq(23))
+        results[Statistics::Robot9000::TotalUnique].should(eq(7))
+        results[Statistics::Robot9000::UniqueText].should(eq(3))
+        results[Statistics::Robot9000::UniqueMedia].should(eq(4))
+        results[Statistics::Robot9000::TotalUnoriginal].should(eq(48))
+        results[Statistics::Robot9000::UnoriginalText].should(eq(25))
+        results[Statistics::Robot9000::UnoriginalMedia].should(eq(23))
       end
     end
 

@@ -35,8 +35,8 @@ module PrivateParlorXT
 
         db.new_message(sender, origin)
 
-        db.get_origin_message(50).should(eq(50))
-        db.get_sender(50).should(eq(100))
+        db.origin_message(50).should(eq(50))
+        db.sender(50).should(eq(100))
       end
     end
 
@@ -57,7 +57,7 @@ module PrivateParlorXT
 
         db.add_to_history(origin, receiver_msid, receiver_id)
 
-        receivers = db.get_all_receivers(receiver_msid)
+        receivers = db.receivers(receiver_msid)
 
         begin
           receivers[101].should(eq(51))
@@ -67,14 +67,14 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_origin_message" do
+    describe "#origin_message" do
       it "gets original message ID from receiver message ID" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteHistory.new(HISTORY_LIFESPAN, connection)
 
         sqlite_history_messages(connection)
 
-        msid = db.get_origin_message(9)
+        msid = db.origin_message(9)
 
         unless msid
           fail("Origin message ID should not be nil")
@@ -89,7 +89,7 @@ module PrivateParlorXT
 
         sqlite_history_messages(connection)
 
-        msid = db.get_origin_message(5)
+        msid = db.origin_message(5)
 
         unless msid
           fail("Origin message ID should not be nil")
@@ -104,11 +104,11 @@ module PrivateParlorXT
 
         sqlite_history_messages(connection)
 
-        db.get_origin_message(12345).should(be_nil)
+        db.origin_message(12345).should(be_nil)
       end
     end
 
-    describe "#get_all_receivers" do
+    describe "#receivers" do
       it "gets all receiver messages IDs from a message group" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteHistory.new(HISTORY_LIFESPAN, connection)
@@ -121,9 +121,9 @@ module PrivateParlorXT
           60200 => 7,
         } of Int64 => Int64
 
-        db.get_all_receivers(5).should(eq(expected))
-        db.get_all_receivers(6).should(eq(expected))
-        db.get_all_receivers(7).should(eq(expected))
+        db.receivers(5).should(eq(expected))
+        db.receivers(6).should(eq(expected))
+        db.receivers(7).should(eq(expected))
       end
 
       it "returns an empty hash if original message does not exist" do
@@ -132,20 +132,20 @@ module PrivateParlorXT
 
         sqlite_history_messages(connection)
 
-        db.get_all_receivers(12345).should(eq({} of Int64 => Int64))
+        db.receivers(12345).should(eq({} of Int64 => Int64))
       end
     end
 
-    describe "#get_receiver_message" do
+    describe "#receiver_message" do
       it "gets receiver message ID for a given user" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteHistory.new(HISTORY_LIFESPAN, connection)
 
         sqlite_history_messages(connection)
 
-        db.get_receiver_message(7, 80300).should(eq(6))
-        db.get_receiver_message(6, 20000).should(eq(5))
-        db.get_receiver_message(5, 60200).should(eq(7))
+        db.receiver_message(7, 80300).should(eq(6))
+        db.receiver_message(6, 20000).should(eq(5))
+        db.receiver_message(5, 60200).should(eq(7))
       end
 
       it "returns nil if original message does not exist" do
@@ -154,18 +154,18 @@ module PrivateParlorXT
 
         sqlite_history_messages(connection)
 
-        db.get_receiver_message(50, 100).should(be_nil)
+        db.receiver_message(50, 100).should(be_nil)
       end
     end
 
-    describe "#get_sender" do
+    describe "#sender" do
       it "gets the sender ID of a message group from a receiver message ID" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteHistory.new(HISTORY_LIFESPAN, connection)
 
         sqlite_history_messages(connection)
 
-        db.get_sender(10).should(eq(60200))
+        db.sender(10).should(eq(60200))
       end
 
       it "returns nil if original message does not exist" do
@@ -174,11 +174,11 @@ module PrivateParlorXT
 
         sqlite_history_messages(connection)
 
-        db.get_sender(50).should(be_nil)
+        db.sender(50).should(be_nil)
       end
     end
 
-    describe "#get_messages_from_user" do
+    describe "#messages_from_user" do
       it "gets all recent message IDs sent by a given user" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteHistory.new(HISTORY_LIFESPAN, connection)
@@ -192,8 +192,8 @@ module PrivateParlorXT
         old_included = [1, 11, 15, 19].to_set
         expected = [11, 15, 19].to_set
 
-        db.get_messages_from_user(80300).should_not(eq(old_included))
-        db.get_messages_from_user(80300).should(eq(expected))
+        db.messages_from_user(80300).should_not(eq(old_included))
+        db.messages_from_user(80300).should(eq(expected))
       end
     end
 
@@ -215,12 +215,12 @@ module PrivateParlorXT
 
       sqlite_history_messages(connection)
 
-      db.get_warning(2).should(be_false)
+      db.warned?(2).should(be_false)
       db.add_warning(2)
-      db.get_warning(2).should(be_true)
+      db.warned?(2).should(be_true)
     end
 
-    describe "#get_purge_receivers" do
+    describe "#purge_receivers" do
       it "returns messages to purge in descending order" do
         connection = DB.open("sqlite3://%3Amemory%3A")
         db = SQLiteHistory.new(HISTORY_LIFESPAN, connection)
@@ -249,7 +249,7 @@ module PrivateParlorXT
           60200 => [22, 18, 14],
         }
 
-        db.get_purge_receivers(Set{11_i64, 15_i64, 19_i64}).should(eq(purge_receivers))
+        db.purge_receivers(Set{11_i64, 15_i64, 19_i64}).should(eq(purge_receivers))
       end
     end
 
@@ -263,8 +263,8 @@ module PrivateParlorXT
         db.delete_message_group(2)
         db.delete_message_group(4)
 
-        db.get_origin_message(3).should(be_nil)
-        db.get_origin_message(5).should(be_nil)
+        db.origin_message(3).should(be_nil)
+        db.origin_message(5).should(be_nil)
       end
     end
 
@@ -277,9 +277,9 @@ module PrivateParlorXT
 
         db.expire
 
-        db.get_messages_from_user(80300).should(be_empty)
-        db.get_messages_from_user(20000).should(be_empty)
-        db.get_messages_from_user(60200).should(be_empty)
+        db.messages_from_user(80300).should(be_empty)
+        db.messages_from_user(20000).should(be_empty)
+        db.messages_from_user(60200).should(be_empty)
       end
     end
   end

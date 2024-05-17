@@ -256,10 +256,10 @@ module PrivateParlorXT
           fail("Services should have a statistics object")
         end
 
-        result = stats.get_total_messages
+        result = stats.message_counts
 
-        result[Statistics::MessageCounts::Locations].should(eq(1))
-        result[Statistics::MessageCounts::TotalMessages].should(eq(1))
+        result[Statistics::Messages::Locations].should(eq(1))
+        result[Statistics::Messages::TotalMessages].should(eq(1))
       end
 
       it "spends user karma when KarmaHandler is enabled" do
@@ -356,10 +356,10 @@ module PrivateParlorXT
         messages.size.should(eq(4))
 
         messages.each do |msg|
-          msg.origin_msid.should(eq(11))
+          msg.origin.should(eq(11))
           msg.sender.should(eq(80300))
           msg.data.should(eq("0.0, 0.0"))
-          msg.reply_to.should(be_nil)
+          msg.reply.should(be_nil)
 
           [
             80300,
@@ -417,11 +417,11 @@ module PrivateParlorXT
         }
 
         messages.each do |msg|
-          msg.origin_msid.should(eq(11))
+          msg.origin.should(eq(11))
           msg.sender.should(eq(80300))
           msg.data.should(eq("0.0, 0.0"))
 
-          if reply = msg.reply_to
+          if reply = msg.reply
             reply.message_id.should(eq(replies[msg.receiver]))
           else
             msg.receiver.should(eq(50000))
@@ -531,7 +531,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#has_sufficient_karma?" do
+    describe "#sufficient_karma?" do
       it "returns true if there is no karma economy handler" do
         services = create_services()
 
@@ -548,7 +548,7 @@ module PrivateParlorXT
           from: tourmaline_user,
         )
 
-        handler.has_sufficient_karma?(user, message, services).should(be_true)
+        handler.sufficient_karma?(user, message, services).should(be_true)
       end
 
       it "returns true if price for location messages is less than 0" do
@@ -567,7 +567,7 @@ module PrivateParlorXT
           from: tourmaline_user,
         )
 
-        handler.has_sufficient_karma?(user, message, services).should(be_true)
+        handler.sufficient_karma?(user, message, services).should(be_true)
       end
 
       it "returns true if user's rank is equal to or greater than the cutoff rank" do
@@ -589,7 +589,7 @@ module PrivateParlorXT
           from: tourmaline_user,
         )
 
-        handler.has_sufficient_karma?(user, message, services).should(be_true)
+        handler.sufficient_karma?(user, message, services).should(be_true)
       end
 
       it "returns true if user has sufficient karma" do
@@ -611,7 +611,7 @@ module PrivateParlorXT
           from: tourmaline_user,
         )
 
-        handler.has_sufficient_karma?(user, message, services).should(be_true)
+        handler.sufficient_karma?(user, message, services).should(be_true)
       end
 
       it "returns nil and queues 'insufficient karma' response if user does not have enough karma" do
@@ -635,7 +635,7 @@ module PrivateParlorXT
           from: tourmaline_user,
         )
 
-        handler.has_sufficient_karma?(user, message, services).should(be_nil)
+        handler.sufficient_karma?(user, message, services).should(be_nil)
 
         expected = Format.substitute_reply(services.replies.insufficient_karma, {
           "amount" => 10.to_s,

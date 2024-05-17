@@ -202,8 +202,8 @@ module PrivateParlorXT
         duration = temp_user.cooldown(services.config.cooldown_base)
 
         expected = Format.substitute_reply(services.replies.message_deleted, {
-          "reason" => Format.format_reason_reply("detailed reason", services.replies),
-          "duration" => Format.format_time_span(duration, services.locale),
+          "reason" => Format.reason("detailed reason", services.replies),
+          "duration" => Format.time_span(duration, services.locale),
         })
 
         messages = services.relay.as(MockRelay).empty_queue
@@ -216,7 +216,7 @@ module PrivateParlorXT
           responses = responses - [msg.data]
         end
 
-        services.history.get_origin_message(10).should(be_nil)
+        services.history.origin_message(10).should(be_nil)
 
         unless updated_reply_user = services.database.get_user(60200)
           fail("User 60200 should exist in the database")

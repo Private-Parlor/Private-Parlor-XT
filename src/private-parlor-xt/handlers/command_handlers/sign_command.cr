@@ -9,7 +9,7 @@ module PrivateParlorXT
   class SignCommand < CommandHandler
     # Preformats the given *message* with a username signature if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return if message.forward_origin
 
@@ -19,7 +19,7 @@ module PrivateParlorXT
         return services.relay.send_to_user(ReplyParameters.new(message.message_id), user.id, services.replies.private_sign)
       end
 
-      text, entities = Format.valid_text_and_entities(message, user, services)
+      text, entities = Format.validate_text_and_entities(message, user, services)
       return unless text
 
       unless arg = Format.get_arg(text)
@@ -32,9 +32,9 @@ module PrivateParlorXT
 
       text, entities = Format.format_text(text, entities, false, services)
 
-      entities = update_entities(text, entities, arg)
+      entities = remove_command_entity(text, entities, arg)
 
-      text, entities = Format.format_user_sign(user.get_formatted_name, user.id, arg, entities)
+      text, entities = Format.user_sign(user.formatted_name, user.id, arg, entities)
 
       if message.text
         message.text = text

@@ -7,7 +7,7 @@ module PrivateParlorXT
   class StatisticsQueryHandler < CallbackHandler
     # Parses the query found in *callback* and returns the associated statistics screen if *callback* meets requirements
     def do(callback : Tourmaline::CallbackQuery, services : Services) : Nil
-      return unless user = get_user_from_callback(callback, services)
+      return unless user = user_from_callback(callback, services)
 
       return unless message = callback.message
 
@@ -20,9 +20,9 @@ module PrivateParlorXT
       next_screen = Statistics::StatScreens.parse(split[1])
 
       if next_screen == Statistics::StatScreens::Users && !services.access.authorized?(user.rank, CommandPermissions::Users)
-        response = stats.format_user_counts(services)
+        response = stats.users_screen(services)
       else
-        response = stats.get_statistic_screen(next_screen, services)
+        response = stats.statistic_screen(next_screen, services)
       end
 
       reply_markup = stats.keyboard_markup(next_screen, services)

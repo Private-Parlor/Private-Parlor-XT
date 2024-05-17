@@ -8,14 +8,14 @@ module PrivateParlorXT
 
     # A set of relay parameters associated with an album
     class AlbumRelayParameters
-      getter original_messages : Array(MessageID)
+      getter origins : Array(MessageID)
       getter sender : UserID
       getter receivers : Array(UserID)
       getter media : Array(AlbumMedia)
       getter replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters
 
       def initialize(
-        @original_messages : Array(MessageID),
+        @origins : Array(MessageID),
         @sender : UserID,
         @receivers : Array(UserID),
         @media : Array(AlbumMedia),
@@ -47,7 +47,7 @@ module PrivateParlorXT
     # Returns the `Tourmaline::InputMedia` from the media in the given *message*, if available.
     # 
     # Returns `nil` if there was no media in the *message* to create a `Tourmaline::InputMedia`
-    def get_album_input(message : Tourmaline::Message, caption : String, entities : Array(Tourmaline::MessageEntity), allow_spoilers : Bool? = false) : AlbumMedia?
+    def album_input(message : Tourmaline::Message, caption : String, entities : Array(Tourmaline::MessageEntity), allow_spoilers : Bool? = false) : AlbumMedia?
       if media = message.photo.last?
         Tourmaline::InputMediaPhoto.new(media.file_id, caption: caption, caption_entities: entities, parse_mode: nil, has_spoiler: message.has_media_spoiler? && allow_spoilers)
       elsif media = message.video
@@ -86,7 +86,7 @@ module PrivateParlorXT
 
         services.relay.send_album(
           AlbumRelayParameters.new(
-            original_messages: cached_messages,
+            origins: cached_messages,
             sender: user.id,
             receivers: receivers,
             replies: reply_msids,

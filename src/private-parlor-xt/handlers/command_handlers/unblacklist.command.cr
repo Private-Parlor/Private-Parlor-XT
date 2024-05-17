@@ -7,7 +7,7 @@ module PrivateParlorXT
   class UnblacklistCommand < CommandHandler
     # Unbans a user via a username or unique ID if the *message* meets requirements
     def do(message : Tourmaline::Message, services : Services) : Nil
-      return unless user = get_user_from_message(message, services)
+      return unless user = user_from_message(message, services)
 
       return unless authorized?(user, message, :Unblacklist, services)
 
@@ -32,8 +32,8 @@ module PrivateParlorXT
 
       log = Format.substitute_message(services.logs.unblacklisted, {
         "id"      => unblacklisted_user.id.to_s,
-        "name"    => unblacklisted_user.get_formatted_name,
-        "invoker" => user.get_formatted_name,
+        "name"    => unblacklisted_user.formatted_name,
+        "invoker" => user.formatted_name,
       })
 
       services.relay.send_to_user(nil, unblacklisted_user.id, services.replies.unblacklisted)

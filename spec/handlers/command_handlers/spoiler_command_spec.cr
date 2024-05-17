@@ -407,7 +407,7 @@ module PrivateParlorXT
       end
     end
 
-    describe "#get_message_input" do
+    describe "#message_input" do
       it "returns InputMediaPhoto when message contains a photo" do
         services = create_services()
 
@@ -438,8 +438,8 @@ module PrivateParlorXT
           ]
         )
 
-        unless input = handler.get_message_input(message)
-          fail("get_message_input should not have returned nil")
+        unless input = handler.message_input(message)
+          fail("message_input should not have returned nil")
         end
 
         unless input.is_a?(Tourmaline::InputMediaPhoto)
@@ -485,8 +485,8 @@ module PrivateParlorXT
           ]
         )
 
-        unless input = handler.get_message_input(message)
-          fail("get_message_input should not have returned nil")
+        unless input = handler.message_input(message)
+          fail("message_input should not have returned nil")
         end
 
         unless input.is_a?(Tourmaline::InputMediaVideo)
@@ -532,8 +532,8 @@ module PrivateParlorXT
           ]
         )
 
-        unless input = handler.get_message_input(message)
-          fail("get_message_input should not have returned nil")
+        unless input = handler.message_input(message)
+          fail("message_input should not have returned nil")
         end
 
         unless input.is_a?(Tourmaline::InputMediaAnimation)
@@ -582,8 +582,8 @@ module PrivateParlorXT
           ),
         )
 
-        handler.get_message_input(document_message).should(be_nil)
-        handler.get_message_input(audio_message).should(be_nil)
+        handler.message_input(document_message).should(be_nil)
+        handler.message_input(audio_message).should(be_nil)
       end
     end
 
