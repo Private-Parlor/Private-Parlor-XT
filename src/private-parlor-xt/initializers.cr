@@ -201,7 +201,11 @@ module PrivateParlorXT
 
     
     {% if @type.has_constant?("RanksayCommand") && command.id == RanksayCommand.id %}
-      commands = commands + services.access.ranksay_ranks.map {|rank| "#{rank.downcase}say"}
+      commands = commands + services.access.ranksay_ranks.map do |rank|
+        rank = services.access.ranksay(rank)
+
+        "#{rank}say"
+      end
     {% end %}
 
     arr << Tourmaline::CommandHandler.new(commands) do |ctx|

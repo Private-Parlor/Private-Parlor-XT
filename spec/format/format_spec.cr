@@ -1866,7 +1866,7 @@ module PrivateParlorXT
                    "#{Format.escape_md("+1 - #{services.command_descriptions.upvote}\n", version: 2)}" \
                    "#{Format.escape_md("-1 - #{services.command_descriptions.downvote}\n", version: 2)}" 
 
-        result = Format.format_help(user, services.access.ranks, services.command_descriptions, services.replies)
+        result = Format.format_help(user, services.access.ranks, services, services.command_descriptions, services.replies)
 
         result.should(eq(expected))
       end

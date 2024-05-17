@@ -82,7 +82,7 @@ module PrivateParlorXT
         {value, @ranks[value]}
       else
         @ranks.find do |k, v|
-          v.name.downcase == name || k == value
+          ranksay(v.name) == name || k == value
         end
       end
     end
@@ -128,6 +128,16 @@ module PrivateParlorXT
       @ranks.compact_map do |k, v|
         v.name if k <= limit && k != -10
       end
+    end
+
+    # Converts the given *rank* string into a string that can be used for a `RanksayCommand`, preceding the '-say' substring
+    def ranksay(rank : String) : String
+      # Bot commands can only have English text, underscores, and digits 
+      rank = rank.gsub("_", " ")
+      rank = rank.gsub(/[[:punct:]]|[^[:ascii:]]/, "")
+      rank = rank.gsub(/\s{1,}/, "_")
+
+      rank.downcase
     end
   end
 end

@@ -462,7 +462,6 @@ module PrivateParlorXT
     end
 
     describe "#get_rank_name" do
-      # TODO: Check for names that include spaces
       updated_ranks = {
         1000 => Rank.new(
           "Host",
@@ -488,6 +487,20 @@ module PrivateParlorXT
         0 => Rank.new(
           "User",
           Set(CommandPermissions).new,
+          Set(MessagePermissions).new,
+        ),
+        -5 => Rank.new(
+          "Restricted User",
+          Set{
+            CommandPermissions::Ranksay,
+          },
+          Set(MessagePermissions).new,
+        ),
+        -7 => Rank.new(
+          "たぬきちゃん's User ",
+          Set{
+            CommandPermissions::Ranksay,
+          },
           Set(MessagePermissions).new,
         ),
       }
@@ -544,6 +557,39 @@ module PrivateParlorXT
           CommandPermissions::RanksayLower,
           services,
         ).should(eq("Mod"))
+      end
+
+      it "gets name of rank contained in command, from rank names that create invalid commands" do
+        services = create_services(ranks: updated_ranks)
+
+        handler = RanksayCommand.new(MockConfig.new)
+
+        tourmaline_user = Tourmaline::User.new(9000, false, "user9000")
+
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+        )
+
+        user = MockUser.new(9000, rank: 1000)
+
+        handler.get_rank_name(
+          "/restricted_usersay example text",
+          user,
+          message,
+          CommandPermissions::RanksayLower,
+          services,
+        ).should(eq("Restricted User"))
+
+        handler.get_rank_name(
+          "/s_user_say example text",
+          user,
+          message,
+          CommandPermissions::RanksayLower,
+          services,
+        ).should(eq("たぬきちゃん's User "))
       end
 
       it "returns nil if given rank cannot ranksay" do

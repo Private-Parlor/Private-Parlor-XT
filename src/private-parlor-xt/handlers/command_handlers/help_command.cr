@@ -17,6 +17,7 @@ module PrivateParlorXT
         Format.format_help(
           user,
           services.access.ranks,
+          services,
           services.command_descriptions,
           services.replies,
         )

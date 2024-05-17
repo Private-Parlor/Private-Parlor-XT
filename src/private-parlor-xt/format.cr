@@ -609,7 +609,7 @@ module PrivateParlorXT
     end
 
     # Returns a generated message containing the commands the user can use based on his rank.
-    def format_help(user : User, ranks : Hash(Int32, Rank), descriptions : CommandDescriptions, replies : Replies) : String
+    def format_help(user : User, ranks : Hash(Int32, Rank), services : Services, descriptions : CommandDescriptions, replies : Replies) : String
       ranked = {
         CommandPermissions::Promote      => "/promote [name/OID/ID] [rank] - #{descriptions.promote}",
         CommandPermissions::PromoteSame  => "/promote [name/OID/ID] [rank] - #{descriptions.promote}",
@@ -666,7 +666,7 @@ module PrivateParlorXT
             ranksay_permissions = Set{CommandPermissions::Ranksay, CommandPermissions::RanksayLower}
 
             unless (v.command_permissions & ranksay_permissions).empty?
-              rank_commands << escape_md("/#{v.name.downcase}say [text] - #{descriptions.ranksay}", version: 2)
+              rank_commands << escape_md("/#{services.access.ranksay(v.name)}say [text] - #{descriptions.ranksay}", version: 2)
             end
           end
         end
