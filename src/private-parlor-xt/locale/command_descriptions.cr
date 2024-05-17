@@ -3,7 +3,7 @@ require "yaml"
 module PrivateParlorXT
 
   # A container for various command descriptions
-  struct CommandDescriptions
+  class CommandDescriptions
     include YAML::Serializable
 
     @[YAML::Field(key: "start")]

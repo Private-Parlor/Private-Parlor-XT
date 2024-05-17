@@ -6,7 +6,7 @@ require "yaml"
 module PrivateParlorXT
 
   # A container for general localization values
-  struct Locale
+  class Locale
     include YAML::Serializable
 
     @[YAML::Field(key: "time_units")]

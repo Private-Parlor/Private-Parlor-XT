@@ -3,7 +3,7 @@ require "yaml"
 module PrivateParlorXT
 
   # A container for various system message replies
-  struct Replies
+  class Replies
     include YAML::Serializable
 
     @[YAML::Field(key: "joined")]

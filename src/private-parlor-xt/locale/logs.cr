@@ -3,7 +3,7 @@ require "yaml"
 module PrivateParlorXT
 
   # A container for various log messages
-  struct Logs
+  class Logs
     include YAML::Serializable
 
     @[YAML::Field(key: "start")]

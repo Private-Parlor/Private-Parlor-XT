@@ -9,7 +9,7 @@ require "./spam/spam_handler.cr"
 
 module PrivateParlorXT
   # Container for all objects needed for handlers
-  struct Services
+  class Services
     # Returns the `HandlerConfig` object
     getter config : HandlerConfig
 
