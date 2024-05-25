@@ -187,7 +187,7 @@ module PrivateParlorXT
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
           caption: "Preformatted Text ~~Admin",
-          entities: [
+          caption_entities: [
             Tourmaline::MessageEntity.new(
               type: "bold",
               offset: 0,
@@ -251,13 +251,14 @@ module PrivateParlorXT
 
         tourmaline_user = Tourmaline::User.new(80300, false, "beispiel")
 
+        # Test that captions of captioned types are properly formatted
         message = Tourmaline::Message.new(
           message_id: 11,
           date: Time.utc,
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
           caption: "Text with entities and backlinks >>>/foo/",
-          entities: [
+          caption_entities: [
             Tourmaline::MessageEntity.new(
               type: "bold",
               offset: 0,
@@ -292,22 +293,8 @@ module PrivateParlorXT
         entities[0].type.should(eq("underline"))
         entities[1].type.should(eq("text_link"))
         entities[1].length.should(eq(8)) # >>>/foo/
-      end
 
-      it "returns formatted text and updated entities with pseudonym" do
-        config = HandlerConfig.new(
-          MockConfig.new(
-            pseudonymous: true,
-            linked_network: {"foo" => "foochatbot"}
-          )
-        )
-
-        format_services = create_services(config: config)
-
-        generate_users(format_services.database)
-
-        tourmaline_user = Tourmaline::User.new(60200, false, "beispiel")
-
+        # Test that text messages are properly formatted
         message = Tourmaline::Message.new(
           message_id: 11,
           date: Time.utc,
@@ -334,6 +321,57 @@ module PrivateParlorXT
           ],
         )
 
+        text, entities = Format.text_and_entities(message, user, format_services)
+
+        text.should(eq(expected))
+        entities.size.should(eq(2))
+
+        entities[0].type.should(eq("underline"))
+        entities[1].type.should(eq("text_link"))
+        entities[1].length.should(eq(8)) # >>>/foo/
+      end
+
+      it "returns formatted text and updated entities with pseudonym" do
+        config = HandlerConfig.new(
+          MockConfig.new(
+            pseudonymous: true,
+            linked_network: {"foo" => "foochatbot"}
+          )
+        )
+
+        format_services = create_services(config: config)
+
+        generate_users(format_services.database)
+
+        tourmaline_user = Tourmaline::User.new(60200, false, "beispiel")
+
+        # Test that captions of captioned types are properly formatted
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          caption: "Text with entities and backlinks >>>/foo/",
+          caption_entities: [
+            Tourmaline::MessageEntity.new(
+              type: "bold",
+              offset: 0,
+              length: 4,
+            ),
+            Tourmaline::MessageEntity.new(
+              type: "underline",
+              offset: 4,
+              length: 13,
+            ),
+            Tourmaline::MessageEntity.new(
+              type: "text_link",
+              offset: 0,
+              length: 25,
+              url: "www.google.com"
+            ),
+          ],
+        )
+
         unless user = format_services.database.get_user(60200)
           fail("User 60200 should exist in the database")
         end
@@ -341,6 +379,44 @@ module PrivateParlorXT
         expected = "Voorb !JMf3r1v1Aw:\n" \
                    "Text with entities and backlinks >>>/foo/\n" \
                    "(www.google.com)"
+
+        text, entities = Format.text_and_entities(message, user, format_services)
+
+        text.should(eq(expected))
+        entities.size.should(eq(4))
+
+        entities[0].type.should(eq("bold"))
+        entities[1].type.should(eq("code"))
+        entities[2].type.should(eq("underline"))
+        entities[3].type.should(eq("text_link"))
+        entities[3].length.should(eq(8)) # >>>/foo/
+
+        # Test that text messages are properly formatted
+        message = Tourmaline::Message.new(
+          message_id: 11,
+          date: Time.utc,
+          chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
+          from: tourmaline_user,
+          text: "Text with entities and backlinks >>>/foo/",
+          entities: [
+            Tourmaline::MessageEntity.new(
+              type: "bold",
+              offset: 0,
+              length: 4,
+            ),
+            Tourmaline::MessageEntity.new(
+              type: "underline",
+              offset: 4,
+              length: 13,
+            ),
+            Tourmaline::MessageEntity.new(
+              type: "text_link",
+              offset: 0,
+              length: 25,
+              url: "www.google.com"
+            ),
+          ],
+        )
 
         text, entities = Format.text_and_entities(message, user, format_services)
 
@@ -401,7 +477,7 @@ module PrivateParlorXT
           chat: Tourmaline::Chat.new(tourmaline_user.id, "private"),
           from: tourmaline_user,
           caption: "Text with entities and backlinks >>>/foo/",
-          entities: [
+          caption_entities: [
             Tourmaline::MessageEntity.new(
               type: "bold",
               offset: 0,
@@ -464,7 +540,7 @@ module PrivateParlorXT
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
           caption: message_text,
-          entities: message_entities,
+          caption_entities: message_entities,
         )
 
         user = MockUser.new(9000)
@@ -512,7 +588,7 @@ module PrivateParlorXT
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
           caption: message_text,
-          entities: message_entities,
+          caption_entities: message_entities,
         )
 
         message.preformatted = true
@@ -562,7 +638,7 @@ module PrivateParlorXT
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
           caption: message_text,
-          entities: message_entities,
+          caption_entities: message_entities,
         )
 
         user = MockUser.new(9000)
@@ -610,7 +686,7 @@ module PrivateParlorXT
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
           caption: message_text,
-          entities: message_entities,
+          caption_entities: message_entities,
         )
 
         user = MockUser.new(9000, tripcode: "User#SecurePassword")
@@ -667,7 +743,7 @@ module PrivateParlorXT
           chat: Tourmaline::Chat.new(bot_user.id, "private"),
           from: bot_user,
           caption: message_text,
-          entities: message_entities,
+          caption_entities: message_entities,
         )
 
         user = MockUser.new(9000, tripcode: "🦤🦆🕊️#DoDuDo")

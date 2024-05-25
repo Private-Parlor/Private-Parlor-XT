@@ -74,7 +74,7 @@ module PrivateParlorXT
         return nil, [] of Tourmaline::MessageEntity
       end
 
-      text, entities = format_text(text, message.entities, message.preformatted?, services)
+      text, entities = format_text(text, entities, message.preformatted?, services)
 
       text, entities = prepend_pseudonym(text, entities, user, message, services)
 
