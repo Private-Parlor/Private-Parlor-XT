@@ -41,6 +41,7 @@ module PrivateParlorXT
           receivers: receivers,
           replies: reply_messages,
           media: sticker.file_id,
+          effect: services.config.allow_effects ? message.effect_id : nil
         )
       )
     end

@@ -13,13 +13,15 @@ module PrivateParlorXT
       getter receivers : Array(UserID)
       getter media : Array(AlbumMedia)
       getter replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters
+      getter effect : String? = nil
 
       def initialize(
         @origins : Array(MessageID),
         @sender : UserID,
         @receivers : Array(UserID),
         @media : Array(AlbumMedia),
-        @replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters
+        @replies : Hash(UserID, ReplyParameters) = {} of UserID => ReplyParameters,
+        @effect : String? = nil
       )
       end
     end
@@ -64,7 +66,7 @@ module PrivateParlorXT
     # Relays the given *album* after an arbitrary amount of time, waiting for the rest of the media group updates to come in
     #
     # Returns early if the album is already queued for relaying, and adds the *input* to the Album object.
-    def relay_album(albums : Hash(String, Album), album : String, message_id : MessageID, input : AlbumMedia, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, ReplyParameters), services : Services) : Nil
+    def relay_album(albums : Hash(String, Album), album : String, message_id : MessageID, input : AlbumMedia, user : User, receivers : Array(UserID), reply_msids : Hash(UserID, ReplyParameters), effect : String?, services : Services) : Nil
       if albums[album]?
         albums[album].message_ids << message_id
         albums[album].media << input
@@ -91,6 +93,7 @@ module PrivateParlorXT
             receivers: receivers,
             replies: reply_msids,
             media: prepared_album.media,
+            effect: effect,
           )
         )
       }

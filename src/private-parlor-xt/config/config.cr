@@ -44,6 +44,10 @@ module PrivateParlorXT
     # Whether or not to allow users to send photos, videos, or GIFs with a spoiler overlay
     getter media_spoilers : Bool? = false
 
+    @[YAML::Field(key: "message_effects")]
+    # Whether or not to allow users to attach a message effect to their messages
+    getter message_effects : Bool? = false
+
     @[YAML::Field(key: "karma_reasons")]
     # Whether or not to allow users to attach a reason to their upvote/downvote messages
     getter karma_reasons : Bool? = false

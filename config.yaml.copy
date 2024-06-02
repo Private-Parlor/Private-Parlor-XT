@@ -146,6 +146,16 @@ locale: en-US
 #media_spoilers: false
 
 ##
+## Allow users to messages with a message effect, an animation that will be visible to every user
+##
+## If enabling this, any of relay toggles should also be enabled.
+##
+## Accepted values: true, false
+## Default: false
+##
+#message_effects: false
+
+##
 ## Allow users to attach a reason to their upvote/downvote messages
 ##
 ## If enabling this, any of the following should also be enabled: 

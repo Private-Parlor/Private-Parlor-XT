@@ -171,6 +171,7 @@ module PrivateParlorXT
             receivers: receivers,
             text: text,
             entities: entities,
+            effect: services.config.allow_effects ? message.effect_id : nil
           )
         )
       elsif album = message.media_group_id
@@ -184,6 +185,7 @@ module PrivateParlorXT
           user,
           receivers,
           {} of UserID => ReplyParameters,
+          services.config.allow_effects ? message.effect_id : nil,
           services
         )
       elsif file = message.animation
@@ -196,6 +198,7 @@ module PrivateParlorXT
             text: text,
             entities: entities,
             spoiler: message.has_media_spoiler?,
+            effect: services.config.allow_effects ? message.effect_id : nil
           )
         )
       elsif file = message.audio
@@ -207,6 +210,7 @@ module PrivateParlorXT
             media: file.file_id,
             text: text,
             entities: entities,
+            effect: services.config.allow_effects ? message.effect_id : nil
           )
         )
       elsif file = message.document
@@ -218,6 +222,7 @@ module PrivateParlorXT
             media: file.file_id,
             text: text,
             entities: entities,
+            effect: services.config.allow_effects ? message.effect_id : nil
           )
         )
       elsif file = message.video
@@ -230,6 +235,7 @@ module PrivateParlorXT
             text: text,
             entities: entities,
             spoiler: message.has_media_spoiler?,
+            effect: services.config.allow_effects ? message.effect_id : nil
           )
         )
       elsif (file = message.photo) && file.last?
@@ -243,6 +249,7 @@ module PrivateParlorXT
             text: text,
             entities: entities,
             spoiler: message.has_media_spoiler?,
+            effect: services.config.allow_effects ? message.effect_id : nil
           )
         )
       else

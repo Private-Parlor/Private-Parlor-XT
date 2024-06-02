@@ -38,6 +38,7 @@ module PrivateParlorXT
           sender: user.id,
           receivers: receivers,
           replies: reply_messages,
+          effect: services.config.allow_effects ? message.effect_id : nil
         ),
         venue,
       )

@@ -22,7 +22,12 @@ module PrivateParlorXT
       user = spend_karma(user, services)
 
       cached_message = services.history.new_message(user.id, message.message_id.to_i64)
-      poll_copy = services.relay.send_poll_copy(cached_message, user, poll)
+      poll_copy = services.relay.send_poll_copy(
+        cached_message, 
+        user,
+        services.config.allow_effects ? message.effect_id : nil,
+        poll
+      )
       services.history.add_to_history(cached_message, poll_copy.message_id.to_i64, user.id)
 
       record_message_statistics(Statistics::Messages::Polls, services)

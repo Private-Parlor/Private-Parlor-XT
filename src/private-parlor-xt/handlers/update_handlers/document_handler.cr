@@ -46,6 +46,7 @@ module PrivateParlorXT
           media: document.file_id,
           text: caption,
           entities: entities,
+          effect: services.config.allow_effects ? message.effect_id : nil
         )
       )
     end

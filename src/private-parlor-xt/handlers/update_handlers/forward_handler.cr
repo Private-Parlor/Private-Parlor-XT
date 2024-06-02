@@ -34,6 +34,7 @@ module PrivateParlorXT
           original_message: new_message,
           sender: user.id,
           receivers: receivers,
+          effect: services.config.allow_effects ? message.effect_id : nil
         ),
         message.message_id.to_i64
       )

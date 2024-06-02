@@ -53,6 +53,7 @@ module PrivateParlorXT
         user,
         receivers,
         reply_messages,
+        services.config.allow_effects ? message.effect_id : nil,
         services
       )
     end

@@ -41,6 +41,7 @@ module PrivateParlorXT
           receivers: receivers,
           replies: reply_messages,
           media: video_note.file_id,
+          effect: services.config.allow_effects ? message.effect_id : nil
         )
       )
     end

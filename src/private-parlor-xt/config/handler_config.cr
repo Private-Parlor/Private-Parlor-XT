@@ -24,6 +24,9 @@ module PrivateParlorXT
     # Whether or not to allow users to send photos, videos, or GIFs with a spoiler overlay
     getter allow_spoilers : Bool? = false
 
+    # Whether or not to allow users to send messages with a message effect animation
+    getter allow_effects : Bool? = false
+
     # The duration (in hours) in which new users cannot send media
     getter media_limit_period : Time::Span = 0.hours
 
@@ -66,6 +69,7 @@ module PrivateParlorXT
       @entity_types = config.entities
       @linked_network = config.linked_network
       @allow_spoilers = config.media_spoilers
+      @allow_effects = config.message_effects
       @media_limit_period = config.media_limit_period.hours
       @karma_levels = config.karma_levels
       @default_rank = config.default_rank

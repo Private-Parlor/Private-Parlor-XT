@@ -32,6 +32,9 @@ module PrivateParlorXT
     # Set to `true` if the message media should be spoiled, `false` or `nil` if message's media should not have a spoiler
     getter spoiler : Bool? = nil
 
+    # ID of the message effect that should be attached to this message
+    getter effect : String? = nil
+
     def initialize(
       @original_message : MessageID,
       @sender : UserID,
@@ -41,7 +44,8 @@ module PrivateParlorXT
       @entities : Array(Tourmaline::MessageEntity)? = nil,
       @link_preview_options : Tourmaline::LinkPreviewOptions? = nil,
       @media : String = "",
-      @spoiler : Bool? = nil
+      @spoiler : Bool? = nil,
+      @effect : String? = nil
     )
     end
   end
@@ -129,6 +133,7 @@ module PrivateParlorXT
             params.text,
             parse_mode: nil,
             entities: params.entities,
+            message_effect_id: params.effect,
             link_preview_options: params.link_preview_options,
             reply_parameters: reply,
           )
@@ -151,6 +156,7 @@ module PrivateParlorXT
             parse_mode: Tourmaline::ParseMode::None,
             caption_entities: params.entities,
             has_spoiler: params.spoiler,
+            message_effect_id: params.effect,
             reply_parameters: reply,
           )
         }
@@ -172,6 +178,7 @@ module PrivateParlorXT
             parse_mode: Tourmaline::ParseMode::None,
             caption_entities: params.entities,
             has_spoiler: params.spoiler,
+            message_effect_id: params.effect,
             reply_parameters: reply,
           )
         }
@@ -193,6 +200,7 @@ module PrivateParlorXT
             parse_mode: Tourmaline::ParseMode::None,
             caption_entities: params.entities,
             has_spoiler: params.spoiler,
+            message_effect_id: params.effect,
             reply_parameters: reply,
           )
         }
@@ -213,6 +221,7 @@ module PrivateParlorXT
             caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
             caption_entities: params.entities,
+            message_effect_id: params.effect,
             reply_parameters: reply,
           )
         }
@@ -233,6 +242,7 @@ module PrivateParlorXT
             caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
             caption_entities: params.entities,
+            message_effect_id: params.effect,
             reply_parameters: reply,
           )
         }
@@ -253,14 +263,15 @@ module PrivateParlorXT
             caption: params.text,
             parse_mode: Tourmaline::ParseMode::None,
             caption_entities: params.entities,
+            message_effect_id: params.effect,
             reply_parameters: reply,
           )
         }
       )
     end
 
-    # Sends a `Tourmaline::Poll` with the given *params*
-    def send_poll_copy(reply : MessageID, user : User, poll : Tourmaline::Poll) : Tourmaline::Message
+    # Sends a `Tourmaline::Poll` with the given parameters found in *poll*
+    def send_poll_copy(reply : MessageID, user : User, effect : String?, poll : Tourmaline::Poll) : Tourmaline::Message
       @client.send_poll(
         user.id,
         question: poll.question,
@@ -274,6 +285,7 @@ module PrivateParlorXT
         explanation: poll.explanation,
         explanation_entities: poll.explanation_entities,
         open_period: poll.open_period,
+        message_effect_id: effect,
         reply_parameters: ReplyParameters.new(reply),
       )
     end
@@ -306,6 +318,7 @@ module PrivateParlorXT
           @client.send_video_note(
             receiver,
             params.media,
+            message_effect_id: params.effect,
             reply_parameters: reply,
           )
         }
@@ -323,6 +336,7 @@ module PrivateParlorXT
           @client.send_sticker(
             receiver,
             params.media,
+            message_effect_id: params.effect,
             reply_parameters: reply,
           )
         }
@@ -340,6 +354,7 @@ module PrivateParlorXT
           @client.send_media_group(
             receiver,
             params.media,
+            message_effect_id: params.effect,
             reply_parameters: reply,
           )
         }
@@ -364,6 +379,7 @@ module PrivateParlorXT
             foursquare_type: venue.foursquare_type,
             google_place_id: venue.google_place_id,
             google_place_type: venue.google_place_type,
+            message_effect_id: params.effect,
             reply_parameters: reply,
           )
         }
@@ -382,6 +398,7 @@ module PrivateParlorXT
             receiver,
             latitude: location.latitude,
             longitude: location.longitude,
+            message_effect_id: params.effect,
             reply_parameters: reply,
           )
         }
@@ -402,6 +419,7 @@ module PrivateParlorXT
             first_name: contact.first_name,
             last_name: contact.last_name,
             vcard: contact.vcard,
+            message_effect_id: params.effect,
             reply_parameters: reply,
           )
         }
