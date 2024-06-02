@@ -433,7 +433,8 @@ module PrivateParlorXT
               offset: 0,
               length: 10,
             ),
-          ]
+          ],
+          show_caption_above_media: true,
         )
 
         unless input = handler.message_input(message)
@@ -452,6 +453,8 @@ module PrivateParlorXT
         input.media.should(eq("photo_item_one"))
 
         input.caption.should(eq("Photo caption"))
+
+        input.show_caption_above_media?.should(be_true)
       end
 
       it "returns InputMediaVideo when message contains a video" do
@@ -478,7 +481,8 @@ module PrivateParlorXT
               offset: 0,
               length: 10,
             ),
-          ]
+          ],
+          show_caption_above_media: true,
         )
 
         unless input = handler.message_input(message)
@@ -497,6 +501,8 @@ module PrivateParlorXT
         input.media.should(eq("video_item_one"))
 
         input.caption.should(eq("Video caption"))
+
+        input.show_caption_above_media?.should(be_true)
       end
 
       it "returns InputMediaAnimation when message contains an animation" do
@@ -523,7 +529,8 @@ module PrivateParlorXT
               offset: 0,
               length: 10,
             ),
-          ]
+          ],
+          show_caption_above_media: true,
         )
 
         unless input = handler.message_input(message)
@@ -542,6 +549,8 @@ module PrivateParlorXT
         input.media.should(eq("animation_item_one"))
 
         input.caption.should(eq("Animation caption"))
+
+        input.show_caption_above_media?.should(be_true)
       end
 
       it "returns nil when message contains a type that can't have a spoiler" do

@@ -35,6 +35,9 @@ module PrivateParlorXT
     # ID of the message effect that should be attached to this message
     getter effect : String? = nil
 
+    # Set to `true` if the message caption of photos, videos, or animations should be above the media, `false` or `nil` if the captoin should be below
+    getter caption_above_media : Bool? = nil
+
     def initialize(
       @original_message : MessageID,
       @sender : UserID,
@@ -45,7 +48,8 @@ module PrivateParlorXT
       @link_preview_options : Tourmaline::LinkPreviewOptions? = nil,
       @media : String = "",
       @spoiler : Bool? = nil,
-      @effect : String? = nil
+      @effect : String? = nil,
+      @caption_above_media : Bool? = nil,
     )
     end
   end
@@ -157,6 +161,7 @@ module PrivateParlorXT
             caption_entities: params.entities,
             has_spoiler: params.spoiler,
             message_effect_id: params.effect,
+            show_caption_above_media: params.caption_above_media,
             reply_parameters: reply,
           )
         }
@@ -179,6 +184,7 @@ module PrivateParlorXT
             caption_entities: params.entities,
             has_spoiler: params.spoiler,
             message_effect_id: params.effect,
+            show_caption_above_media: params.caption_above_media,
             reply_parameters: reply,
           )
         }
@@ -201,6 +207,7 @@ module PrivateParlorXT
             caption_entities: params.entities,
             has_spoiler: params.spoiler,
             message_effect_id: params.effect,
+            show_caption_above_media: params.caption_above_media,
             reply_parameters: reply,
           )
         }

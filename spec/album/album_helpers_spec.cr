@@ -25,7 +25,8 @@ module PrivateParlorXT
               height: 1080,
             ),
           ],
-          has_media_spoiler: true
+          has_media_spoiler: true,
+          show_caption_above_media: true,
         )
 
         unless input = AlbumHelpers.album_input(message, "photo caption", [] of Tourmaline::MessageEntity, true)
@@ -39,6 +40,7 @@ module PrivateParlorXT
         input.caption.should(eq("photo caption"))
         input.caption_entities.should(eq([] of Tourmaline::MessageEntity))
         input.has_spoiler?.should(be_true)
+        input.show_caption_above_media?.should(be_true)
         input.parse_mode.should(be_nil)
       end
 
@@ -57,7 +59,8 @@ module PrivateParlorXT
             height: 1080,
             duration: 60,
           ),
-          has_media_spoiler: true
+          has_media_spoiler: true,
+          show_caption_above_media: true,
         )
 
         unless input = AlbumHelpers.album_input(message, "video caption", [] of Tourmaline::MessageEntity, true)
@@ -71,6 +74,7 @@ module PrivateParlorXT
         input.caption.should(eq("video caption"))
         input.caption_entities.should(eq([] of Tourmaline::MessageEntity))
         input.has_spoiler?.should(be_true)
+        input.show_caption_above_media?.should(be_true)
         input.parse_mode.should(be_nil)
       end
 

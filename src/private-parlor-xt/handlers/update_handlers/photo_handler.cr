@@ -47,7 +47,8 @@ module PrivateParlorXT
           text: caption,
           entities: entities,
           spoiler: services.config.allow_spoilers ? message.has_media_spoiler? : false,
-          effect: services.config.allow_effects ? message.effect_id : nil
+          effect: services.config.allow_effects ? message.effect_id : nil,
+          caption_above_media: message.show_caption_above_media?,
         )
       )
     end

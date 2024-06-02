@@ -51,9 +51,9 @@ module PrivateParlorXT
     # Returns `nil` if there was no media in the *message* to create a `Tourmaline::InputMedia`
     def album_input(message : Tourmaline::Message, caption : String, entities : Array(Tourmaline::MessageEntity), allow_spoilers : Bool? = false) : AlbumMedia?
       if media = message.photo.last?
-        Tourmaline::InputMediaPhoto.new(media.file_id, caption: caption, caption_entities: entities, parse_mode: nil, has_spoiler: message.has_media_spoiler? && allow_spoilers)
+        Tourmaline::InputMediaPhoto.new(media.file_id, caption: caption, caption_entities: entities, parse_mode: nil, has_spoiler: message.has_media_spoiler? && allow_spoilers, show_caption_above_media: message.show_caption_above_media?)
       elsif media = message.video
-        Tourmaline::InputMediaVideo.new(media.file_id, caption: caption, caption_entities: entities, parse_mode: nil, has_spoiler: message.has_media_spoiler? && allow_spoilers)
+        Tourmaline::InputMediaVideo.new(media.file_id, caption: caption, caption_entities: entities, parse_mode: nil, has_spoiler: message.has_media_spoiler? && allow_spoilers, show_caption_above_media: message.show_caption_above_media?)
       elsif media = message.audio
         Tourmaline::InputMediaAudio.new(media.file_id, caption: caption, caption_entities: entities, parse_mode: nil)
       elsif media = message.document
@@ -79,6 +79,12 @@ module PrivateParlorXT
       # Wait an arbitrary amount of time for Telegram MediaGroup updates to come in before relaying the album.
       Tasker.in(WAIT_TIME) {
         next unless prepared_album = albums.delete(album)
+
+        # If any item in the album is set to have its caption displayed above the media
+        # then all items should be set this way as well
+        if prepared_album.media.any?{|item| !item.is_a?(Tourmaline::InputMediaDocument | Tourmaline::InputMediaAudio) && item.show_caption_above_media?}
+          prepared_album.media.each {|item| item.show_caption_above_media = true if item.is_a?(Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo)}
+        end
 
         cached_messages = Array(MessageID).new
 

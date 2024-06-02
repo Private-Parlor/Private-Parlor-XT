@@ -42,11 +42,11 @@ module PrivateParlorXT
     # Returns `nil` unless message contains a photo, video, or animation/GIF
     def message_input(message : Tourmaline::Message) : Tourmaline::InputMedia?
       if media = message.photo.last?
-        Tourmaline::InputMediaPhoto.new(media.file_id, caption: message.caption, caption_entities: message.caption_entities)
+        Tourmaline::InputMediaPhoto.new(media.file_id, caption: message.caption, caption_entities: message.caption_entities, show_caption_above_media: message.show_caption_above_media?)
       elsif media = message.video
-        Tourmaline::InputMediaVideo.new(media.file_id, caption: message.caption, caption_entities: message.caption_entities)
+        Tourmaline::InputMediaVideo.new(media.file_id, caption: message.caption, caption_entities: message.caption_entities, show_caption_above_media: message.show_caption_above_media?)
       elsif media = message.animation
-        Tourmaline::InputMediaAnimation.new(media.file_id, caption: message.caption, caption_entities: message.caption_entities)
+        Tourmaline::InputMediaAnimation.new(media.file_id, caption: message.caption, caption_entities: message.caption_entities, show_caption_above_media: message.show_caption_above_media?)
       end
     end
 
