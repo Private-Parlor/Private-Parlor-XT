@@ -391,7 +391,7 @@ module PrivateParlorXT
 
     # Validates the values retrieved from the config file and updates the values in *config* if they are invalid
     private def self.check_config(config : Config) : Config
-      message_entities = ["bold", "italic", "underline", "strikethrough", "spoiler", "code", "text_link", "custom_emoji", "blockquote"]
+      message_entities = ["bold", "italic", "underline", "strikethrough", "spoiler", "code", "text_link", "custom_emoji", "blockquote", "expandable_blockquote"]
 
       if config.smileys.size != 4
         Log.notice { "Not enough or too many smileys. Should be four, was #{config.smileys}; defaulting to [:), :|, :/, :(]" }

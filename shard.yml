@@ -24,6 +24,6 @@ targets:
   private-parlor-xt:
     main: src/private_parlor_xt.cr
 
-crystal: 1.12.1
+crystal: 1.12.2
 
 license: LGPL-3.0-or-later

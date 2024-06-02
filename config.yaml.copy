@@ -255,6 +255,7 @@ locale: en-US
 ##    text_link 
 ##    custom_emoji
 ##    blockquote
+##    expandable_blockquote
 ##
 ## Default: ["bold", "italic", "text_link"]
 ##
