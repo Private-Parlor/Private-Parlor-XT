@@ -23,7 +23,7 @@ module PrivateParlorXT
 
       cached_message = services.history.new_message(user.id, message.message_id.to_i64)
       poll_copy = services.relay.send_poll_copy(
-        cached_message, 
+        cached_message,
         user,
         services.config.allow_effects ? message.effect_id : nil,
         poll

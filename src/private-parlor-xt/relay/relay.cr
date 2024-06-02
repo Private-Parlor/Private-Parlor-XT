@@ -49,7 +49,7 @@ module PrivateParlorXT
       @media : String = "",
       @spoiler : Bool? = nil,
       @effect : String? = nil,
-      @caption_above_media : Bool? = nil,
+      @caption_above_media : Bool? = nil
     )
     end
   end

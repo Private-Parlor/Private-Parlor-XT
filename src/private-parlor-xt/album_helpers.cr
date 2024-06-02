@@ -82,8 +82,8 @@ module PrivateParlorXT
 
         # If any item in the album is set to have its caption displayed above the media
         # then all items should be set this way as well
-        if prepared_album.media.any?{|item| !item.is_a?(Tourmaline::InputMediaDocument | Tourmaline::InputMediaAudio) && item.show_caption_above_media?}
-          prepared_album.media.each {|item| item.show_caption_above_media = true if item.is_a?(Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo)}
+        if prepared_album.media.any? { |item| !item.is_a?(Tourmaline::InputMediaDocument | Tourmaline::InputMediaAudio) && item.show_caption_above_media? }
+          prepared_album.media.each { |item| item.show_caption_above_media = true if item.is_a?(Tourmaline::InputMediaPhoto | Tourmaline::InputMediaVideo) }
         end
 
         cached_messages = Array(MessageID).new
