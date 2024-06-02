@@ -1,0 +1,91 @@
+name: Deploy tagged release
+
+on:
+  push:
+    # Run workflow on any created tag that does not end in X (nightly tag)
+    tags:
+      - 'v*'
+      - '!v*[xX]'
+
+jobs:
+  build-x86_64:
+    runs-on: ubuntu-latest
+
+    container:
+      image: alpine:latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install dependencies
+      run: |
+        apk add --update --upgrade --no-cache --force-overwrite build-base yaml-static sqlite-static sqlite-dev libxml2-dev libxml2-static icu-static zlib-static xz-dev xz-static openssl-dev openssl-libs-static pcre-dev gc-dev libevent-static crystal shards
+        shards install
+    - name: Build
+      run: |
+        crystal -v
+        shards build --static --no-debug --production --release --stats --time
+        strip ./bin/private-parlor-xt
+        mkdir private-parlor-xt
+        mkdir private-parlor-xt/locales
+        mv ./bin/private-parlor-xt private-parlor-xt/ 
+        mv config.yaml.copy private-parlor-xt/
+        mv locales/* private-parlor-xt/locales/
+        tar -cvf private-parlor-xt-x86_64.tar private-parlor-xt/
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.3
+      with:
+        name: private-parlor-xt-x86_64
+        path: private-parlor-xt-x86_64.tar
+          
+  build-arm64:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Create arm64 container and build
+      uses: uraimo/run-on-arch-action@v2.5.1
+      with:
+        arch: aarch64
+        distro: alpine_latest
+        githubToken: ${{ github.token }}
+        setup: mkdir -p "${PWD}/artifacts"
+        dockerRunArgs: --volume "${PWD}/artifacts:/private-parlor-xt"
+        shell: /bin/sh
+        install: | 
+          apk add --update --upgrade --no-cache --force-overwrite build-base yaml-static sqlite-static sqlite-dev libxml2-dev libxml2-static icu-static zlib-static xz-dev xz-static openssl-dev openssl-libs-static pcre-dev gc-dev libevent-static crystal shards
+        run: |
+          shards install
+          crystal -v
+          shards build --static --no-debug --production --release --stats --time
+          strip ./bin/private-parlor-xt
+          mkdir /private-parlor-xt/locales
+          mv ./bin/private-parlor-xt /private-parlor-xt
+          mv config.yaml.copy /private-parlor-xt
+          mv locales/* /private-parlor-xt/locales/
+          tar -cvf private-parlor-xt-arm64.tar /private-parlor-xt
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.3
+      with:
+        name: private-parlor-xt-arm64
+        path: private-parlor-xt-arm64.tar
+          
+  release-tag:
+    needs: [build-arm64, build-x86_64]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Declare some variables
+      id: vars
+      shell: bash
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v3.0.0
+      with:
+        path: downloads
+    - name: GH Release
+      uses: softprops/action-gh-release@v0.1.15
+      with:
+        tag_name: ${{ steps.vars.outputs.VERSION }}
+        files: |
+          ./downloads/private-parlor-xt-x86_64/*
+          ./downloads/private-parlor-xt-arm64/*

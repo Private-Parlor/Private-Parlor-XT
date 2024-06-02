@@ -1,0 +1,30 @@
+name: Private Parlor XT CI
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - 'src/*'
+      - 'shard.yml'
+      - 'spec/*'
+  pull_request:
+    branches: [ "master" ]
+    paths:
+      - 'src/*'
+      - 'shard.yml'
+      - 'spec/*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: crystallang/crystal
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install dependencies
+      run: shards install
+    - name: Run tests
+      run: crystal spec -v -p --order random --error-trace
