@@ -17,6 +17,7 @@ module PrivateParlorXT
       @flag_signatures = false,
       @media_spoilers = false,
       @karma_reasons = false,
+      @blacklist_contact = nil,
       @salt = "",
       @linked_network = {} of String => String,
       @database_history = false,
