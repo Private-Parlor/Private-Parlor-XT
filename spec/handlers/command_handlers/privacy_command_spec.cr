@@ -68,7 +68,7 @@ module PrivateParlorXT
         messages[0].data.should(eq(expected))
 
         # Privacy Policy sent to cooldowned user
-        
+
         cooldowned_user = Tourmaline::User.new(50000, false, "cooldown")
 
         message = Tourmaline::Message.new(
@@ -85,9 +85,9 @@ module PrivateParlorXT
         messages.size.should(eq(1))
 
         messages[0].data.should(eq(expected))
-        
+
         # Privacy Policy sent to blacklisted user
-        
+
         blacklisted_user = Tourmaline::User.new(70000, false, "BLACKLISTED")
 
         message = Tourmaline::Message.new(
@@ -104,9 +104,9 @@ module PrivateParlorXT
         messages.size.should(eq(1))
 
         messages[0].data.should(eq(expected))
-        
+
         # Privacy Policy sent to left user
-        
+
         left_user = Tourmaline::User.new(40000, false, "esimerkki")
 
         message = Tourmaline::Message.new(
@@ -123,9 +123,9 @@ module PrivateParlorXT
         messages.size.should(eq(1))
 
         messages[0].data.should(eq(expected))
-        
+
         # Privacy Policy sent to user not in chat
-        
+
         not_in_chat_user = Tourmaline::User.new(12345, false, "newbie")
 
         message = Tourmaline::Message.new(
