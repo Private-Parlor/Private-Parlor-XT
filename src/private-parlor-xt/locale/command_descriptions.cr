@@ -113,6 +113,10 @@ module PrivateParlorXT
     # Description for the `StatsCommand`
     getter stats : String
 
+    @[YAML::Field(key: "privacy")]
+    # Description for the `PrivacyPolicyCommand`
+    getter privacy : String
+
     @[YAML::Field(key: "blacklist")]
     # Description for the `BlacklistCommand`
     getter blacklist : String

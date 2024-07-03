@@ -385,6 +385,62 @@ replies:
 
    no_stats_available: "Dotlh Dach\\."
 
+   # TODO: Translate from Terran to Klingon
+   # Available palceholders: contact
+   privacy_policy: |-
+      *Privacy Policy*
+
+      _Last updated: July 03, 2024_
+
+      The Privacy Policy details what data the SOFTWARE stores, how the SOFTWARE collects it, and for what purpose it is used for\.
+      For the purpose of this Privacy Policy, the terms 'SOFTWARE' refers to the program this Telegram Third Party App uses, 'HOST' refers to the party that is running the SOFTWARE and supplying its service to you, and 'USER' refers to you, the receiver of the service\.
+
+      Data obtained from the USER is not used to show advertisements\.
+      Only the necessary data from the USER is stored to provide a feature\-rich anonymous chat group experience\.
+
+      Data from the USER is collected and processed for the legitimate purposes of providing services to the USER\.
+
+      *__The following USER data is collected:__*
+      _Telegram provided unique user ID_
+      This ID belongs to Telegram and not to the USER, and is used to identify the USER's account within the SOFTWARE\.
+      The HOST is not obligated to delete this data from the database, as this would conflict with the legitimate services of the SOFTWARE\.
+      
+      _Telegram profile information_
+      This includes the full name the USER sets in the Telegram account profile\.
+      This information is updated with every USER message processed by the SOFTWARE\.
+
+      _USER activity_
+      The times in which the user first sent the /start command, last sent the /stop command, and last sent a message or used a command, are all processed and stored by the SOFTWARE\.
+      
+      _USER message content_
+      The message ID of a USER's message is stored for future processing, such as message replies or message deletions\. This message ID is tied to the USER's Telegram provided unique user ID\.
+      The message unique media ID and/or text/caption MAY be stored depending on how the HOST configures the SOFTWARE, such as in the use of ROBOT9000\.
+
+      *__How USER data is collected and used:__*
+
+      USER data is collected and processed by the SOFTWARE with each message or command voluntarily given to the SOFTWARE\.
+
+      USER message content is voluntarily given to the SOFTWARE\. The SOFTWARE will process the message and send an anonymized copy of it to all applicable users of the Telegram Third Party App\.
+
+      USER data may be collected for anonymized statistics, which can be made publically available or used for internal analysis\.
+
+      *__USER Data Retention, Deletion, and Security:__*
+
+      USER data is retained as long as the HOST deems necessary, to the extent that is required to comply with legal obligations and legitmate services of the SOFTWARE\.
+
+      The USER has a right to request assistance in deleting the USER's data by contacting the HOST\.
+      The HOST may need to retain certain USER information when there is a legitimate reason to do so\.
+
+      The HOST is responsible for best effort in securing USER data and engaging with it securely\.
+
+      *__Privacy Policy Changes, Contacts, and Consent:__*
+
+      Changes to the Privacy Policy may be made at any time, and will be announced by the HOST\.
+
+      {contact}
+
+      The USER consents to the conditions of the Privacy Policy with the USER's continued use of this Telegram Third Party App\.
+
    success: "✅" 
 
    fail: "❌"
@@ -443,6 +499,8 @@ command_descriptions:
    unpin: QIn vevHa'
 
    stats: ja'chuqmeH Dotlh Suq
+
+   privacy: ngoch De' legh
 
    blacklist: ja'chuqmeH Daqvo' meb teq
 

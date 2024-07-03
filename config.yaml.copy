@@ -126,6 +126,8 @@ locale: en-US
 ##
 ## Contact shown to blacklisted users
 ##
+## This contact information will also be shown in the Privacy Policy
+##
 ## Accepted values: A link or a username
 ## Default: <none>
 ##

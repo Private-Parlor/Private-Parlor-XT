@@ -248,6 +248,11 @@ module PrivateParlorXT
     # A 2-element array, the first element enables the `StatsCommand` and the second registers its `CommandDescriptions` with @BotFather
     getter enable_stats : Array(Bool) = [false, false]
 
+    @[YAML::Field(key: "enable_privacy_policy", ignore: true)]
+    # A 2-element array, the first element enables the `PrivacyPolicyCommand` and the second registers its `CommandDescriptions` with @BotFather
+    # This field is not found in the config file by default; this command is always enabled and always registered regardless of if this field is in the configuration file
+    getter enable_privacy_policy : Array(Bool) = [true, true]
+
     # Relay Toggles
 
     @[YAML::Field(key: "relay_text")]

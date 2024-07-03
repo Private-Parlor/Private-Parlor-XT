@@ -333,6 +333,10 @@ module PrivateParlorXT
     # When there are no `Statistics` available
     getter no_stats_available : String
 
+    @[YAML::Field(key: "privacy_policy")]
+    # The privacy policy of this bot
+    getter privacy_policy : String
+
     @[YAML::Field(key: "success")]
     # When the command executed successfully
     getter success : String

@@ -377,6 +377,62 @@ replies:
 
    no_stats_available: "Es gibt keine Statistiken\\."
 
+   # TODO: Verify the accuracy of this translation
+   # Available palceholders: contact
+   privacy_policy: |-
+      *Datenschutzbestimmungen*
+
+      _Zuletzt aktualisiert: Juli 03, 2024_
+
+      Die Datenschutzrichtlinie beschreibt, welche Daten die SOFTWARE speichert, wie die SOFTWARE sie sammelt und zu welchem Zweck sie verwendet werden\.
+      Für die Zwecke dieser Datenschutzrichtlinie beziehen sich die Begriffe "SOFTWARE" auf das Programm, das diese Telegram Drittanbieter\-App verwendet, "HOST" auf die Partei, die die SOFTWARE betreibt und Ihnen ihren Dienst zur Verfügung stellt, und "BENUTZER" auf Sie, den Empfänger des Dienstes\.
+
+      Die vom BENUTZER erhaltenen Daten werden nicht zur Anzeige von Werbung verwendet\.
+      Es werden nur die notwendigen Daten des BENUTZERS gespeichert, um eine anonyme Chatgruppenerfahrung zu ermöglichen\.
+
+      Die Daten des BENUTZERS werden für die rechtmäßigen Zwecke der Bereitstellung von Diensten für den BENUTZER erhoben und verarbeitet\.
+
+      *__Die folgenden BENUTZERDATEN werden erfasst:__*
+      _Von Telegram bereitgestellte eindeutige Benutzer\-ID_
+      Diese ID gehört Telegram und nicht dem BENUTZER und wird verwendet, um das Konto des BENUTZERS innerhalb der SOFTWARE zu identifizieren\.
+      Der HOST ist nicht verpflichtet, diese Daten aus der Datenbank zu löschen, da dies im Widerspruch zu den legitimen Diensten der SOFTWARE\ stehen würde\.
+      
+      _Telegramm\-Profilinformationen_
+      Dazu gehört der vollständige Name, den der BENUTZER im Telegram\-Kontoprofil angibt\.
+      Diese Informationen werden mit jeder von der SOFTWARE verarbeiteten Nachricht des BENUTZERS aktualisiert\.
+
+      _BENUTZER\-Aktivität_
+      Die Zeitpunkte, zu denen der Benutzer das erste Mal den /start\-Befehl, das letzte Mal den /stop\-Befehl und das letzte Mal eine Nachricht gesendet oder einen Befehl verwendet hat, werden alle von der SOFTWARE verarbeitet und gespeichert\.
+      
+      _Inhalt der BENUTZER\-Nachricht_
+      Die Nachrichten\-ID der Nachricht eines BENUTZERS wird für die spätere Verarbeitung gespeichert, z\. B\. für Nachrichtenantworten oder Nachrichtenlöschungen\. Diese Nachrichten\-ID ist mit der von Telegram bereitgestellten eindeutigen Benutzer\-ID des BENUTZERS verknüpft\.
+      Die eindeutige Medien\-ID und/oder Text/Beschreibung der Nachricht KANN gespeichert werden, je nachdem, wie der HOST die SOFTWARE konfiguriert, z\.B\. bei der Verwendung von ROBOT9000\.
+
+      *__Wie BENUTZER\-Daten gesammelt und verwendet werden:__*
+
+      BENUTZER\-Daten werden von der SOFTWARE mit jeder Nachricht oder jedem Befehl, der freiwillig an die SOFTWARE gegeben wird, gesammelt und verarbeitet\.
+
+      Der Inhalt von BENUTZERNachrichten wird freiwillig an die SOFTWARE übermittelt\. Die SOFTWARE verarbeitet die Nachricht und sendet eine anonymisierte Kopie davon an alle betroffenen Nutzer der Telegram Third Party App\.
+
+      BENUTZERDATEN können für anonymisierte Statistiken gesammelt werden, die der Öffentlichkeit zugänglich gemacht oder für interne Analysen verwendet werden können\.
+
+      *__Aufbewahrung, Löschung und Sicherheit von NUTZER\-Daten:__*
+
+      BENUTZERDATEN werden so lange aufbewahrt, wie es der HOST für notwendig erachtet, soweit dies zur Erfüllung gesetzlicher Verpflichtungen und rechtmäßiger Dienste der SOFTWARE erforderlich ist\.
+
+      Der BENUTZER hat das Recht, Unterstützung bei der Löschung seiner Daten zu verlangen, indem er sich an den HOST wendet\.
+      Es kann sein, dass der HOST bestimmte BENUTZER\-Daten aufbewahren muss, wenn es dafür einen legitimen Grund gibt\.
+
+      Der HOST ist dafür verantwortlich, die Daten der BENUTZER nach bestem Wissen und Gewissen zu schützen und sicher mit ihnen umzugehen\.
+
+      *__Änderungen der Datenschutzrichtlinie, Kontakte und Zustimmung:__*
+
+      Änderungen an der Datenschutzrichtlinie können jederzeit vorgenommen werden und werden vom HOST bekannt gegeben\.
+
+      {contact}
+
+      Der BENUTZER stimmt den Bedingungen der Datenschutzrichtlinie zu, wenn er diese Telegram Drittanbieter\-App weiter nutzt\.
+
    success: "✅" 
 
    fail: "❌"
@@ -435,6 +491,8 @@ command_descriptions:
    unpin: Die neueste Nachricht loslösen
 
    stats: Statistiken über den Bot bekommen
+
+   privacy: Die Datenschutzrichtlinie diesem Chat sehen
 
    blacklist: Ein Nutzer aus dem Chat sperren
 
