@@ -477,7 +477,7 @@ module PrivateParlorXT
         ReplyParameters.new(message),
         ->(receiver : UserID, reply : ReplyParameters?) {
           return false unless reply
-          @client.pin_chat_message(receiver, reply.message_id)
+          @client.pin_chat_message(receiver, message_id: reply.message_id)
         }
       )
     end
@@ -495,7 +495,7 @@ module PrivateParlorXT
         message,
         ->(receiver : UserID, reply : ReplyParameters?) {
           if reply
-            @client.unpin_chat_message(receiver, reply.message_id)
+            @client.unpin_chat_message(receiver, message_id: reply.message_id)
           else
             @client.unpin_chat_message(receiver, nil)
           end
@@ -510,7 +510,7 @@ module PrivateParlorXT
         ReplyParameters.new(message),
         ->(receiver : UserID, reply : ReplyParameters?) {
           return false unless reply
-          @client.edit_message_media(media, receiver, reply.message_id)
+          @client.edit_message_media(media, chat_id: receiver, message_id: reply.message_id)
           # We don't care about the result, so return a boolean
           # to satisfy type requirements
           true
@@ -525,7 +525,7 @@ module PrivateParlorXT
         ReplyParameters.new(message),
         ->(receiver : UserID, reply : ReplyParameters?) {
           return false unless reply
-          @client.edit_message_text(text, receiver, reply.message_id, reply_markup: markup)
+          @client.edit_message_text(text, chat_id: receiver, message_id: reply.message_id, reply_markup: markup)
           true
         }
       )
