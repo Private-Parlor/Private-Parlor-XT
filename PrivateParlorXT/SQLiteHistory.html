@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.13.3">
+<meta name="crystal_docs.project_version" content="master">
+<meta name="crystal_docs.project_name" content="private-parlor-xt">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="private-parlor-xt">
+  <title>PrivateParlorXT::SQLiteHistory - private-parlor-xt master</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          private-parlor-xt
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="private-parlor-xt/PrivateParlorXT" data-name="privateparlorxt">
+      <a href="../PrivateParlorXT.html">PrivateParlorXT</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumHandler" data-name="privateparlorxt::albumhandler">
+      <a href="../PrivateParlorXT/AlbumHandler.html">AlbumHandler</a>
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/PrivateParlorXT/AlbumHelpers" data-name="privateparlorxt::albumhelpers">
+      <a href="../PrivateParlorXT/AlbumHelpers.html">AlbumHelpers</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumHelpers/Album" data-name="privateparlorxt::albumhelpers::album">
+      <a href="../PrivateParlorXT/AlbumHelpers/Album.html">Album</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumHelpers/AlbumRelayParameters" data-name="privateparlorxt::albumhelpers::albumrelayparameters">
+      <a href="../PrivateParlorXT/AlbumHelpers/AlbumRelayParameters.html">AlbumRelayParameters</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumMedia" data-name="privateparlorxt::albummedia">
+      <a href="../PrivateParlorXT/AlbumMedia.html">AlbumMedia</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AnimationHandler" data-name="privateparlorxt::animationhandler">
+      <a href="../PrivateParlorXT/AnimationHandler.html">AnimationHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AudioHandler" data-name="privateparlorxt::audiohandler">
+      <a href="../PrivateParlorXT/AudioHandler.html">AudioHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AuthorizedRanks" data-name="privateparlorxt::authorizedranks">
+      <a href="../PrivateParlorXT/AuthorizedRanks.html">AuthorizedRanks</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/BlacklistCommand" data-name="privateparlorxt::blacklistcommand">
+      <a href="../PrivateParlorXT/BlacklistCommand.html">BlacklistCommand</a>
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/PrivateParlorXT/CachedHistory" data-name="privateparlorxt::cachedhistory">
+      <a href="../PrivateParlorXT/CachedHistory.html">CachedHistory</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CachedHistory/MessageGroup" data-name="privateparlorxt::cachedhistory::messagegroup">
+      <a href="../PrivateParlorXT/CachedHistory/MessageGroup.html">MessageGroup</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CallbackHandler" data-name="privateparlorxt::callbackhandler">
+      <a href="../PrivateParlorXT/CallbackHandler.html">CallbackHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Client" data-name="privateparlorxt::client">
+      <a href="../PrivateParlorXT/Client.html">Client</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CommandDescriptions" data-name="privateparlorxt::commanddescriptions">
+      <a href="../PrivateParlorXT/CommandDescriptions.html">CommandDescriptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CommandHandler" data-name="privateparlorxt::commandhandler">
+      <a href="../PrivateParlorXT/CommandHandler.html">CommandHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CommandPermissions" data-name="privateparlorxt::commandpermissions">
+      <a href="../PrivateParlorXT/CommandPermissions.html">CommandPermissions</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Config" data-name="privateparlorxt::config">
+      <a href="../PrivateParlorXT/Config.html">Config</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ContactHandler" data-name="privateparlorxt::contacthandler">
+      <a href="../PrivateParlorXT/ContactHandler.html">ContactHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Database" data-name="privateparlorxt::database">
+      <a href="../PrivateParlorXT/Database.html">Database</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DeleteCommand" data-name="privateparlorxt::deletecommand">
+      <a href="../PrivateParlorXT/DeleteCommand.html">DeleteCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DemoteCommand" data-name="privateparlorxt::demotecommand">
+      <a href="../PrivateParlorXT/DemoteCommand.html">DemoteCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DocumentHandler" data-name="privateparlorxt::documenthandler">
+      <a href="../PrivateParlorXT/DocumentHandler.html">DocumentHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DownvoteHandler" data-name="privateparlorxt::downvotehandler">
+      <a href="../PrivateParlorXT/DownvoteHandler.html">DownvoteHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Format" data-name="privateparlorxt::format">
+      <a href="../PrivateParlorXT/Format.html">Format</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ForwardHandler" data-name="privateparlorxt::forwardhandler">
+      <a href="../PrivateParlorXT/ForwardHandler.html">ForwardHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Handler" data-name="privateparlorxt::handler">
+      <a href="../PrivateParlorXT/Handler.html">Handler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/HandlerConfig" data-name="privateparlorxt::handlerconfig">
+      <a href="../PrivateParlorXT/HandlerConfig.html">HandlerConfig</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Hears" data-name="privateparlorxt::hears">
+      <a href="../PrivateParlorXT/Hears.html">Hears</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/HearsHandler" data-name="privateparlorxt::hearshandler">
+      <a href="../PrivateParlorXT/HearsHandler.html">HearsHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/HelpCommand" data-name="privateparlorxt::helpcommand">
+      <a href="../PrivateParlorXT/HelpCommand.html">HelpCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/History" data-name="privateparlorxt::history">
+      <a href="../PrivateParlorXT/History.html">History</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/InfoCommand" data-name="privateparlorxt::infocommand">
+      <a href="../PrivateParlorXT/InfoCommand.html">InfoCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/KarmaHandler" data-name="privateparlorxt::karmahandler">
+      <a href="../PrivateParlorXT/KarmaHandler.html">KarmaHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/KarmaInfoCommand" data-name="privateparlorxt::karmainfocommand">
+      <a href="../PrivateParlorXT/KarmaInfoCommand.html">KarmaInfoCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/KarmaSignCommand" data-name="privateparlorxt::karmasigncommand">
+      <a href="../PrivateParlorXT/KarmaSignCommand.html">KarmaSignCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Locale" data-name="privateparlorxt::locale">
+      <a href="../PrivateParlorXT/Locale.html">Locale</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Localization" data-name="privateparlorxt::localization">
+      <a href="../PrivateParlorXT/Localization.html">Localization</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/LocationHandler" data-name="privateparlorxt::locationhandler">
+      <a href="../PrivateParlorXT/LocationHandler.html">LocationHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Logs" data-name="privateparlorxt::logs">
+      <a href="../PrivateParlorXT/Logs.html">Logs</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Match" data-name="privateparlorxt::match">
+      <a href="../PrivateParlorXT/Match.html">Match</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessageID" data-name="privateparlorxt::messageid">
+      <a href="../PrivateParlorXT/MessageID.html">MessageID</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessagePermissions" data-name="privateparlorxt::messagepermissions">
+      <a href="../PrivateParlorXT/MessagePermissions.html">MessagePermissions</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessageProc" data-name="privateparlorxt::messageproc">
+      <a href="../PrivateParlorXT/MessageProc.html">MessageProc</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessageQueue" data-name="privateparlorxt::messagequeue">
+      <a href="../PrivateParlorXT/MessageQueue.html">MessageQueue</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MotdCommand" data-name="privateparlorxt::motdcommand">
+      <a href="../PrivateParlorXT/MotdCommand.html">MotdCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/On" data-name="privateparlorxt::on">
+      <a href="../PrivateParlorXT/On.html">On</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PhotoHandler" data-name="privateparlorxt::photohandler">
+      <a href="../PrivateParlorXT/PhotoHandler.html">PhotoHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PinCommand" data-name="privateparlorxt::pincommand">
+      <a href="../PrivateParlorXT/PinCommand.html">PinCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PollHandler" data-name="privateparlorxt::pollhandler">
+      <a href="../PrivateParlorXT/PollHandler.html">PollHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PrivacyPolicyCommand" data-name="privateparlorxt::privacypolicycommand">
+      <a href="../PrivateParlorXT/PrivacyPolicyCommand.html">PrivacyPolicyCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PromoteCommand" data-name="privateparlorxt::promotecommand">
+      <a href="../PrivateParlorXT/PromoteCommand.html">PromoteCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PurgeCommand" data-name="privateparlorxt::purgecommand">
+      <a href="../PrivateParlorXT/PurgeCommand.html">PurgeCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/QueuedMessage" data-name="privateparlorxt::queuedmessage">
+      <a href="../PrivateParlorXT/QueuedMessage.html">QueuedMessage</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Rank" data-name="privateparlorxt::rank">
+      <a href="../PrivateParlorXT/Rank.html">Rank</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RanksayCommand" data-name="privateparlorxt::ranksaycommand">
+      <a href="../PrivateParlorXT/RanksayCommand.html">RanksayCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RegularForwardHandler" data-name="privateparlorxt::regularforwardhandler">
+      <a href="../PrivateParlorXT/RegularForwardHandler.html">RegularForwardHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Relay" data-name="privateparlorxt::relay">
+      <a href="../PrivateParlorXT/Relay.html">Relay</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RelayParameters" data-name="privateparlorxt::relayparameters">
+      <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RemoveCommand" data-name="privateparlorxt::removecommand">
+      <a href="../PrivateParlorXT/RemoveCommand.html">RemoveCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Replies" data-name="privateparlorxt::replies">
+      <a href="../PrivateParlorXT/Replies.html">Replies</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ReplyParameters" data-name="privateparlorxt::replyparameters">
+      <a href="../PrivateParlorXT/ReplyParameters.html">ReplyParameters</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RespondsTo" data-name="privateparlorxt::respondsto">
+      <a href="../PrivateParlorXT/RespondsTo.html">RespondsTo</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RevealCommand" data-name="privateparlorxt::revealcommand">
+      <a href="../PrivateParlorXT/RevealCommand.html">RevealCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Robot9000" data-name="privateparlorxt::robot9000">
+      <a href="../PrivateParlorXT/Robot9000.html">Robot9000</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Services" data-name="privateparlorxt::services">
+      <a href="../PrivateParlorXT/Services.html">Services</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SignCommand" data-name="privateparlorxt::signcommand">
+      <a href="../PrivateParlorXT/SignCommand.html">SignCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SpamHandler" data-name="privateparlorxt::spamhandler">
+      <a href="../PrivateParlorXT/SpamHandler.html">SpamHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SpoilerCommand" data-name="privateparlorxt::spoilercommand">
+      <a href="../PrivateParlorXT/SpoilerCommand.html">SpoilerCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteDatabase" data-name="privateparlorxt::sqlitedatabase">
+      <a href="../PrivateParlorXT/SQLiteDatabase.html">SQLiteDatabase</a>
+      
+    </li>
+  
+  <li class=" current" data-id="private-parlor-xt/PrivateParlorXT/SQLiteHistory" data-name="privateparlorxt::sqlitehistory">
+      <a href="../PrivateParlorXT/SQLiteHistory.html">SQLiteHistory</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteRobot9000" data-name="privateparlorxt::sqliterobot9000">
+      <a href="../PrivateParlorXT/SQLiteRobot9000.html">SQLiteRobot9000</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteStatistics" data-name="privateparlorxt::sqlitestatistics">
+      <a href="../PrivateParlorXT/SQLiteStatistics.html">SQLiteStatistics</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteUser" data-name="privateparlorxt::sqliteuser">
+      <a href="../PrivateParlorXT/SQLiteUser.html">SQLiteUser</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StartCommand" data-name="privateparlorxt::startcommand">
+      <a href="../PrivateParlorXT/StartCommand.html">StartCommand</a>
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/PrivateParlorXT/Statistics" data-name="privateparlorxt::statistics">
+      <a href="../PrivateParlorXT/Statistics.html">Statistics</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/BotInfo" data-name="privateparlorxt::statistics::botinfo">
+      <a href="../PrivateParlorXT/Statistics/BotInfo.html">BotInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Karma" data-name="privateparlorxt::statistics::karma">
+      <a href="../PrivateParlorXT/Statistics/Karma.html">Karma</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Messages" data-name="privateparlorxt::statistics::messages">
+      <a href="../PrivateParlorXT/Statistics/Messages.html">Messages</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Robot9000" data-name="privateparlorxt::statistics::robot9000">
+      <a href="../PrivateParlorXT/Statistics/Robot9000.html">Robot9000</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/StatScreens" data-name="privateparlorxt::statistics::statscreens">
+      <a href="../PrivateParlorXT/Statistics/StatScreens.html">StatScreens</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Users" data-name="privateparlorxt::statistics::users">
+      <a href="../PrivateParlorXT/Statistics/Users.html">Users</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StatisticsQueryHandler" data-name="privateparlorxt::statisticsqueryhandler">
+      <a href="../PrivateParlorXT/StatisticsQueryHandler.html">StatisticsQueryHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StatsCommand" data-name="privateparlorxt::statscommand">
+      <a href="../PrivateParlorXT/StatsCommand.html">StatsCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StickerHandler" data-name="privateparlorxt::stickerhandler">
+      <a href="../PrivateParlorXT/StickerHandler.html">StickerHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StopCommand" data-name="privateparlorxt::stopcommand">
+      <a href="../PrivateParlorXT/StopCommand.html">StopCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/TextHandler" data-name="privateparlorxt::texthandler">
+      <a href="../PrivateParlorXT/TextHandler.html">TextHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ToggleDebugCommand" data-name="privateparlorxt::toggledebugcommand">
+      <a href="../PrivateParlorXT/ToggleDebugCommand.html">ToggleDebugCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ToggleKarmaCommand" data-name="privateparlorxt::togglekarmacommand">
+      <a href="../PrivateParlorXT/ToggleKarmaCommand.html">ToggleKarmaCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/TripcodeCommand" data-name="privateparlorxt::tripcodecommand">
+      <a href="../PrivateParlorXT/TripcodeCommand.html">TripcodeCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/TripcodeSignCommand" data-name="privateparlorxt::tripcodesigncommand">
+      <a href="../PrivateParlorXT/TripcodeSignCommand.html">TripcodeSignCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UnblacklistCommand" data-name="privateparlorxt::unblacklistcommand">
+      <a href="../PrivateParlorXT/UnblacklistCommand.html">UnblacklistCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UncooldownCommand" data-name="privateparlorxt::uncooldowncommand">
+      <a href="../PrivateParlorXT/UncooldownCommand.html">UncooldownCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UnpinCommand" data-name="privateparlorxt::unpincommand">
+      <a href="../PrivateParlorXT/UnpinCommand.html">UnpinCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UpdateHandler" data-name="privateparlorxt::updatehandler">
+      <a href="../PrivateParlorXT/UpdateHandler.html">UpdateHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UpvoteHandler" data-name="privateparlorxt::upvotehandler">
+      <a href="../PrivateParlorXT/UpvoteHandler.html">UpvoteHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/User" data-name="privateparlorxt::user">
+      <a href="../PrivateParlorXT/User.html">User</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UserID" data-name="privateparlorxt::userid">
+      <a href="../PrivateParlorXT/UserID.html">UserID</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UsersCommand" data-name="privateparlorxt::userscommand">
+      <a href="../PrivateParlorXT/UsersCommand.html">UsersCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VenueHandler" data-name="privateparlorxt::venuehandler">
+      <a href="../PrivateParlorXT/VenueHandler.html">VenueHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VersionCommand" data-name="privateparlorxt::versioncommand">
+      <a href="../PrivateParlorXT/VersionCommand.html">VersionCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VideoHandler" data-name="privateparlorxt::videohandler">
+      <a href="../PrivateParlorXT/VideoHandler.html">VideoHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VideoNoteHandler" data-name="privateparlorxt::videonotehandler">
+      <a href="../PrivateParlorXT/VideoNoteHandler.html">VideoNoteHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VoiceHandler" data-name="privateparlorxt::voicehandler">
+      <a href="../PrivateParlorXT/VoiceHandler.html">VoiceHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/WarnCommand" data-name="privateparlorxt::warncommand">
+      <a href="../PrivateParlorXT/WarnCommand.html">WarnCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/WhitelistCommand" data-name="privateparlorxt::whitelistcommand">
+      <a href="../PrivateParlorXT/WhitelistCommand.html">WhitelistCommand</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/Tourmaline" data-name="tourmaline">
+      <a href="../Tourmaline.html">Tourmaline</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/Tourmaline/Message" data-name="tourmaline::message">
+      <a href="../Tourmaline/Message.html">Message</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> PrivateParlorXT::<wbr>SQLiteHistory
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../PrivateParlorXT/SQLiteHistory.html">PrivateParlorXT::SQLiteHistory</a></li><li class="superclass"><a href="../PrivateParlorXT/History.html">PrivateParlorXT::History</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>An implementation of <code><a href="../PrivateParlorXT/History.html">History</a></code> using the SQLite <code><a href="../PrivateParlorXT/Database.html">Database</a></code> for storing message data</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L7" target="_blank">
+        private-parlor-xt/history/sqlite_history.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28lifespan%3ATime%3A%3ASpan%2Cconnection%3ADB%3A%3ADatabase%29-class-method" class="signature"><strong>.new</strong>(lifespan : Time::Span, connection : DB::Database)</a>
+        
+          <div class="summary"><p>Initialize a <code><a href="../PrivateParlorXT/SQLiteHistory.html">SQLiteHistory</a></code> where messages older than <code>lifespan</code> are considered expired</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#add_rating%28message%3AMessageID%2Cuser%3AUserID%29%3ABool-instance-method" class="signature"><strong>#add_rating</strong>(message : MessageID, user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Adds a rating entry to the database with the given data</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#add_to_history%28origin%3AMessageID%2Creceiver%3AMessageID%2Creceiver_id%3AUserID%29%3ANil-instance-method" class="signature"><strong>#add_to_history</strong>(origin : MessageID, receiver : MessageID, receiver_id : UserID) : Nil</a>
+        
+          <div class="summary"><p>Add a receiver message to the <code><a href="../PrivateParlorXT/History.html">History</a></code></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#add_warning%28message%3AMessageID%29%3ANil-instance-method" class="signature"><strong>#add_warning</strong>(message : MessageID) : Nil</a>
+        
+          <div class="summary"><p>Adds a warning to the given message</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#close-instance-method" class="signature"><strong>#close</strong></a>
+        
+          <div class="summary"><p>Closes the databsase connection</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#delete_message_group%28message%3AMessageID%29%3AMessageID%7CNil-instance-method" class="signature"><strong>#delete_message_group</strong>(message : MessageID) : MessageID | Nil</a>
+        
+          <div class="summary"><p>Delete a message group from the <code><a href="../PrivateParlorXT/History.html">History</a></code></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ensure_schema%3ANil-instance-method" class="signature"><strong>#ensure_schema</strong> : Nil</a>
+        
+          <div class="summary"><p>Ensures that there are message_group, receivers, and karma tables in the <code><a href="../PrivateParlorXT/Database.html">Database</a></code></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#expire%3ANil-instance-method" class="signature"><strong>#expire</strong> : Nil</a>
+        
+          <div class="summary"><p>Deletes old messages from the <code><a href="../PrivateParlorXT/History.html">History</a></code></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#messages_from_user%28user%3AUserID%29%3ASet%28MessageID%29-instance-method" class="signature"><strong>#messages_from_user</strong>(user : UserID) : Set(MessageID)</a>
+        
+          <div class="summary"><p>Get all message IDs sent by a given user for purging messages</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new_message%28sender_id%3AUserID%2Corigin%3AMessageID%29%3AMessageID-instance-method" class="signature"><strong>#new_message</strong>(sender_id : UserID, origin : MessageID) : MessageID</a>
+        
+          <div class="summary"><p>Create a new message group and add it to the <code><a href="../PrivateParlorXT/History.html">History</a></code></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#origin_message%28message%3AMessageID%29%3AMessageID%7CNil-instance-method" class="signature"><strong>#origin_message</strong>(message : MessageID) : MessageID | Nil</a>
+        
+          <div class="summary"><p>Get the message ID of the original message associated with the given message ID</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#purge_receivers%28messages%3ASet%28MessageID%29%29%3AHash%28UserID%2CArray%28MessageID%29%29-instance-method" class="signature"><strong>#purge_receivers</strong>(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))</a>
+        
+          <div class="summary"><p>Get a hash containing an array of message IDs to delete associated with the users who received a message in the given set.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#receiver_message%28message%3AMessageID%2Creceiver%3AUserID%29%3AMessageID%7CNil-instance-method" class="signature"><strong>#receiver_message</strong>(message : MessageID, receiver : UserID) : MessageID | Nil</a>
+        
+          <div class="summary"><p>Get the original message ID associated with the given message ID and receiver ID</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#receivers%28message%3AMessageID%29%3AHash%28UserID%2CMessageID%29-instance-method" class="signature"><strong>#receivers</strong>(message : MessageID) : Hash(UserID, MessageID)</a>
+        
+          <div class="summary"><p>Get a hash of all users and receiver message IDs associated with the given message ID</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sender%28message%3AMessageID%29%3AUserID%7CNil-instance-method" class="signature"><strong>#sender</strong>(message : MessageID) : UserID | Nil</a>
+        
+          <div class="summary"><p>Get the sender of the original message referenced by the given message ID</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#warned%3F%28message%3AMessageID%29%3ABool%7CNil-instance-method" class="signature"><strong>#warned?</strong>(message : MessageID) : Bool | Nil</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the given message was already warned; <code>false</code> or nil otherwise</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+<div class="methods-inherited">
+  
+    
+
+  <h3>Instance methods inherited from class <code><a href="../PrivateParlorXT/History.html">PrivateParlorXT::History</a></code></h3>
+  
+  
+    <a href="../PrivateParlorXT/History.html#add_rating%28message%3AMessageID%2Cuser%3AUserID%29%3ABool-instance-method" class="tooltip">
+      <span>add_rating(message : MessageID, user : UserID) : Bool</span>
+    add_rating</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#add_to_history%28origin%3AMessageID%2Creceiver%3AMessageID%2Creceiver_id%3AUserID%29%3ANil-instance-method" class="tooltip">
+      <span>add_to_history(origin : MessageID, receiver : MessageID, receiver_id : UserID) : Nil</span>
+    add_to_history</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#add_warning%28message%3AMessageID%29%3ANil-instance-method" class="tooltip">
+      <span>add_warning(message : MessageID) : Nil</span>
+    add_warning</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#close-instance-method" class="tooltip">
+      <span>close</span>
+    close</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#delete_message_group%28message%3AMessageID%29%3AMessageID%7CNil-instance-method" class="tooltip">
+      <span>delete_message_group(message : MessageID) : MessageID | Nil</span>
+    delete_message_group</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#expire%3ANil-instance-method" class="tooltip">
+      <span>expire : Nil</span>
+    expire</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#lifespan%3ATime%3A%3ASpan-instance-method" class="tooltip">
+      <span>lifespan : Time::Span</span>
+    lifespan</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#messages_from_user%28user%3AUserID%29%3ASet%28MessageID%29-instance-method" class="tooltip">
+      <span>messages_from_user(user : UserID) : Set(MessageID)</span>
+    messages_from_user</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#new_message%28sender_id%3AUserID%2Corigin%3AMessageID%29%3AMessageID-instance-method" class="tooltip">
+      <span>new_message(sender_id : UserID, origin : MessageID) : MessageID</span>
+    new_message</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#origin_message%28message%3AMessageID%29%3AMessageID%7CNil-instance-method" class="tooltip">
+      <span>origin_message(message : MessageID) : MessageID | Nil</span>
+    origin_message</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#purge_receivers%28messages%3ASet%28MessageID%29%29%3AHash%28UserID%2CArray%28MessageID%29%29-instance-method" class="tooltip">
+      <span>purge_receivers(messages : Set(MessageID)) : Hash(UserID, Array(MessageID))</span>
+    purge_receivers</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#receiver_message%28message%3AMessageID%2Creceiver%3AUserID%29%3AMessageID%7CNil-instance-method" class="tooltip">
+      <span>receiver_message(message : MessageID, receiver : UserID) : MessageID | Nil</span>
+    receiver_message</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#receivers%28message%3AMessageID%29%3AHash%28UserID%2CMessageID%29-instance-method" class="tooltip">
+      <span>receivers(message : MessageID) : Hash(UserID, MessageID)</span>
+    receivers</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#sender%28message%3AMessageID%29%3AUserID%7CNil-instance-method" class="tooltip">
+      <span>sender(message : MessageID) : UserID | Nil</span>
+    sender</a>, 
+    
+  
+    <a href="../PrivateParlorXT/History.html#warned%3F%28message%3AMessageID%29%3ABool%7CNil-instance-method" class="tooltip">
+      <span>warned?(message : MessageID) : Bool | Nil</span>
+    warned?</a>
+    
+  
+
+
+    
+
+  <h3>Constructor methods inherited from class <code><a href="../PrivateParlorXT/History.html">PrivateParlorXT::History</a></code></h3>
+  
+  
+    <a href="../PrivateParlorXT/History.html#new%28lifespan%3ATime%3A%3ASpan%29-class-method" class="tooltip">
+      <span>new(lifespan : Time::Span)</span>
+    new</a>
+    
+  
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(lifespan:Time::Span,connection:DB::Database)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(lifespan : Time::Span, connection : DB::Database)
+
+        <a class="method-permalink" href="#new%28lifespan%3ATime%3A%3ASpan%2Cconnection%3ADB%3A%3ADatabase%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Initialize a <code><a href="../PrivateParlorXT/SQLiteHistory.html">SQLiteHistory</a></code> where messages older than <code>lifespan</code> are considered expired</p>
+<p>Generally this should use the same connection that was used for the database</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L13" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="add_rating(message:MessageID,user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>add_rating</strong>(message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>, user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#add_rating%28message%3AMessageID%2Cuser%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Adds a rating entry to the database with the given data</p>
+<p>Returns <code>true</code> if the user's rating was successfully added; <code>false</code> if the user's rating already exists.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L119" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="add_to_history(origin:MessageID,receiver:MessageID,receiver_id:UserID):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>add_to_history</strong>(origin : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>, receiver : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>, receiver_id : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Nil
+
+        <a class="method-permalink" href="#add_to_history%28origin%3AMessageID%2Creceiver%3AMessageID%2Creceiver_id%3AUserID%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Add a receiver message to the <code><a href="../PrivateParlorXT/History.html">History</a></code></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L45" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="add_warning(message:MessageID):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>add_warning</strong>(message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>) : Nil
+
+        <a class="method-permalink" href="#add_warning%28message%3AMessageID%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Adds a warning to the given message</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L132" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="close-instance-method">
+      <div class="signature">
+        
+        def <strong>close</strong>
+
+        <a class="method-permalink" href="#close-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Closes the databsase connection</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L18" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="delete_message_group(message:MessageID):MessageID|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>delete_message_group</strong>(message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>) : <a href="../PrivateParlorXT/MessageID.html">MessageID</a> | Nil
+
+        <a class="method-permalink" href="#delete_message_group%28message%3AMessageID%29%3AMessageID%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Delete a message group from the <code><a href="../PrivateParlorXT/History.html">History</a></code></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L183" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ensure_schema:Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>ensure_schema</strong> : Nil
+
+        <a class="method-permalink" href="#ensure_schema%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Ensures that there are message_group, receivers, and karma tables in the <code><a href="../PrivateParlorXT/Database.html">Database</a></code></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L213" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="expire:Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>expire</strong> : Nil
+
+        <a class="method-permalink" href="#expire%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Deletes old messages from the <code><a href="../PrivateParlorXT/History.html">History</a></code></p>
+<p>This should be invoked as a recurring task</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L194" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="messages_from_user(user:UserID):Set(MessageID)-instance-method">
+      <div class="signature">
+        
+        def <strong>messages_from_user</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Set(<a href="../PrivateParlorXT/MessageID.html">MessageID</a>)
+
+        <a class="method-permalink" href="#messages_from_user%28user%3AUserID%29%3ASet%28MessageID%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get all message IDs sent by a given user for purging messages</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L108" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new_message(sender_id:UserID,origin:MessageID):MessageID-instance-method">
+      <div class="signature">
+        
+        def <strong>new_message</strong>(sender_id : <a href="../PrivateParlorXT/UserID.html">UserID</a>, origin : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>) : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>
+
+        <a class="method-permalink" href="#new_message%28sender_id%3AUserID%2Corigin%3AMessageID%29%3AMessageID-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Create a new message group and add it to the <code><a href="../PrivateParlorXT/History.html">History</a></code></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L33" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="origin_message(message:MessageID):MessageID|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>origin_message</strong>(message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>) : <a href="../PrivateParlorXT/MessageID.html">MessageID</a> | Nil
+
+        <a class="method-permalink" href="#origin_message%28message%3AMessageID%29%3AMessageID%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get the message ID of the original message associated with the given message ID</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L55" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="purge_receivers(messages:Set(MessageID)):Hash(UserID,Array(MessageID))-instance-method">
+      <div class="signature">
+        
+        def <strong>purge_receivers</strong>(messages : Set(<a href="../PrivateParlorXT/MessageID.html">MessageID</a>)) : Hash(<a href="../PrivateParlorXT/UserID.html">UserID</a>, Array(<a href="../PrivateParlorXT/MessageID.html">MessageID</a>))
+
+        <a class="method-permalink" href="#purge_receivers%28messages%3ASet%28MessageID%29%29%3AHash%28UserID%2CArray%28MessageID%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get a hash containing an array of message IDs to delete associated with the users who received a message in the given set.
+Used for the <code><a href="../PrivateParlorXT/PurgeCommand.html">PurgeCommand</a></code></p>
+<p><span class="flag purple">NOTE</span>  The returned array of message IDs should be sorted in descending order (most recent messages first)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L155" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="receiver_message(message:MessageID,receiver:UserID):MessageID|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>receiver_message</strong>(message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>, receiver : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : <a href="../PrivateParlorXT/MessageID.html">MessageID</a> | Nil
+
+        <a class="method-permalink" href="#receiver_message%28message%3AMessageID%2Creceiver%3AUserID%29%3AMessageID%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get the original message ID associated with the given message ID and receiver ID</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L87" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="receivers(message:MessageID):Hash(UserID,MessageID)-instance-method">
+      <div class="signature">
+        
+        def <strong>receivers</strong>(message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>) : Hash(<a href="../PrivateParlorXT/UserID.html">UserID</a>, <a href="../PrivateParlorXT/MessageID.html">MessageID</a>)
+
+        <a class="method-permalink" href="#receivers%28message%3AMessageID%29%3AHash%28UserID%2CMessageID%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get a hash of all users and receiver message IDs associated with the given message ID</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L70" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sender(message:MessageID):UserID|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>sender</strong>(message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>) : <a href="../PrivateParlorXT/UserID.html">UserID</a> | Nil
+
+        <a class="method-permalink" href="#sender%28message%3AMessageID%29%3AUserID%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get the sender of the original message referenced by the given message ID</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L92" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="warned?(message:MessageID):Bool|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>warned?</strong>(message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>) : Bool | Nil
+
+        <a class="method-permalink" href="#warned%3F%28message%3AMessageID%29%3ABool%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the given message was already warned; <code>false</code> or nil otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/history/sqlite_history.cr#L144" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+</div>
+
+</body>
+</html>

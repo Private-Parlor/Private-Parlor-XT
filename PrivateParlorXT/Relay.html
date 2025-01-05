@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.13.3">
+<meta name="crystal_docs.project_version" content="master">
+<meta name="crystal_docs.project_name" content="private-parlor-xt">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="private-parlor-xt">
+  <title>PrivateParlorXT::Relay - private-parlor-xt master</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          private-parlor-xt
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="private-parlor-xt/PrivateParlorXT" data-name="privateparlorxt">
+      <a href="../PrivateParlorXT.html">PrivateParlorXT</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumHandler" data-name="privateparlorxt::albumhandler">
+      <a href="../PrivateParlorXT/AlbumHandler.html">AlbumHandler</a>
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/PrivateParlorXT/AlbumHelpers" data-name="privateparlorxt::albumhelpers">
+      <a href="../PrivateParlorXT/AlbumHelpers.html">AlbumHelpers</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumHelpers/Album" data-name="privateparlorxt::albumhelpers::album">
+      <a href="../PrivateParlorXT/AlbumHelpers/Album.html">Album</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumHelpers/AlbumRelayParameters" data-name="privateparlorxt::albumhelpers::albumrelayparameters">
+      <a href="../PrivateParlorXT/AlbumHelpers/AlbumRelayParameters.html">AlbumRelayParameters</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumMedia" data-name="privateparlorxt::albummedia">
+      <a href="../PrivateParlorXT/AlbumMedia.html">AlbumMedia</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AnimationHandler" data-name="privateparlorxt::animationhandler">
+      <a href="../PrivateParlorXT/AnimationHandler.html">AnimationHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AudioHandler" data-name="privateparlorxt::audiohandler">
+      <a href="../PrivateParlorXT/AudioHandler.html">AudioHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AuthorizedRanks" data-name="privateparlorxt::authorizedranks">
+      <a href="../PrivateParlorXT/AuthorizedRanks.html">AuthorizedRanks</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/BlacklistCommand" data-name="privateparlorxt::blacklistcommand">
+      <a href="../PrivateParlorXT/BlacklistCommand.html">BlacklistCommand</a>
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/PrivateParlorXT/CachedHistory" data-name="privateparlorxt::cachedhistory">
+      <a href="../PrivateParlorXT/CachedHistory.html">CachedHistory</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CachedHistory/MessageGroup" data-name="privateparlorxt::cachedhistory::messagegroup">
+      <a href="../PrivateParlorXT/CachedHistory/MessageGroup.html">MessageGroup</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CallbackHandler" data-name="privateparlorxt::callbackhandler">
+      <a href="../PrivateParlorXT/CallbackHandler.html">CallbackHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Client" data-name="privateparlorxt::client">
+      <a href="../PrivateParlorXT/Client.html">Client</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CommandDescriptions" data-name="privateparlorxt::commanddescriptions">
+      <a href="../PrivateParlorXT/CommandDescriptions.html">CommandDescriptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CommandHandler" data-name="privateparlorxt::commandhandler">
+      <a href="../PrivateParlorXT/CommandHandler.html">CommandHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CommandPermissions" data-name="privateparlorxt::commandpermissions">
+      <a href="../PrivateParlorXT/CommandPermissions.html">CommandPermissions</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Config" data-name="privateparlorxt::config">
+      <a href="../PrivateParlorXT/Config.html">Config</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ContactHandler" data-name="privateparlorxt::contacthandler">
+      <a href="../PrivateParlorXT/ContactHandler.html">ContactHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Database" data-name="privateparlorxt::database">
+      <a href="../PrivateParlorXT/Database.html">Database</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DeleteCommand" data-name="privateparlorxt::deletecommand">
+      <a href="../PrivateParlorXT/DeleteCommand.html">DeleteCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DemoteCommand" data-name="privateparlorxt::demotecommand">
+      <a href="../PrivateParlorXT/DemoteCommand.html">DemoteCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DocumentHandler" data-name="privateparlorxt::documenthandler">
+      <a href="../PrivateParlorXT/DocumentHandler.html">DocumentHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DownvoteHandler" data-name="privateparlorxt::downvotehandler">
+      <a href="../PrivateParlorXT/DownvoteHandler.html">DownvoteHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Format" data-name="privateparlorxt::format">
+      <a href="../PrivateParlorXT/Format.html">Format</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ForwardHandler" data-name="privateparlorxt::forwardhandler">
+      <a href="../PrivateParlorXT/ForwardHandler.html">ForwardHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Handler" data-name="privateparlorxt::handler">
+      <a href="../PrivateParlorXT/Handler.html">Handler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/HandlerConfig" data-name="privateparlorxt::handlerconfig">
+      <a href="../PrivateParlorXT/HandlerConfig.html">HandlerConfig</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Hears" data-name="privateparlorxt::hears">
+      <a href="../PrivateParlorXT/Hears.html">Hears</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/HearsHandler" data-name="privateparlorxt::hearshandler">
+      <a href="../PrivateParlorXT/HearsHandler.html">HearsHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/HelpCommand" data-name="privateparlorxt::helpcommand">
+      <a href="../PrivateParlorXT/HelpCommand.html">HelpCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/History" data-name="privateparlorxt::history">
+      <a href="../PrivateParlorXT/History.html">History</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/InfoCommand" data-name="privateparlorxt::infocommand">
+      <a href="../PrivateParlorXT/InfoCommand.html">InfoCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/KarmaHandler" data-name="privateparlorxt::karmahandler">
+      <a href="../PrivateParlorXT/KarmaHandler.html">KarmaHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/KarmaInfoCommand" data-name="privateparlorxt::karmainfocommand">
+      <a href="../PrivateParlorXT/KarmaInfoCommand.html">KarmaInfoCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/KarmaSignCommand" data-name="privateparlorxt::karmasigncommand">
+      <a href="../PrivateParlorXT/KarmaSignCommand.html">KarmaSignCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Locale" data-name="privateparlorxt::locale">
+      <a href="../PrivateParlorXT/Locale.html">Locale</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Localization" data-name="privateparlorxt::localization">
+      <a href="../PrivateParlorXT/Localization.html">Localization</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/LocationHandler" data-name="privateparlorxt::locationhandler">
+      <a href="../PrivateParlorXT/LocationHandler.html">LocationHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Logs" data-name="privateparlorxt::logs">
+      <a href="../PrivateParlorXT/Logs.html">Logs</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Match" data-name="privateparlorxt::match">
+      <a href="../PrivateParlorXT/Match.html">Match</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessageID" data-name="privateparlorxt::messageid">
+      <a href="../PrivateParlorXT/MessageID.html">MessageID</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessagePermissions" data-name="privateparlorxt::messagepermissions">
+      <a href="../PrivateParlorXT/MessagePermissions.html">MessagePermissions</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessageProc" data-name="privateparlorxt::messageproc">
+      <a href="../PrivateParlorXT/MessageProc.html">MessageProc</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessageQueue" data-name="privateparlorxt::messagequeue">
+      <a href="../PrivateParlorXT/MessageQueue.html">MessageQueue</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MotdCommand" data-name="privateparlorxt::motdcommand">
+      <a href="../PrivateParlorXT/MotdCommand.html">MotdCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/On" data-name="privateparlorxt::on">
+      <a href="../PrivateParlorXT/On.html">On</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PhotoHandler" data-name="privateparlorxt::photohandler">
+      <a href="../PrivateParlorXT/PhotoHandler.html">PhotoHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PinCommand" data-name="privateparlorxt::pincommand">
+      <a href="../PrivateParlorXT/PinCommand.html">PinCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PollHandler" data-name="privateparlorxt::pollhandler">
+      <a href="../PrivateParlorXT/PollHandler.html">PollHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PrivacyPolicyCommand" data-name="privateparlorxt::privacypolicycommand">
+      <a href="../PrivateParlorXT/PrivacyPolicyCommand.html">PrivacyPolicyCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PromoteCommand" data-name="privateparlorxt::promotecommand">
+      <a href="../PrivateParlorXT/PromoteCommand.html">PromoteCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PurgeCommand" data-name="privateparlorxt::purgecommand">
+      <a href="../PrivateParlorXT/PurgeCommand.html">PurgeCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/QueuedMessage" data-name="privateparlorxt::queuedmessage">
+      <a href="../PrivateParlorXT/QueuedMessage.html">QueuedMessage</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Rank" data-name="privateparlorxt::rank">
+      <a href="../PrivateParlorXT/Rank.html">Rank</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RanksayCommand" data-name="privateparlorxt::ranksaycommand">
+      <a href="../PrivateParlorXT/RanksayCommand.html">RanksayCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RegularForwardHandler" data-name="privateparlorxt::regularforwardhandler">
+      <a href="../PrivateParlorXT/RegularForwardHandler.html">RegularForwardHandler</a>
+      
+    </li>
+  
+  <li class=" current" data-id="private-parlor-xt/PrivateParlorXT/Relay" data-name="privateparlorxt::relay">
+      <a href="../PrivateParlorXT/Relay.html">Relay</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RelayParameters" data-name="privateparlorxt::relayparameters">
+      <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RemoveCommand" data-name="privateparlorxt::removecommand">
+      <a href="../PrivateParlorXT/RemoveCommand.html">RemoveCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Replies" data-name="privateparlorxt::replies">
+      <a href="../PrivateParlorXT/Replies.html">Replies</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ReplyParameters" data-name="privateparlorxt::replyparameters">
+      <a href="../PrivateParlorXT/ReplyParameters.html">ReplyParameters</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RespondsTo" data-name="privateparlorxt::respondsto">
+      <a href="../PrivateParlorXT/RespondsTo.html">RespondsTo</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RevealCommand" data-name="privateparlorxt::revealcommand">
+      <a href="../PrivateParlorXT/RevealCommand.html">RevealCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Robot9000" data-name="privateparlorxt::robot9000">
+      <a href="../PrivateParlorXT/Robot9000.html">Robot9000</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Services" data-name="privateparlorxt::services">
+      <a href="../PrivateParlorXT/Services.html">Services</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SignCommand" data-name="privateparlorxt::signcommand">
+      <a href="../PrivateParlorXT/SignCommand.html">SignCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SpamHandler" data-name="privateparlorxt::spamhandler">
+      <a href="../PrivateParlorXT/SpamHandler.html">SpamHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SpoilerCommand" data-name="privateparlorxt::spoilercommand">
+      <a href="../PrivateParlorXT/SpoilerCommand.html">SpoilerCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteDatabase" data-name="privateparlorxt::sqlitedatabase">
+      <a href="../PrivateParlorXT/SQLiteDatabase.html">SQLiteDatabase</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteHistory" data-name="privateparlorxt::sqlitehistory">
+      <a href="../PrivateParlorXT/SQLiteHistory.html">SQLiteHistory</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteRobot9000" data-name="privateparlorxt::sqliterobot9000">
+      <a href="../PrivateParlorXT/SQLiteRobot9000.html">SQLiteRobot9000</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteStatistics" data-name="privateparlorxt::sqlitestatistics">
+      <a href="../PrivateParlorXT/SQLiteStatistics.html">SQLiteStatistics</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteUser" data-name="privateparlorxt::sqliteuser">
+      <a href="../PrivateParlorXT/SQLiteUser.html">SQLiteUser</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StartCommand" data-name="privateparlorxt::startcommand">
+      <a href="../PrivateParlorXT/StartCommand.html">StartCommand</a>
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/PrivateParlorXT/Statistics" data-name="privateparlorxt::statistics">
+      <a href="../PrivateParlorXT/Statistics.html">Statistics</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/BotInfo" data-name="privateparlorxt::statistics::botinfo">
+      <a href="../PrivateParlorXT/Statistics/BotInfo.html">BotInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Karma" data-name="privateparlorxt::statistics::karma">
+      <a href="../PrivateParlorXT/Statistics/Karma.html">Karma</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Messages" data-name="privateparlorxt::statistics::messages">
+      <a href="../PrivateParlorXT/Statistics/Messages.html">Messages</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Robot9000" data-name="privateparlorxt::statistics::robot9000">
+      <a href="../PrivateParlorXT/Statistics/Robot9000.html">Robot9000</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/StatScreens" data-name="privateparlorxt::statistics::statscreens">
+      <a href="../PrivateParlorXT/Statistics/StatScreens.html">StatScreens</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Users" data-name="privateparlorxt::statistics::users">
+      <a href="../PrivateParlorXT/Statistics/Users.html">Users</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StatisticsQueryHandler" data-name="privateparlorxt::statisticsqueryhandler">
+      <a href="../PrivateParlorXT/StatisticsQueryHandler.html">StatisticsQueryHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StatsCommand" data-name="privateparlorxt::statscommand">
+      <a href="../PrivateParlorXT/StatsCommand.html">StatsCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StickerHandler" data-name="privateparlorxt::stickerhandler">
+      <a href="../PrivateParlorXT/StickerHandler.html">StickerHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StopCommand" data-name="privateparlorxt::stopcommand">
+      <a href="../PrivateParlorXT/StopCommand.html">StopCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/TextHandler" data-name="privateparlorxt::texthandler">
+      <a href="../PrivateParlorXT/TextHandler.html">TextHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ToggleDebugCommand" data-name="privateparlorxt::toggledebugcommand">
+      <a href="../PrivateParlorXT/ToggleDebugCommand.html">ToggleDebugCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ToggleKarmaCommand" data-name="privateparlorxt::togglekarmacommand">
+      <a href="../PrivateParlorXT/ToggleKarmaCommand.html">ToggleKarmaCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/TripcodeCommand" data-name="privateparlorxt::tripcodecommand">
+      <a href="../PrivateParlorXT/TripcodeCommand.html">TripcodeCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/TripcodeSignCommand" data-name="privateparlorxt::tripcodesigncommand">
+      <a href="../PrivateParlorXT/TripcodeSignCommand.html">TripcodeSignCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UnblacklistCommand" data-name="privateparlorxt::unblacklistcommand">
+      <a href="../PrivateParlorXT/UnblacklistCommand.html">UnblacklistCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UncooldownCommand" data-name="privateparlorxt::uncooldowncommand">
+      <a href="../PrivateParlorXT/UncooldownCommand.html">UncooldownCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UnpinCommand" data-name="privateparlorxt::unpincommand">
+      <a href="../PrivateParlorXT/UnpinCommand.html">UnpinCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UpdateHandler" data-name="privateparlorxt::updatehandler">
+      <a href="../PrivateParlorXT/UpdateHandler.html">UpdateHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UpvoteHandler" data-name="privateparlorxt::upvotehandler">
+      <a href="../PrivateParlorXT/UpvoteHandler.html">UpvoteHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/User" data-name="privateparlorxt::user">
+      <a href="../PrivateParlorXT/User.html">User</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UserID" data-name="privateparlorxt::userid">
+      <a href="../PrivateParlorXT/UserID.html">UserID</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UsersCommand" data-name="privateparlorxt::userscommand">
+      <a href="../PrivateParlorXT/UsersCommand.html">UsersCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VenueHandler" data-name="privateparlorxt::venuehandler">
+      <a href="../PrivateParlorXT/VenueHandler.html">VenueHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VersionCommand" data-name="privateparlorxt::versioncommand">
+      <a href="../PrivateParlorXT/VersionCommand.html">VersionCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VideoHandler" data-name="privateparlorxt::videohandler">
+      <a href="../PrivateParlorXT/VideoHandler.html">VideoHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VideoNoteHandler" data-name="privateparlorxt::videonotehandler">
+      <a href="../PrivateParlorXT/VideoNoteHandler.html">VideoNoteHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VoiceHandler" data-name="privateparlorxt::voicehandler">
+      <a href="../PrivateParlorXT/VoiceHandler.html">VoiceHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/WarnCommand" data-name="privateparlorxt::warncommand">
+      <a href="../PrivateParlorXT/WarnCommand.html">WarnCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/WhitelistCommand" data-name="privateparlorxt::whitelistcommand">
+      <a href="../PrivateParlorXT/WhitelistCommand.html">WhitelistCommand</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/Tourmaline" data-name="tourmaline">
+      <a href="../Tourmaline.html">Tourmaline</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/Tourmaline/Message" data-name="tourmaline::message">
+      <a href="../Tourmaline/Message.html">Message</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> PrivateParlorXT::<wbr>Relay
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../PrivateParlorXT/Relay.html">PrivateParlorXT::Relay</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Handles the <code><a href="../PrivateParlorXT/MessageQueue.html">MessageQueue</a></code> and sends prepared messages to Telegram</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L58" target="_blank">
+        private-parlor-xt/relay/relay.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28log_channel%3AString%2Cclient%3ATourmaline%3A%3AClient%29-class-method" class="signature"><strong>.new</strong>(log_channel : String, client : Tourmaline::Client)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#cache_message%28success%3ATourmaline%3A%3AMessage%7CArray%28Tourmaline%3A%3AMessage%29%2Cmessage%3AQueuedMessage%2Cservices%3AServices%29%3ANil-instance-method" class="signature"><strong>#cache_message</strong>(success : Tourmaline::Message | Array(Tourmaline::Message), message : QueuedMessage, services : Services) : Nil</a>
+        
+          <div class="summary"><p>Caches data from the message returned from Telegram in the message <code><a href="../PrivateParlorXT/History.html">History</a></code></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#delete_message%28receiver%3AUserID%2Cmessage%3AMessageID%29%3ANil-instance-method" class="signature"><strong>#delete_message</strong>(receiver : UserID, message : MessageID) : Nil</a>
+        
+          <div class="summary"><p>Delete a <em>message</em> for <em>receiver</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#edit_message_media%28user%3AUserID%2Cmedia%3ATourmaline%3A%3AInputMedia%2Cmessage%3AMessageID%29%3ANil-instance-method" class="signature"><strong>#edit_message_media</strong>(user : UserID, media : Tourmaline::InputMedia, message : MessageID) : Nil</a>
+        
+          <div class="summary"><p>Edit a message's media, usually used for placing a spoiler on a message</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#edit_message_text%28user%3AUserID%2Ctext%3AString%2Cmarkup%3ATourmaline%3A%3AInlineKeyboardMarkup%7CNil%2Cmessage%3AMessageID%29%3ANil-instance-method" class="signature"><strong>#edit_message_text</strong>(user : UserID, text : String, markup : Tourmaline::InlineKeyboardMarkup | Nil, message : MessageID) : Nil</a>
+        
+          <div class="summary"><p>Exit a message's text</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_chat%28user%3AUserID%29%3ATourmaline%3A%3AChatFullInfo%7CNil-instance-method" class="signature"><strong>#get_chat</strong>(user : UserID) : Tourmaline::ChatFullInfo | Nil</a>
+        
+          <div class="summary"><p>Returns the full chat information for the given <em>user</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#log_output%28text%3AString%29%3ANil-instance-method" class="signature"><strong>#log_output</strong>(text : String) : Nil</a>
+        
+          <div class="summary"><p>Prints <em>text</em> to the log and send it to the <code>log_channel</code> if it is set</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pin_message%28user%3AUserID%2Cmessage%3AMessageID%29%3ANil-instance-method" class="signature"><strong>#pin_message</strong>(user : UserID, message : MessageID) : Nil</a>
+        
+          <div class="summary"><p>Pins the given <em>message</em> to the chat</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#purge_messages%28receiver%3AUserID%2Cmessages%3AArray%28MessageID%29%29%3ANil-instance-method" class="signature"><strong>#purge_messages</strong>(receiver : UserID, messages : Array(MessageID)) : Nil</a>
+        
+          <div class="summary"><p>Bulk dellete <em>messages</em> for a given <em>receiver</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#reject_blacklisted_messages%28user%3AUserID%29%3ANil-instance-method" class="signature"><strong>#reject_blacklisted_messages</strong>(user : UserID) : Nil</a>
+        
+          <div class="summary"><p>Remove messages from the queue that are sent by or addressed to <em>user</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#reject_inactive_user_messages%28user%3AUserID%29%3ANil-instance-method" class="signature"><strong>#reject_inactive_user_messages</strong>(user : UserID) : Nil</a>
+        
+          <div class="summary"><p>Remove messages from the queue that are addressed to <em>user</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#relay_message%28message%3AQueuedMessage%2Cservices%3AServices%29%3ATourmaline%3A%3AMessage%7CArray%28Tourmaline%3A%3AMessage%29%7CNil-instance-method" class="signature"><strong>#relay_message</strong>(message : QueuedMessage, services : Services) : Tourmaline::Message | Array(Tourmaline::Message) | Nil</a>
+        
+          <div class="summary"><p>Calls the proc associated with the given message.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_album%28params%3AAlbumHelpers%3A%3AAlbumRelayParameters%29%3ANil-instance-method" class="signature"><strong>#send_album</strong>(params : AlbumHelpers::AlbumRelayParameters) : Nil</a>
+        
+          <div class="summary"><p>Queues an album with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_animation%28params%3ARelayParameters%29%3ANil-instance-method" class="signature"><strong>#send_animation</strong>(params : RelayParameters) : Nil</a>
+        
+          <div class="summary"><p>Queues a GIF with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_audio%28params%3ARelayParameters%29%3ANil-instance-method" class="signature"><strong>#send_audio</strong>(params : RelayParameters) : Nil</a>
+        
+          <div class="summary"><p>Queues an audio message with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_contact%28params%3ARelayParameters%2Ccontact%3ATourmaline%3A%3AContact%29%3ANil-instance-method" class="signature"><strong>#send_contact</strong>(params : RelayParameters, contact : Tourmaline::Contact) : Nil</a>
+        
+          <div class="summary"><p>Queues a <code>Tourmaline::Contact</code> with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_document%28params%3ARelayParameters%29%3ANil-instance-method" class="signature"><strong>#send_document</strong>(params : RelayParameters) : Nil</a>
+        
+          <div class="summary"><p>Queues a document with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_forward%28params%3ARelayParameters%2Cmessage%3AMessageID%29%3ANil-instance-method" class="signature"><strong>#send_forward</strong>(params : RelayParameters, message : MessageID) : Nil</a>
+        
+          <div class="summary"><p>Queues a forwarded message with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_location%28params%3ARelayParameters%2Clocation%3ATourmaline%3A%3ALocation%29%3ANil-instance-method" class="signature"><strong>#send_location</strong>(params : RelayParameters, location : Tourmaline::Location) : Nil</a>
+        
+          <div class="summary"><p>Queues a <code>Tourmaline::Location</code> with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_message%28services%3AServices%29%3ABool%7CNil-instance-method" class="signature"><strong>#send_message</strong>(services : Services) : Bool | Nil</a>
+        
+          <div class="summary"><p>Takes a message from the queue and sends it.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_photo%28params%3ARelayParameters%29%3ANil-instance-method" class="signature"><strong>#send_photo</strong>(params : RelayParameters) : Nil</a>
+        
+          <div class="summary"><p>Queues a photo with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_poll_copy%28reply%3AMessageID%2Cuser%3AUser%2Ceffect%3AString%7CNil%2Cpoll%3ATourmaline%3A%3APoll%29%3ATourmaline%3A%3AMessage-instance-method" class="signature"><strong>#send_poll_copy</strong>(reply : MessageID, user : User, effect : String | Nil, poll : Tourmaline::Poll) : Tourmaline::Message</a>
+        
+          <div class="summary"><p>Sends a <code>Tourmaline::Poll</code> with the given parameters found in <em>poll</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_sticker%28params%3ARelayParameters%29%3ANil-instance-method" class="signature"><strong>#send_sticker</strong>(params : RelayParameters) : Nil</a>
+        
+          <div class="summary"><p>Queues a sticker with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_text%28params%3ARelayParameters%29%3ANil-instance-method" class="signature"><strong>#send_text</strong>(params : RelayParameters) : Nil</a>
+        
+          <div class="summary"><p>Queues a text message with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_to_channel%28reply_message%3AMessageID%7CNil%2Cchannel%3AString%2Ctext%3AString%29%3ANil-instance-method" class="signature"><strong>#send_to_channel</strong>(reply_message : MessageID | Nil, channel : String, text : String) : Nil</a>
+        
+          <div class="summary"><p>Relay a message to the log channel.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_to_user%28reply_message%3AReplyParameters%7CNil%2Cuser%3AUserID%2Ctext%3AString%2Creply_markup%3ATourmaline%3A%3AInlineKeyboardMarkup%7CNil%3Dnil%29%3ANil-instance-method" class="signature"><strong>#send_to_user</strong>(reply_message : ReplyParameters | Nil, user : UserID, text : String, reply_markup : Tourmaline::InlineKeyboardMarkup | Nil = <span class="n">nil</span>) : Nil</a>
+        
+          <div class="summary"><p>Relay a message to a single user.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_venue%28params%3ARelayParameters%2Cvenue%3ATourmaline%3A%3AVenue%29%3ANil-instance-method" class="signature"><strong>#send_venue</strong>(params : RelayParameters, venue : Tourmaline::Venue) : Nil</a>
+        
+          <div class="summary"><p>Queues a <code>Tourmaline::Venue</code> with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_video%28params%3ARelayParameters%29%3ANil-instance-method" class="signature"><strong>#send_video</strong>(params : RelayParameters) : Nil</a>
+        
+          <div class="summary"><p>Queues a video with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_video_note%28params%3ARelayParameters%29%3ANil-instance-method" class="signature"><strong>#send_video_note</strong>(params : RelayParameters) : Nil</a>
+        
+          <div class="summary"><p>Queues a video note with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#send_voice%28params%3ARelayParameters%29%3ANil-instance-method" class="signature"><strong>#send_voice</strong>(params : RelayParameters) : Nil</a>
+        
+          <div class="summary"><p>Queues a voice message with the given <em>params</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set_log_channel%28channel_id%3AString%29%3ANil-instance-method" class="signature"><strong>#set_log_channel</strong>(channel_id : String) : Nil</a>
+        
+          <div class="summary"><p>Set the log chanel ID to <em>channel_id</em></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#start_polling-instance-method" class="signature"><strong>#start_polling</strong></a>
+        
+          <div class="summary"><p>Start polling Telegram for updates</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#stop_polling-instance-method" class="signature"><strong>#stop_polling</strong></a>
+        
+          <div class="summary"><p>Stop polling Telegram for updates</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#unpin_message%28user%3AUserID%2Cmessage%3AMessageID%7CNil%3Dnil%29%3ANil-instance-method" class="signature"><strong>#unpin_message</strong>(user : UserID, message : MessageID | Nil = <span class="n">nil</span>) : Nil</a>
+        
+          <div class="summary"><p>Unpins the most recent message from the chat, or unpins the given <em>message</em></p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(log_channel:String,client:Tourmaline::Client)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(log_channel : String, client : Tourmaline::Client)
+
+        <a class="method-permalink" href="#new%28log_channel%3AString%2Cclient%3ATourmaline%3A%3AClient%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L68" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="cache_message(success:Tourmaline::Message|Array(Tourmaline::Message),message:QueuedMessage,services:Services):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>cache_message</strong>(success : <a href="../Tourmaline/Message.html">Tourmaline::Message</a> | Array(<a href="../Tourmaline/Message.html">Tourmaline::Message</a>), message : <a href="../PrivateParlorXT/QueuedMessage.html">QueuedMessage</a>, services : <a href="../PrivateParlorXT/Services.html">Services</a>) : Nil
+
+        <a class="method-permalink" href="#cache_message%28success%3ATourmaline%3A%3AMessage%7CArray%28Tourmaline%3A%3AMessage%29%2Cmessage%3AQueuedMessage%2Cservices%3AServices%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Caches data from the message returned from Telegram in the message <code><a href="../PrivateParlorXT/History.html">History</a></code></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L592" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="delete_message(receiver:UserID,message:MessageID):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>delete_message</strong>(receiver : <a href="../PrivateParlorXT/UserID.html">UserID</a>, message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>) : Nil
+
+        <a class="method-permalink" href="#delete_message%28receiver%3AUserID%2Cmessage%3AMessageID%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Delete a <em>message</em> for <em>receiver</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L451" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="edit_message_media(user:UserID,media:Tourmaline::InputMedia,message:MessageID):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>edit_message_media</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>, media : Tourmaline::InputMedia, message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>) : Nil
+
+        <a class="method-permalink" href="#edit_message_media%28user%3AUserID%2Cmedia%3ATourmaline%3A%3AInputMedia%2Cmessage%3AMessageID%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Edit a message's media, usually used for placing a spoiler on a message</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L507" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="edit_message_text(user:UserID,text:String,markup:Tourmaline::InlineKeyboardMarkup|Nil,message:MessageID):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>edit_message_text</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>, text : String, markup : Tourmaline::InlineKeyboardMarkup | Nil, message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>) : Nil
+
+        <a class="method-permalink" href="#edit_message_text%28user%3AUserID%2Ctext%3AString%2Cmarkup%3ATourmaline%3A%3AInlineKeyboardMarkup%7CNil%2Cmessage%3AMessageID%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Exit a message's text</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L522" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_chat(user:UserID):Tourmaline::ChatFullInfo|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>get_chat</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Tourmaline::ChatFullInfo | Nil
+
+        <a class="method-permalink" href="#get_chat%28user%3AUserID%29%3ATourmaline%3A%3AChatFullInfo%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the full chat information for the given <em>user</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L77" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="log_output(text:String):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>log_output</strong>(text : String) : Nil
+
+        <a class="method-permalink" href="#log_output%28text%3AString%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Prints <em>text</em> to the log and send it to the <code>log_channel</code> if it is set</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L535" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pin_message(user:UserID,message:MessageID):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>pin_message</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>, message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>) : Nil
+
+        <a class="method-permalink" href="#pin_message%28user%3AUserID%2Cmessage%3AMessageID%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Pins the given <em>message</em> to the chat</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L474" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="purge_messages(receiver:UserID,messages:Array(MessageID)):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>purge_messages</strong>(receiver : <a href="../PrivateParlorXT/UserID.html">UserID</a>, messages : Array(<a href="../PrivateParlorXT/MessageID.html">MessageID</a>)) : Nil
+
+        <a class="method-permalink" href="#purge_messages%28receiver%3AUserID%2Cmessages%3AArray%28MessageID%29%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Bulk dellete <em>messages</em> for a given <em>receiver</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L463" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="reject_blacklisted_messages(user:UserID):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>reject_blacklisted_messages</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Nil
+
+        <a class="method-permalink" href="#reject_blacklisted_messages%28user%3AUserID%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Remove messages from the queue that are sent by or addressed to <em>user</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L437" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="reject_inactive_user_messages(user:UserID):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>reject_inactive_user_messages</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Nil
+
+        <a class="method-permalink" href="#reject_inactive_user_messages%28user%3AUserID%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Remove messages from the queue that are addressed to <em>user</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L444" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="relay_message(message:QueuedMessage,services:Services):Tourmaline::Message|Array(Tourmaline::Message)|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>relay_message</strong>(message : <a href="../PrivateParlorXT/QueuedMessage.html">QueuedMessage</a>, services : <a href="../PrivateParlorXT/Services.html">Services</a>) : <a href="../Tourmaline/Message.html">Tourmaline::Message</a> | Array(<a href="../Tourmaline/Message.html">Tourmaline::Message</a>) | Nil
+
+        <a class="method-permalink" href="#relay_message%28message%3AQueuedMessage%2Cservices%3AServices%29%3ATourmaline%3A%3AMessage%7CArray%28Tourmaline%3A%3AMessage%29%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Calls the proc associated with the given message.</p>
+<p>Returns a <code><a href="../Tourmaline/Message.html">Tourmaline::Message</a></code> when sending messages that are not albums
+Returns an array of <code><a href="../Tourmaline/Message.html">Tourmaline::Message</a></code> for sent albums
+Returns nil on sending a system message, Telegram giving us a boolean,
+or encountering an error</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L559" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_album(params:AlbumHelpers::AlbumRelayParameters):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_album</strong>(params : <a href="../PrivateParlorXT/AlbumHelpers/AlbumRelayParameters.html">AlbumHelpers::AlbumRelayParameters</a>) : Nil
+
+        <a class="method-permalink" href="#send_album%28params%3AAlbumHelpers%3A%3AAlbumRelayParameters%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues an album with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L354" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_animation(params:RelayParameters):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_animation</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>) : Nil
+
+        <a class="method-permalink" href="#send_animation%28params%3ARelayParameters%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues a GIF with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L172" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_audio(params:RelayParameters):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_audio</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>) : Nil
+
+        <a class="method-permalink" href="#send_audio%28params%3ARelayParameters%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues an audio message with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L218" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_contact(params:RelayParameters,contact:Tourmaline::Contact):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_contact</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>, contact : Tourmaline::Contact) : Nil
+
+        <a class="method-permalink" href="#send_contact%28params%3ARelayParameters%2Ccontact%3ATourmaline%3A%3AContact%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues a <code>Tourmaline::Contact</code> with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L416" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_document(params:RelayParameters):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_document</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>) : Nil
+
+        <a class="method-permalink" href="#send_document%28params%3ARelayParameters%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues a document with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L260" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_forward(params:RelayParameters,message:MessageID):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_forward</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>, message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>) : Nil
+
+        <a class="method-permalink" href="#send_forward%28params%3ARelayParameters%2Cmessage%3AMessageID%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues a forwarded message with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L301" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_location(params:RelayParameters,location:Tourmaline::Location):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_location</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>, location : Tourmaline::Location) : Nil
+
+        <a class="method-permalink" href="#send_location%28params%3ARelayParameters%2Clocation%3ATourmaline%3A%3ALocation%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues a <code>Tourmaline::Location</code> with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L397" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_message(services:Services):Bool|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_message</strong>(services : <a href="../PrivateParlorXT/Services.html">Services</a>) : Bool | Nil
+
+        <a class="method-permalink" href="#send_message%28services%3AServices%29%3ABool%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Takes a message from the queue and sends it.</p>
+<p>Returns true if queue is empty</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L545" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_photo(params:RelayParameters):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_photo</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>) : Nil
+
+        <a class="method-permalink" href="#send_photo%28params%3ARelayParameters%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues a photo with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L149" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_poll_copy(reply:MessageID,user:User,effect:String|Nil,poll:Tourmaline::Poll):Tourmaline::Message-instance-method">
+      <div class="signature">
+        
+        def <strong>send_poll_copy</strong>(reply : <a href="../PrivateParlorXT/MessageID.html">MessageID</a>, user : <a href="../PrivateParlorXT/User.html">User</a>, effect : String | Nil, poll : Tourmaline::Poll) : <a href="../Tourmaline/Message.html">Tourmaline::Message</a>
+
+        <a class="method-permalink" href="#send_poll_copy%28reply%3AMessageID%2Cuser%3AUser%2Ceffect%3AString%7CNil%2Cpoll%3ATourmaline%3A%3APoll%29%3ATourmaline%3A%3AMessage-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sends a <code>Tourmaline::Poll</code> with the given parameters found in <em>poll</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L281" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_sticker(params:RelayParameters):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_sticker</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>) : Nil
+
+        <a class="method-permalink" href="#send_sticker%28params%3ARelayParameters%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues a sticker with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L336" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_text(params:RelayParameters):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_text</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>) : Nil
+
+        <a class="method-permalink" href="#send_text%28params%3ARelayParameters%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues a text message with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L128" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_to_channel(reply_message:MessageID|Nil,channel:String,text:String):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_to_channel</strong>(reply_message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a> | Nil, channel : String, text : String) : Nil
+
+        <a class="method-permalink" href="#send_to_channel%28reply_message%3AMessageID%7CNil%2Cchannel%3AString%2Ctext%3AString%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Relay a message to the log channel.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L111" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_to_user(reply_message:ReplyParameters|Nil,user:UserID,text:String,reply_markup:Tourmaline::InlineKeyboardMarkup|Nil=nil):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_to_user</strong>(reply_message : <a href="../PrivateParlorXT/ReplyParameters.html">ReplyParameters</a> | Nil, user : <a href="../PrivateParlorXT/UserID.html">UserID</a>, text : String, reply_markup : Tourmaline::InlineKeyboardMarkup | Nil = <span class="n">nil</span>) : Nil
+
+        <a class="method-permalink" href="#send_to_user%28reply_message%3AReplyParameters%7CNil%2Cuser%3AUserID%2Ctext%3AString%2Creply_markup%3ATourmaline%3A%3AInlineKeyboardMarkup%7CNil%3Dnil%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Relay a message to a single user. Used for system messages.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L94" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_venue(params:RelayParameters,venue:Tourmaline::Venue):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_venue</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>, venue : Tourmaline::Venue) : Nil
+
+        <a class="method-permalink" href="#send_venue%28params%3ARelayParameters%2Cvenue%3ATourmaline%3A%3AVenue%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues a <code>Tourmaline::Venue</code> with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L372" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_video(params:RelayParameters):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_video</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>) : Nil
+
+        <a class="method-permalink" href="#send_video%28params%3ARelayParameters%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues a video with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L195" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_video_note(params:RelayParameters):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_video_note</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>) : Nil
+
+        <a class="method-permalink" href="#send_video_note%28params%3ARelayParameters%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues a video note with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L318" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="send_voice(params:RelayParameters):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>send_voice</strong>(params : <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>) : Nil
+
+        <a class="method-permalink" href="#send_voice%28params%3ARelayParameters%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Queues a voice message with the given <em>params</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L239" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set_log_channel(channel_id:String):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>set_log_channel</strong>(channel_id : String) : Nil
+
+        <a class="method-permalink" href="#set_log_channel%28channel_id%3AString%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Set the log chanel ID to <em>channel_id</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L72" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="start_polling-instance-method">
+      <div class="signature">
+        
+        def <strong>start_polling</strong>
+
+        <a class="method-permalink" href="#start_polling-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Start polling Telegram for updates</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L84" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="stop_polling-instance-method">
+      <div class="signature">
+        
+        def <strong>stop_polling</strong>
+
+        <a class="method-permalink" href="#stop_polling-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Stop polling Telegram for updates</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L89" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="unpin_message(user:UserID,message:MessageID|Nil=nil):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>unpin_message</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>, message : <a href="../PrivateParlorXT/MessageID.html">MessageID</a> | Nil = <span class="n">nil</span>) : Nil
+
+        <a class="method-permalink" href="#unpin_message%28user%3AUserID%2Cmessage%3AMessageID%7CNil%3Dnil%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Unpins the most recent message from the chat, or unpins the given <em>message</em></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/relay/relay.cr#L486" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+</div>
+
+</body>
+</html>

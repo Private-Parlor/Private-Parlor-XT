@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.13.3">
+<meta name="crystal_docs.project_version" content="master">
+<meta name="crystal_docs.project_name" content="private-parlor-xt">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="private-parlor-xt">
+  <title>PrivateParlorXT::HandlerConfig - private-parlor-xt master</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          private-parlor-xt
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="private-parlor-xt/PrivateParlorXT" data-name="privateparlorxt">
+      <a href="../PrivateParlorXT.html">PrivateParlorXT</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumHandler" data-name="privateparlorxt::albumhandler">
+      <a href="../PrivateParlorXT/AlbumHandler.html">AlbumHandler</a>
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/PrivateParlorXT/AlbumHelpers" data-name="privateparlorxt::albumhelpers">
+      <a href="../PrivateParlorXT/AlbumHelpers.html">AlbumHelpers</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumHelpers/Album" data-name="privateparlorxt::albumhelpers::album">
+      <a href="../PrivateParlorXT/AlbumHelpers/Album.html">Album</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumHelpers/AlbumRelayParameters" data-name="privateparlorxt::albumhelpers::albumrelayparameters">
+      <a href="../PrivateParlorXT/AlbumHelpers/AlbumRelayParameters.html">AlbumRelayParameters</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumMedia" data-name="privateparlorxt::albummedia">
+      <a href="../PrivateParlorXT/AlbumMedia.html">AlbumMedia</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AnimationHandler" data-name="privateparlorxt::animationhandler">
+      <a href="../PrivateParlorXT/AnimationHandler.html">AnimationHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AudioHandler" data-name="privateparlorxt::audiohandler">
+      <a href="../PrivateParlorXT/AudioHandler.html">AudioHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AuthorizedRanks" data-name="privateparlorxt::authorizedranks">
+      <a href="../PrivateParlorXT/AuthorizedRanks.html">AuthorizedRanks</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/BlacklistCommand" data-name="privateparlorxt::blacklistcommand">
+      <a href="../PrivateParlorXT/BlacklistCommand.html">BlacklistCommand</a>
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/PrivateParlorXT/CachedHistory" data-name="privateparlorxt::cachedhistory">
+      <a href="../PrivateParlorXT/CachedHistory.html">CachedHistory</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CachedHistory/MessageGroup" data-name="privateparlorxt::cachedhistory::messagegroup">
+      <a href="../PrivateParlorXT/CachedHistory/MessageGroup.html">MessageGroup</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CallbackHandler" data-name="privateparlorxt::callbackhandler">
+      <a href="../PrivateParlorXT/CallbackHandler.html">CallbackHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Client" data-name="privateparlorxt::client">
+      <a href="../PrivateParlorXT/Client.html">Client</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CommandDescriptions" data-name="privateparlorxt::commanddescriptions">
+      <a href="../PrivateParlorXT/CommandDescriptions.html">CommandDescriptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CommandHandler" data-name="privateparlorxt::commandhandler">
+      <a href="../PrivateParlorXT/CommandHandler.html">CommandHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CommandPermissions" data-name="privateparlorxt::commandpermissions">
+      <a href="../PrivateParlorXT/CommandPermissions.html">CommandPermissions</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Config" data-name="privateparlorxt::config">
+      <a href="../PrivateParlorXT/Config.html">Config</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ContactHandler" data-name="privateparlorxt::contacthandler">
+      <a href="../PrivateParlorXT/ContactHandler.html">ContactHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Database" data-name="privateparlorxt::database">
+      <a href="../PrivateParlorXT/Database.html">Database</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DeleteCommand" data-name="privateparlorxt::deletecommand">
+      <a href="../PrivateParlorXT/DeleteCommand.html">DeleteCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DemoteCommand" data-name="privateparlorxt::demotecommand">
+      <a href="../PrivateParlorXT/DemoteCommand.html">DemoteCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DocumentHandler" data-name="privateparlorxt::documenthandler">
+      <a href="../PrivateParlorXT/DocumentHandler.html">DocumentHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DownvoteHandler" data-name="privateparlorxt::downvotehandler">
+      <a href="../PrivateParlorXT/DownvoteHandler.html">DownvoteHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Format" data-name="privateparlorxt::format">
+      <a href="../PrivateParlorXT/Format.html">Format</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ForwardHandler" data-name="privateparlorxt::forwardhandler">
+      <a href="../PrivateParlorXT/ForwardHandler.html">ForwardHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Handler" data-name="privateparlorxt::handler">
+      <a href="../PrivateParlorXT/Handler.html">Handler</a>
+      
+    </li>
+  
+  <li class=" current" data-id="private-parlor-xt/PrivateParlorXT/HandlerConfig" data-name="privateparlorxt::handlerconfig">
+      <a href="../PrivateParlorXT/HandlerConfig.html">HandlerConfig</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Hears" data-name="privateparlorxt::hears">
+      <a href="../PrivateParlorXT/Hears.html">Hears</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/HearsHandler" data-name="privateparlorxt::hearshandler">
+      <a href="../PrivateParlorXT/HearsHandler.html">HearsHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/HelpCommand" data-name="privateparlorxt::helpcommand">
+      <a href="../PrivateParlorXT/HelpCommand.html">HelpCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/History" data-name="privateparlorxt::history">
+      <a href="../PrivateParlorXT/History.html">History</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/InfoCommand" data-name="privateparlorxt::infocommand">
+      <a href="../PrivateParlorXT/InfoCommand.html">InfoCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/KarmaHandler" data-name="privateparlorxt::karmahandler">
+      <a href="../PrivateParlorXT/KarmaHandler.html">KarmaHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/KarmaInfoCommand" data-name="privateparlorxt::karmainfocommand">
+      <a href="../PrivateParlorXT/KarmaInfoCommand.html">KarmaInfoCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/KarmaSignCommand" data-name="privateparlorxt::karmasigncommand">
+      <a href="../PrivateParlorXT/KarmaSignCommand.html">KarmaSignCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Locale" data-name="privateparlorxt::locale">
+      <a href="../PrivateParlorXT/Locale.html">Locale</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Localization" data-name="privateparlorxt::localization">
+      <a href="../PrivateParlorXT/Localization.html">Localization</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/LocationHandler" data-name="privateparlorxt::locationhandler">
+      <a href="../PrivateParlorXT/LocationHandler.html">LocationHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Logs" data-name="privateparlorxt::logs">
+      <a href="../PrivateParlorXT/Logs.html">Logs</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Match" data-name="privateparlorxt::match">
+      <a href="../PrivateParlorXT/Match.html">Match</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessageID" data-name="privateparlorxt::messageid">
+      <a href="../PrivateParlorXT/MessageID.html">MessageID</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessagePermissions" data-name="privateparlorxt::messagepermissions">
+      <a href="../PrivateParlorXT/MessagePermissions.html">MessagePermissions</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessageProc" data-name="privateparlorxt::messageproc">
+      <a href="../PrivateParlorXT/MessageProc.html">MessageProc</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessageQueue" data-name="privateparlorxt::messagequeue">
+      <a href="../PrivateParlorXT/MessageQueue.html">MessageQueue</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MotdCommand" data-name="privateparlorxt::motdcommand">
+      <a href="../PrivateParlorXT/MotdCommand.html">MotdCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/On" data-name="privateparlorxt::on">
+      <a href="../PrivateParlorXT/On.html">On</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PhotoHandler" data-name="privateparlorxt::photohandler">
+      <a href="../PrivateParlorXT/PhotoHandler.html">PhotoHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PinCommand" data-name="privateparlorxt::pincommand">
+      <a href="../PrivateParlorXT/PinCommand.html">PinCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PollHandler" data-name="privateparlorxt::pollhandler">
+      <a href="../PrivateParlorXT/PollHandler.html">PollHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PrivacyPolicyCommand" data-name="privateparlorxt::privacypolicycommand">
+      <a href="../PrivateParlorXT/PrivacyPolicyCommand.html">PrivacyPolicyCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PromoteCommand" data-name="privateparlorxt::promotecommand">
+      <a href="../PrivateParlorXT/PromoteCommand.html">PromoteCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PurgeCommand" data-name="privateparlorxt::purgecommand">
+      <a href="../PrivateParlorXT/PurgeCommand.html">PurgeCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/QueuedMessage" data-name="privateparlorxt::queuedmessage">
+      <a href="../PrivateParlorXT/QueuedMessage.html">QueuedMessage</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Rank" data-name="privateparlorxt::rank">
+      <a href="../PrivateParlorXT/Rank.html">Rank</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RanksayCommand" data-name="privateparlorxt::ranksaycommand">
+      <a href="../PrivateParlorXT/RanksayCommand.html">RanksayCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RegularForwardHandler" data-name="privateparlorxt::regularforwardhandler">
+      <a href="../PrivateParlorXT/RegularForwardHandler.html">RegularForwardHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Relay" data-name="privateparlorxt::relay">
+      <a href="../PrivateParlorXT/Relay.html">Relay</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RelayParameters" data-name="privateparlorxt::relayparameters">
+      <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RemoveCommand" data-name="privateparlorxt::removecommand">
+      <a href="../PrivateParlorXT/RemoveCommand.html">RemoveCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Replies" data-name="privateparlorxt::replies">
+      <a href="../PrivateParlorXT/Replies.html">Replies</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ReplyParameters" data-name="privateparlorxt::replyparameters">
+      <a href="../PrivateParlorXT/ReplyParameters.html">ReplyParameters</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RespondsTo" data-name="privateparlorxt::respondsto">
+      <a href="../PrivateParlorXT/RespondsTo.html">RespondsTo</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RevealCommand" data-name="privateparlorxt::revealcommand">
+      <a href="../PrivateParlorXT/RevealCommand.html">RevealCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Robot9000" data-name="privateparlorxt::robot9000">
+      <a href="../PrivateParlorXT/Robot9000.html">Robot9000</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Services" data-name="privateparlorxt::services">
+      <a href="../PrivateParlorXT/Services.html">Services</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SignCommand" data-name="privateparlorxt::signcommand">
+      <a href="../PrivateParlorXT/SignCommand.html">SignCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SpamHandler" data-name="privateparlorxt::spamhandler">
+      <a href="../PrivateParlorXT/SpamHandler.html">SpamHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SpoilerCommand" data-name="privateparlorxt::spoilercommand">
+      <a href="../PrivateParlorXT/SpoilerCommand.html">SpoilerCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteDatabase" data-name="privateparlorxt::sqlitedatabase">
+      <a href="../PrivateParlorXT/SQLiteDatabase.html">SQLiteDatabase</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteHistory" data-name="privateparlorxt::sqlitehistory">
+      <a href="../PrivateParlorXT/SQLiteHistory.html">SQLiteHistory</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteRobot9000" data-name="privateparlorxt::sqliterobot9000">
+      <a href="../PrivateParlorXT/SQLiteRobot9000.html">SQLiteRobot9000</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteStatistics" data-name="privateparlorxt::sqlitestatistics">
+      <a href="../PrivateParlorXT/SQLiteStatistics.html">SQLiteStatistics</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteUser" data-name="privateparlorxt::sqliteuser">
+      <a href="../PrivateParlorXT/SQLiteUser.html">SQLiteUser</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StartCommand" data-name="privateparlorxt::startcommand">
+      <a href="../PrivateParlorXT/StartCommand.html">StartCommand</a>
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/PrivateParlorXT/Statistics" data-name="privateparlorxt::statistics">
+      <a href="../PrivateParlorXT/Statistics.html">Statistics</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/BotInfo" data-name="privateparlorxt::statistics::botinfo">
+      <a href="../PrivateParlorXT/Statistics/BotInfo.html">BotInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Karma" data-name="privateparlorxt::statistics::karma">
+      <a href="../PrivateParlorXT/Statistics/Karma.html">Karma</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Messages" data-name="privateparlorxt::statistics::messages">
+      <a href="../PrivateParlorXT/Statistics/Messages.html">Messages</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Robot9000" data-name="privateparlorxt::statistics::robot9000">
+      <a href="../PrivateParlorXT/Statistics/Robot9000.html">Robot9000</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/StatScreens" data-name="privateparlorxt::statistics::statscreens">
+      <a href="../PrivateParlorXT/Statistics/StatScreens.html">StatScreens</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Users" data-name="privateparlorxt::statistics::users">
+      <a href="../PrivateParlorXT/Statistics/Users.html">Users</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StatisticsQueryHandler" data-name="privateparlorxt::statisticsqueryhandler">
+      <a href="../PrivateParlorXT/StatisticsQueryHandler.html">StatisticsQueryHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StatsCommand" data-name="privateparlorxt::statscommand">
+      <a href="../PrivateParlorXT/StatsCommand.html">StatsCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StickerHandler" data-name="privateparlorxt::stickerhandler">
+      <a href="../PrivateParlorXT/StickerHandler.html">StickerHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StopCommand" data-name="privateparlorxt::stopcommand">
+      <a href="../PrivateParlorXT/StopCommand.html">StopCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/TextHandler" data-name="privateparlorxt::texthandler">
+      <a href="../PrivateParlorXT/TextHandler.html">TextHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ToggleDebugCommand" data-name="privateparlorxt::toggledebugcommand">
+      <a href="../PrivateParlorXT/ToggleDebugCommand.html">ToggleDebugCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ToggleKarmaCommand" data-name="privateparlorxt::togglekarmacommand">
+      <a href="../PrivateParlorXT/ToggleKarmaCommand.html">ToggleKarmaCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/TripcodeCommand" data-name="privateparlorxt::tripcodecommand">
+      <a href="../PrivateParlorXT/TripcodeCommand.html">TripcodeCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/TripcodeSignCommand" data-name="privateparlorxt::tripcodesigncommand">
+      <a href="../PrivateParlorXT/TripcodeSignCommand.html">TripcodeSignCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UnblacklistCommand" data-name="privateparlorxt::unblacklistcommand">
+      <a href="../PrivateParlorXT/UnblacklistCommand.html">UnblacklistCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UncooldownCommand" data-name="privateparlorxt::uncooldowncommand">
+      <a href="../PrivateParlorXT/UncooldownCommand.html">UncooldownCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UnpinCommand" data-name="privateparlorxt::unpincommand">
+      <a href="../PrivateParlorXT/UnpinCommand.html">UnpinCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UpdateHandler" data-name="privateparlorxt::updatehandler">
+      <a href="../PrivateParlorXT/UpdateHandler.html">UpdateHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UpvoteHandler" data-name="privateparlorxt::upvotehandler">
+      <a href="../PrivateParlorXT/UpvoteHandler.html">UpvoteHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/User" data-name="privateparlorxt::user">
+      <a href="../PrivateParlorXT/User.html">User</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UserID" data-name="privateparlorxt::userid">
+      <a href="../PrivateParlorXT/UserID.html">UserID</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UsersCommand" data-name="privateparlorxt::userscommand">
+      <a href="../PrivateParlorXT/UsersCommand.html">UsersCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VenueHandler" data-name="privateparlorxt::venuehandler">
+      <a href="../PrivateParlorXT/VenueHandler.html">VenueHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VersionCommand" data-name="privateparlorxt::versioncommand">
+      <a href="../PrivateParlorXT/VersionCommand.html">VersionCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VideoHandler" data-name="privateparlorxt::videohandler">
+      <a href="../PrivateParlorXT/VideoHandler.html">VideoHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VideoNoteHandler" data-name="privateparlorxt::videonotehandler">
+      <a href="../PrivateParlorXT/VideoNoteHandler.html">VideoNoteHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VoiceHandler" data-name="privateparlorxt::voicehandler">
+      <a href="../PrivateParlorXT/VoiceHandler.html">VoiceHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/WarnCommand" data-name="privateparlorxt::warncommand">
+      <a href="../PrivateParlorXT/WarnCommand.html">WarnCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/WhitelistCommand" data-name="privateparlorxt::whitelistcommand">
+      <a href="../PrivateParlorXT/WhitelistCommand.html">WhitelistCommand</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/Tourmaline" data-name="tourmaline">
+      <a href="../Tourmaline.html">Tourmaline</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/Tourmaline/Message" data-name="tourmaline::message">
+      <a href="../Tourmaline/Message.html">Message</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> PrivateParlorXT::<wbr>HandlerConfig
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../PrivateParlorXT/HandlerConfig.html">PrivateParlorXT::HandlerConfig</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Contains a limited set of <code><a href="../PrivateParlorXT/Config.html">Config</a></code> variables that are needed for handlers</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L5" target="_blank">
+        private-parlor-xt/config/handler_config.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28config%3AConfig%29-class-method" class="signature"><strong>.new</strong>(config : Config)</a>
+        
+          <div class="summary"><p>Creates a new instance of `HandlerConfig``</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#allow_effects%3ABool%7CNil-instance-method" class="signature"><strong>#allow_effects</strong> : Bool | Nil</a>
+        
+          <div class="summary"><p>Whether or not to allow users to send messages with a message effect animation</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#allow_spoilers%3ABool%7CNil-instance-method" class="signature"><strong>#allow_spoilers</strong> : Bool | Nil</a>
+        
+          <div class="summary"><p>Whether or not to allow users to send photos, videos, or GIFs with a spoiler overlay</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#blacklist_contact%3AString%7CNil-instance-method" class="signature"><strong>#blacklist_contact</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the contact string shown to blacklisted users</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cooldown_base%3AInt32-instance-method" class="signature"><strong>#cooldown_base</strong> : Int32</a>
+        
+          <div class="summary"><p>The base integer for which cooldown times are computed from</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#default_rank%3AInt32-instance-method" class="signature"><strong>#default_rank</strong> : Int32</a>
+        
+          <div class="summary"><p>The value of the <code><a href="../PrivateParlorXT/Rank.html">Rank</a></code> a user will be set to when joining for the first time or getting demoted</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#downvote_limit_interval%3AInt32-instance-method" class="signature"><strong>#downvote_limit_interval</strong> : Int32</a>
+        
+          <div class="summary"><p>Limit a user's usage of <code><a href="../PrivateParlorXT/DownvoteHandler.html">DownvoteHandler</a></code> for once every interval (in seconds)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#entity_types%3AArray%28String%29-instance-method" class="signature"><strong>#entity_types</strong> : Array(String)</a>
+        
+          <div class="summary"><p>An array of <code>String</code> referring to entity types that will be removed from all messages</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#flag_signatures%3ABool%7CNil-instance-method" class="signature"><strong>#flag_signatures</strong> : Bool | Nil</a>
+        
+          <div class="summary"><p>Whether or not to replace tripcodes with a flag or emoji signature</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#karma_levels%3AHash%28Range%28Int32%2CInt32%29%2CString%29-instance-method" class="signature"><strong>#karma_levels</strong> : Hash(Range(Int32, Int32), String)</a>
+        
+          <div class="summary"><p>A hash of <code>Range(Int32, Int32)</code> =&gt; <code>String</code> mapping a range of possible <code><a href="../PrivateParlorXT/User.html">User</a></code> karma values to the name of the karma level that is defined by that range</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#karma_reasons%3ABool%7CNil-instance-method" class="signature"><strong>#karma_reasons</strong> : Bool | Nil</a>
+        
+          <div class="summary"><p>Whether or not to allow users to attach a reason to their upvote/downvote messages</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#linked_network%3AHash%28String%2CString%29-instance-method" class="signature"><strong>#linked_network</strong> : Hash(String, String)</a>
+        
+          <div class="summary"><p>A hash of <code>String</code> =&gt; <code>String</code> mapping the name of a chat to the chat's username</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#media_limit_period%3ATime%3A%3ASpan-instance-method" class="signature"><strong>#media_limit_period</strong> : Time::Span</a>
+        
+          <div class="summary"><p>The duration (in hours) in which new users cannot send media</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pseudonymous%3ABool%7CNil-instance-method" class="signature"><strong>#pseudonymous</strong> : Bool | Nil</a>
+        
+          <div class="summary"><p>Whether or not to enable pseudonymous mode, which forces the use of tripcodes for all users and automatically prepends messages with the user's tripcode</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#registration_open%3ABool%7CNil-instance-method" class="signature"><strong>#registration_open</strong> : Bool | Nil</a>
+        
+          <div class="summary"><p>Whether or not registration is open, allowing new users to join</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sign_limit_interval%3AInt32-instance-method" class="signature"><strong>#sign_limit_interval</strong> : Int32</a>
+        
+          <div class="summary"><p>Limit a users' usage of <code><a href="../PrivateParlorXT/SignCommand.html">SignCommand</a></code> and <code>TripodeSignCommand</code> for once every interval (in seconds)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tripcode_salt%3AString-instance-method" class="signature"><strong>#tripcode_salt</strong> : String</a>
+        
+          <div class="summary"><p>A <code>String</code> used to generate secure tripcodes</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#upvote_limit_interval%3AInt32-instance-method" class="signature"><strong>#upvote_limit_interval</strong> : Int32</a>
+        
+          <div class="summary"><p>Limit a user's usage of <code><a href="../PrivateParlorXT/UpvoteHandler.html">UpvoteHandler</a></code> for once every interval (in seconds)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#warn_deduction%3AInt32-instance-method" class="signature"><strong>#warn_deduction</strong> : Int32</a>
+        
+          <div class="summary"><p>The amount of karma to remove from a user when receiving a cooldown</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#warn_lifespan%3AInt32-instance-method" class="signature"><strong>#warn_lifespan</strong> : Int32</a>
+        
+          <div class="summary"><p>The length of time (in hours) until a warning expires</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(config:Config)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(config : <a href="../PrivateParlorXT/Config.html">Config</a>)
+
+        <a class="method-permalink" href="#new%28config%3AConfig%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new instance of `HandlerConfig``</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L64" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="allow_effects:Bool|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>allow_effects</strong> : Bool | Nil
+
+        <a class="method-permalink" href="#allow_effects%3ABool%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Whether or not to allow users to send messages with a message effect animation</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L28" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="allow_spoilers:Bool|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>allow_spoilers</strong> : Bool | Nil
+
+        <a class="method-permalink" href="#allow_spoilers%3ABool%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Whether or not to allow users to send photos, videos, or GIFs with a spoiler overlay</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L25" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="blacklist_contact:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>blacklist_contact</strong> : String | Nil
+
+        <a class="method-permalink" href="#blacklist_contact%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the contact string shown to blacklisted users</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L7" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cooldown_base:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>cooldown_base</strong> : Int32
+
+        <a class="method-permalink" href="#cooldown_base%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The base integer for which cooldown times are computed from</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L43" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="default_rank:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>default_rank</strong> : Int32
+
+        <a class="method-permalink" href="#default_rank%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The value of the <code><a href="../PrivateParlorXT/Rank.html">Rank</a></code> a user will be set to when joining for the first time or getting demoted</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L37" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="downvote_limit_interval:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>downvote_limit_interval</strong> : Int32
+
+        <a class="method-permalink" href="#downvote_limit_interval%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Limit a user's usage of <code><a href="../PrivateParlorXT/DownvoteHandler.html">DownvoteHandler</a></code> for once every interval (in seconds)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L16" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="entity_types:Array(String)-instance-method">
+      <div class="signature">
+        
+        def <strong>entity_types</strong> : Array(String)
+
+        <a class="method-permalink" href="#entity_types%3AArray%28String%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>An array of <code>String</code> referring to entity types that will be removed from all messages</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L19" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="flag_signatures:Bool|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>flag_signatures</strong> : Bool | Nil
+
+        <a class="method-permalink" href="#flag_signatures%3ABool%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Whether or not to replace tripcodes with a flag or emoji signature</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L58" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="karma_levels:Hash(Range(Int32,Int32),String)-instance-method">
+      <div class="signature">
+        
+        def <strong>karma_levels</strong> : Hash(Range(Int32, Int32), String)
+
+        <a class="method-permalink" href="#karma_levels%3AHash%28Range%28Int32%2CInt32%29%2CString%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>A hash of <code>Range(Int32, Int32)</code> =&gt; <code>String</code> mapping a range of possible <code><a href="../PrivateParlorXT/User.html">User</a></code> karma values to the name of the karma level that is defined by that range</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L34" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="karma_reasons:Bool|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>karma_reasons</strong> : Bool | Nil
+
+        <a class="method-permalink" href="#karma_reasons%3ABool%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Whether or not to allow users to attach a reason to their upvote/downvote messages</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L61" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="linked_network:Hash(String,String)-instance-method">
+      <div class="signature">
+        
+        def <strong>linked_network</strong> : Hash(String, String)
+
+        <a class="method-permalink" href="#linked_network%3AHash%28String%2CString%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>A hash of <code>String</code> =&gt; <code>String</code> mapping the name of a chat to the chat's username</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L22" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="media_limit_period:Time::Span-instance-method">
+      <div class="signature">
+        
+        def <strong>media_limit_period</strong> : Time::Span
+
+        <a class="method-permalink" href="#media_limit_period%3ATime%3A%3ASpan-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The duration (in hours) in which new users cannot send media</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L31" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pseudonymous:Bool|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>pseudonymous</strong> : Bool | Nil
+
+        <a class="method-permalink" href="#pseudonymous%3ABool%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Whether or not to enable pseudonymous mode, which forces the use of tripcodes for all users and automatically prepends messages with the user's tripcode</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L55" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="registration_open:Bool|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>registration_open</strong> : Bool | Nil
+
+        <a class="method-permalink" href="#registration_open%3ABool%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Whether or not registration is open, allowing new users to join</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L52" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sign_limit_interval:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>sign_limit_interval</strong> : Int32
+
+        <a class="method-permalink" href="#sign_limit_interval%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Limit a users' usage of <code><a href="../PrivateParlorXT/SignCommand.html">SignCommand</a></code> and <code>TripodeSignCommand</code> for once every interval (in seconds)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tripcode_salt:String-instance-method">
+      <div class="signature">
+        
+        def <strong>tripcode_salt</strong> : String
+
+        <a class="method-permalink" href="#tripcode_salt%3AString-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>A <code>String</code> used to generate secure tripcodes</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L40" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="upvote_limit_interval:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>upvote_limit_interval</strong> : Int32
+
+        <a class="method-permalink" href="#upvote_limit_interval%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Limit a user's usage of <code><a href="../PrivateParlorXT/UpvoteHandler.html">UpvoteHandler</a></code> for once every interval (in seconds)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L13" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="warn_deduction:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>warn_deduction</strong> : Int32
+
+        <a class="method-permalink" href="#warn_deduction%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The amount of karma to remove from a user when receiving a cooldown</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L49" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="warn_lifespan:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>warn_lifespan</strong> : Int32
+
+        <a class="method-permalink" href="#warn_lifespan%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The length of time (in hours) until a warning expires</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/config/handler_config.cr#L46" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+</div>
+
+</body>
+</html>

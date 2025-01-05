@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.13.3">
+<meta name="crystal_docs.project_version" content="master">
+<meta name="crystal_docs.project_name" content="private-parlor-xt">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="private-parlor-xt">
+  <title>PrivateParlorXT::SpamHandler - private-parlor-xt master</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          private-parlor-xt
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="private-parlor-xt/PrivateParlorXT" data-name="privateparlorxt">
+      <a href="../PrivateParlorXT.html">PrivateParlorXT</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumHandler" data-name="privateparlorxt::albumhandler">
+      <a href="../PrivateParlorXT/AlbumHandler.html">AlbumHandler</a>
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/PrivateParlorXT/AlbumHelpers" data-name="privateparlorxt::albumhelpers">
+      <a href="../PrivateParlorXT/AlbumHelpers.html">AlbumHelpers</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumHelpers/Album" data-name="privateparlorxt::albumhelpers::album">
+      <a href="../PrivateParlorXT/AlbumHelpers/Album.html">Album</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumHelpers/AlbumRelayParameters" data-name="privateparlorxt::albumhelpers::albumrelayparameters">
+      <a href="../PrivateParlorXT/AlbumHelpers/AlbumRelayParameters.html">AlbumRelayParameters</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AlbumMedia" data-name="privateparlorxt::albummedia">
+      <a href="../PrivateParlorXT/AlbumMedia.html">AlbumMedia</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AnimationHandler" data-name="privateparlorxt::animationhandler">
+      <a href="../PrivateParlorXT/AnimationHandler.html">AnimationHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AudioHandler" data-name="privateparlorxt::audiohandler">
+      <a href="../PrivateParlorXT/AudioHandler.html">AudioHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/AuthorizedRanks" data-name="privateparlorxt::authorizedranks">
+      <a href="../PrivateParlorXT/AuthorizedRanks.html">AuthorizedRanks</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/BlacklistCommand" data-name="privateparlorxt::blacklistcommand">
+      <a href="../PrivateParlorXT/BlacklistCommand.html">BlacklistCommand</a>
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/PrivateParlorXT/CachedHistory" data-name="privateparlorxt::cachedhistory">
+      <a href="../PrivateParlorXT/CachedHistory.html">CachedHistory</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CachedHistory/MessageGroup" data-name="privateparlorxt::cachedhistory::messagegroup">
+      <a href="../PrivateParlorXT/CachedHistory/MessageGroup.html">MessageGroup</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CallbackHandler" data-name="privateparlorxt::callbackhandler">
+      <a href="../PrivateParlorXT/CallbackHandler.html">CallbackHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Client" data-name="privateparlorxt::client">
+      <a href="../PrivateParlorXT/Client.html">Client</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CommandDescriptions" data-name="privateparlorxt::commanddescriptions">
+      <a href="../PrivateParlorXT/CommandDescriptions.html">CommandDescriptions</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CommandHandler" data-name="privateparlorxt::commandhandler">
+      <a href="../PrivateParlorXT/CommandHandler.html">CommandHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/CommandPermissions" data-name="privateparlorxt::commandpermissions">
+      <a href="../PrivateParlorXT/CommandPermissions.html">CommandPermissions</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Config" data-name="privateparlorxt::config">
+      <a href="../PrivateParlorXT/Config.html">Config</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ContactHandler" data-name="privateparlorxt::contacthandler">
+      <a href="../PrivateParlorXT/ContactHandler.html">ContactHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Database" data-name="privateparlorxt::database">
+      <a href="../PrivateParlorXT/Database.html">Database</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DeleteCommand" data-name="privateparlorxt::deletecommand">
+      <a href="../PrivateParlorXT/DeleteCommand.html">DeleteCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DemoteCommand" data-name="privateparlorxt::demotecommand">
+      <a href="../PrivateParlorXT/DemoteCommand.html">DemoteCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DocumentHandler" data-name="privateparlorxt::documenthandler">
+      <a href="../PrivateParlorXT/DocumentHandler.html">DocumentHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/DownvoteHandler" data-name="privateparlorxt::downvotehandler">
+      <a href="../PrivateParlorXT/DownvoteHandler.html">DownvoteHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Format" data-name="privateparlorxt::format">
+      <a href="../PrivateParlorXT/Format.html">Format</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ForwardHandler" data-name="privateparlorxt::forwardhandler">
+      <a href="../PrivateParlorXT/ForwardHandler.html">ForwardHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Handler" data-name="privateparlorxt::handler">
+      <a href="../PrivateParlorXT/Handler.html">Handler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/HandlerConfig" data-name="privateparlorxt::handlerconfig">
+      <a href="../PrivateParlorXT/HandlerConfig.html">HandlerConfig</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Hears" data-name="privateparlorxt::hears">
+      <a href="../PrivateParlorXT/Hears.html">Hears</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/HearsHandler" data-name="privateparlorxt::hearshandler">
+      <a href="../PrivateParlorXT/HearsHandler.html">HearsHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/HelpCommand" data-name="privateparlorxt::helpcommand">
+      <a href="../PrivateParlorXT/HelpCommand.html">HelpCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/History" data-name="privateparlorxt::history">
+      <a href="../PrivateParlorXT/History.html">History</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/InfoCommand" data-name="privateparlorxt::infocommand">
+      <a href="../PrivateParlorXT/InfoCommand.html">InfoCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/KarmaHandler" data-name="privateparlorxt::karmahandler">
+      <a href="../PrivateParlorXT/KarmaHandler.html">KarmaHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/KarmaInfoCommand" data-name="privateparlorxt::karmainfocommand">
+      <a href="../PrivateParlorXT/KarmaInfoCommand.html">KarmaInfoCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/KarmaSignCommand" data-name="privateparlorxt::karmasigncommand">
+      <a href="../PrivateParlorXT/KarmaSignCommand.html">KarmaSignCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Locale" data-name="privateparlorxt::locale">
+      <a href="../PrivateParlorXT/Locale.html">Locale</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Localization" data-name="privateparlorxt::localization">
+      <a href="../PrivateParlorXT/Localization.html">Localization</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/LocationHandler" data-name="privateparlorxt::locationhandler">
+      <a href="../PrivateParlorXT/LocationHandler.html">LocationHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Logs" data-name="privateparlorxt::logs">
+      <a href="../PrivateParlorXT/Logs.html">Logs</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Match" data-name="privateparlorxt::match">
+      <a href="../PrivateParlorXT/Match.html">Match</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessageID" data-name="privateparlorxt::messageid">
+      <a href="../PrivateParlorXT/MessageID.html">MessageID</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessagePermissions" data-name="privateparlorxt::messagepermissions">
+      <a href="../PrivateParlorXT/MessagePermissions.html">MessagePermissions</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessageProc" data-name="privateparlorxt::messageproc">
+      <a href="../PrivateParlorXT/MessageProc.html">MessageProc</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MessageQueue" data-name="privateparlorxt::messagequeue">
+      <a href="../PrivateParlorXT/MessageQueue.html">MessageQueue</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/MotdCommand" data-name="privateparlorxt::motdcommand">
+      <a href="../PrivateParlorXT/MotdCommand.html">MotdCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/On" data-name="privateparlorxt::on">
+      <a href="../PrivateParlorXT/On.html">On</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PhotoHandler" data-name="privateparlorxt::photohandler">
+      <a href="../PrivateParlorXT/PhotoHandler.html">PhotoHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PinCommand" data-name="privateparlorxt::pincommand">
+      <a href="../PrivateParlorXT/PinCommand.html">PinCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PollHandler" data-name="privateparlorxt::pollhandler">
+      <a href="../PrivateParlorXT/PollHandler.html">PollHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PrivacyPolicyCommand" data-name="privateparlorxt::privacypolicycommand">
+      <a href="../PrivateParlorXT/PrivacyPolicyCommand.html">PrivacyPolicyCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PromoteCommand" data-name="privateparlorxt::promotecommand">
+      <a href="../PrivateParlorXT/PromoteCommand.html">PromoteCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/PurgeCommand" data-name="privateparlorxt::purgecommand">
+      <a href="../PrivateParlorXT/PurgeCommand.html">PurgeCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/QueuedMessage" data-name="privateparlorxt::queuedmessage">
+      <a href="../PrivateParlorXT/QueuedMessage.html">QueuedMessage</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Rank" data-name="privateparlorxt::rank">
+      <a href="../PrivateParlorXT/Rank.html">Rank</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RanksayCommand" data-name="privateparlorxt::ranksaycommand">
+      <a href="../PrivateParlorXT/RanksayCommand.html">RanksayCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RegularForwardHandler" data-name="privateparlorxt::regularforwardhandler">
+      <a href="../PrivateParlorXT/RegularForwardHandler.html">RegularForwardHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Relay" data-name="privateparlorxt::relay">
+      <a href="../PrivateParlorXT/Relay.html">Relay</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RelayParameters" data-name="privateparlorxt::relayparameters">
+      <a href="../PrivateParlorXT/RelayParameters.html">RelayParameters</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RemoveCommand" data-name="privateparlorxt::removecommand">
+      <a href="../PrivateParlorXT/RemoveCommand.html">RemoveCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Replies" data-name="privateparlorxt::replies">
+      <a href="../PrivateParlorXT/Replies.html">Replies</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ReplyParameters" data-name="privateparlorxt::replyparameters">
+      <a href="../PrivateParlorXT/ReplyParameters.html">ReplyParameters</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RespondsTo" data-name="privateparlorxt::respondsto">
+      <a href="../PrivateParlorXT/RespondsTo.html">RespondsTo</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/RevealCommand" data-name="privateparlorxt::revealcommand">
+      <a href="../PrivateParlorXT/RevealCommand.html">RevealCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Robot9000" data-name="privateparlorxt::robot9000">
+      <a href="../PrivateParlorXT/Robot9000.html">Robot9000</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Services" data-name="privateparlorxt::services">
+      <a href="../PrivateParlorXT/Services.html">Services</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SignCommand" data-name="privateparlorxt::signcommand">
+      <a href="../PrivateParlorXT/SignCommand.html">SignCommand</a>
+      
+    </li>
+  
+  <li class=" current" data-id="private-parlor-xt/PrivateParlorXT/SpamHandler" data-name="privateparlorxt::spamhandler">
+      <a href="../PrivateParlorXT/SpamHandler.html">SpamHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SpoilerCommand" data-name="privateparlorxt::spoilercommand">
+      <a href="../PrivateParlorXT/SpoilerCommand.html">SpoilerCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteDatabase" data-name="privateparlorxt::sqlitedatabase">
+      <a href="../PrivateParlorXT/SQLiteDatabase.html">SQLiteDatabase</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteHistory" data-name="privateparlorxt::sqlitehistory">
+      <a href="../PrivateParlorXT/SQLiteHistory.html">SQLiteHistory</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteRobot9000" data-name="privateparlorxt::sqliterobot9000">
+      <a href="../PrivateParlorXT/SQLiteRobot9000.html">SQLiteRobot9000</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteStatistics" data-name="privateparlorxt::sqlitestatistics">
+      <a href="../PrivateParlorXT/SQLiteStatistics.html">SQLiteStatistics</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/SQLiteUser" data-name="privateparlorxt::sqliteuser">
+      <a href="../PrivateParlorXT/SQLiteUser.html">SQLiteUser</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StartCommand" data-name="privateparlorxt::startcommand">
+      <a href="../PrivateParlorXT/StartCommand.html">StartCommand</a>
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/PrivateParlorXT/Statistics" data-name="privateparlorxt::statistics">
+      <a href="../PrivateParlorXT/Statistics.html">Statistics</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/BotInfo" data-name="privateparlorxt::statistics::botinfo">
+      <a href="../PrivateParlorXT/Statistics/BotInfo.html">BotInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Karma" data-name="privateparlorxt::statistics::karma">
+      <a href="../PrivateParlorXT/Statistics/Karma.html">Karma</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Messages" data-name="privateparlorxt::statistics::messages">
+      <a href="../PrivateParlorXT/Statistics/Messages.html">Messages</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Robot9000" data-name="privateparlorxt::statistics::robot9000">
+      <a href="../PrivateParlorXT/Statistics/Robot9000.html">Robot9000</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/StatScreens" data-name="privateparlorxt::statistics::statscreens">
+      <a href="../PrivateParlorXT/Statistics/StatScreens.html">StatScreens</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/Statistics/Users" data-name="privateparlorxt::statistics::users">
+      <a href="../PrivateParlorXT/Statistics/Users.html">Users</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StatisticsQueryHandler" data-name="privateparlorxt::statisticsqueryhandler">
+      <a href="../PrivateParlorXT/StatisticsQueryHandler.html">StatisticsQueryHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StatsCommand" data-name="privateparlorxt::statscommand">
+      <a href="../PrivateParlorXT/StatsCommand.html">StatsCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StickerHandler" data-name="privateparlorxt::stickerhandler">
+      <a href="../PrivateParlorXT/StickerHandler.html">StickerHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/StopCommand" data-name="privateparlorxt::stopcommand">
+      <a href="../PrivateParlorXT/StopCommand.html">StopCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/TextHandler" data-name="privateparlorxt::texthandler">
+      <a href="../PrivateParlorXT/TextHandler.html">TextHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ToggleDebugCommand" data-name="privateparlorxt::toggledebugcommand">
+      <a href="../PrivateParlorXT/ToggleDebugCommand.html">ToggleDebugCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/ToggleKarmaCommand" data-name="privateparlorxt::togglekarmacommand">
+      <a href="../PrivateParlorXT/ToggleKarmaCommand.html">ToggleKarmaCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/TripcodeCommand" data-name="privateparlorxt::tripcodecommand">
+      <a href="../PrivateParlorXT/TripcodeCommand.html">TripcodeCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/TripcodeSignCommand" data-name="privateparlorxt::tripcodesigncommand">
+      <a href="../PrivateParlorXT/TripcodeSignCommand.html">TripcodeSignCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UnblacklistCommand" data-name="privateparlorxt::unblacklistcommand">
+      <a href="../PrivateParlorXT/UnblacklistCommand.html">UnblacklistCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UncooldownCommand" data-name="privateparlorxt::uncooldowncommand">
+      <a href="../PrivateParlorXT/UncooldownCommand.html">UncooldownCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UnpinCommand" data-name="privateparlorxt::unpincommand">
+      <a href="../PrivateParlorXT/UnpinCommand.html">UnpinCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UpdateHandler" data-name="privateparlorxt::updatehandler">
+      <a href="../PrivateParlorXT/UpdateHandler.html">UpdateHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UpvoteHandler" data-name="privateparlorxt::upvotehandler">
+      <a href="../PrivateParlorXT/UpvoteHandler.html">UpvoteHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/User" data-name="privateparlorxt::user">
+      <a href="../PrivateParlorXT/User.html">User</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UserID" data-name="privateparlorxt::userid">
+      <a href="../PrivateParlorXT/UserID.html">UserID</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/UsersCommand" data-name="privateparlorxt::userscommand">
+      <a href="../PrivateParlorXT/UsersCommand.html">UsersCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VenueHandler" data-name="privateparlorxt::venuehandler">
+      <a href="../PrivateParlorXT/VenueHandler.html">VenueHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VersionCommand" data-name="privateparlorxt::versioncommand">
+      <a href="../PrivateParlorXT/VersionCommand.html">VersionCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VideoHandler" data-name="privateparlorxt::videohandler">
+      <a href="../PrivateParlorXT/VideoHandler.html">VideoHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VideoNoteHandler" data-name="privateparlorxt::videonotehandler">
+      <a href="../PrivateParlorXT/VideoNoteHandler.html">VideoNoteHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/VoiceHandler" data-name="privateparlorxt::voicehandler">
+      <a href="../PrivateParlorXT/VoiceHandler.html">VoiceHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/WarnCommand" data-name="privateparlorxt::warncommand">
+      <a href="../PrivateParlorXT/WarnCommand.html">WarnCommand</a>
+      
+    </li>
+  
+  <li class=" " data-id="private-parlor-xt/PrivateParlorXT/WhitelistCommand" data-name="privateparlorxt::whitelistcommand">
+      <a href="../PrivateParlorXT/WhitelistCommand.html">WhitelistCommand</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="private-parlor-xt/Tourmaline" data-name="tourmaline">
+      <a href="../Tourmaline.html">Tourmaline</a>
+      
+        <ul>
+  
+  <li class=" " data-id="private-parlor-xt/Tourmaline/Message" data-name="tourmaline::message">
+      <a href="../Tourmaline/Message.html">Message</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> PrivateParlorXT::<wbr>SpamHandler
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../PrivateParlorXT/SpamHandler.html">PrivateParlorXT::SpamHandler</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>A module used for keeping track of the frequency of a user's message posting in order to prevent spam</p>
+
+
+
+
+
+  <h2>
+    <a id="included-modules" class="anchor" href="#included-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Included Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type">YAML::Serializable</li>
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L6" target="_blank">
+        private-parlor-xt/spam/spam_handler.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28ctx%3AYAML%3A%3AParseContext%2Cnode%3AYAML%3A%3ANodes%3A%3ANode%29-class-method" class="signature"><strong>.new</strong>(ctx : YAML::ParseContext, node : YAML::Nodes::Node)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new%28scores%3AHash%28UserID%2CInt32%29%3D%7B%7DofUserID%3D%3EInt32%2Csign_last_used%3AHash%28UserID%2CTime%29%3D%7B%7DofUserID%3D%3ETime%2Cupvote_last_used%3AHash%28UserID%2CTime%29%3D%7B%7DofUserID%3D%3ETime%2Cdownvote_last_used%3AHash%28UserID%2CTime%29%3D%7B%7DofUserID%3D%3ETime%2Cspam_limit%3AInt32%3D10000%2Cdecay_amount%3AInt32%3D1000%2Cscore_character%3AInt32%3D3%2Cscore_line%3AInt32%3D100%2Cscore_text%3AInt32%3D2000%2Cscore_animation%3AInt32%3D3000%2Cscore_audio%3AInt32%3D3000%2Cscore_document%3AInt32%3D3000%2Cscore_video%3AInt32%3D3000%2Cscore_video_note%3AInt32%3D5000%2Cscore_voice%3AInt32%3D5000%2Cscore_photo%3AInt32%3D3000%2Cscore_media_group%3AInt32%3D6000%2Cscore_poll%3AInt32%3D6000%2Cscore_forwarded_message%3AInt32%3D3000%2Cscore_sticker%3AInt32%3D3000%2Cscore_venue%3AInt32%3D5000%2Cscore_location%3AInt32%3D5000%2Cscore_contact%3AInt32%3D5000%29-class-method" class="signature"><strong>.new</strong>(scores : Hash(UserID, Int32) = {} <span class="k">of</span> <span class="t">UserID</span> <span class="o">=&gt;</span> <span class="t">Int32</span>, sign_last_used : Hash(UserID, Time) = {} <span class="k">of</span> <span class="t">UserID</span> <span class="o">=&gt;</span> <span class="t">Time</span>, upvote_last_used : Hash(UserID, Time) = {} <span class="k">of</span> <span class="t">UserID</span> <span class="o">=&gt;</span> <span class="t">Time</span>, downvote_last_used : Hash(UserID, Time) = {} <span class="k">of</span> <span class="t">UserID</span> <span class="o">=&gt;</span> <span class="t">Time</span>, spam_limit : Int32 = <span class="n">10000</span>, decay_amount : Int32 = <span class="n">1000</span>, score_character : Int32 = <span class="n">3</span>, score_line : Int32 = <span class="n">100</span>, score_text : Int32 = <span class="n">2000</span>, score_animation : Int32 = <span class="n">3000</span>, score_audio : Int32 = <span class="n">3000</span>, score_document : Int32 = <span class="n">3000</span>, score_video : Int32 = <span class="n">3000</span>, score_video_note : Int32 = <span class="n">5000</span>, score_voice : Int32 = <span class="n">5000</span>, score_photo : Int32 = <span class="n">3000</span>, score_media_group : Int32 = <span class="n">6000</span>, score_poll : Int32 = <span class="n">6000</span>, score_forwarded_message : Int32 = <span class="n">3000</span>, score_sticker : Int32 = <span class="n">3000</span>, score_venue : Int32 = <span class="n">5000</span>, score_location : Int32 = <span class="n">5000</span>, score_contact : Int32 = <span class="n">5000</span>)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#decay_amount%3AInt32-instance-method" class="signature"><strong>#decay_amount</strong> : Int32</a>
+        
+          <div class="summary"><p>The amount at which spam scores decay</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#downvote_last_used%3AHash%28UserID%2CTime%29-instance-method" class="signature"><strong>#downvote_last_used</strong> : Hash(UserID, Time)</a>
+        
+          <div class="summary"><p>Returns a hash of <code><a href="../PrivateParlorXT/UserID.html">UserID</a></code> to <code>Time</code>, contaning the time each user last downvoted</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#expire%3ANil-instance-method" class="signature"><strong>#expire</strong> : Nil</a>
+        
+          <div class="summary"><p>Subtracts the <code><a href="../PrivateParlorXT/SpamHandler.html#decay_amount%3AInt32-instance-method">#decay_amount</a></code> from the scores of each user in <code><a href="../PrivateParlorXT/SpamHandler.html#scores%3AHash%28UserID%2CInt32%29-instance-method">#scores</a></code></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_animation%3AInt32-instance-method" class="signature"><strong>#score_animation</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each animation</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_audio%3AInt32-instance-method" class="signature"><strong>#score_audio</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each audio</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_character%3AInt32-instance-method" class="signature"><strong>#score_character</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each character in text</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_contact%3AInt32-instance-method" class="signature"><strong>#score_contact</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each contact</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_document%3AInt32-instance-method" class="signature"><strong>#score_document</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each document</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_forwarded_message%3AInt32-instance-method" class="signature"><strong>#score_forwarded_message</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each forwarded message</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_line%3AInt32-instance-method" class="signature"><strong>#score_line</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each line in text</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_location%3AInt32-instance-method" class="signature"><strong>#score_location</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each location</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_media_group%3AInt32-instance-method" class="signature"><strong>#score_media_group</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each album</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_photo%3AInt32-instance-method" class="signature"><strong>#score_photo</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each photo</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_poll%3AInt32-instance-method" class="signature"><strong>#score_poll</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each poll</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_sticker%3AInt32-instance-method" class="signature"><strong>#score_sticker</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each sticker</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_text%3AInt32-instance-method" class="signature"><strong>#score_text</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each text message</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_venue%3AInt32-instance-method" class="signature"><strong>#score_venue</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each venue</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_video%3AInt32-instance-method" class="signature"><strong>#score_video</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each video</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_video_note%3AInt32-instance-method" class="signature"><strong>#score_video_note</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each video note</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#score_voice%3AInt32-instance-method" class="signature"><strong>#score_voice</strong> : Int32</a>
+        
+          <div class="summary"><p>Amount added to the score for each voice message</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#scores%3AHash%28UserID%2CInt32%29-instance-method" class="signature"><strong>#scores</strong> : Hash(UserID, Int32)</a>
+        
+          <div class="summary"><p>Returns a hash of <code><a href="../PrivateParlorXT/UserID.html">UserID</a></code> to <code>Int32</code>, contaning the scores for each user</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sign_last_used%3AHash%28UserID%2CTime%29-instance-method" class="signature"><strong>#sign_last_used</strong> : Hash(UserID, Time)</a>
+        
+          <div class="summary"><p>Returns a hash of <code><a href="../PrivateParlorXT/UserID.html">UserID</a></code> to <code>Time</code>, contaning the time each user last signed</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spam_limit%3AInt32-instance-method" class="signature"><strong>#spam_limit</strong> : Int32</a>
+        
+          <div class="summary"><p>The limit for spam scores that, when hit, prevents the user from sending another message until it decays</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_album%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_album?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the album was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_animation%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_animation?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the animation was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_audio%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_audio?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the audio was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_contact%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_contact?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the contact was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_document%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_document?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the document was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_downvote%3F%28user%3AUserID%2Cinterval%3AInt32%29%3ABool-instance-method" class="signature"><strong>#spammy_downvote?</strong>(user : UserID, interval : Int32) : Bool</a>
+        
+          <div class="summary"><p>Check if user has downvoted within an interval of time</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_forward%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_forward?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the forwarded message was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_location%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_location?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the location was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_photo%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_photo?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the photo was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_poll%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_poll?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the poll was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_sign%3F%28user%3AUserID%2Cinterval%3AInt32%29%3ABool-instance-method" class="signature"><strong>#spammy_sign?</strong>(user : UserID, interval : Int32) : Bool</a>
+        
+          <div class="summary"><p>Check if user has signed within an interval of time</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_sticker%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_sticker?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the sticker was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_text%3F%28user%3AUserID%2Ctext%3AString%29%3ABool-instance-method" class="signature"><strong>#spammy_text?</strong>(user : UserID, text : String) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the text message was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_upvote%3F%28user%3AUserID%2Cinterval%3AInt32%29%3ABool-instance-method" class="signature"><strong>#spammy_upvote?</strong>(user : UserID, interval : Int32) : Bool</a>
+        
+          <div class="summary"><p>Check if user has upvoted within an interval of time</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_venue%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_venue?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the venue was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_video%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_video?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the video was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_video_note%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_video_note?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the video note was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#spammy_voice%3F%28user%3AUserID%29%3ABool-instance-method" class="signature"><strong>#spammy_voice?</strong>(user : UserID) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the voice message was spammy</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#upvote_last_used%3AHash%28UserID%2CTime%29-instance-method" class="signature"><strong>#upvote_last_used</strong> : Hash(UserID, Time)</a>
+        
+          <div class="summary"><p>Returns a hash of <code><a href="../PrivateParlorXT/UserID.html">UserID</a></code> to <code>Time</code>, contaning the time each user last upvoted</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(ctx:YAML::ParseContext,node:YAML::Nodes::Node)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(ctx : YAML::ParseContext, node : YAML::Nodes::Node)
+
+        <a class="method-permalink" href="#new%28ctx%3AYAML%3A%3AParseContext%2Cnode%3AYAML%3A%3ANodes%3A%3ANode%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L7" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(scores:Hash(UserID,Int32)={}ofUserID=&gt;Int32,sign_last_used:Hash(UserID,Time)={}ofUserID=&gt;Time,upvote_last_used:Hash(UserID,Time)={}ofUserID=&gt;Time,downvote_last_used:Hash(UserID,Time)={}ofUserID=&gt;Time,spam_limit:Int32=10000,decay_amount:Int32=1000,score_character:Int32=3,score_line:Int32=100,score_text:Int32=2000,score_animation:Int32=3000,score_audio:Int32=3000,score_document:Int32=3000,score_video:Int32=3000,score_video_note:Int32=5000,score_voice:Int32=5000,score_photo:Int32=3000,score_media_group:Int32=6000,score_poll:Int32=6000,score_forwarded_message:Int32=3000,score_sticker:Int32=3000,score_venue:Int32=5000,score_location:Int32=5000,score_contact:Int32=5000)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(scores : Hash(<a href="../PrivateParlorXT/UserID.html">UserID</a>, Int32) = {} <span class="k">of</span> <span class="t">UserID</span> <span class="o">=&gt;</span> <span class="t">Int32</span>, sign_last_used : Hash(<a href="../PrivateParlorXT/UserID.html">UserID</a>, Time) = {} <span class="k">of</span> <span class="t">UserID</span> <span class="o">=&gt;</span> <span class="t">Time</span>, upvote_last_used : Hash(<a href="../PrivateParlorXT/UserID.html">UserID</a>, Time) = {} <span class="k">of</span> <span class="t">UserID</span> <span class="o">=&gt;</span> <span class="t">Time</span>, downvote_last_used : Hash(<a href="../PrivateParlorXT/UserID.html">UserID</a>, Time) = {} <span class="k">of</span> <span class="t">UserID</span> <span class="o">=&gt;</span> <span class="t">Time</span>, spam_limit : Int32 = <span class="n">10000</span>, decay_amount : Int32 = <span class="n">1000</span>, score_character : Int32 = <span class="n">3</span>, score_line : Int32 = <span class="n">100</span>, score_text : Int32 = <span class="n">2000</span>, score_animation : Int32 = <span class="n">3000</span>, score_audio : Int32 = <span class="n">3000</span>, score_document : Int32 = <span class="n">3000</span>, score_video : Int32 = <span class="n">3000</span>, score_video_note : Int32 = <span class="n">5000</span>, score_voice : Int32 = <span class="n">5000</span>, score_photo : Int32 = <span class="n">3000</span>, score_media_group : Int32 = <span class="n">6000</span>, score_poll : Int32 = <span class="n">6000</span>, score_forwarded_message : Int32 = <span class="n">3000</span>, score_sticker : Int32 = <span class="n">3000</span>, score_venue : Int32 = <span class="n">5000</span>, score_location : Int32 = <span class="n">5000</span>, score_contact : Int32 = <span class="n">5000</span>)
+
+        <a class="method-permalink" href="#new%28scores%3AHash%28UserID%2CInt32%29%3D%7B%7DofUserID%3D%3EInt32%2Csign_last_used%3AHash%28UserID%2CTime%29%3D%7B%7DofUserID%3D%3ETime%2Cupvote_last_used%3AHash%28UserID%2CTime%29%3D%7B%7DofUserID%3D%3ETime%2Cdownvote_last_used%3AHash%28UserID%2CTime%29%3D%7B%7DofUserID%3D%3ETime%2Cspam_limit%3AInt32%3D10000%2Cdecay_amount%3AInt32%3D1000%2Cscore_character%3AInt32%3D3%2Cscore_line%3AInt32%3D100%2Cscore_text%3AInt32%3D2000%2Cscore_animation%3AInt32%3D3000%2Cscore_audio%3AInt32%3D3000%2Cscore_document%3AInt32%3D3000%2Cscore_video%3AInt32%3D3000%2Cscore_video_note%3AInt32%3D5000%2Cscore_voice%3AInt32%3D5000%2Cscore_photo%3AInt32%3D3000%2Cscore_media_group%3AInt32%3D6000%2Cscore_poll%3AInt32%3D6000%2Cscore_forwarded_message%3AInt32%3D3000%2Cscore_sticker%3AInt32%3D3000%2Cscore_venue%3AInt32%3D5000%2Cscore_location%3AInt32%3D5000%2Cscore_contact%3AInt32%3D5000%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L97" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="decay_amount:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>decay_amount</strong> : Int32
+
+        <a class="method-permalink" href="#decay_amount%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The amount at which spam scores decay</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L27" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="downvote_last_used:Hash(UserID,Time)-instance-method">
+      <div class="signature">
+        
+        def <strong>downvote_last_used</strong> : Hash(<a href="../PrivateParlorXT/UserID.html">UserID</a>, Time)
+
+        <a class="method-permalink" href="#downvote_last_used%3AHash%28UserID%2CTime%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a hash of <code><a href="../PrivateParlorXT/UserID.html">UserID</a></code> to <code>Time</code>, contaning the time each user last downvoted</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L19" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="expire:Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>expire</strong> : Nil
+
+        <a class="method-permalink" href="#expire%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Subtracts the <code><a href="../PrivateParlorXT/SpamHandler.html#decay_amount%3AInt32-instance-method">#decay_amount</a></code> from the scores of each user in <code><a href="../PrivateParlorXT/SpamHandler.html#scores%3AHash%28UserID%2CInt32%29-instance-method">#scores</a></code></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L302" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_animation:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_animation</strong> : Int32
+
+        <a class="method-permalink" href="#score_animation%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each animation</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L43" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_audio:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_audio</strong> : Int32
+
+        <a class="method-permalink" href="#score_audio%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each audio</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L47" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_character:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_character</strong> : Int32
+
+        <a class="method-permalink" href="#score_character%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each character in text</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L31" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_contact:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_contact</strong> : Int32
+
+        <a class="method-permalink" href="#score_contact%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each contact</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L95" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_document:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_document</strong> : Int32
+
+        <a class="method-permalink" href="#score_document%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each document</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L51" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_forwarded_message:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_forwarded_message</strong> : Int32
+
+        <a class="method-permalink" href="#score_forwarded_message%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each forwarded message</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L79" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_line:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_line</strong> : Int32
+
+        <a class="method-permalink" href="#score_line%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each line in text</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L35" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_location:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_location</strong> : Int32
+
+        <a class="method-permalink" href="#score_location%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each location</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L91" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_media_group:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_media_group</strong> : Int32
+
+        <a class="method-permalink" href="#score_media_group%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each album</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L71" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_photo:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_photo</strong> : Int32
+
+        <a class="method-permalink" href="#score_photo%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each photo</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L67" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_poll:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_poll</strong> : Int32
+
+        <a class="method-permalink" href="#score_poll%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each poll</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L75" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_sticker:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_sticker</strong> : Int32
+
+        <a class="method-permalink" href="#score_sticker%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each sticker</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L83" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_text:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_text</strong> : Int32
+
+        <a class="method-permalink" href="#score_text%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each text message</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L39" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_venue:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_venue</strong> : Int32
+
+        <a class="method-permalink" href="#score_venue%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each venue</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L87" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_video:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_video</strong> : Int32
+
+        <a class="method-permalink" href="#score_video%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each video</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L55" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_video_note:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_video_note</strong> : Int32
+
+        <a class="method-permalink" href="#score_video_note%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each video note</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L59" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="score_voice:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>score_voice</strong> : Int32
+
+        <a class="method-permalink" href="#score_voice%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Amount added to the score for each voice message</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L63" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="scores:Hash(UserID,Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>scores</strong> : Hash(<a href="../PrivateParlorXT/UserID.html">UserID</a>, Int32)
+
+        <a class="method-permalink" href="#scores%3AHash%28UserID%2CInt32%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a hash of <code><a href="../PrivateParlorXT/UserID.html">UserID</a></code> to <code>Int32</code>, contaning the scores for each user</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sign_last_used:Hash(UserID,Time)-instance-method">
+      <div class="signature">
+        
+        def <strong>sign_last_used</strong> : Hash(<a href="../PrivateParlorXT/UserID.html">UserID</a>, Time)
+
+        <a class="method-permalink" href="#sign_last_used%3AHash%28UserID%2CTime%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a hash of <code><a href="../PrivateParlorXT/UserID.html">UserID</a></code> to <code>Time</code>, contaning the time each user last signed</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L13" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spam_limit:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>spam_limit</strong> : Int32
+
+        <a class="method-permalink" href="#spam_limit%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The limit for spam scores that, when hit, prevents the user from sending another message until it decays</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L23" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_album?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_album?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_album%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the album was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L276" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_animation?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_animation?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_animation%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the animation was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L213" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_audio?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_audio?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_audio%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the audio was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L227" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_contact?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_contact?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_contact%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the contact was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L297" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_document?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_document?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_document%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the document was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L241" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_downvote?(user:UserID,interval:Int32):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_downvote?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>, interval : Int32) : Bool
+
+        <a class="method-permalink" href="#spammy_downvote%3F%28user%3AUserID%2Cinterval%3AInt32%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Check if user has downvoted within an interval of time</p>
+<p>Returns true if so (user is downvoting too often), false otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L180" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_forward?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_forward?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_forward%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the forwarded message was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L255" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_location?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_location?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_location%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the location was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L290" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_photo?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_photo?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_photo%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the photo was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L206" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_poll?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_poll?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_poll%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the poll was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L248" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_sign?(user:UserID,interval:Int32):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_sign?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>, interval : Int32) : Bool
+
+        <a class="method-permalink" href="#spammy_sign%3F%28user%3AUserID%2Cinterval%3AInt32%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Check if user has signed within an interval of time</p>
+<p>Returns true if so (user is sign spamming), false otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L142" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_sticker?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_sticker?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_sticker%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the sticker was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L269" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_text?(user:UserID,text:String):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_text?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>, text : String) : Bool
+
+        <a class="method-permalink" href="#spammy_text%3F%28user%3AUserID%2Ctext%3AString%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the text message was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L199" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_upvote?(user:UserID,interval:Int32):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_upvote?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>, interval : Int32) : Bool
+
+        <a class="method-permalink" href="#spammy_upvote%3F%28user%3AUserID%2Cinterval%3AInt32%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Check if user has upvoted within an interval of time</p>
+<p>Returns true if so (user is upvoting too often), false otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L161" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_venue?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_venue?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_venue%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the venue was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L283" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_video?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_video?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_video%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the video was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L220" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_video_note?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_video_note?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_video_note%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the video note was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L262" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="spammy_voice?(user:UserID):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>spammy_voice?</strong>(user : <a href="../PrivateParlorXT/UserID.html">UserID</a>) : Bool
+
+        <a class="method-permalink" href="#spammy_voice%3F%28user%3AUserID%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the voice message was spammy</p>
+<p>Returns <code>false</code> otherwise</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L234" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="upvote_last_used:Hash(UserID,Time)-instance-method">
+      <div class="signature">
+        
+        def <strong>upvote_last_used</strong> : Hash(<a href="../PrivateParlorXT/UserID.html">UserID</a>, Time)
+
+        <a class="method-permalink" href="#upvote_last_used%3AHash%28UserID%2CTime%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a hash of <code><a href="../PrivateParlorXT/UserID.html">UserID</a></code> to <code>Time</code>, contaning the time each user last upvoted</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Private-Parlor/Private-Parlor-XT/blob/9f3bd65eb3a07e5179afe800dccecd2c080376b7/src/private-parlor-xt/spam/spam_handler.cr#L16" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+</div>
+
+</body>
+</html>
