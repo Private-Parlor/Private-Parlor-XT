@@ -42,10 +42,12 @@ module PrivateParlorXT
           append_command_handler({{command}}, {{responds_to[:command]}})
         else
           arr << Tourmaline::CommandHandler.new({{responds_to[:command]}}) do |ctx|
-            next unless message = ctx.message
-            next if message.date == 0 # Message is inaccessible
+            next unless message = valid_message(ctx)
 
-            message = message.as(Tourmaline::Message)
+            # Check if message starts with a command
+            # Only send the reply if this is the case
+            command_entities = message.text_entities("bot_command")
+            next unless command_entities.first[0].offset == 0
 
             command_disabled(message, services)
           end
@@ -130,10 +132,7 @@ module PrivateParlorXT
         else
         {% if hears[:command] %}
           arr << Tourmaline::HearsHandler.new({{hears[:pattern]}}) do |ctx|
-            next unless message = ctx.message
-            next if message.date == 0 # Message is inaccessible
-
-            message = message.as(Tourmaline::Message)
+            next unless message = valid_message(ctx)
 
             command_disabled(message, services)
           end
@@ -277,6 +276,16 @@ module PrivateParlorXT
     return unless info = message.from
 
     services.relay.send_to_user(ReplyParameters.new(message.message_id), info.id.to_i64, services.replies.command_disabled)
+  end
+
+  # Checks if the given `Tourmaline::Context` contains a valid and accesible message
+  # If so, returns the `Tourmaline::Message` contained in the handler context
+  # Returns `nil` otherwise
+  def self.valid_message(ctx : Tourmaline::Context) : Tourmaline::Message?
+    return unless message = ctx.message
+    return if message.date == 0 # Message is inaccessible
+
+    message.as(Tourmaline::Message)
   end
 
   # Force-leave users whose last active time is creater than the given `Time::Span` *limit*

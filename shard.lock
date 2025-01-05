@@ -18,7 +18,7 @@ shards:
 
   http_proxy:
     git: https://github.com/mamantoha/http_proxy.git
-    version: 0.10.3+git.commit.ea17189f3bd05a2a89a18abdf73cae534b57faa6
+    version: 0.12.1+git.commit.2db0d5e0614c3492f10515931e437e8c0e2bae67
 
   sqlite3:
     git: https://github.com/crystal-lang/crystal-sqlite3.git
