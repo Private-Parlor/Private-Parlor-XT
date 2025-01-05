@@ -3,7 +3,7 @@ require "tourmaline"
 require "tasker"
 
 module PrivateParlorXT
-  VERSION = "1.2.3"
+  VERSION = "1.2.4"
 
   services = initialize_bot
 

@@ -47,7 +47,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Create arm64 container and build
-      uses: uraimo/run-on-arch-action@v2.5.1
+      uses: uraimo/run-on-arch-action@v2.8.1
       with:
         arch: aarch64
         distro: alpine_latest
